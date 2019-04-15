@@ -1,0 +1,30 @@
+{#
+Display a grid of group items.
+
+groups - A list of groups.
+
+Example:
+
+    {% snippet "group/snippets/group_list.html" %}
+
+#}
+{% block group_list %}
+<div class="table-responsive">
+  <table class="table table-striped" width="100%">
+  	<thead>
+  		<tr>
+  			<th>Title</th>
+  			<th width="15%">Datasets</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+	{% block group_list_inner %}
+  {% for group in groups %}
+    {% snippet "group/snippets/group_item.html", group=group, position=loop.index %}
+  {% endfor %}
+  {% endblock %}
+  	</tbody>
+  </table>
+</div>
+
+{% endblock %}

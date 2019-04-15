@@ -1,0 +1,58 @@
+body {
+ font-family: 'Lato', sans-serif;
+}
+
+a, a:focus, a:hover, a:link, a:visited {
+    text-decoration: underline;
+}
+
+.table {
+	max-width: 100%;
+	margin-top: .5em;
+	border-collapse: collapse;
+	border-spacing: 0;
+	text-indent: 0;
+	table-layout: fixed;
+	background-color: transparent;
+}
+
+.table thead > tr > td, .table thead > tr > th {
+    background: #13578b;
+    color: #fff;
+}
+
+.table thead td, .table thead th {
+    vertical-align: bottom;
+}
+
+.table td, .table th {
+    border: none;
+}
+
+.table th {
+    padding: .8em 1em;
+    font-size: 17px;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.table td, .table th {
+    display: table-cell;
+    text-align: left;
+}
+
+.table tfoot {
+    background: #f3f3f3;
+}
+
+.table td {
+    padding: 1em;
+    font-size: .9rem;
+    font-weight: 400;
+}
+
+.table td, .table th {
+    display: table-cell;
+    vertical-align: top;
+    text-align: left;
+}
