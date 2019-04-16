@@ -17,11 +17,11 @@ setup(
     # http://packaging.python.org/en/latest/tutorial.html#version
     version='0.0.1',
 
-    description='''Custom extension for custom schema metadata''',
+    description='''Custom extension for Data QLD''',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com//ckanext-data-qld',
+    url='''https://servicesmadesimpler.govnet.qld.gov.au/bitbucket/scm/ckan/ckanext-data-qld-theme.git''',
 
     # Author details
     author='''Salsa Digital''',
