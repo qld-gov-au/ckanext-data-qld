@@ -20,7 +20,8 @@
       "field_name": "notes",
       "label": "Description",
       "form_snippet": "markdown.html",
-      "form_placeholder": "eg. Some useful notes about the data"
+      "form_placeholder": "eg. Some useful notes about the data",
+      "required": true
     },
     {
       "field_name": "tag_string",
@@ -49,7 +50,7 @@
     {
       "field_name": "version",
       "label": "Version",
-      "validators": "unicode package_version_validator",
+      "validators": "scheming_required unicode package_version_validator",
       "form_placeholder": "1.0",
       "required": true
     },
@@ -57,15 +58,18 @@
       "field_name": "author",
       "label": "Author",
       "form_placeholder": "Joe Bloggs",
-      "display_property": "dc:creator"
+      "display_property": "dc:creator",
+      "display_snippet": null,
+      "form_snippet": null
     },
     {
       "field_name": "author_email",
-      "label": "Author Email",
+      "label": "Email",
       "form_placeholder": "joe@example.com",
       "display_property": "dc:creator",
       "display_snippet": "email.html",
-      "display_email_name_field": "author"
+      "display_email_name_field": "author",
+      "required": true
     },
     {
       "field_name": "maintainer",
@@ -79,7 +83,7 @@
       "field_name": "maintainer_email",
       "label": "Maintainer Email",
       "form_placeholder": "joe@example.com",
-      "display_property": "dc:contributor",      
+      "display_property": "dc:contributor",
       "display_email_name_field": "maintainer",
       "display_snippet": null,
       "form_snippet": null
@@ -88,6 +92,7 @@
       "field_name": "security_classification",
       "label": "Security Classification",
       "preset": "select",
+      "required": true,
       "choices": [
         {
           "value": "PUBLIC",
@@ -103,6 +108,7 @@
       "field_name": "data_driven_application",
       "label": "Used in data driven application",
       "preset": "select",
+      "required": true,
       "choices": [
         {
           "value": "NO",
@@ -124,18 +130,51 @@
     {
       "field_name": "name",
       "label": "Name",
-      "form_placeholder": "eg. January 2011 Gold Prices"
-    },
+      "form_placeholder": "eg. January 2011 Gold Prices",
+      "required": true  
+    },  
+    {
+      "field_name": "format",
+      "label": "Format",
+      "preset": "resource_format_autocomplete",
+      "required": true
+    },     
     {
       "field_name": "description",
       "label": "Description",
       "form_snippet": "markdown.html",
-      "form_placeholder": "Some useful notes about the data"
+      "form_placeholder": "Some useful notes about the data",
+      "required": true
     },
     {
-      "field_name": "format",
-      "label": "Format",
-      "preset": "resource_format_autocomplete"
-    }
+      "field_name": "size",
+      "label": "Size",
+      "form_placeholder": "e.g. 1024",     
+      "validators": "scheming_required file_size_converter",
+      "required": true
+    },    
+    {
+      "field_name": "expiration_date",
+      "label": "Expiration date",
+      "form_placeholder": "e.g. dd/mm/yyyy",
+      "preset": "date",
+      "required": true
+    },
+    {
+      "field_name": "data_driven_application",
+      "label": "Used in data driven application",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ]
+    }      
   ]
 }
