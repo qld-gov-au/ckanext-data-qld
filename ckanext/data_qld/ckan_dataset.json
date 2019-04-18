@@ -131,14 +131,14 @@
       "field_name": "name",
       "label": "Name",
       "form_placeholder": "eg. January 2011 Gold Prices",
-      "required": true  
-    },  
+      "required": true
+    },
     {
       "field_name": "format",
       "label": "Format",
       "preset": "resource_format_autocomplete",
       "required": true
-    },     
+    },
     {
       "field_name": "description",
       "label": "Description",
@@ -149,32 +149,16 @@
     {
       "field_name": "size",
       "label": "Size",
-      "form_placeholder": "e.g. 1024",     
+      "form_placeholder": "e.g. 1024",
       "validators": "scheming_required file_size_converter",
       "required": true
-    },    
+    },
     {
       "field_name": "expiration_date",
       "label": "Expiration date",
       "form_placeholder": "e.g. dd/mm/yyyy",
       "preset": "date",
       "required": true
-    },
-    {
-      "field_name": "data_driven_application",
-      "label": "Used in data driven application",
-      "preset": "select",
-      "required": true,
-      "choices": [
-        {
-          "value": "NO",
-          "label": "NO"
-        },
-        {
-          "value": "YES",
-          "label": "YES"
-        }
-      ]
-    }      
+    }
   ]
 }
