@@ -4,6 +4,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckan.plugins.toolkit import Invalid
 import re
+import ckan.lib.formatters as formatters
 
 
 def data_driven_application(data_driven_application):
@@ -86,6 +87,9 @@ def file_size_bytes(value):
     else:
         raise Invalid('Must be a valid filesize format')
 
+def format_resource_filesize(size):
+    return formatters.localised_filesize(int(size))
+
 
 class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -102,7 +106,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {'data_qld_data_driven_application': data_driven_application,
-                'data_qld_dataset_data_driven_application': dataset_data_driven_application}
+                'data_qld_dataset_data_driven_application': dataset_data_driven_application,
+                'data_qld_format_resource_filesize': format_resource_filesize}
 
     # IValidators
     def get_validators(self):
