@@ -118,7 +118,8 @@
           "value": "YES",
           "label": "YES"
         }
-      ]
+      ],
+      "help_text": "WARNING - This field identifies a critical dataset/resources used by external applications via API. To prevent accidental deletion, use caution when editing."
     }
   ],
   "resource_fields": [
