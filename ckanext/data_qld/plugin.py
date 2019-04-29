@@ -36,7 +36,7 @@ def dataset_data_driven_application(dataset_id):
     return data_driven_application(package.get('data_driven_application', ''))
 
 
-def file_size_converter(value, context):
+def filesize_converter(value, context):
     '''Returns the converted size into bytes 
 
     :rtype: int
@@ -51,12 +51,12 @@ def file_size_converter(value, context):
 
     # If the size is not all digits then get size converted into bytes
     if re.search(r'^\d+$', value) is None:
-        value = file_size_bytes(value)
+        value = filesize_bytes(value)
 
     return value
 
 
-def file_size_bytes(value):
+def filesize_bytes(value):
     '''Returns the converted size into bytes 
         size types TERABYTES, GIGABYTES, MEGABYTES, KILOBYTES
     :rtype: int
@@ -87,9 +87,12 @@ def file_size_bytes(value):
     else:
         raise Invalid('Must be a valid filesize format')
 
-def format_resource_filesize(size):
-    return formatters.localised_filesize(int(size))
+def filesize_formatter(size):
+    '''Returns a localised unicode representation of a number in bytes, MiB etc
+    :rtype: string
 
+    '''
+    return formatters.localised_filesize(int(size))
 
 class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -106,13 +109,13 @@ class DataQldPlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {'data_qld_data_driven_application': data_driven_application,
-                'data_qld_dataset_data_driven_application': dataset_data_driven_application,
-                'data_qld_format_resource_filesize': format_resource_filesize}
+                'data_qld_dataset_data_driven_application': dataset_data_driven_application}
 
     # IValidators
     def get_validators(self):
         return {
-            u'file_size_converter': file_size_converter
+            'data_qld_filesize_converter': filesize_converter,
+            'data_qld_filesize_formatter': filesize_formatter
         }
 
     # IPackageController
