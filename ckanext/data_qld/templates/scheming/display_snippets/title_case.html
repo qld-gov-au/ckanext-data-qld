@@ -1,3 +1,7 @@
 {% if data[field.field_name|title] %}
-  {{ data[field.field_name|title] }}
+  {% if field.field_name|title == 'Size' %}
+    {{ h.data_qld_format_resource_filesize(data[field.field_name|title]) }}
+  {% else %}
+    {{ data[field.field_name|title] }}
+  {% endif %}
 {% endif %}
