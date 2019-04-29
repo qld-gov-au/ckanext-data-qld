@@ -151,14 +151,15 @@
       "field_name": "size",
       "label": "Size",
       "form_placeholder": "e.g. 1024",
-      "validators": "scheming_required file_size_converter",
+      "validators": "scheming_required data_qld_filesize_converter",
+      "output_validators": "data_qld_filesize_formatter",
       "required": true
     },
     {
       "field_name": "expiration_date",
-      "label": "Expiration date",
+      "label": "Next Review",
       "form_placeholder": "e.g. dd/mm/yyyy",
-      "preset": "date",
+      "preset": "date",      
       "required": true
     }
   ]
