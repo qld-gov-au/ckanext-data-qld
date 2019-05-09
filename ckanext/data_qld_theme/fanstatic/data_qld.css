@@ -17,8 +17,7 @@ a, a:focus, a:hover, a:link, a:visited {
 }
 
 .table thead > tr > td, .table thead > tr > th {
-    #background: #13578b;
-    background: red;
+    background: #13578b;
     color: #fff;
 }
 
