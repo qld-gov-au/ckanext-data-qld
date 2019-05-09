@@ -1,0 +1,22 @@
+{% ckan_extends %}
+
+{% import 'macros/form.html' as form %}
+
+{% block admin_form %}
+
+  {{ super() }}
+
+  <h3>Data Request Config</h3>
+
+  {{ form.markdown('ckanext.data_qld.datarequest_suggested_description', id='field-ckanext.data_qld.datarequest_suggested_description', label=_('Suggested Description'), placeholder=_('eg. Data Request suggested description'), value=data['ckanext.data_qld.datarequest_suggested_description'], error=errors['ckanext.data_qld.datarequest_suggested_description']) }}
+
+{% endblock %}
+
+
+{% block admin_form_help %}
+
+  {{ super() }}
+
+  <p><strong>Data Request Suggested Description :</strong> guidance on what information to include</p>
+
+{% endblock %}
