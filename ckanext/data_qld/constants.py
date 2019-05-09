@@ -1,4 +1,5 @@
 DATAREQUESTS_MAIN_PATH = 'datarequest'
+CREATE_DATAREQUEST = 'create_datarequest'
 SHOW_DATAREQUEST = 'show_datarequest'
 UPDATE_DATAREQUEST = 'update_datarequest'
 UPDATE_DATAREQUEST_ORGANISATION = 'update_datarequest_organisation'
