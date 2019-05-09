@@ -164,9 +164,6 @@ def open_datarequest(context, data_dict):
     if not result:
         raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
 
-    # Validate data
-    validators.validate_datarequest_opening(context, data_dict)
-
     data_req = result[0] 
     data_req.closed = False
     data_req.accepted_dataset_id = None
