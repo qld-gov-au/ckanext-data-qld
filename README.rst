@@ -90,7 +90,7 @@ Development Installation
 To install ckanext-data-qld-theme for development, activate your CKAN virtualenv and
 do::
 
-    git clone https://github.com//ckanext-data-qld-theme.git
+    git clone https://github.com/qld-gov-au/ckanext-data-qld-theme.git
     cd ckanext-data-qld-theme
     python setup.py develop
     pip install -r dev-requirements.txt
