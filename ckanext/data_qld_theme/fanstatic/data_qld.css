@@ -56,3 +56,93 @@ a, a:focus, a:hover, a:link, a:visited {
     vertical-align: top;
     text-align: left;
 }
+
+/*
+    COMMENTS
+*/
+
+.comment-wrapper {
+    position: relative;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-top: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+}
+
+.comment {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.comment h3 {
+    margin-top: 0;
+}
+
+.comment-header {
+    padding-left: 15px;
+    padding-right: 10px;
+    color: #777;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #eee;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.comment-content {
+    padding: 15px;
+    font-size: 14px;
+}
+
+.comment-deleted .comment-content {
+    background-color: #F7F7F7;
+}
+
+.comment-deleted .deleted-content {
+    background-color: #ffeeee;
+    padding: 8px;
+    font-style: italic;
+}
+
+.comment-header .comment-actions .comment-action {
+    float: right;
+}
+
+.comment-action {
+    margin-top: 10px;
+    padding-left: 0;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.comment-header .subtle-btn {
+    color: #999;
+    border: 0px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.comment-header-text {
+    max-width: 78%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.comment-header {
+    color: #777;
+}
+
+#comment_form label:after,
+.comment-container form label:after {
+    content: '';
+}
+
+#comment_form .form-group,
+.comment-container .form-group {
+    margin-bottom: 10px;
+}
+
+.comment-flagged {
+    color: #c00;
+}
