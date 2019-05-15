@@ -1,20 +1,23 @@
 {% resource "comments_js/comments.js" %}
 
-{#% resource "comments_js/comment_validation.js" %#}
+{% resource "comments_js/comment_validation.js" %}
 
 {% resource "data_qld_theme/data_qld_comments.js" %}
 
 {% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add") %}
     <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
+        <hr />
         {% if action == "edit" %}
-            <hr />
             <h3>Edit comment:</h3>
-            <div class="edit_form_errors alert alert-error hidden">
-                <ul>
-                    <li class="hidden error-profanity">Comment blocked due to profanity.</li>
-                </ul>
-            </div>
+        {% elif action == "reply" %}
+            <h3>Reply to comment:</h3>
         {% endif %}
+        <div class="{{ action }}_form_errors form-errors alert alert-error hidden">
+            <ul>
+                <li class="hidden error-comment">Please enter a Comment</li>
+                <li class="hidden error-profanity">Comment blocked due to profanity.</li>
+            </ul>
+        </div>
         <div class="form-group">
             <label for="subject">{{ _('Subject') }}</label>
             <input type="text" class="form-control" name="subject" {% if not empty %}value="{{ values.subject }}" {% endif %}/>
@@ -33,9 +36,10 @@
 
 {#% set thread = h.get_comment_thread(pkg_name, content_type or 'dataset') %#}
 {% set thread = h.get_comment_thread(pkg_name) %}
+{% set depth = 0 %}
 
 {#% macro comment_thread(thread, content_type) %#}
-{% macro comment_thread(thread) %}
+{% macro comment_thread(thread, depth=0) %}
 
     {% for comment in thread.comments %}
     <div id="comment_{{ comment.id }}" class="comment-wrapper">
@@ -46,7 +50,7 @@
                         {% set user_can_update = h.check_access('package_update', {'id': pkg_id }) %}
                         {% if user_can_update %}
                             <div class="comment-action">
-                                <a class="subtle-btn" href="/{{ content_type }}/{{ pkg_id }}/comments/{{ comment.id }}/delete" title="Delete comment" data-module="confirm-action" data-module-i18n="{&quot;content&quot;: &quot;Are you sure you want to delete this comment?&quot;}"><i class="icon-remove fa fa-times"></i></a>
+                                <a class="subtle-btn" href="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{{ comment.id }}/delete" title="Delete comment" data-module="confirm-action" data-module-i18n="{&quot;content&quot;: &quot;Are you sure you want to delete this comment?&quot;}"><i class="icon-remove fa fa-times"></i></a>
                             </div>
                         {% endif %}
                         {% if (userobj and comment.user_id == userobj.id and h.users_can_edit()) or user_can_update %}
@@ -61,7 +65,7 @@
                         {% elif comment.flagged == True %}
                             <div class="comment-action flag-button">
                                 {% if user_can_update %}
-                                    <a class="comment-flagged unflag-comment" href="/{{ content_type }}/{{ pkg_id }}/comments/{{ comment.id }}/unflag" title="Un-flag comment as inappropriate"><i class="fa fa-flag"></i></a>
+                                    <a class="comment-flagged unflag-comment" href="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{{ comment.id }}/unflag" title="Un-flag comment as inappropriate"><i class="fa fa-flag"></i></a>
                                 {% else %}
                                     <span class="comment-flagged" title="Comment has been flagged as inappropriate"><i class="fa fa-flag"></i></span>
                                 {% endif %}
@@ -94,12 +98,12 @@
                                 </div>
                             {% endif %}
 
-                            <ul class="links list-inline">
-                                {% if h.threaded_comments_enabled == true and userobj %}
-                                    <li><a onclick="ShowCommentForm('reply_{{ comment.id }}')">{{ _('Reply') }}</a> </li>
+                            {% if h.threaded_comments_enabled() == true and depth < 1 and userobj %}
+                                <button class="btn btn-primary" onclick="ShowCommentForm('reply_{{ comment.id }}')">{{ _('Reply') }}</button>
+                                <div id="comment_form_reply_{{ comment.id }}">
                                     {{ comment_form(comment, empty=True, prefix='reply_', action='reply') }}
-                                {% endif %}
-                            </ul>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                 {% elif h.check_access('package_update', {'id': pkg_id }) %}
@@ -110,7 +114,7 @@
             </div>
         </div>
             {% if comment.comments | length != 0 %}
-                {{ comment_thread(comment) }}
+                {{ comment_thread(comment, (depth + 1)) }}
             {% endif %}
     </div>
     {% endfor %}
@@ -126,7 +130,7 @@
 
 <h3>Add a comment</h3>
 
-<div id="comment_form_errors" class="alert alert-error hidden">
+<div id="comment_form_errors form-errors" class="alert alert-error hidden">
     <ul>
         <li class="hidden error-comment">Please enter a Comment</li>
         <li class="hidden error-profanity">Comment blocked due to profanity.</li>
