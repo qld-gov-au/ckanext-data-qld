@@ -77,6 +77,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         additional_actions = {  
             constants.OPEN_DATAREQUEST: actions.open_datarequest,
+            constants.CREATE_DATAREQUEST: actions.create_datarequest,
+            constants.UPDATE_DATAREQUEST: actions.update_datarequest,
         }
         return additional_actions
 
