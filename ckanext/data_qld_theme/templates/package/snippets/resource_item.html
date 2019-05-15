@@ -1,0 +1,16 @@
+{% ckan_extends %}
+
+{% block resource_item_title %}
+<a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
+  {{ h.resource_display_name(res) | truncate(50) }}
+  {% if res.datastore_active %}
+  <span class="resource-api-available" title="API available">API</span>
+  {% endif  %}
+  <span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ h.get_translated(res, 'format') }}</span>
+  {{ h.popular('views', res.tracking_summary.total, min=10) }}
+</a>
+{% endblock %}
+
+{% block resource_item_explore %}
+
+{% endblock %}

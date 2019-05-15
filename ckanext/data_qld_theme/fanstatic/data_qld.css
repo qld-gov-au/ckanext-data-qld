@@ -56,3 +56,23 @@ a, a:focus, a:hover, a:link, a:visited {
     vertical-align: top;
     text-align: left;
 }
+
+/* Resource Download Button */
+.resource-download-btn {
+    background-color: #5bb75b
+}
+
+/* Resource Icon for API */
+.resource-api-available {
+    background-color: #ea6f00;
+    border-radius: 3px 3px 3px 3px;
+    color: #EEEEEE;
+    padding: 0.1em 0.5em;
+    text-decoration: none;
+    font-size: 0.6em;
+    font-weight: bold;
+    position: absolute;
+    z-index: 10;
+    top: 35px;
+    left: 15px;
+}
