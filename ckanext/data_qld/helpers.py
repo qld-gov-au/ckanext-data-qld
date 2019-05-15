@@ -1,4 +1,5 @@
 import ckan.plugins.toolkit as toolkit
+from profanity import profanity
 from pylons import config
 
 
@@ -90,3 +91,30 @@ def datarequesat_suggested_description():
 
     '''
     return config.get('ckanext.data_qld.datarequest_suggested_description', '')
+
+
+# COMMENTS helper functions
+
+def threaded_comments_enabled():
+    return toolkit.asbool(config.get('ckan.comments.threaded_comments', False))
+
+
+def users_can_edit():
+    return toolkit.asbool(config.get('ckan.comments.users_can_edit', False))
+
+
+def profanity_check(cleaned_comment):
+    profanity.load_words(load_bad_words())
+    return profanity.contains_profanity(cleaned_comment)
+
+
+def load_bad_words():
+    filepath = config.get('ckan.comments.bad_words_file', None)
+    if not filepath:
+        # @todo: dynamically set this path
+        filepath = '/usr/lib/ckan/default/src/ckanext-ytp-comments/ckanext/ytp/comments/bad_words.txt'
+
+    f = open(filepath, 'r')
+    x = f.read().splitlines()
+    f.close()
+    return x

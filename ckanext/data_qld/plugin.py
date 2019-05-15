@@ -39,7 +39,9 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
                 'data_qld_datarequest_default_organisation_id': helpers.datarequest_default_organisation_id,
                 'data_qld_organisation_list': helpers.organisation_list,
-                'data_qld_datarequest_suggested_description': helpers.datarequesat_suggested_description
+                'data_qld_datarequest_suggested_description': helpers.datarequesat_suggested_description,
+                'threaded_comments_enabled': helpers.threaded_comments_enabled,
+                'users_can_edit': helpers.users_can_edit,
                 }
 
     # IValidators

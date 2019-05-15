@@ -7,7 +7,6 @@ from pylons import config
 import logging
 import ckanext.datarequests.db as db
 import constants
-import validators
 
 
 c = plugins.toolkit.c
