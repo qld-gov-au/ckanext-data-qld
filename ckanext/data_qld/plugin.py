@@ -2,93 +2,12 @@
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-from ckan.plugins.toolkit import Invalid
-import re
-import ckan.lib.formatters as formatters
 
-
-def data_driven_application(data_driven_application):
-    '''Returns True if data_driven_application value equals yes
-        Case insensitive 
-
-    :rtype: boolean
-
-    '''
-    if data_driven_application and data_driven_application.lower() == 'yes':
-        return True
-    else:
-        return False
-
-
-def dataset_data_driven_application(dataset_id):
-    '''Returns True if the dataset for dataset_id data_driven_application value equals yes
-        Case insensitive 
-
-    :rtype: boolean
-
-    '''
-    try:
-        package = toolkit.get_action('package_show')(
-            data_dict={'id': dataset_id})
-    except toolkit.ObjectNotFound:
-        return False
-
-    return data_driven_application(package.get('data_driven_application', ''))
-
-
-def file_size_converter(value, context):
-    '''Returns the converted size into bytes 
-
-    :rtype: int
-
-    '''
-    value = str(value)
-    # remove whitespaces
-    value = re.sub(' ', '', value)
-    # remove commas
-    value = re.sub(',', '', value)
-    value = value.upper()
-
-    # If the size is not all digits then get size converted into bytes
-    if re.search(r'^\d+$', value) is None:
-        value = file_size_bytes(value)
-
-    return value
-
-
-def file_size_bytes(value):
-    '''Returns the converted size into bytes 
-        size types TERABYTES, GIGABYTES, MEGABYTES, KILOBYTES
-    :rtype: int
-
-    '''
-    if re.search(r'^\d*\.?\d+[A-Za-z]*$', value) is not None:
-        size_type = re.search(r'[A-Za-z]+', value)
-        size_number = re.search(r'\d*\.?\d*', value)
-
-        if size_type is None or size_number is None:
-            raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
-        else:
-            size_type = size_type.group()
-            size_number = int(size_number.group())
-
-        if size_type == 'TB' or size_type == 'T' or size_type == 'TERABYTES' or size_type == 'TBS' or size_type == 'TIB':
-            fileMultiplier = 1099511627776
-        elif size_type == 'GB' or size_type == 'G' or size_type == 'GIGABYTES' or size_type == 'GIG' or size_type == 'GBS' or size_type == 'GIB':
-            fileMultiplier = 1073741824
-        elif size_type == 'MB' or size_type == 'M' or size_type == 'MEGABYTES' or size_type == 'MBS' or size_type == 'MIB':
-            fileMultiplier = 1048576
-        elif size_type == 'KB' or size_type == 'K' or size_type == 'KILOBYTES' or size_type == 'KBS' or size_type == 'KIB':
-            fileMultiplier = 1024
-        else:
-            raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
-
-        return int(size_number * fileMultiplier)
-    else:
-        raise Invalid('Must be a valid filesize format')
-
-def format_resource_filesize(size):
-    return formatters.localised_filesize(int(size))
+import actions
+import auth_functions as auth
+import constants
+import helpers
+import converters
 
 
 class DataQldPlugin(plugins.SingletonPlugin):
@@ -96,6 +15,9 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IPackageController, inherit=True)
+    plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IRoutes, inherit=True)
 
     # IConfigurer
     def update_config(self, config_):
@@ -103,16 +25,28 @@ class DataQldPlugin(plugins.SingletonPlugin):
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'data_qld')
 
+    def update_config_schema(self, schema):
+        ignore_missing = toolkit.get_validator('ignore_missing') 
+        schema.update({
+            # This is a custom configuration option
+            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode]
+        })
+        return schema
+
     # ITemplateHelpers
     def get_helpers(self):
-        return {'data_qld_data_driven_application': data_driven_application,
-                'data_qld_dataset_data_driven_application': dataset_data_driven_application,
-                'data_qld_format_resource_filesize': format_resource_filesize}
+        return {'data_qld_data_driven_application': helpers.data_driven_application,
+                'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
+                'data_qld_datarequest_default_organisation_id': helpers.datarequest_default_organisation_id,
+                'data_qld_organisation_list': helpers.organisation_list,
+                'data_qld_datarequest_suggested_description': helpers.datarequesat_suggested_description
+                }
 
     # IValidators
     def get_validators(self):
         return {
-            u'file_size_converter': file_size_converter
+            'data_qld_filesize_converter': converters.filesize_converter,
+            'data_qld_filesize_formatter': converters.filesize_formatter            
         }
 
     # IPackageController
@@ -126,3 +60,32 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     def edit(self, entity):
         self.set_maintainer_from_author(entity)
+
+    #IAuthFunctions
+    def get_auth_functions(self):
+        auth_functions = {
+            constants.UPDATE_DATAREQUEST: auth.update_datarequest,
+            constants.UPDATE_DATAREQUEST_ORGANISATION: auth.update_datarequest_organisation,
+            constants.CLOSE_DATAREQUEST: auth.close_datarequest,
+            constants.OPEN_DATAREQUEST: auth.open_datarequest
+        }
+        return auth_functions
+        
+    #IActions
+    def get_actions(self):
+        additional_actions = {  
+            constants.OPEN_DATAREQUEST: actions.open_datarequest,
+            constants.CREATE_DATAREQUEST: actions.create_datarequest,
+            constants.UPDATE_DATAREQUEST: actions.update_datarequest,
+        }
+        return additional_actions
+
+    #IRoutes
+    def before_map(self, m):
+       
+        # Re_Open a Data Request
+        m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
+                  controller='ckanext.data_qld.controller:DataQldUI',
+                  action='open', conditions=dict(method=['GET', 'POST']))
+
+        return m
