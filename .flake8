@@ -1,0 +1,16 @@
+[flake8]
+exclude =
+    ckan
+    scripts
+
+# Extended output format.
+format = pylint
+
+# Show the source of errors.
+show_source = True
+
+max-complexity = 10
+
+# List ignore rules one per line.
+ignore =
+    E501

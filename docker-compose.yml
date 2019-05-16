@@ -1,0 +1,95 @@
+version: '2.3'
+
+x-project:
+  &project ckanext-data-qld
+
+x-volumes:
+  &default-volumes
+  # Define all volumes you would like to have real-time mounted into the docker containers
+  volumes:
+    - /app/ckan ### Local overrides to mount host filesystem. Automatically removed in CI and PROD.
+    - ./files:/app/filestore:${VOLUME_FLAGS:-delegated} ### Local overrides to mount host filesystem. Automatically removed in CI and PROD.
+    - .:/app:${VOLUME_FLAGS:-delegated} ### Local overrides to mount host filesystem. Automatically removed in CI and PROD.
+    ##- /app/filestore # Override for environment without host mounts. Automatically uncommented in CI.
+
+x-environment:
+  &default-environment
+  # Local dev URL populated from the environment. Do not override here. Instead,
+  # specify the value in .env file.
+  LAGOON_LOCALDEV_URL: ${LOCALDEV_URL:-http://ckanext-data-qld.docker.amazee.io}
+
+x-user:
+  &default-user
+  # The default user under which the containers should run.
+  # Change this if you are on linux and run with another user than id `1000`.
+  user: '1000'
+
+services:
+
+  ckan:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.ckan
+    depends_on:
+      - postgres
+      - solr
+    networks:
+      - amazeeio-network
+      - default
+    ports:
+      - "5000"
+    image: *project
+    <<: *default-volumes
+    environment:
+      - AMAZEEIO_HTTP_PORT=5000
+
+  postgres:
+    image: amazeeio/postgres-ckan
+    ports:
+      - "5432" # Exposes the port 5432 with a random local port, find it with `docker-compose port postgres 5432`.
+    networks:
+      - amazeeio-network
+      - default
+    <<: *default-user # uses the defined user from top
+    environment:
+      <<: *default-environment
+
+  postgres-datastore:
+    image: amazeeio/postgres-ckan
+    ports:
+      - "5432" # Exposes the port 5432 with a random local port, find it with `docker-compose port postgres 5432`.
+    <<: *default-user # uses the defined user from top
+    networks:
+      - amazeeio-network
+      - default
+    environment:
+      <<: *default-environment
+
+  redis:
+    image: amazeeio/redis
+    <<: *default-user # uses the defined user from top
+    environment:
+      <<: *default-environment
+    networks:
+      - amazeeio-network
+      - default
+
+  solr:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.solr
+    user: '8983'
+    ports:
+      - "8983" # Exposes the port 8983 with a random local port, find it with `docker-compose port solr 8983`.
+    environment:
+      <<: *default-environment
+    networks:
+      - amazeeio-network
+      - default
+
+volumes:
+  solr-data: {}
+
+networks:
+  amazeeio-network:
+    external: true
