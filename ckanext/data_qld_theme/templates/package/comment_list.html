@@ -130,14 +130,13 @@
 
 <h3>Add a comment</h3>
 
-<div id="comment_form_errors form-errors" class="alert alert-error hidden">
-    <ul>
-        <li class="hidden error-comment">Please enter a Comment</li>
-        <li class="hidden error-profanity">Comment blocked due to profanity.</li>
-    </ul>
-</div>
-
 <form id="comment_form" class="form" action="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/add" method="POST">
+    <div id="comment_form_errors" class="alert alert-error form-errors hidden">
+        <ul>
+            <li class="hidden error-comment">Please enter a Comment</li>
+            <li class="hidden error-profanity">Comment blocked due to profanity.</li>
+        </ul>
+    </div>
     <div class="form-group">
         <label for="subject">{{ _('Subject') }}</label>
         <input type="text" class="form-control" name="subject"/>
