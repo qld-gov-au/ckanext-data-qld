@@ -15,7 +15,11 @@ A custom CKAN theme extension for Data.Qld
 
         ckan.plugins = ... data_qld_theme
 
-4. Restart web server(s), e.g.
+4. Add additional config options to the relevant CKAN `.ini` file:
+
+        ckan.google_tag_manager.gtm_container_id = GTM-NBSWN3
+
+5. Restart web server(s), e.g.
 
         sudo service apache restart
         sudo service nginx restart
