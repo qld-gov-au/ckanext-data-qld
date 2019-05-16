@@ -18,28 +18,21 @@
 				{% if res.url and h.is_url(res.url) %}
 				<li>
 					<div class="btn-group">
-						{% if res.resource_type in ('listing', 'service') %}
-						<a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}">
-						<i class="fa fa-eye"></i> {{ _('View') }}
+						<a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }} resource-btn" href="{{ res.url }}">
+							{% if res.resource_type in ('listing', 'service') %}
+							<i class="fa fa-eye"></i> {{ _('View') }}
+							{% elif  res.resource_type == 'api' %}
+							<i class="fa fa-key"></i> {{ _('API Endpoint') }}
+							{% elif (not res.has_views or not res.can_be_previewed) and not res.url_type == 'upload' %}
+							<i class="fa fa-external-link"></i> {{ _('Go to resource') }}
+							{% else %}
+							{% set res = c.resource %}
+							{% set size = res.Size %}
+							{% set format = res.format %}
+							{% set download_text = 'Download ({0})({1})'.format(size,format) %}
+							<i class="fa fa-arrow-circle-o-down"></i> {{ _(download_text) }}
+							{% endif %}
 						</a>
-						{% elif  res.resource_type == 'api' %}
-						<a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}">
-						<i class="fa fa-key"></i> {{ _('API Endpoint') }}
-						</a>
-						{% elif (not res.has_views or not res.can_be_previewed) and not res.url_type == 'upload' %}
-						<a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}" href="{{ res.url }}">
-						<i class="fa fa-external-link"></i> {{ _('Go to resource') }}
-						</a>
-						{% else %}
-						{% set res = c.resource %}
-						{% set size = res.Size %}
-						{% set format = res.format %}
-						{% set download_text = 'Download ({0})({1})'.format(size,format) %}
-						<a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }} resource-download-btn" href="{{ res.url }}">
-						<i class="fa fa-arrow-circle-o-down"></i> {{ _(download_text) }}
-						</a>
-						{% endif %}
-						
 						{% block download_resource_button %}
 						{{ super ()}}
 						{% endblock %}
@@ -56,7 +49,7 @@
 		{% block data_preview %}
 		{{ super() }}
 		{% endblock %}
-	{% endblock %}
+		{% endblock %}
 </section>
 {% endblock %}
 {{ super() }}
