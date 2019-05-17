@@ -4,8 +4,53 @@
 {% endblock %}
 
 {% block primary_content %}
-	{% block resource %}
+{% block resource %}
+<section class="module module-resource">
+	{% block resource_inner %}
+	<div class="module-content">
+		<div class="actions">
+			{% block resource_actions %}
+			<ul>
+				{% block resource_actions_inner %}
+				{% if h.check_access('package_update', {'id':pkg.id }) %}
+				<li>{% link_for _('Manage'), controller='package', action='resource_edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}</li>
+				{% endif %}
+				{% if res.url and h.is_url(res.url) %}
+				<li>
+					<div class="btn-group">
+						<a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }} resource-btn" href="{{ res.url }}">
+							{% if res.resource_type in ('listing', 'service') %}
+							<i class="fa fa-eye"></i> {{ _('View') }}
+							{% elif  res.resource_type == 'api' %}
+							<i class="fa fa-key"></i> {{ _('API Endpoint') }}
+							{% elif (not res.has_views or not res.can_be_previewed) and not res.url_type == 'upload' %}
+							<i class="fa fa-external-link"></i> {{ _('Go to resource') }}
+							{% else %}
+							{% set res = c.resource %}
+							{% set size = res.Size %}
+							{% set format = res.format %}
+							{% set download_text = 'Download ({0})({1})'.format(size,format) %}
+							<i class="fa fa-arrow-circle-o-down"></i> {{ _(download_text) }}
+							{% endif %}
+						</a>
+						{% block download_resource_button %}
+						{{ super ()}}
+						{% endblock %}
+					</div>
+				</li>
+				{% endif %}
+				{% endblock %}
+			</ul>
+			{% endblock %}
+		</div>
+		{% block resource_content %}
 		{{ super() }}
-	{% endblock %}
-	{{ super() }}
+		{% endblock %}
+		{% block data_preview %}
+		{{ super() }}
+		{% endblock %}
+		{% endblock %}
+</section>
+{% endblock %}
+{{ super() }}
 {% endblock %}
