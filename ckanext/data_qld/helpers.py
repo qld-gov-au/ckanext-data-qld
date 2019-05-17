@@ -11,10 +11,13 @@ def is_user_sysadmin(user=None):
     '''
     if user is None:
         user = toolkit.c.userobj
-    return user.sysadmin
+    return user != None and user.sysadmin
 
 def user_has_admin_access(include_editor_access):
     user = toolkit.c.userobj
+    # if user is None they are not logged in
+    if user is None: 
+        return False
     if is_user_sysadmin(user): 
         return True
       
