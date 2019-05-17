@@ -1,6 +1,7 @@
 import ckan.plugins.toolkit as toolkit
 from profanity import profanity
 from pylons import config
+from bs4 import BeautifulSoup
 
 
 def is_user_sysadmin(user=None):
@@ -12,6 +13,17 @@ def is_user_sysadmin(user=None):
     if user is None:
         user = toolkit.c.userobj
     return user.sysadmin
+
+def user_has_admin_access(include_editor_access):
+    user = toolkit.c.userobj
+    if is_user_sysadmin(user): 
+        return True
+      
+    groups_admin = user.get_groups('organization', 'admin')  
+    groups_editor = user.get_groups('organization', 'editor')  if include_editor_access else [] 
+    groups_list = groups_admin + groups_editor
+    organisation_list = [g for g in groups_list if g.type == 'organization']   
+    return len(organisation_list) > 0
 
 def data_driven_application(data_driven_application):
     '''Returns True if data_driven_application value equals yes
@@ -84,7 +96,7 @@ def organisation_list():
     '''  
     return toolkit.get_action('organization_list')(data_dict={'all_fields':True})
 
-def datarequesat_suggested_description():
+def datarequest_suggested_description():
     '''Returns a datarequest suggested description from admin config
 
     :rtype: string
@@ -93,7 +105,27 @@ def datarequesat_suggested_description():
     return config.get('ckanext.data_qld.datarequest_suggested_description', '')
 
 
+def format_activity_data(data):
+    '''Returns the activity data with actors username replaced with Publisher for non-editor/admin/sysadmin users
+
+    :rtype: string
+
+    '''
+    if(user_has_admin_access(True)):
+        return data
+
+    soup = BeautifulSoup(data, 'html.parser')
+
+    for actor in soup.select(".actor"):
+        actor.string = 'Publisher'
+        # the img element is removed from actor span so need to move actor span to the left to fill up blank space
+        actor['style'] = 'margin-left:-40px' 
+
+    return str(soup)
+
+
 # COMMENTS helper functions
+
 
 def threaded_comments_enabled():
     return toolkit.asbool(config.get('ckan.comments.threaded_comments', False))

@@ -39,7 +39,9 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
                 'data_qld_datarequest_default_organisation_id': helpers.datarequest_default_organisation_id,
                 'data_qld_organisation_list': helpers.organisation_list,
-                'data_qld_datarequest_suggested_description': helpers.datarequesat_suggested_description,
+                'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
+                'data_qld_user_has_admin_access': helpers.user_has_admin_access,
+                'data_qld_format_activity_data': helpers.format_activity_data,
                 'threaded_comments_enabled': helpers.threaded_comments_enabled,
                 'users_can_edit': helpers.users_can_edit,
                 }
@@ -68,8 +70,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         auth_functions = {
             constants.UPDATE_DATAREQUEST: auth.update_datarequest,
             constants.UPDATE_DATAREQUEST_ORGANISATION: auth.update_datarequest_organisation,
-            constants.CLOSE_DATAREQUEST: auth.close_datarequest,
-            constants.OPEN_DATAREQUEST: auth.open_datarequest
+            constants.CLOSE_DATAREQUEST: auth.close_datarequest
         }
         return auth_functions
         
