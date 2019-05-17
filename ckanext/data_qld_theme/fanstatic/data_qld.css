@@ -80,10 +80,11 @@ a, a:focus, a:hover, a:link, a:visited {
 
 /* Comments */
 
-.comment-wrapper {
+.comment-container .comment-wrapper {
     position: relative;
     margin-top: 15px;
     margin-bottom: 15px;
+    padding: 0;
     border-top: 2px solid #fff;
     border-bottom: 2px solid #fff;
 }

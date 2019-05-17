@@ -34,12 +34,11 @@
     </form>
 {% endmacro %}
 
-{#% set thread = h.get_comment_thread(pkg_name, content_type or 'dataset') %#}
-{% set thread = h.get_comment_thread(pkg_name) %}
+{% set thread = h.get_comment_thread(pkg_name, content_type or 'dataset') %}
+
 {% set depth = 0 %}
 
-{#% macro comment_thread(thread, content_type) %#}
-{% macro comment_thread(thread, depth=0) %}
+{% macro comment_thread(thread, content_type, depth=0) %}
 
     {% for comment in thread.comments %}
     <div id="comment_{{ comment.id }}" class="comment-wrapper">
@@ -114,7 +113,7 @@
             </div>
         </div>
             {% if comment.comments | length != 0 %}
-                {{ comment_thread(comment, (depth + 1)) }}
+                {{ comment_thread(comment, content_type or 'dataset', (depth + 1)) }}
             {% endif %}
     </div>
     {% endfor %}
@@ -122,8 +121,7 @@
 {% endmacro %}
 <h3 id="comments">{{ _('Comments') }}</h3>
 <div class="comment-container">
-    {#{ comment_thread(thread, content_type or 'dataset') }#}
-    {{ comment_thread(thread) }}
+    {{ comment_thread(thread, content_type or 'dataset') }}
 </div>
 
 {% if userobj %}
