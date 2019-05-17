@@ -33,6 +33,9 @@ def open_datarequest(context, data_dict):
 
 def user_has_datarequest_admin_access(datarequest_id, datarequest_organisation_id, include_editor_access):
     user = toolkit.c.userobj
+    # if user is None they are not logged in
+    if user is None:
+        return False
     if helpers.is_user_sysadmin(user): 
         return True
       
