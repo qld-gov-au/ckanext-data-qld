@@ -80,6 +80,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.OPEN_DATAREQUEST: actions.open_datarequest,
             constants.CREATE_DATAREQUEST: actions.create_datarequest,
             constants.UPDATE_DATAREQUEST: actions.update_datarequest,
+            constants.CLOSE_DATAREQUEST: actions.close_datarequest,
         }
         return additional_actions
 
