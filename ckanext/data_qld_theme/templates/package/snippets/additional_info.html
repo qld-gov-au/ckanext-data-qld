@@ -1,0 +1,19 @@
+{% ckan_extends %}
+
+{%- set exclude_fields = [
+  'id',
+  'title',
+  'name',
+  'notes',
+  'tag_string',
+  'license_id',
+  'owner_org',
+  ] -%}
+
+{%- if h.data_qld_user_has_admin_access(True) == False -%}
+  {%- do exclude_fields.append('author_email') -%}
+{%- endif -%}
+
+{% block package_additional_info %}
+ {{ super() }}
+{% endblock %}
