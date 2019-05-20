@@ -262,6 +262,75 @@ def update_datarequest(original_action, context, data_dict):
     return datarequest_dict
 
 
+#  Copied from ckanext.datarequests.actions. Please keep up to date with any action updates
+@tk.chained_action
+def close_datarequest(original_action, context, data_dict):
+    '''
+    Action to close a data request. Access rights will be checked before
+    closing the data request. If the user is not allowed, a NotAuthorized
+    exception will be risen.
+
+    Data QLD modification
+    Will send email notification to the data request creator
+
+    :param id: The ID of the data request to be closed
+    :type id: string
+
+    :param accepted_dataset_id: The ID of the dataset accepted as solution
+        for this data request
+    :type accepted_dataset_id: string
+
+    :returns: A dict with the data request (id, user_id, title, description,
+        organization_id, open_time, accepted_dataset, close_time, closed, 
+        followers)
+    :rtype: dict
+
+    '''
+
+    model = context['model']
+    session = context['session']
+    datarequest_id = data_dict.get('id', '')
+
+    # Check id
+    if not datarequest_id:
+        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+
+    # Init the data base
+    db.init_db(model)
+
+    # Check access
+    tk.check_access(constants.CLOSE_DATAREQUEST, context, data_dict)
+
+    # Get the data request
+    result = db.DataRequest.get(id=datarequest_id)
+    if not result:
+        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+
+    # Validate data
+    validator.validate_datarequest_closing(context, data_dict)
+
+    data_req = result[0]
+
+    # Was the data request previously closed?
+    if data_req.closed:
+        raise tk.ValidationError([tk._('This Data Request is already closed')])
+
+    data_req.closed = True
+    data_req.accepted_dataset_id = data_dict.get('accepted_dataset_id', None)
+    data_req.close_time = datetime.datetime.now()
+
+    session.add(data_req)
+    session.commit()
+
+    datarequest_dict = _dictize_datarequest(data_req)
+
+    # Mailing
+    users = [data_req.user_id]    
+    _send_mail(users, 'close_datarequest_creator', datarequest_dict)
+
+    return datarequest_dict
+
+
 def open_datarequest(context, data_dict):
     '''
     Action to open a data request. Access rights will be checked before
@@ -316,4 +385,3 @@ def open_datarequest(context, data_dict):
         _send_mail(users, 'open_datarequest_organisation', datarequest_dict)
     
     return datarequest_dict
-   
