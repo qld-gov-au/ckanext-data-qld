@@ -6,8 +6,9 @@ jQuery(document).ready(function() {
         var elem = jQuery(this);
         var comment_id = jQuery(this).data('comment-id');
         jQuery.get('/comment/' + comment_id + '/flag', function() {
-            elem.removeClass('subtle-btn');
+            elem.addClass('hidden');
             elem.off('click');
+            elem.parent().find('.comment-flagged').removeClass('hidden');
             alert("This comment has been flagged for inappropriate content");
         })
         .fail(function() {
@@ -16,20 +17,4 @@ jQuery(document).ready(function() {
         return false;
     });
 
-/*
-    jQuery('.unflag-comment').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var elem = jQuery(this);
-        jQuery.get('/dataset/'
-            + jQuery(this).data('dataset-id')
-            + '/comments/'
-            + jQuery(this).data('comment-id')
-            + '/unflag',
-            function() {
-                alert('Unflagged');
-            }
-        );
-        return false;
-    });*/
 });

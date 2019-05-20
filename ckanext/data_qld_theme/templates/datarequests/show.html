@@ -15,3 +15,11 @@
   {% endif %}
 
 {% endblock %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon('show_datarequest', _('Data Request'), id=datarequest_id) }}
+
+  {% if h.show_comments_tab() %}
+    {{ h.build_nav_icon('comment_datarequest', _('Comments') + ' ' + h.get_datarequest_comments_badge(datarequest_id), id=datarequest_id) }}
+  {% endif %}
+{% endblock %}

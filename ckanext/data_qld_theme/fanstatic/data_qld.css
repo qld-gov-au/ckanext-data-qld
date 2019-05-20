@@ -77,6 +77,10 @@ a, a:focus, a:hover, a:link, a:visited {
     left: 15px;
 }
 
+a.btn {
+    text-decoration: none;
+}
+
 
 /* Comments */
 
@@ -136,11 +140,8 @@ a, a:focus, a:hover, a:link, a:visited {
     margin-right: 5px;
 }
 
-.comment-header .subtle-btn {
-    color: #999;
-    border: 0px;
-    background: transparent;
-    cursor: pointer;
+.comment-action .unflag-comment {
+    margin-left: 10px;
 }
 
 .comment-header-text {
@@ -151,6 +152,16 @@ a, a:focus, a:hover, a:link, a:visited {
 
 .comment-header {
     color: #777;
+}
+
+.comment-container .comment-header .subtle-btn {
+    color: #999;
+    border: 0px;
+    background: transparent;
+}
+
+.comment-container .comment-header .subtle-btn:hover {
+    color: #206b82;
 }
 
 #comment_form label:after,
@@ -175,4 +186,20 @@ a, a:focus, a:hover, a:link, a:visited {
 .comment-content ul.links li a {
     cursor: pointer;
     text-decoration: none;
+}
+
+.comment-container .highlight > .comment {
+    border: 1px solid #faebcc;
+}
+
+.comment-container .highlight > .comment > .comment-header {
+    background-color: #fcf8e3;
+}
+
+.comment-container .highlight > .comment.comment-deleted {
+    border: 1px solid #ebccd1;
+}
+
+.comment-container .highlight > .comment > .comment-header {
+    background-color: #f2dede;;
 }
