@@ -47,6 +47,8 @@ def filesize_bytes(value):
             fileMultiplier = 1048576
         elif size_type == 'KB' or size_type == 'K' or size_type == 'KILOBYTES' or size_type == 'KBS' or size_type == 'KIB':
             fileMultiplier = 1024
+        elif size_type == 'B' or size_type == 'BYTES' or size_type == 'BS':
+            fileMultiplier = 1
         else:
             raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
 

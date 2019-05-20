@@ -54,7 +54,7 @@ class MigrateExtras(CkanCommand):
                                          notes=notes,
                                          resources=resources)
 
-    def try_parsing_date(self, text, resource_id):
+    def try_parsing_date(self, text, resource_id, default_expiration_date):
         for fmt in ('%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y', '%Y-%m-%d', '%y-%m-%d', '%Y/%m/%d', '%y/%m/%d', '%d-%B-%Y', '%d-%B-%y', '%d %B %Y', '%d %B %y'): #'%m/%d/%Y', '%m/%d/%y', '%m-%d-%Y', '%m-%d-%y', '%y'
             try:
                 # print ('Attempting to parse date: ' + text + ' with format: ' + fmt)
@@ -64,8 +64,8 @@ class MigrateExtras(CkanCommand):
             except ValueError as ve:
                 # print ('ValueError: ', ve)
                 pass
-        print ("'" + str(resource_id)+"',")
-        return 'default_expiration_date'
+        print ("try_parsing_date failed: {0} for ResourceId: {1} ".format(str(text), str(resource_id)))
+        return default_expiration_date
 
     def command(self):
         '''
@@ -81,7 +81,7 @@ class MigrateExtras(CkanCommand):
 
         for package_id in package_ids:
 
-            # print(package_id)
+            # print('Package Id: '+ package_id)
 
             # Set some defaults
             default_security_classification = "PUBLIC"
@@ -89,7 +89,7 @@ class MigrateExtras(CkanCommand):
             default_version = "1.0"
             default_author_email = "opendata@qld.gov.au"
             default_expiration_date = "2020-06-30"          
-            default_size = 1000
+            default_size = '1' # 1 Byte
             resources = []
 
             pkg = toolkit.get_action('package_show')(context, {
@@ -104,27 +104,27 @@ class MigrateExtras(CkanCommand):
                 size = default_size  
                          
                 for resource in pkg['resources']:   
-                    # print ('resources %s' % resource['id'])               
+                    # print ('Resource Id: ' + resource['id'])               
                     if 'Expiration date' in resource:
                         # print ('This resource has Expiration date: ' + resource['Expiration date'])                     
                         if resource['Expiration date']:
-                            expiration_date = self.try_parsing_date(resource['Expiration date'], resource['id'])  
+                            expiration_date = self.try_parsing_date(resource['Expiration date'], resource['id'], default_expiration_date)  
                         else:                            
                             expiration_date = default_expiration_date                       
                     elif 'ExpirationDate' in resource:                                             
                         if resource['ExpirationDate']:
-                            expiration_date = self.try_parsing_date(resource['ExpirationDate'], resource['id'])  
+                            expiration_date = self.try_parsing_date(resource['ExpirationDate'], resource['id'], default_expiration_date)  
                         else:                            
                             expiration_date = default_expiration_date                        
                     elif 'expiration_date' in resource:  
-                        print ('expiration_date ' + resource['id'])                                  
+                        # print ('expiration_date ' + resource['id'])                                  
                         if resource['expiration_date']:
-                            expiration_date = self.try_parsing_date(resource['expiration_date'], resource['id'])  
+                            expiration_date = self.try_parsing_date(resource['expiration_date'], resource['id'], default_expiration_date)  
                         else:                            
                             expiration_date = default_expiration_date                        
                     elif 'expiration-date' in resource:                                         
                         if resource['expiration-date']:
-                            expiration_date = self.try_parsing_date(resource['expiration-date'], resource['id'])  
+                            expiration_date = self.try_parsing_date(resource['expiration-date'], resource['id'], default_expiration_date)  
                         else:                            
                             expiration_date = default_expiration_date
                     
