@@ -36,8 +36,8 @@ def filesize_bytes(value):
         if size_type is None or size_number is None:
             raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
         else:
-            size_type = size_type.group()
-            size_number = int(size_number.group())
+            size_type = size_type.group().upper()
+            size_number = float(size_number.group())
 
         if size_type == 'TB' or size_type == 'T' or size_type == 'TERABYTES' or size_type == 'TBS' or size_type == 'TIB':
             fileMultiplier = 1099511627776
@@ -47,6 +47,8 @@ def filesize_bytes(value):
             fileMultiplier = 1048576
         elif size_type == 'KB' or size_type == 'K' or size_type == 'KILOBYTES' or size_type == 'KBS' or size_type == 'KIB':
             fileMultiplier = 1024
+        elif size_type == 'B' or size_type == 'BYTES' or size_type == 'BS':
+            fileMultiplier = 1
         else:
             raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
 
