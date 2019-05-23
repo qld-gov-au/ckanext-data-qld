@@ -1,7 +1,0 @@
-{% ckan_extends %}
-
-{% block secondary_content %}
-  {% if h.data_qld_user_has_admin_access(true) %}
-   {{ super() }}
-  {% endif %}
-{% endblock %}
