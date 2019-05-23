@@ -2,7 +2,7 @@
 
 {% resource "comments_js/comment_validation.js" %}
 
-{% resource "data_qld_theme/data_qld_comments.js" %}
+{% resource "data_qld_theme/flag-comment.js" %}
 
 {% set content_type = content_type or 'dataset' %}
 
@@ -64,7 +64,7 @@
                                 <i class="fa fa-flag"></i> Reported
                             </span>
                             {% if userobj and comment.flagged != True %}
-                                <a class="btn btn-primary btn-xs flag-comment" title="Flag comment as inappropriate" data-comment-id="{{ comment.id }}">
+                                <a class="btn btn-primary btn-xs flag-comment" title="Flag comment as inappropriate" data-module="flag-comment" data-module-content="This comment has been flagged as inappropriate and will be reviewed by an administrator." data-module-comment_id="{{ comment.id }}">
                                     <i class="fa fa-flag"></i> Report
                                 </a>
                             {% elif comment.flagged == True %}
