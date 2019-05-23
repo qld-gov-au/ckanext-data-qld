@@ -1,9 +1,9 @@
 import logging
 import ckan.plugins.toolkit as toolkit
 import hashlib
-import google_analytics_plugin as plugin
+import plugin
 from pylons import config
-import json
+
 from ckan.controllers.api import ApiController
 
 log = logging.getLogger('ckanext.googleanalytics')
@@ -24,10 +24,10 @@ class GoogleAnalyticsApiController(ApiController):
 
     # intercept API calls to record via google analytics
     def _post_analytics(self, user, request_event_action, request_event_label, request_dict={}):
-        if config.get('ckan.data_qld_googleanalytics.id'):
+        if plugin.GoogleAnalyticsPlugin.google_analytics_id:
             data_dict = {
                 "v": 1,
-                "tid": config.get('ckan.data_qld_googleanalytics.id'),
+                "tid": plugin.GoogleAnalyticsPlugin.google_analytics_id,
                 "cid": hashlib.md5(user).hexdigest(),
                 # customer id should be obfuscated
                 "t": "event",
@@ -46,12 +46,12 @@ class GoogleAnalyticsApiController(ApiController):
             side_effect_free = getattr(function, 'side_effect_free', False)
             request_data = self._get_request_data(try_url_params=side_effect_free)
 
-            capture_api_actions = json.loads(config.get('ckan.data_qld_googleanalytics.capture_api_actions'))
-
+            capture_api_actions = plugin.GoogleAnalyticsPlugin.capture_api_actions
+            
             # Only send api actions if it is in the capture_api_actions dictionary
             if api_action in capture_api_actions and isinstance(request_data, dict):
                 api_action_label = capture_api_actions.get(api_action)
-                
+            
                 paramater_value = request_data.get('id', '')
                 if paramater_value == '' and 'resource_id' in request_data:
                     paramater_value = request_data['resource_id']
@@ -60,15 +60,11 @@ class GoogleAnalyticsApiController(ApiController):
                 if paramater_value == '' and 'query' in request_data:
                     paramater_value = request_data['query']
                 if paramater_value == '' and 'sql' in request_data:
-                    altered_sql = '%s' % request_data['sql']
-                    altered_sql = self._alter_sql(altered_sql)
-                    paramater_value = altered_sql
-               
-                #To reduce number of hits ignore actions with no label or value
-                if api_action_label != '' and paramater_value != '':
-                    event_action = "{0} - {1}".format(api_action, c.environ['PATH_INFO'].replace('/api/3/',''))
-                    event_label = api_action_label.format(paramater_value)  
-                    self._post_analytics(c.user, event_action, event_label, request_data)
+                    paramater_value = self._alter_sql(request_data['sql'])
+              
+                event_action = "{0} - {1}".format(api_action, c.environ['PATH_INFO'].replace('/api/3/',''))
+                event_label = api_action_label.format(paramater_value)  
+                self._post_analytics(c.user, event_action, event_label, request_data)
         except Exception as e:
             log.debug(e)
             pass

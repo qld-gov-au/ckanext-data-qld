@@ -81,7 +81,7 @@ setup(
     entry_points='''
         [ckan.plugins]
         data_qld=ckanext.data_qld.plugin:DataQldPlugin
-        data_qld_google_analytics=ckanext.data_qld.google_analytics_plugin:GoogleAnalyticsPlugin
+        data_qld_google_analytics=ckanext.data_qld.google_analytics.plugin:GoogleAnalyticsPlugin
 
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras
