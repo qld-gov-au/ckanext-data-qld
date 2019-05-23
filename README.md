@@ -11,16 +11,6 @@ A custom CKAN extension for Data.Qld
         cd /usr/lib/ckan/default/src/ckanext-data-qld
         python setup.py develop
 
-3. Add the extension to the relevant CKAN `.ini` file `plugins` definition:
-
-        ckan.plugins = ... data_qld 
-
-4. Restart web server(s), e.g.
-
-        sudo service apache restart
-        sudo service nginx restart
-
-
 # data_qld_google_analytics
 A custom CKAN extension for Data.Qld for sending API requests to Google Analytics
 
@@ -39,4 +29,8 @@ A custom CKAN extension for Data.Qld for sending API requests to Google Analytic
         a. The dictionary key is the name of the api_action from https://docs.ckan.org/en/2.8/api/index.html#action-api-reference
         b. The dictionary value is the event_label sent to google analytics with the {0} replaced with the query parameter value eg. package_id. resource_id, query values
 
+4. Restart web server(s), e.g.
+
+        sudo service apache restart
+        sudo service nginx restart
 
