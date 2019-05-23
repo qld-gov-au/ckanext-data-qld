@@ -100,6 +100,10 @@ a.btn {
     border-radius: 4px;
 }
 
+.comment.comment-deleted {
+    border: 1px solid #ebccd1;
+}
+
 .comment h3 {
     margin-top: 0;
 }
@@ -114,6 +118,10 @@ a.btn {
     border-top-right-radius: 4px;
 }
 
+.comment-deleted .comment-header {
+    background-color: #f2dede;
+}
+
 .comment-content {
     padding: 15px;
     font-size: 14px;
@@ -124,8 +132,6 @@ a.btn {
 }
 
 .comment-deleted .deleted-content {
-    background-color: #ffeeee;
-    padding: 8px;
     font-style: italic;
 }
 
@@ -200,6 +206,6 @@ a.btn {
     border: 1px solid #ebccd1;
 }
 
-.comment-container .highlight > .comment > .comment-header {
-    background-color: #f2dede;;
+.comment-container .highlight > .comment.comment-deleted > .comment-header {
+    background-color: #f2dede;
 }
