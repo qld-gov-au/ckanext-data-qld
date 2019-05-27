@@ -90,6 +90,10 @@ class DataQldPlugin(plugins.SingletonPlugin):
         # Re_Open a Data Request
         m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
                   controller='ckanext.data_qld.controller:DataQldUI',
-                  action='open', conditions=dict(method=['GET', 'POST']))
+                  action='open_datarequest', conditions=dict(method=['GET', 'POST']))
+        
+        m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
+                  controller='ckanext.data_qld.controller:DataQldUI',
+                  action='show_schema', conditions=dict(method=['GET']))
 
         return m
