@@ -77,6 +77,11 @@ a, a:focus, a:hover, a:link, a:visited {
     left: 15px;
 }
 
+/* Hide the JSON button for Resource Data Schema */
+#resource-schema-buttons > div > .btn.btn-default[title="Enter manually a Table Schema JSON object"] {
+    visibility: hidden;
+}
+
 a.btn {
     text-decoration: none;
 }
