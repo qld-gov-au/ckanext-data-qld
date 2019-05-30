@@ -81,3 +81,7 @@ a, a:focus, a:hover, a:link, a:visited {
 #resource-schema-buttons > div > .btn.btn-default[title="Enter manually a Table Schema JSON object"] {
     visibility: hidden;
 }
+
+.test {
+    border: 3px solid green;
+}
