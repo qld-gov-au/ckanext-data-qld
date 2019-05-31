@@ -40,6 +40,13 @@ a, a:focus, a:hover, a:link, a:visited {
 .select2-container.form-control {
     height: 100%;
     padding:0px;
+}
+
+/* Fixes a display issues with expiration_date not displaying correctly in firefox browser with scheming extension */
+#field-expiration_date {
+    padding:0px 12px;
+}
 
 .test {
     border: 3px dotted green;
+}
