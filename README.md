@@ -1,5 +1,5 @@
 # ckanext-data-qld
-A custom CKAN extension for Data.Qld
+A custom CKAN extension for Data.Qld.
 
 ## Installation
 
@@ -21,6 +21,7 @@ A custom CKAN extension for Data.Qld for sending API requests to Google Analytic
         ckan.plugins = ... data_qld_google_analytics 
 
 2. Add the config settings to relevantCKAN `.ini` file 
+
         # ckanext-data_qld_googleanalytics
         ckan.data_qld_googleanalytics.id = UA-1010101-1 # Relevant Google analytics ID
         ckan.data_qld_googleanalytics.collection_url = http://www.google-analytics.com/collect
