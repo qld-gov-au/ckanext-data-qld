@@ -101,7 +101,7 @@ a.btn {
     background-color: #F7F7F7;
 }
 
-.comment-deleted .deleted-content {
+.comment-deleted .comment-content {
     font-style: italic;
 }
 

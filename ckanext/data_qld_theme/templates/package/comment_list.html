@@ -17,13 +17,15 @@
         <div class="{{ action }}_form_errors form-errors alert alert-error hidden">
             <ul>
                 <li class="hidden error-comment">{{ _('Please enter a Comment') }}</li>
-                <li class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</li>
+                <li class="hidden error-profanity">{{ _('Comment blocked due to profanity') }}</li>
             </ul>
         </div>
+        {% if action == "edit" %}
         <div class="form-group">
             <label for="subject">{{ _('Subject') }}</label>
             <input type="text" class="form-control" name="subject" {% if not empty %}value="{{ values.subject }}" {% endif %}/>
         </div>
+        {% endif %}
         <div class="form-group">
             <label for="comment"><span title="This field is required" class="control-required">*</span> {{ _('Comment') }}</label>
             {% set unescaped_content = values.content.split('<br/>') %}
@@ -89,7 +91,7 @@
                 {% if comment.state != 'deleted' %}
                     <h3>{{ comment.subject }}</h3>
                 {% else %}
-                    <h3>{{ _('This comment was deleted.') }}</h3>
+                    <p><strong>{{ _('This comment was deleted.') }}</strong></p>
                 {% endif %}
                 {% if comment.state != 'deleted' %}
                     <div class="content">
@@ -139,7 +141,7 @@
         <div id="comment_form_errors" class="alert alert-error form-errors hidden">
             <ul>
                 <li class="hidden error-comment">{{ _('Please enter a Comment') }}</li>
-                <li class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</li>
+                <li class="hidden error-profanity">{{ _('Comment blocked due to profanity') }}</li>
             </ul>
         </div>
         <div class="form-group">
