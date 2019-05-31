@@ -40,4 +40,6 @@ a, a:focus, a:hover, a:link, a:visited {
 .select2-container.form-control {
     height: 100%;
     padding:0px;
-}
+
+.test {
+    border: 3px dotted green;
