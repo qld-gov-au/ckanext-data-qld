@@ -48,5 +48,5 @@ a, a:focus, a:hover, a:link, a:visited {
 }
 
 .test {
-    border: 3px solid green;
+    border: 3px dotted blue;
 }
