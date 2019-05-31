@@ -82,6 +82,7 @@ a, a:focus, a:hover, a:link, a:visited {
     visibility: hidden;
 }
 
+
 a.btn {
     text-decoration: none;
 }
@@ -213,4 +214,8 @@ a.btn {
 
 .comment-container .highlight > .comment.comment-deleted > .comment-header {
     background-color: #f2dede;
+}
+
+.test {
+    border: 3px dotted green;
 }
