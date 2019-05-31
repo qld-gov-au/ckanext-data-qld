@@ -1,1 +1,1 @@
-[{{ site_title }}] - Data Request
+Queensland Government Open Data - Data Request

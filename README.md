@@ -27,7 +27,7 @@ A custom CKAN extension for Data.Qld for sending API requests to Google Analytic
 
 3. The file capture_api_actions.json is a dictionary of api actions to capture to send to google analytics 
         a. The dictionary key is the name of the api_action from https://docs.ckan.org/en/2.8/api/index.html#action-api-reference
-        b. The dictionary value is the event_label sent to google analytics with the {0} replaced with the query parameter value eg. package_id. resource_id, query values
+        b. The dictionary value is the event_label sent to google analytics with the {0} replaced with the query parameter value eg. package_id, resource_id, query values, sql query
 
 4. Restart web server(s), e.g.
 
