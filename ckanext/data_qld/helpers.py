@@ -1,5 +1,4 @@
 import ckan.plugins.toolkit as toolkit
-from profanity import profanity
 from pylons import config
 from bs4 import BeautifulSoup
 
