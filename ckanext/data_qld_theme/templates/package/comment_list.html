@@ -15,10 +15,8 @@
             <h3>Reply to comment:</h3>
         {% endif %}
         <div class="{{ action }}_form_errors form-errors alert alert-error hidden">
-            <ul>
-                <li class="hidden error-comment">{{ _('Please enter a Comment') }}</li>
-                <li class="hidden error-profanity">{{ _('Comment blocked due to profanity') }}</li>
-            </ul>
+            <div class="hidden error-comment">{{ _('Please enter a Comment.') }}</div>
+            <div class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</div>
         </div>
         {% if action == "edit" %}
         <div class="form-group">
@@ -79,7 +77,12 @@
                         </div>
                     {% endif %}
                     <div class="comment-header-text">
-                        {{  h.linked_user(comment.user_id, 0, 0) }} commented on {{ h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") }}
+                        {% if 'user_state' in comment and comment.user_state == 'deleted' %}
+                            <em>{{ comment.user_login_name }}</em>
+                        {% else %}
+                            {{  h.linked_user(comment.user_id, 0, 0) }}
+                        {% endif %}
+                        commented on {{ h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") }}
                         {% if comment.modified_date %}
                         &mdash; <small>({{ _('Modified') }} {{ h.render_datetime(comment.modified_date, "%d %b %Y, %-I:%M%p") }})</small>
                         {% endif %}
@@ -139,10 +142,8 @@
 
     <form id="comment_form" class="form" action="/{{ content_type }}/{{ pkg_id }}/comments/add" method="POST">
         <div id="comment_form_errors" class="alert alert-error form-errors hidden">
-            <ul>
-                <li class="hidden error-comment">{{ _('Please enter a Comment') }}</li>
-                <li class="hidden error-profanity">{{ _('Comment blocked due to profanity') }}</li>
-            </ul>
+            <div class="hidden error-comment">{{ _('Please enter a Comment.') }}</div>
+            <div class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</div>
         </div>
         <div class="form-group">
             <label for="subject">{{ _('Subject') }}</label>
