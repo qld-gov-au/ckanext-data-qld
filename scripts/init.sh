@@ -8,7 +8,7 @@ CKAN_ROOT="${CKAN_ROOT:-/app/ckan/default}"
 CKAN_INI="${CKAN_INI:-/app/ckan/default/production.ini}"
 
 CKAN_USER_NAME="${CKAN_USER_NAME:-admin}"
-CKAN_USER_PASSWORD="${CKAN_USER_PASSWORD:-admin}"
+CKAN_USER_PASSWORD="${CKAN_USER_PASSWORD:-password}"
 CKAN_USER_EMAIL="${CKAN_USER_EMAIL:-admin@localhost}"
 
 . "${CKAN_ROOT}/bin/activate" \
