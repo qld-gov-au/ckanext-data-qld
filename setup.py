@@ -82,6 +82,9 @@ setup(
         [ckan.plugins]
         data_qld=ckanext.data_qld.plugin:DataQldPlugin
 
+        [paste.paster_command]
+        migrate_extras = ckanext.data_qld.commands:MigrateExtras
+
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
     ''',
