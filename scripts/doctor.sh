@@ -14,7 +14,7 @@ DOCTOR_CHECK_BOOTSTRAP="${DOCTOR_CHECK_BOOTSTRAP:-1}"
 
 APP_PORT="${APP_PORT:-80}"
 CLI="${CLI:-cli}"
-LOCALDEV_URL="${LOCALDEV_URL:-http://your-site.docker.amazee.io/}"
+LAGOON_LOCALDEV_URL="${LAGOON_LOCALDEV_URL:-http://your-site.docker.amazee.io/}"
 SSH_KEY_FILE="${SSH_KEY_FILE:-$HOME/.ssh/id_rsa}"
 DATAROOT="${DATAROOT:-.data}"
 
@@ -39,10 +39,10 @@ main() {
   fi
 
   if [ "${DOCTOR_CHECK_PORT}" == "1" ]; then
-    if ! lsof -i :"${APP_PORT}" | grep LISTEN | grep -q om.docke; then
-      error "Port ${APP_PORT} is occupied by a service other than Docker. Stop this service and run 'pygmy up'"
+    if ! lsof -i :3000 | grep LISTEN | grep -q om.docke; then
+      error "Port 3000 is occupied by a service other than Docker. Stop this service and run 'pygmy up'"
     fi
-    success "Port ${APP_PORT} is available"
+    success "Port 3000 is available"
   fi
 
   if [ "${DOCTOR_CHECK_PYGMY}" == "1" ]; then
@@ -55,7 +55,7 @@ main() {
 
   # Check that the stack is running.
   if [ "${DOCTOR_CHECK_CLI}" == "1" ]; then
-    if ! docker ps -q --no-trunc | grep "$(docker-compose ps -q ${CLI})" > /dev/null 2>&1; then
+    if ! docker ps -q --no-trunc | grep "$(docker-compose ps -q ckan)" > /dev/null 2>&1; then
       error "CLI container is not running. Run 'ahoy up'."
       exit 1
     fi
@@ -94,7 +94,7 @@ main() {
     fi
 
     # Check that the volume is mounted into CLI container.
-    if ! docker exec -i "$(docker-compose ps -q ${CLI})" sh -c "grep \"^/dev\" /etc/mtab|grep -q /tmp/amazeeio_ssh-agent"; then
+    if ! docker exec -i "$(docker-compose ps -q ckan)" sh -c "grep \"^/dev\" /etc/mtab|grep -q /tmp/amazeeio_ssh-agent"; then
       error "SSH key is added to Pygmy, but the volume is not mounted into container. Make sure that your your \"docker-compose.yml\" has the following lines:"
       error "volumes_from:"
       error "  - container:amazeeio-ssh-agent"
@@ -103,7 +103,7 @@ main() {
     fi
 
     # Check that ssh key is available in the container.
-    if ! docker exec -i "$(docker-compose ps -q ${CLI})" bash -c "ssh-add -L | grep -q 'ssh-rsa'" ; then
+    if ! docker exec -i "$(docker-compose ps -q ckan)" bash -c "ssh-add -L | grep -q 'ssh-rsa'" ; then
       error "SSH key was not added into container. Run 'ahoy up -- --build'."
       exit 1
     fi
@@ -113,21 +113,21 @@ main() {
 
 
   if [ "${DOCTOR_CHECK_WEBSERVER}" == "1" ]; then
-    host_app_port="$(docker port $(docker-compose ps -q ${CLI}) ${APP_PORT} | cut -d : -f 2)"
-    if ! curl -L -s -o /dev/null -w "%{http_code}" "${LOCALDEV_URL}:${host_app_port}" | grep -q 200; then
-      error "Web server is not accessible at http://${LOCALDEV_URL}:${host_app_port}"
+    host_app_port="$(docker port $(docker-compose ps -q ckan) 3000 | cut -d : -f 2)"
+    if ! curl -L -s -o /dev/null -w "%{http_code}" "${LAGOON_LOCALDEV_URL}:${host_app_port}" | grep -q 200; then
+      error "Web server is not accessible at ${LAGOON_LOCALDEV_URL}:${host_app_port}"
       exit 1
     fi
-    success "Web server is running and accessible at http://${LOCALDEV_URL}:${host_app_port}"
+    success "Web server is running and accessible at ${LAGOON_LOCALDEV_URL}:${host_app_port}"
   fi
 
   if [ "${DOCTOR_CHECK_BOOTSTRAP}" == "1" ]; then
-    host_app_port="$(docker port $(docker-compose ps -q ${CLI}) ${APP_PORT} | cut -d : -f 2)"
-    if ! curl -L -s -N "${LOCALDEV_URL}:${host_app_port}" | grep -q -i "meta name=\"generator\" content=\"ckan"; then
+    host_app_port="$(docker port $(docker-compose ps -q ckan) 3000 | cut -d : -f 2)"
+    if ! curl -L -s -N "${LAGOON_LOCALDEV_URL}:${host_app_port}" | grep -q -i "meta name=\"generator\" content=\"ckan"; then
       error "Website is running, but cannot be bootstrapped. Try pulling latest container images with 'ahoy pull'"
       exit 1
     fi
-    success "Successfully bootstrapped website at http://${LOCALDEV_URL}:${host_app_port}"
+    success "Successfully bootstrapped website at ${LAGOON_LOCALDEV_URL}:${host_app_port}"
   fi
 
   status "All required checks have passed"

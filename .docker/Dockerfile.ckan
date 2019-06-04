@@ -2,6 +2,9 @@ FROM amazeeio/python:2.7-ckan-v0.23.1
 
 WORKDIR /app
 
+ARG SITE_URL
+ENV SITE_URL="${SITE_URL}"
+
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
@@ -29,15 +32,10 @@ RUN fix-permissions /app/ckan \
     && chmod +x /app/scripts/serve.sh
 
 # Add current extension.
-#COPY ckanext /app/ckanext
-#COPY README.rst /app/ckanext/
-#COPY requirements.txt /app/ckanext/
-#COPY setup.cfg /app/ckanext/
-#COPY setup.py /app/ckanext/
-COPY ckanext /app/
+COPY ckanext /app/ckanext
 COPY README.rst /app/
 COPY requirements.txt /app/
-COPY ci-requirements.txt /app/
+COPY dev-requirements.txt /app/
 COPY setup.cfg /app/
 COPY setup.py /app/
 

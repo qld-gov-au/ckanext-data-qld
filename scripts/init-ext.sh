@@ -4,11 +4,13 @@
 #
 set -e
 
-CKAN_ROOT="${CKAN_ROOT:-/app/ckan/default}"
+. /app/ckan/default/bin/activate
 
-. "${CKAN_ROOT}/bin/activate"
-
-pip install -r "/app/ci-requirements.txt"
+pip install -r "/app/requirements.txt"
+pip install -r "/app/dev-requirements.txt"
 python setup.py develop
+
+# Validate that the extension was installed correctly.
+if ! pip list | grep ckanext-data-qld > /dev/null; then echo "Unable to find the extension in the list"; exit 1; fi
 
 deactivate

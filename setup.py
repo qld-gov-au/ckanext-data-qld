@@ -53,6 +53,7 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+    # namespace_packages=['ckanext'],
 
     install_requires=[
       # CKAN extensions should not list dependencies here, but in a separate

@@ -22,7 +22,7 @@ commands:
     usage: Print information about this project.
     cmd: |
       ahoy line "Project                  : " ${PROJECT}
-      ahoy line "Site local URL           : " http://${LOCALDEV_URL}:$(docker port $(docker-compose ps -q ${CLI}) ${APP_PORT} | cut -d : -f 2)
+      ahoy line "Site local URL           : " ${LAGOON_LOCALDEV_URL}
       ahoy line "DB port on host          : " $(docker port $(docker-compose ps -q postgres) 5432 | cut -d : -f 2)
       ahoy line "Solr port on host        : " $(docker port $(docker-compose ps -q solr) 8983 | cut -d : -f 2)
       ahoy line "Mailhog URL              : " http://mailhog.docker.amazee.io/
@@ -31,7 +31,7 @@ commands:
     usage: Build and start Docker containers.
     cmd: |
       docker-compose up -d "$@"
-      ahoy cli "dockerize -wait tcp://${CLI}:${APP_PORT} -timeout 1m"
+      ahoy cli "dockerize -wait tcp://ckan:3000 -timeout 1m"
       if docker-compose logs | grep -q "\[Error\]"; then docker-compose logs; exit 1; fi
       if docker-compose logs | grep -q "Exception"; then docker-compose logs; exit 1; fi
       docker ps -a --filter name=^/${COMPOSE_PROJECT_NAME}_
@@ -63,7 +63,7 @@ commands:
 
   cli:
     usage: Start a shell inside CLI container or run a command.
-    cmd: if \[ "${#}" -ne 0 \]; then docker exec -i $(docker-compose ps -q ${CLI}) sh -c "$*"; else docker exec -it $(docker-compose ps -q ${CLI}) sh; fi
+    cmd: if \[ "${#}" -ne 0 \]; then docker exec -i $(docker-compose ps -q ckan) sh -c "$*"; else docker exec -it $(docker-compose ps -q ckan) sh; fi
 
   doctor:
     usage: Find problems with current project setup.
@@ -96,9 +96,9 @@ commands:
   install-dev:
     usage: Install dependencies.
     cmd: |
-      docker cp -L dev-requirements.txt $(docker-compose ps -q ${CLI}):/app/.
-      docker cp -L .flake8 $(docker-compose ps -q ${CLI}):/app/.
-      ahoy cli "pip install -r /app/dev-requirements.txt"
+      docker cp -L dev-requirements.txt $(docker-compose ps -q ckan):/app/.
+      docker cp -L .flake8 $(docker-compose ps -q ckan):/app/.
+      ahoy cli ". /app/ckan/default/bin/activate && pip install -r /app/dev-requirements.txt"
     hide: true
 
   flush-redis:
@@ -108,19 +108,19 @@ commands:
   lint:
     usage: Lint code.
     cmd: |
-      ahoy cli "flake8 ${@:-/app/ckanext}" || \
+      ahoy cli ". /app/ckan/default/bin/activate && flake8 ${@:-/app/ckanext}" || \
       [ "${ALLOW_LINT_FAIL:-0}" -eq 1 ]
 
   test-unit:
     usage: Run unit tests.
     cmd: |
-      echo "Would run unit tests" || \
+      ahoy cli ". /app/ckan/default/bin/activate && nosetests" || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:
     usage: Run BDD tests.
     cmd: |
-      echo "Would run BDD tests" || \
+      docker exec -i $(docker-compose ps -q test) sh -c "behave $*" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
 
   # Utilities.
@@ -154,6 +154,7 @@ entrypoint:
   - "-c"
   - "-e"
   - |
+    export LAGOON_LOCALDEV_URL=http://ckanext-data-qld.docker.amazee.io
     [ -f .env ] && [ -s .env ] && export $(grep -v '^#' .env | xargs) && if [ -f .env.local ] && [ -s .env.local ]; then export $(grep -v '^#' .env.local | xargs); fi
     bash -e -c "$0" "$@"
   - '{{cmd}}'

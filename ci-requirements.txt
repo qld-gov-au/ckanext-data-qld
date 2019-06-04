@@ -1,1 +1,0 @@
--e git+https://github.com/qld-gov-au/ckanext-datarequests@training#egg=ckanext-datarequests
