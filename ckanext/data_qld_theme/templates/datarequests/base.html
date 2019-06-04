@@ -1,0 +1,31 @@
+{% ckan_extends %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="/datarequests.css" />
+{% endblock %}
+
+{% block subtitle %}{{ _('Data requests') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Data requests'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='index' %}</li>
+{% endblock %}
+
+{% block secondary_content %}
+
+  <section class="module module-narrow module-shallow">
+    <h2 class="module-heading"><i class="icon-info-sign fa fa-info-circle"></i>{% trans %}Data request{% endtrans %}</h2>
+    <div class="module-content">
+      <p>
+        {% trans %}Data requests allow registered users to ask for data that is not currently available.{% endtrans %}
+      </p>
+      <p>
+        {% trans %}Prior to making a data request, please use the search and filter tools to attempt to locate the desired data from among the published datasets. You can also review the exisiting data requests as other users may have made requests for similar data.{% endtrans %}
+      </p>
+      {% block secondary_content_additional_info %}
+     
+      {% endblock %}
+    </div>
+  </section>
+  
+{% endblock %}
