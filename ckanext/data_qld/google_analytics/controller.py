@@ -52,18 +52,18 @@ class GoogleAnalyticsApiController(ApiController):
             if api_action in capture_api_actions and isinstance(request_data, dict):
                 api_action_label = capture_api_actions.get(api_action)
             
-                paramater_value = request_data.get('id', '')
-                if paramater_value == '' and 'resource_id' in request_data:
-                    paramater_value = request_data['resource_id']
-                if paramater_value == '' and 'q' in request_data:
-                    paramater_value = request_data['q']
-                if paramater_value == '' and 'query' in request_data:
-                    paramater_value = request_data['query']
-                if paramater_value == '' and 'sql' in request_data:
-                    paramater_value = self._alter_sql(request_data['sql'])
+                parameter_value = request_data.get('id', '')
+                if parameter_value == '' and 'resource_id' in request_data:
+                    parameter_value = request_data['resource_id']
+                if parameter_value == '' and 'q' in request_data:
+                    parameter_value = request_data['q']
+                if parameter_value == '' and 'query' in request_data:
+                    parameter_value = request_data['query']
+                if parameter_value == '' and 'sql' in request_data:
+                    parameter_value = self._alter_sql(request_data['sql'])
               
                 event_action = "{0} - {1}".format(api_action, c.environ['PATH_INFO'].replace('/api/3/',''))
-                event_label = api_action_label.format(paramater_value)  
+                event_label = api_action_label.format(parameter_value)  
                 self._post_analytics(c.user, event_action, event_label, request_data)
         except Exception as e:
             log.debug(e)
