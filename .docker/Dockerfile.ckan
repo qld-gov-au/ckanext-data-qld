@@ -22,22 +22,18 @@ RUN . /app/ckan/default/bin/activate \
     && deactivate \
     && ln -s /app/ckan /usr/lib/ckan
 
-COPY docker.ini /app/ckan/default/production.ini
+COPY .docker/test.ini /app/ckan/default/production.ini
 
-COPY scripts /app/scripts
+COPY .docker/scripts /app/scripts
 
 RUN fix-permissions /app/ckan \
     && chmod +x /app/scripts/init.sh \
     && chmod +x /app/scripts/init-ext.sh \
     && chmod +x /app/scripts/serve.sh
 
-# Add current extension.
+# Add current extension and files.
 COPY ckanext /app/ckanext
-COPY README.rst /app/
-COPY requirements.txt /app/
-COPY dev-requirements.txt /app/
-COPY setup.cfg /app/
-COPY setup.py /app/
+COPY requirements.txt requirements-dev.txt setup.cfg setup.py /app/
 
 # Init current extension.
 RUN /app/scripts/init-ext.sh

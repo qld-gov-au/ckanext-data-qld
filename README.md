@@ -13,6 +13,8 @@ A custom CKAN extension for Data.Qld
 - `pygmy up`
 - `ahoy build`
 
+Use `admin`/`password` to login to CKAN.
+
 ## Available `ahoy` commands
 Run each command as `ahoy <command>`.
   ```  
@@ -42,10 +44,14 @@ Python code linting uses [flake8](https://github.com/PyCQA/flake8) with configur
 Set `ALLOW_LINT_FAIL=1` in `.env` to allow lint failures.
 
 ## Nose tests
-TBD
+`ahoy test-unit`
+
+Set `ALLOW_UNIT_FAIL=1` in `.env` to allow unit test failures.
 
 ## Behavioral tests
-TBD
+`ahoy test-bdd`
+
+Set `ALLOW_BDD_FAIL=1` in `.env` to allow BDD test failures.
 
 ## Automated builds (Continuous Integration)
 In software engineering, continuous integration (CI) is the practice of merging all developer working copies to a shared mainline several times a day. 

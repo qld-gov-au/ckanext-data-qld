@@ -67,7 +67,7 @@ commands:
 
   doctor:
     usage: Find problems with current project setup.
-    cmd: scripts/doctor.sh "$@"
+    cmd: .docker/scripts/doctor.sh "$@"
 
 
   install-site:
@@ -96,9 +96,9 @@ commands:
   install-dev:
     usage: Install dependencies.
     cmd: |
-      docker cp -L dev-requirements.txt $(docker-compose ps -q ckan):/app/.
+      docker cp -L requirements-dev.txt $(docker-compose ps -q ckan):/app/.
       docker cp -L .flake8 $(docker-compose ps -q ckan):/app/.
-      ahoy cli ". /app/ckan/default/bin/activate && pip install -r /app/dev-requirements.txt"
+      ahoy cli ". /app/ckan/default/bin/activate && pip install -r /app/requirements-dev.txt"
     hide: true
 
   flush-redis:
