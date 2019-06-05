@@ -7,7 +7,7 @@ set -e
 . /app/ckan/default/bin/activate
 
 pip install -r "/app/requirements.txt"
-pip install -r "/app/dev-requirements.txt"
+pip install -r "/app/requirements-dev.txt"
 python setup.py develop
 
 # Validate that the extension was installed correctly.
