@@ -43,7 +43,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_organisation_list': helpers.organisation_list,
                 'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
-                'data_qld_format_activity_data': helpers.format_activity_data
+                'data_qld_format_activity_data': helpers.format_activity_data,
+                'get_datarequest_comments_badge': helpers.get_datarequest_comments_badge,
                 }
 
     # IValidators
