@@ -106,6 +106,7 @@ def datarequest_suggested_description():
     '''
     return config.get('ckanext.data_qld.datarequest_suggested_description', '')
 
+
 def format_activity_data(data):
     '''Returns the activity data with actors username replaced with Publisher for non-editor/admin/sysadmin users
 
@@ -123,3 +124,10 @@ def format_activity_data(data):
         actor['style'] = 'margin-left:-40px' 
 
     return str(soup)
+
+
+# Data.Qld specific comments helper functions
+
+def get_datarequest_comments_badge(datarequest_id):
+    return toolkit.render_snippet('datarequests/snippets/badge.html',
+                             {'comments_count': toolkit.h.get_comment_count_for_dataset(datarequest_id, 'datarequest')})
