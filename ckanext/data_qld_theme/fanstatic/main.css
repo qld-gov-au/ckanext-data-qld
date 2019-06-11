@@ -186,8 +186,8 @@ td, th {
 
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(./mysource_files/glyphicons-halflings-regular.eot);
-  src: url(./mysource_files/glyphicons-halflings-regular.eot?#iefix) format("embedded-opentype"), url(./mysource_files/glyphicons-halflings-regular.woff2) format("woff2"), url(./mysource_files/glyphicons-halflings-regular.woff) format("woff"), url(./mysource_files/glyphicons-halflings-regular.ttf) format("truetype"), url(mysource_files/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format("svg"); }
+  src: url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.eot');
+  src: url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format("embedded-opentype"), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.woff2') format("woff2"), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.woff') format("woff"), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.ttf') format("truetype"), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format("svg"); }
 
 .glyphicon {
   position: relative;
@@ -5595,7 +5595,7 @@ a.tag:hover {
   list-style: none;
   min-height: 205px;
   padding-top: 15px;
-  background: #fbfbfb url(mysource_files/bg.png);
+  background: #fbfbfb url("../../../base/images/bg.png");
   border: 1px solid #dddddd;
   border-width: 1px 0; }
 
@@ -5741,7 +5741,7 @@ a.tag:hover {
   list-style: none;
   min-height: 205px;
   padding-top: 15px;
-  background: #fbfbfb url(mysource_files/bg.png);
+  background: #fbfbfb url("../../../base/images/bg.png");
   border: 1px solid #dddddd;
   border-width: 1px 0; }
 
@@ -5985,7 +5985,7 @@ a.tag:hover {
   top: 2px;
   width: 16px;
   height: 16px;
-  background-image: url(mysource_files/sprite-ckan-icons.png);
+  background-image: url("../../../base/images/sprite-ckan-icons.png");
   background-repeat: no-repeat;
   background-position: 16px 16px;
   content: "";
@@ -6055,7 +6055,7 @@ a.tag:hover {
   top: 2px;
   width: 16px;
   height: 16px;
-  background-image: url(mysource_files/sprite-ckan-icons.png);
+  background-image: url("../../../base/images/sprite-ckan-icons.png");
   background-repeat: no-repeat;
   background-position: 16px 16px;
   width: 17px;
@@ -6618,7 +6618,7 @@ input[data-module="autocomplete"], select[data-module="autocomplete"] {
 
 .resource-upload-field.loading {
   display: inline-block;
-  background: url(mysource_files/loading-spinner.gif) no-repeat center right;
+  background: url("../../../base/images/loading-spinner.gif") no-repeat center right;
   padding-right: 5px; }
 
 .select2-container .select2-choice input, .select2-container-multi .select2-choices .select2-search-field:first-child input {
@@ -7371,7 +7371,7 @@ h1 small, h2 small, h3 small, h4 small {
   top: 2px;
   width: 16px;
   height: 16px;
-  background-image: url(mysource_files/sprite-ckan-icons.png);
+  background-image: url("../../../base/images/sprite-ckan-icons.png");
   background-repeat: no-repeat;
   background-position: 16px 16px; }
 
@@ -7559,11 +7559,11 @@ h1 small, h2 small, h3 small, h4 small {
   top: 2px;
   width: 16px;
   height: 16px;
-  background-image: url(mysource_files/sprite-ckan-icons.png);
+  background-image: url("../../../base/images/sprite-ckan-icons.png");
   background-repeat: no-repeat;
   background-position: 16px 16px;
   text-indent: -900em;
-  background: url(mysource_files/sprite-resource-icons.png) no-repeat 0 0; }
+  background: url("../../../base/images/sprite-resource-icons.png") no-repeat 0 0; }
 
 .format-label {
   width: 32px;
@@ -7697,7 +7697,7 @@ h1 small, h2 small, h3 small, h4 small {
 @media (min-width: 768px) {
   [role=main], .main {
     padding-top: 10px;
-    background: #eeeeee url(mysource_files/bg.png); } }
+    background: #eeeeee url("../../../base/images/bg.png"); } }
 
 [role=main] {
   min-height: 350px; }
@@ -7775,7 +7775,7 @@ h1 small, h2 small, h3 small, h4 small {
 
 @media (min-width: 768px) {
   .hero {
-    background: url(mysource_files/background-tile.png); } }
+    background: url("../../../base/images/background-tile.png"); } }
 
 .hero:after {
   background-color: rgba(0, 0, 0, 0.09);
@@ -8013,7 +8013,7 @@ h1 small, h2 small, h3 small, h4 small {
 .account-masthead {
   min-height: 30px;
   color: #ffffff;
-  background: #003647 url(mysource_files/bg.png); }
+  background: #003647 url("../../../base/images/bg.png"); }
 
 .account-masthead:before, .account-masthead:after {
   content: " ";
@@ -8107,7 +8107,7 @@ h1 small, h2 small, h3 small, h4 small {
   margin-bottom: initial;
   padding: 10px 0;
   color: #ffffff;
-  background: #005d7a url(mysource_files/bg.png); }
+  background: #005d7a url("../../../base/images/bg.png"); }
 
 .masthead:before, .masthead:after {
   content: " ";
@@ -8231,7 +8231,7 @@ h1 small, h2 small, h3 small, h4 small {
   margin-bottom: initial;
   padding: 10px 0;
   color: #ffffff;
-  background: #005d7a url(mysource_files/bg.png);
+  background: #005d7a url("../../../base/images/bg.png");
   padding: 20px 0; }
 
 .site-footer:before, .site-footer:after {
@@ -8347,7 +8347,7 @@ h1 small, h2 small, h3 small, h4 small {
   width: 68px;
   height: 21px;
   margin-top: 2px;
-  background: url(mysource_files/ckan-logo-footer.png) no-repeat top left;
+  background: url("../../../base/images/ckan-logo-footer.png") no-repeat top left;
   text-indent: -900em; }
 
 .lang-select:before, .lang-select:after {
@@ -8415,7 +8415,7 @@ h1 small, h2 small, h3 small, h4 small {
 .js .table-toggle-more .toggle-seperator td {
   height: 11px;
   padding: 0;
-  background-image: url(mysource_files/table-seperator.png); }
+  background-image: url("../../../base/images/table-seperator.png"); }
 
 .js .table .toggle-show td {
   background: none;
@@ -8436,7 +8436,7 @@ h1 small, h2 small, h3 small, h4 small {
 .activity {
   padding: 0;
   list-style-type: none;
-  background: transparent url(mysource_files/dotted.png) 14px 0 repeat-y; }
+  background: transparent url('../../../base/images/dotted.png') 14px 0 repeat-y; }
 
 .activity .item {
   position: relative;
@@ -8675,7 +8675,7 @@ h1 small, h2 small, h3 small, h4 small {
   right: -10px;
   width: 10px;
   height: 21px;
-  background: transparent url(mysource_files/dashboard-followee-related.png); }
+  background: transparent url("../../../base/images/dashboard-followee-related.png"); }
 
 .popover-followee .popover-title {
   display: none; }
@@ -8911,7 +8911,7 @@ h1 small, h2 small, h3 small, h4 small {
   z-index: 0; }
 
 body {
-  background: #005d7a url(mysource_files/bg.png); }
+  background: #005d7a url("../../../base/images/bg.png"); }
 
 [hidden] {
   display: none; }
@@ -9011,8 +9011,8 @@ iframe {
  */
 @font-face {
   font-family: 'FontAwesome';
-  src: url(./mysource_files/fontawesome-webfont.eot);
-  src: url(./mysource_files/fontawesome-webfont.eot?#iefix&v=4.0.3) format("embedded-opentype"), url(./mysource_files/fontawesome-webfont.woff) format("woff"), url(./mysource_files/fontawesome-webfont.ttf) format("truetype"), url(mysource_files/fontawesome-webfont.svg#fontawesomeregular) format("svg");
+  src: url("../vendor/font-awesome/fonts/fontawesome-webfont.eot");
+  src: url("../vendor/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.0.3") format("embedded-opentype"), url("../vendor/font-awesome/fonts/fontawesome-webfont.woff") format("woff"), url("../vendor/font-awesome/fonts/fontawesome-webfont.ttf") format("truetype"), url("../vendor/font-awesome/fonts/fontawesome-webfont.svg#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal; }
 
