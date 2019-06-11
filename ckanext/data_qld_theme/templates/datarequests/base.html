@@ -18,9 +18,9 @@
     <div class="module-content">
       <p>
         {% trans %}Data requests allow registered users to ask for data that is not currently available.{% endtrans %}
-      </p>
-      <p>
-        {% trans %}Prior to making a data request, please use the search and filter tools to attempt to locate the desired data from among the published datasets. You can also review the existing data requests as other users may have made requests for similar data.{% endtrans %}
+        {% if c.action == 'new' %}
+          {% trans %}Prior to making a data request, please use the search and filter tools to attempt to locate the desired data from among the published datasets.{% endtrans %}
+        {% endif %}
       </p>
       {% block secondary_content_additional_info %}
      
