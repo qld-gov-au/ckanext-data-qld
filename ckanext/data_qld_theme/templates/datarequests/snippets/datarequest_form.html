@@ -13,6 +13,11 @@
   {% endif %}
 {% endblock %}
 
+{% block offering_title %}
+{{ form.input('title', id='field-title', label=_('Subject'), placeholder=_('eg. Data Request Name'), value=title, error=errors['Title'], classes=['control-full', 'control-large'], is_required=true) }}
+{% endblock %}
+
+
 {% block offering_description %}  
   {% set suggested_description =  h.render_markdown(h.data_qld_datarequest_suggested_description())  %}  
   {% call form.markdown('description', id='field-description', label=_('Description'), placeholder=_('eg. Data Request description'), value=data.get('description', ''), error=errors['Description'], is_required=description_required) %}

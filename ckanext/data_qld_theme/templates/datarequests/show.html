@@ -1,5 +1,12 @@
 {% ckan_extends %}
 
+{% block title %}Data request {{c.datarequest.get('title', '')}}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li>{% link_for _('Data requests'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='index' %}</li>
+  <li>{% link_for c.datarequest.get('title'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='show', id=datarequest_id %}</li>
+{% endblock %}
+
 {% block content_action %}
 
   {% if h.check_access('update_datarequest', {'id':datarequest_id }) %}
@@ -11,7 +18,15 @@
   {% endif %}
 
   {% if h.check_access('open_datarequest', {'id':datarequest_id }) and c.datarequest.closed %}
-      {% link_for _('Re-open'), controller='ckanext.data_qld.controller:DataQldUI', action='open', id=datarequest_id, class_='btn btn-success', icon='unlock' %}
+      {% link_for _('Re-open'), controller='ckanext.data_qld.controller:DataQldUI', action='open_datarequest', id=datarequest_id, class_='btn btn-success', icon='unlock' %}
   {% endif %}
 
+{% endblock %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon('show_datarequest', _('Data request'), id=datarequest_id) }}
+
+  {% if h.show_comments_tab() %}
+    {{ h.build_nav_icon('comment_datarequest', _('Comments') + ' ' + h.get_datarequest_comments_badge(datarequest_id), id=datarequest_id) }}
+  {% endif %}
 {% endblock %}

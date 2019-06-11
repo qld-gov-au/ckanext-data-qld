@@ -6,55 +6,9 @@ a, a:focus, a:hover, a:link, a:visited {
     text-decoration: underline;
 }
 
-.table {
-	max-width: 100%;
-	margin-top: .5em;
-	border-collapse: collapse;
-	border-spacing: 0;
-	text-indent: 0;
-	table-layout: fixed;
-	background-color: transparent;
-}
-
 .table thead > tr > td, .table thead > tr > th {
     background: #13578b;
     color: #fff;
-}
-
-.table thead td, .table thead th {
-    vertical-align: bottom;
-}
-
-.table td, .table th {
-    border: none;
-}
-
-.table th {
-    padding: .8em 1em;
-    font-size: 17px;
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-.table td, .table th {
-    display: table-cell;
-    text-align: left;
-}
-
-.table tfoot {
-    background: #f3f3f3;
-}
-
-.table td {
-    padding: 1em;
-    font-size: .9rem;
-    font-weight: 400;
-}
-
-.table td, .table th {
-    display: table-cell;
-    vertical-align: top;
-    text-align: left;
 }
 
 /* Resource Button */
@@ -75,4 +29,157 @@ a, a:focus, a:hover, a:link, a:visited {
     z-index: 10;
     top: 35px;
     left: 15px;
+}
+
+/* Hide the JSON button for Resource Data Schema */
+#resource-schema-buttons > div > .btn.btn-default[title="Enter manually a Table Schema JSON object"] {
+    visibility: hidden;
+}
+
+a.btn {
+    text-decoration: none;
+}
+
+/* Fixes a issue with dataset & resource select or multi-select elements not displaying correctly when using the scheming extension */
+.select2-container.form-control {
+    height: 100%;
+    padding:0px;
+}
+
+/* Fixes a display issues with expiration_date not displaying correctly in firefox browser with scheming extension */
+#field-expiration_date {
+    padding:0px 12px;
+}
+
+
+/* Comments */
+
+.comment-container .comment-wrapper {
+    position: relative;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 0;
+    border-top: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+}
+
+.comment {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.comment.comment-deleted {
+    border: 1px solid #ebccd1;
+}
+
+.comment h3 {
+    margin-top: 0;
+}
+
+.comment-header {
+    padding-left: 15px;
+    padding-right: 10px;
+    color: #777;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #eee;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.comment-deleted .comment-header {
+    background-color: #f2dede;
+}
+
+.comment-content {
+    padding: 15px;
+    font-size: 14px;
+}
+
+.comment-deleted .comment-content {
+    background-color: #F7F7F7;
+}
+
+.comment-deleted .comment-content {
+    font-style: italic;
+}
+
+.comment-header .comment-actions .comment-action {
+    float: right;
+}
+
+.comment-action {
+    margin-top: 10px;
+    padding-left: 0;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.comment-action .unflag-comment {
+    margin-left: 10px;
+}
+
+.comment-header-text {
+    max-width: 78%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.comment-header {
+    color: #777;
+}
+
+.comment-container .comment-header .subtle-btn {
+    color: #999;
+    border: 0px;
+    background: transparent;
+}
+
+.comment-container .comment-header .subtle-btn:hover {
+    color: #206b82;
+}
+
+#comment_form label:after,
+.comment-container form label:after {
+    content: '';
+}
+
+#comment_form .form-group,
+.comment-container .form-group {
+    margin-bottom: 10px;
+}
+
+.comment-flagged {
+    color: #c00;
+}
+
+.comment-container .comment-wrapper .comment-wrapper {
+    margin-left: 4em;
+    margin-bottom: 0;
+}
+
+.comment-content ul.links li a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.comment-container .highlight > .comment {
+    border: 1px solid #faebcc;
+}
+
+.comment-container .highlight > .comment > .comment-header {
+    background-color: #fcf8e3;
+}
+
+.comment-container .highlight > .comment.comment-deleted {
+    border: 1px solid #ebccd1;
+}
+
+.comment-container .highlight > .comment.comment-deleted > .comment-header {
+    background-color: #f2dede;
+}
+
+.test {
+    border: 3px solid #ff0;
 }
