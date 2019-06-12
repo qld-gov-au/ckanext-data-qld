@@ -1,24 +1,24 @@
-import logging
 import ckan.plugins.toolkit as toolkit
 import hashlib
-import plugin
-from pylons import config
-
+import logging
 from ckan.controllers.api import ApiController
+
+import plugin
 
 log = logging.getLogger('ckanext.googleanalytics')
 c = toolkit.c
 
+
 class GoogleAnalyticsApiController(ApiController):
 
-    def _alter_sql(self,sql_query):
+    def _alter_sql(self, sql_query):
         '''Quick and dirty altering of sql to prevent injection'''
         sql_query = sql_query.lower()
-        sql_query = sql_query.replace('select','CK_SEL')
-        sql_query = sql_query.replace('insert','CK_INS')
-        sql_query = sql_query.replace('update','CK_UPD')
-        sql_query = sql_query.replace('upsert','CK_UPS')
-        sql_query = sql_query.replace('declare','CK_DEC')
+        sql_query = sql_query.replace('select', 'CK_SEL')
+        sql_query = sql_query.replace('insert', 'CK_INS')
+        sql_query = sql_query.replace('update', 'CK_UPD')
+        sql_query = sql_query.replace('upsert', 'CK_UPS')
+        sql_query = sql_query.replace('declare', 'CK_DEC')
         sql_query = sql_query[:450].strip()
         return sql_query
 
@@ -47,11 +47,11 @@ class GoogleAnalyticsApiController(ApiController):
             request_data = self._get_request_data(try_url_params=side_effect_free)
 
             capture_api_actions = plugin.GoogleAnalyticsPlugin.capture_api_actions
-            
+
             # Only send api actions if it is in the capture_api_actions dictionary
             if api_action in capture_api_actions and isinstance(request_data, dict):
                 api_action_label = capture_api_actions.get(api_action)
-            
+
                 parameter_value = request_data.get('id', '')
                 if parameter_value == '' and 'resource_id' in request_data:
                     parameter_value = request_data['resource_id']
@@ -61,9 +61,9 @@ class GoogleAnalyticsApiController(ApiController):
                     parameter_value = request_data['query']
                 if parameter_value == '' and 'sql' in request_data:
                     parameter_value = self._alter_sql(request_data['sql'])
-              
-                event_action = "{0} - {1}".format(api_action, c.environ['PATH_INFO'].replace('/api/3/',''))
-                event_label = api_action_label.format(parameter_value)  
+
+                event_action = "{0} - {1}".format(api_action, c.environ['PATH_INFO'].replace('/api/3/', ''))
+                event_label = api_action_label.format(parameter_value)
                 self._post_analytics(c.user, event_action, event_label, request_data)
         except Exception as e:
             log.debug(e)
