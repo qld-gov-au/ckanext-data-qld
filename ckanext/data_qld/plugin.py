@@ -8,6 +8,7 @@ import auth_functions as auth
 import constants
 import helpers
 import converters
+import cgi
 
 
 class DataQldPlugin(plugins.SingletonPlugin):
@@ -18,6 +19,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IRoutes, inherit=True)
+    plugins.implements(plugins.IResourceController, inherit=True)
 
     # IConfigurer
     def update_config(self, config_):
@@ -41,7 +43,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_organisation_list': helpers.organisation_list,
                 'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
-                'data_qld_format_activity_data': helpers.format_activity_data
+                'data_qld_format_activity_data': helpers.format_activity_data,
+                'get_datarequest_comments_badge': helpers.get_datarequest_comments_badge,
                 }
 
     # IValidators
@@ -89,6 +92,29 @@ class DataQldPlugin(plugins.SingletonPlugin):
         # Re_Open a Data Request
         m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
                   controller='ckanext.data_qld.controller:DataQldUI',
-                  action='open', conditions=dict(method=['GET', 'POST']))
+                  action='open_datarequest', conditions=dict(method=['GET', 'POST']))
+        
+        m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
+                  controller='ckanext.data_qld.controller:DataQldUI',
+                  action='show_schema', conditions=dict(method=['GET']))
 
         return m
+
+
+    # IResourceController
+    def before_create(self, context, data_dict):
+        return self.check_file_upload(data_dict)
+       
+    def before_update(self, context, current_resource, updated_resource):
+        return self.check_file_upload(updated_resource)
+
+    def check_file_upload(self, data_dict):
+        # This method it to fix a bug that the ckanext-scheming creates for setting the filesize of an uploaded resource
+        # Currently the actions resource_create and resource_update will only set the resource size if the key does not exist in the data_dict
+        # So we will check if the resource is a file upload and remove the 'size' dictionary item from the data_dict 
+        # The action resource_create and resource_update will then set the data_dict['size'] = upload.filesize if 'size' not in data_dict
+        file_upload = data_dict.get(u'upload', None)
+        if isinstance(file_upload, cgi.FieldStorage):
+            data_dict.pop(u'size', None) 
+
+        return data_dict

@@ -6,3 +6,6 @@ UPDATE_DATAREQUEST_ORGANISATION = 'update_datarequest_organisation'
 CLOSE_DATAREQUEST = 'close_datarequest'
 OPEN_DATAREQUEST = 'open_datarequest'
 LIST_DATAREQUESTS = 'list_datarequests'
+
+RESOURCE_SHOW = 'resource_show'
+SCHEMA_MAIN_PATH = 'schema'
