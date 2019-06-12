@@ -1,7 +1,7 @@
 # ckanext-data-qld
 A custom CKAN extension for Data.Qld
 
-[![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld.svg?style=svg)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld)
+[![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop.svg?style=shield)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop)
 
 ## Local environment setup
 - Make sure that you have latest versions of all required software installed:
