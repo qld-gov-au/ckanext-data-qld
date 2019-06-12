@@ -53,6 +53,22 @@ Set `ALLOW_UNIT_FAIL=1` in `.env` to allow unit test failures.
 
 Set `ALLOW_BDD_FAIL=1` in `.env` to allow BDD test failures.
 
+### How it works
+We are using [Behave](https://github.com/behave/behave) BDD _framework_ with additional _step definitions_ provided by [Behaving](https://github.com/ggozad/behaving) library.
+
+Custom steps described in `test/features/steps/steps.py`.
+
+Test scenarios located in `test/features/*.feature` files.
+
+Test environment configuration is located in `test/features/environment.py` and is setup to connect to a remote Chrome
+instance running in a separate Docker container. 
+
+During the test, Behaving passes connection information to [Splinter](https://github.com/cobrateam/splinter) which
+instantiates WebDriver object and establishes connection with Chrome instance. All further communications with Chrome 
+are handled through this driver, but in a developer-friendly way.
+
+For a list of supported step-definitions, see https://github.com/ggozad/behaving#behavingweb-supported-matcherssteps.
+
 ## Automated builds (Continuous Integration)
 In software engineering, continuous integration (CI) is the practice of merging all developer working copies to a shared mainline several times a day. 
 Before feature changes can be merged into a shared mainline, a complete build must run and pass all tests on CI server.

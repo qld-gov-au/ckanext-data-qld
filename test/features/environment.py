@@ -1,22 +1,64 @@
-#
-# The environment.py module may define code to run
-# before and after certain events during your testing.
-#
-#
-# @see https://behave.readthedocs.io/en/latest/api.html?highlight=environment#environment-file-functions
-# @see https://elliterate.github.io/capybara.py/
-#
+import os
+from behaving import environment as benv
 
-from environment_common import before_all
-from environment_common import after_all
-from environment_common import init_selenium_chrome_driver
-from environment_common import behave_use_capybara
-from environment_common import use_headless_mode
-from environment_common import set_remote_chrome_addr
+from behaving.web.steps.browser import named_browser
 
-print('------------------')
-#use_headless_mode(False)
-#behave_use_capybara()
-#set_remote_chrome_addr('http://127.0.0.1:9515/wd/hub')                 # from host to the same host
-#set_remote_chrome_addr('http://docker.for.mac.localhost:9515/wd/hub')  # from Docker container to Mac host
-#set_remote_chrome_addr('http://docker.for.win.localhost:9515/wd/hub')  # from Docker container to Windows host
+# Path to the root of the project.
+ROOT_PATH = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
+
+# Base URL for relative paths resolution.
+BASE_URL = 'http://ckan:3000/'
+
+# URL of remote Chrome instance.
+REMOTE_CHROME_URL = 'http://chrome:4444/wd/hub'
+
+# @see .docker/scripts/init.sh for credentials.
+PERSONAS = {
+    'Admin': dict(
+        name=u'admin',
+        email=u'admin@localhost',
+        password=u'password'
+    )
+}
+
+
+def before_all(context):
+    # The path where screenshots will be saved.
+    context.screenshots_dir = os.path.join(ROOT_PATH, 'test/screenshots')
+    # The path where file attachments can be found.
+    context.attachment_dir = os.path.join(ROOT_PATH, 'test/fixtures')
+
+    # Set base url for all relative links.
+    context.base_url = BASE_URL
+
+    # Always use remote web driver.
+    context.remote_webdriver = 1
+    context.default_browser = 'chrome'
+    context.browser_args = {'url': REMOTE_CHROME_URL}
+
+    # Set the rest of the settings to default Behaving's settings.
+    benv.before_all(context)
+
+
+def after_all(context):
+    benv.after_all(context)
+
+
+def before_feature(context, feature):
+    benv.before_feature(context, feature)
+
+
+def after_feature(context, feature):
+    benv.after_feature(context, feature)
+
+
+def before_scenario(context, scenario):
+    benv.before_scenario(context, scenario)
+    # Always use remote browser.
+    named_browser(context, 'remote')
+    # Set personas.
+    context.personas = PERSONAS
+
+
+def after_scenario(context, scenario):
+    benv.after_scenario(context, scenario)

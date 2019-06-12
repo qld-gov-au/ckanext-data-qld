@@ -1,9 +1,0 @@
-FROM williamyeh/behave
-
-WORKDIR /app/test
-
-ENV REQUIREMENTS_PATH /app/features/steps/requirements.txt
-
-COPY test/features /app/test/features
-
-ENTRYPOINT ["tail", "-f", "/dev/null"]

@@ -25,6 +25,13 @@ jobs:
       - *step_setup_remote_docker
       - run: .circleci/build.sh
       - run: .circleci/test.sh
+      - run:
+          name: Process artifacts
+          command: .circleci/process-artifacts.sh
+          when: always
+      - store_artifacts:
+          path: /tmp/artifacts
+          when: always
 
 workflows:
   version: 2
