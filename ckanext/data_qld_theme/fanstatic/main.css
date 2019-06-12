@@ -10769,6 +10769,7 @@ body {
       font-weight: 600;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      text-decoration: none;
       font-family: 'Lato', sans-serif; }
     .site-footer__copyright p, .site-footer__signoff p {
       margin: 0;
@@ -10777,6 +10778,10 @@ body {
       line-height: 0.8125rem; }
   .site-footer__copyright {
     margin: 1.25rem 0 0.625rem 0; }
+  .site-footer__signoff a:focus,
+  .site-footer__signoff a:hover {
+    text-decoration: underline;
+  }
 
 /*
  * Tablet layout
@@ -11990,4 +11995,3 @@ header.account-masthead {
 /*
  * Desktop layout
  */
-
