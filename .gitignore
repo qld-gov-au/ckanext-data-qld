@@ -41,3 +41,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 .env.local
+/test/screenshots
+!/test/screenshots/.gitkeep

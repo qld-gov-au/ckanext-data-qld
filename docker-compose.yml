@@ -8,6 +8,7 @@ x-volumes:
   volumes:
     - /app/ckan ### Local overrides to mount host filesystem. Automatically removed in CI and PROD.
     - ./ckanext:/app/ckanext:${VOLUME_FLAGS:-delegated} ### Local overrides to mount host filesystem. Automatically removed in CI and PROD.
+    - ./test:/app/test:${VOLUME_FLAGS:-delegated} ### Local overrides to mount host filesystem. Automatically removed in CI and PROD.
     ##- /app/filestore # Override for environment without host mounts. Automatically uncommented in CI.
 
 x-environment:
@@ -88,10 +89,9 @@ services:
       - amazeeio-network
       - default
 
-  test:
-    build:
-      context: .
-      dockerfile: .docker/Dockerfile.test
+  chrome:
+    image: selenium/standalone-chrome:3.141.59-oxygen
+    shm_size: '1gb'
     depends_on:
       - ckan
     <<: *default-volumes
@@ -100,7 +100,6 @@ services:
       <<: *default-environment
       # CHROME_BINARY_PATH: /usr/bin/google-chrome
       # DBUS_SESSION_BUS_ADDRESS: /dev/null
-    shm_size: 256m
     networks:
       - amazeeio-network
       - default

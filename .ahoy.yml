@@ -63,7 +63,7 @@ commands:
 
   cli:
     usage: Start a shell inside CLI container or run a command.
-    cmd: if \[ "${#}" -ne 0 \]; then docker exec -i $(docker-compose ps -q ckan) sh -c "$*"; else docker exec -it $(docker-compose ps -q ckan) sh; fi
+    cmd: if \[ "${#}" -ne 0 \]; then docker exec -i $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate; $*"; else docker exec -it $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate && sh"; fi
 
   doctor:
     usage: Find problems with current project setup.
@@ -98,7 +98,8 @@ commands:
     cmd: |
       docker cp -L requirements-dev.txt $(docker-compose ps -q ckan):/app/.
       docker cp -L .flake8 $(docker-compose ps -q ckan):/app/.
-      ahoy cli ". /app/ckan/default/bin/activate && pip install -r /app/requirements-dev.txt"
+      docker cp -L test $(docker-compose ps -q ckan):/app/.
+      ahoy cli "pip install -r /app/requirements-dev.txt"
     hide: true
 
   flush-redis:
@@ -108,19 +109,19 @@ commands:
   lint:
     usage: Lint code.
     cmd: |
-      ahoy cli ". /app/ckan/default/bin/activate && flake8 ${@:-/app/ckanext}" || \
+      ahoy cli "flake8 ${@:-/app/ckanext}" || \
       [ "${ALLOW_LINT_FAIL:-0}" -eq 1 ]
 
   test-unit:
     usage: Run unit tests.
     cmd: |
-      ahoy cli ". /app/ckan/default/bin/activate && nosetests" || \
+      ahoy cli "nosetests" || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:
     usage: Run BDD tests.
     cmd: |
-      docker exec -i $(docker-compose ps -q test) sh -c "behave $*" || \
+      ahoy cli "behave ${*:-/app/test/features}" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
 
   # Utilities.
