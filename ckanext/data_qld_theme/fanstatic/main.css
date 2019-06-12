@@ -10788,7 +10788,6 @@ body {
   .site-footer {
     padding: 2.8125rem 1.5625rem 2.8125rem 1.5625rem; }
     .site-footer__signoff {
-      display: none;
       margin: 0.9375rem 0 0 0; }
     .site-footer__copyright {
       margin-bottom: 0; }
