@@ -5,10 +5,6 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the relevant file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
-
 setup(
     name='''ckanext-data-qld-theme''',
 
@@ -17,11 +13,11 @@ setup(
     # http://packaging.python.org/en/latest/tutorial.html#version
     version='0.0.1',
 
-    description='''A custom theme extension for Data.Qld based on CKAN 2.7.3''',
-    long_description=long_description,
+    description='''Custom extension for Data QLD''',
+    long_description='''''',
 
     # The project's main homepage.
-    url='https://github.com//ckanext-data-qld-theme',
+    url='https://github.com/qld-gov-au/ckanext-data-qld-theme',
 
     # Author details
     author='''Salsa Digital''',
@@ -53,7 +49,7 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    namespace_packages=['ckanext'],
+    # namespace_packages=['ckanext'],
 
     install_requires=[
       # CKAN extensions should not list dependencies here, but in a separate
@@ -81,6 +77,9 @@ setup(
     entry_points='''
         [ckan.plugins]
         data_qld_theme=ckanext.data_qld_theme.plugin:DataQldThemePlugin
+
+        [paste.paster_command]
+        migrate_extras = ckanext.data_qld.commands:MigrateExtras
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
