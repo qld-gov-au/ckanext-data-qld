@@ -1,11 +1,9 @@
 import ckan.lib.base as base
+import ckan.lib.helpers as helpers
 import ckan.model as model
 import ckan.plugins as plugins
-import ckan.lib.helpers as helpers
-from ckan.common import request
-
-import logging
 import json
+import logging
 
 import constants
 
@@ -28,7 +26,7 @@ class DataQldUI(base.BaseController):
     def _get_context(self):
         return {'model': model, 'session': model.Session,
                 'user': c.user, 'auth_user_obj': c.userobj}
- 
+
     def open_datarequest(self, id):
         data_dict = {'id': id}
         context = self._get_context()
@@ -39,7 +37,7 @@ class DataQldUI(base.BaseController):
             tk.check_access(constants.OPEN_DATAREQUEST, context, data_dict)
             c.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
 
-            if c.datarequest.get('closed', False) == False:
+            if c.datarequest.get('closed', False) is False:
                 tk.abort(403, tk._('This data request is already open'))
             else:
                 data_dict = {}
@@ -47,7 +45,9 @@ class DataQldUI(base.BaseController):
                 data_dict['accepted_dataset_id'] = c.datarequest.get('accepted_dataset_id', '')
 
                 tk.get_action(constants.OPEN_DATAREQUEST)(context, data_dict)
-                tk.redirect_to(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='show', id=data_dict['id']))
+                tk.redirect_to(
+                    helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
+                                    action='show', id=data_dict['id']))
         except tk.ValidationError as e:
             log.warn(e)
             errors_summary = _get_errors_summary(e.error_dict)
@@ -59,7 +59,7 @@ class DataQldUI(base.BaseController):
             log.warn(e)
             tk.abort(403, tk._('You are not authorized to close the Data Request %s' % id))
 
-    def show_schema(self, dataset_id, resource_id):  
+    def show_schema(self, dataset_id, resource_id):
         data_dict = {'id': resource_id}
         context = self._get_context()
 

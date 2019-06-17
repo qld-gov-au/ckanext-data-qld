@@ -98,8 +98,6 @@ services:
     <<: *default-user
     environment:
       <<: *default-environment
-      # CHROME_BINARY_PATH: /usr/bin/google-chrome
-      # DBUS_SESSION_BUS_ADDRESS: /dev/null
     networks:
       - amazeeio-network
       - default

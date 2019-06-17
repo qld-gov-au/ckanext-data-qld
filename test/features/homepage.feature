@@ -1,6 +1,6 @@
 @smoke
 Feature: Homepage
 
-    Scenario: Search for BDD
+    Scenario: Homepage
         When I go to homepage
         Then I take a screenshot
