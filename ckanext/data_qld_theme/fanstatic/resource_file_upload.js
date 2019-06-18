@@ -1,10 +1,21 @@
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
 
-  jQuery('input[name="upload"]').change(function() {
+  // Hide resource size element on loading of a resource edit form if the resource file was uploaded
+  if (jQuery('.image-upload[data-module="image-upload"]').data('module-is_upload') == true) {
+    jQuery('#field-size').parent().parent().hide();
+  }
+  // Show field-size element on loading of a resource edit form if the resource file was a url link
+  else if (jQuery('.image-upload[data-module="image-upload"]').data('module-is_url') == true) {
+    jQuery('#field-size').parent().parent().show();
+  }
+
+  // Hide the resource element if a file was selected to upload
+  jQuery('#field-image-upload').change(function () {
     jQuery('#field-size').parent().parent().fadeOut();
   });
 
-  jQuery('input[name="url"]').change(function() {
+  // Show the resource element if a url link was entered
+  jQuery('#field-image-url').change(function () {
     jQuery('#field-size').parent().parent().fadeIn();
   });
 

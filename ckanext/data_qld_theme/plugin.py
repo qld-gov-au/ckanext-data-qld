@@ -1,5 +1,6 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import datetime
 
 from ckan.common import config
 
@@ -9,6 +10,10 @@ def get_gtm_code():
     gtm_code = config.get('ckan.google_tag_manager.gtm_container_id', False)
     return str(gtm_code)
 
+
+def get_year():
+    now = datetime.datetime.now()
+    return now.year
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -24,5 +29,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {
-            'get_gtm_container_id': get_gtm_code
+            'get_gtm_container_id': get_gtm_code,
+            'get_year': get_year,
         }

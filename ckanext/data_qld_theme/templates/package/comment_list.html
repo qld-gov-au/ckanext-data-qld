@@ -92,7 +92,9 @@
 
             <div class="comment-content">
                 {% if comment.state != 'deleted' %}
-                    <h3>{{ comment.subject }}</h3>
+                    {% if comment.subject|lower != 'no subject' %}
+                        <h3>{{ comment.subject }}</h3>
+                    {% endif %}
                 {% else %}
                     <p><strong>{{ _('This comment was deleted.') }}</strong></p>
                 {% endif %}
