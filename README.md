@@ -80,7 +80,6 @@ Add `[skip ci]` to the commit subject to skip CI build. Useful for documentation
 ### SSH
 Circle CI supports shell access to the build for 120 minutes after the build is finished when the build is started with SSH support. Use "Rerun job with SSH" button in Circle CI UI to start build with SSH support.
 
-
 ## Installation
 
 1. Clone this repository

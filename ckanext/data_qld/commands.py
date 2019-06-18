@@ -121,7 +121,8 @@ class MigrateExtras(CkanCommand):
                         expiration_date = default_expiration_date
 
                     if 'size' in resource:
-                        size = resource['size'] if resource['size'] != None and resource['size'] != '0 bytes' else default_size 
+                        size = resource['size'] if resource['size'] is not None and resource[
+                            'size'] != '0 bytes' else default_size
 
                     if 'name' in resource:
                         name = resource['name']
