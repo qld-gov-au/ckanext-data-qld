@@ -1,12 +1,12 @@
 {
-    "datastore_search_sql": "datastore_search_sql | Query: {0}",
-    "datastore_search": "datastore_search | Query: {0}",
-    "package_show": "package_show | Package ID: {0}",
-    "package_search": "package_search | Package ID : {0}",
-    "resource_show": "resource_show | Resource ID : {0}",
-    "resource_search": "resource_search | Query: {0}",
-    "organization_show": "organization_show | Organisation ID: {0}",
-    "follow_dataset": "follow_dataset | Package ID: {0}",
-    "package_activity_list": "package_activity_list | Package ID: {0}",
-    "revision_show": "revision_show | Revision ID: {0}"
+  "datastore_search_sql": "datastore_search_sql | Query: {0}",
+  "datastore_search": "datastore_search | Query: {0}",
+  "package_show": "package_show | Package ID: {0}",
+  "package_search": "package_search | Package ID : {0}",
+  "resource_show": "resource_show | Resource ID : {0}",
+  "resource_search": "resource_search | Query: {0}",
+  "organization_show": "organization_show | Organisation ID: {0}",
+  "follow_dataset": "follow_dataset | Package ID: {0}",
+  "package_activity_list": "package_activity_list | Package ID: {0}",
+  "revision_show": "revision_show | Revision ID: {0}"
 }

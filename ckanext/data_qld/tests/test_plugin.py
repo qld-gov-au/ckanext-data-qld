@@ -1,5 +1,7 @@
 """Tests for plugin.py."""
-import ckanext.data-qld.plugin as plugin
 
-def test_plugin():
-    pass
+from nose.tools import assert_equal
+
+
+def test_plugin_example():
+    assert_equal(1, 1)

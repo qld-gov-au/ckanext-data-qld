@@ -1,14 +1,14 @@
 # encoding: utf-8
 
+import cgi
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
 import actions
 import auth_functions as auth
 import constants
-import helpers
 import converters
-import cgi
+import helpers
 
 
 class DataQldPlugin(plugins.SingletonPlugin):
@@ -28,7 +28,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         toolkit.add_resource('fanstatic', 'data_qld')
 
     def update_config_schema(self, schema):
-        ignore_missing = toolkit.get_validator('ignore_missing') 
+        ignore_missing = toolkit.get_validator('ignore_missing')
         schema.update({
             # This is a custom configuration option
             'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode]
@@ -51,7 +51,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     def get_validators(self):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
-            'data_qld_filesize_formatter': converters.filesize_formatter            
+            'data_qld_filesize_formatter': converters.filesize_formatter
         }
 
     # IPackageController
@@ -66,7 +66,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     def edit(self, entity):
         self.set_maintainer_from_author(entity)
 
-    #IAuthFunctions
+    # IAuthFunctions
     def get_auth_functions(self):
         auth_functions = {
             constants.UPDATE_DATAREQUEST: auth.update_datarequest,
@@ -75,10 +75,10 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.OPEN_DATAREQUEST: auth.open_datarequest
         }
         return auth_functions
-        
-    #IActions
+
+    # IActions
     def get_actions(self):
-        additional_actions = {  
+        additional_actions = {
             constants.OPEN_DATAREQUEST: actions.open_datarequest,
             constants.CREATE_DATAREQUEST: actions.create_datarequest,
             constants.UPDATE_DATAREQUEST: actions.update_datarequest,
@@ -86,35 +86,35 @@ class DataQldPlugin(plugins.SingletonPlugin):
         }
         return additional_actions
 
-    #IRoutes
+    # IRoutes
     def before_map(self, m):
-       
         # Re_Open a Data Request
         m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
                   controller='ckanext.data_qld.controller:DataQldUI',
                   action='open_datarequest', conditions=dict(method=['GET', 'POST']))
-        
+
         m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
                   controller='ckanext.data_qld.controller:DataQldUI',
                   action='show_schema', conditions=dict(method=['GET']))
 
         return m
 
-
     # IResourceController
     def before_create(self, context, data_dict):
         return self.check_file_upload(data_dict)
-       
+
     def before_update(self, context, current_resource, updated_resource):
         return self.check_file_upload(updated_resource)
 
     def check_file_upload(self, data_dict):
-        # This method it to fix a bug that the ckanext-scheming creates for setting the filesize of an uploaded resource
-        # Currently the actions resource_create and resource_update will only set the resource size if the key does not exist in the data_dict
-        # So we will check if the resource is a file upload and remove the 'size' dictionary item from the data_dict 
-        # The action resource_create and resource_update will then set the data_dict['size'] = upload.filesize if 'size' not in data_dict
+        # This method is to fix a bug that the ckanext-scheming creates for setting the file size of an uploaded
+        # resource. Currently the actions resource_create and resource_update will only set the resource size if the
+        # key does not exist in the data_dict.
+        # So we will check if the resource is a file upload and remove the 'size' dictionary item from the data_dict.
+        # The action resource_create and resource_update will then set the data_dict['size'] = upload.filesize if
+        # 'size' not in data_dict.
         file_upload = data_dict.get(u'upload', None)
         if isinstance(file_upload, cgi.FieldStorage):
-            data_dict.pop(u'size', None) 
+            data_dict.pop(u'size', None)
 
         return data_dict
