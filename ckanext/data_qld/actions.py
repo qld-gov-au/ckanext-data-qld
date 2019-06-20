@@ -244,6 +244,8 @@ def update_datarequest(original_action, context, data_dict):
 
     # Data QLD modification
     organisation_updated =  data_req.organization_id != data_dict['organization_id']
+    if organisation_updated:
+        unassigned_organisation_id = data_req.organization_id
 
     # Set the data provided by the user in the data_red
     _undictize_datarequest_basic(data_req, data_dict)
@@ -255,9 +257,18 @@ def update_datarequest(original_action, context, data_dict):
 
     if datarequest_dict['organization'] and organisation_updated:
         # Data QLD modification
+        # Email Admin users of the assigned organisation
         users = _get_admin_users_from_organasition(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
         _send_mail(users, 'new_datarequest_organisation', datarequest_dict)
+        
+        # Email Admin users of unassigned organisation
+        org_dict = {
+           'organization' : _get_organization(unassigned_organisation_id) 
+        }
+        users = _get_admin_users_from_organasition(org_dict)
+        users.discard(context['auth_user_obj'].id)
+        _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict)
 
     return datarequest_dict
 
