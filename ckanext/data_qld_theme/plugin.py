@@ -15,6 +15,7 @@ def get_year():
     now = datetime.datetime.now()
     return now.year
 
+
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
