@@ -10,7 +10,8 @@
   {% endblock %}
 
   {% block styles %}
-    {% resource 'data_qld_theme/main.css' %}
+    {{ super() }}
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" rel="stylesheet" />
+    <link href="https://www.qld.gov.au/__data/assets/git_bridge/0018/100881/open-data/dist/qld.css?h=288c0ce" rel="stylesheet" />
     {% resource 'data_qld_theme/data_qld.css' %}
   {% endblock %}
