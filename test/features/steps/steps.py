@@ -4,7 +4,7 @@ from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
 
 
-@when('I go to homepage')
+@step('I go to homepage')
 def go_to_home(context):
     when_i_visit_url(context, '/')
 
