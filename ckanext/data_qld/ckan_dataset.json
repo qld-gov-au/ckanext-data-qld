@@ -151,7 +151,7 @@
       "field_name": "expiration_date",
       "label": "Next Review",
       "form_placeholder": "e.g. dd/mm/yyyy",
-      "preset": "date",      
+      "preset": "date",
       "required": true
     },
     {

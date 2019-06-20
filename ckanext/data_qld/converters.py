@@ -1,14 +1,14 @@
-from ckan.plugins.toolkit import Invalid
 import ckan.lib.formatters as formatters
 import re
+from ckan.plugins.toolkit import Invalid
 
 
 def filesize_converter(value, context):
-    '''Returns the converted size into bytes 
+    """Returns the converted size into bytes
 
     :rtype: int
 
-    '''
+    """
     value = str(value)
     # remove whitespaces
     value = re.sub(' ', '', value)
@@ -24,11 +24,11 @@ def filesize_converter(value, context):
 
 
 def filesize_bytes(value):
-    '''Returns the converted size into bytes 
+    """Returns the converted size into bytes
         size types TERABYTES, GIGABYTES, MEGABYTES, KILOBYTES
     :rtype: int
 
-    '''
+    """
     if re.search(r'^\d*\.?\d+[A-Za-z]*$', value) is not None:
         size_type = re.search(r'[A-Za-z]+', value)
         size_number = re.search(r'\d*\.?\d*', value)
@@ -56,9 +56,10 @@ def filesize_bytes(value):
     else:
         raise Invalid('Must be a valid filesize format')
 
+
 def filesize_formatter(size):
-    '''Returns a localised unicode representation of a number in bytes, MiB etc
+    """Returns a localised unicode representation of a number in bytes, MiB etc
     :rtype: string
 
-    '''
+    """
     return formatters.localised_filesize(int(size))

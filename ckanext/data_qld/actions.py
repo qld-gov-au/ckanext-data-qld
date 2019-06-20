@@ -1,15 +1,15 @@
 import ckan.lib.base as base
-import ckan.model as model
-import ckan.plugins as plugins
 import ckan.lib.helpers as helpers
 import ckan.lib.mailer as mailer
-from pylons import config
+import ckan.model as model
+import ckan.plugins as plugins
+import ckanext.datarequests.db as db
+import ckanext.datarequests.validator as validator
 import datetime
 import logging
-import ckanext.datarequests.db as db
-import constants
-import ckanext.datarequests.validator as validator
+from pylons import config
 
+import constants
 
 c = plugins.toolkit.c
 log = logging.getLogger(__name__)
@@ -70,7 +70,8 @@ def _dictize_datarequest(datarequest):
         'organization': None,
         'accepted_dataset': None,
         'followers': 0,
-        'dataset_url': helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='show', id=datarequest.id, qualified=True)
+        'dataset_url': helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
+                                       action='show', id=datarequest.id, qualified=True)
     }
 
     if datarequest.organization_id:
@@ -93,7 +94,6 @@ def _undictize_datarequest_basic(data_request, data_dict):
 
 
 def _send_mail(user_ids, action_type, datarequest):
-
     for user_id in user_ids:
         try:
             user_data = model.User.get(user_id)
@@ -114,15 +114,15 @@ def _send_mail(user_ids, action_type, datarequest):
 
 
 def _get_admin_users_from_organasition(datarequest_dict):
-    # Data QLD modification 
-    users = set([user['id'] for user in datarequest_dict['organization']['users'] if user.get('capacity') == 'admin']) 
+    # Data QLD modification.
+    users = set([user['id'] for user in datarequest_dict['organization']['users'] if user.get('capacity') == 'admin'])
     return users
-    
+
 
 # Copied from ckanext.datarequests.actions. Please keep up to date with any extension updates
 @tk.chained_action
 def create_datarequest(original_action, context, data_dict):
-    '''
+    """
     Action to create a new data request. The function checks the access rights
     of the user before creating the data request. If the user is not allowed
     a NotAuthorized exception will be risen.
@@ -132,7 +132,7 @@ def create_datarequest(original_action, context, data_dict):
     not valid.
 
     Data QLD modification
-    Will send email notification to users of assigned organisation with admin access 
+    Will send email notification to users of assigned organisation with admin access
 
     :param title: The title of the data request
     :type title: string
@@ -145,10 +145,10 @@ def create_datarequest(original_action, context, data_dict):
     :type organization_id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
-    '''
+    """
 
     model = context['model']
     session = context['session']
@@ -169,7 +169,7 @@ def create_datarequest(original_action, context, data_dict):
     data_req.open_time = datetime.datetime.now()
 
     session.add(data_req)
-    session.commit()    
+    session.commit()
 
     datarequest_dict = _dictize_datarequest(data_req)
 
@@ -185,7 +185,7 @@ def create_datarequest(original_action, context, data_dict):
 #  Copied from ckanext.datarequests.actions. Please keep up to date with any action updates
 @tk.chained_action
 def update_datarequest(original_action, context, data_dict):
-    '''
+    """
     Action to update a data request. The function checks the access rights of
     the user before updating the data request. If the user is not allowed
     a NotAuthorized exception will be risen.
@@ -195,7 +195,7 @@ def update_datarequest(original_action, context, data_dict):
     invalid.
 
     Data QLD modification
-    Will send email notification if organisation was changed to users of assigned organisation with admin access 
+    Will send email notification if organisation was changed to users of assigned organisation with admin access
 
     :param id: The ID of the data request to be updated
     :type id: string
@@ -211,10 +211,10 @@ def update_datarequest(original_action, context, data_dict):
     :type organization_id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
-    '''
+    """
 
     model = context['model']
     session = context['session']
@@ -243,7 +243,7 @@ def update_datarequest(original_action, context, data_dict):
     validator.validate_datarequest(context, data_dict)
 
     # Data QLD modification
-    organisation_updated =  data_req.organization_id != data_dict['organization_id']
+    organisation_updated = data_req.organization_id != data_dict['organization_id']
     if organisation_updated:
         unassigned_organisation_id = data_req.organization_id
 
@@ -276,7 +276,7 @@ def update_datarequest(original_action, context, data_dict):
 #  Copied from ckanext.datarequests.actions. Please keep up to date with any action updates
 @tk.chained_action
 def close_datarequest(original_action, context, data_dict):
-    '''
+    """
     Action to close a data request. Access rights will be checked before
     closing the data request. If the user is not allowed, a NotAuthorized
     exception will be risen.
@@ -292,11 +292,11 @@ def close_datarequest(original_action, context, data_dict):
     :type accepted_dataset_id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
 
-    '''
+    """
 
     model = context['model']
     session = context['session']
@@ -336,27 +336,27 @@ def close_datarequest(original_action, context, data_dict):
     datarequest_dict = _dictize_datarequest(data_req)
 
     # Mailing
-    users = [data_req.user_id]    
+    users = [data_req.user_id]
     _send_mail(users, 'close_datarequest_creator', datarequest_dict)
 
     return datarequest_dict
 
 
 def open_datarequest(context, data_dict):
-    '''
+    """
     Action to open a data request. Access rights will be checked before
     opening the data request. If the user is not allowed, a NotAuthorized
     exception will be risen.
 
     :param id: The ID of the data request to be closed
-    :type id: string    
+    :type id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
 
-    '''
+    """
 
     model = context['model']
     session = context['session']
@@ -364,9 +364,9 @@ def open_datarequest(context, data_dict):
 
     # Check id
     if not datarequest_id:
-        raise tk.ValidationError(tk._('Data Request ID has not been included'))        
-    
-    # Init the data base
+        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+
+        # Init the data base
     db.init_db(model)
 
     # Check access
@@ -378,7 +378,7 @@ def open_datarequest(context, data_dict):
     if not result:
         raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
 
-    data_req = result[0] 
+    data_req = result[0]
     data_req.closed = False
     data_req.accepted_dataset_id = None
     data_req.close_time = None
@@ -389,10 +389,10 @@ def open_datarequest(context, data_dict):
     datarequest_dict = _dictize_datarequest(data_req)
 
     # Mailing
-    users = [data_req.user_id]    
+    users = [data_req.user_id]
     _send_mail(users, 'open_datarequest_creator', datarequest_dict)
     if datarequest_dict['organization']:
         users = _get_admin_users_from_organasition(datarequest_dict)
         _send_mail(users, 'open_datarequest_organisation', datarequest_dict)
-    
+
     return datarequest_dict

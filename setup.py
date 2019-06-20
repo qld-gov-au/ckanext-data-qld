@@ -5,10 +5,6 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the relevant file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
-
 setup(
     name='''ckanext-data-qld''',
 
@@ -18,7 +14,7 @@ setup(
     version='0.0.1',
 
     description='''Custom extension for Data QLD''',
-    long_description=long_description,
+    long_description='''''',
 
     # The project's main homepage.
     url='''https://servicesmadesimpler.govnet.qld.gov.au/bitbucket/scm/ckan/ckanext-data-qld-theme.git''',
@@ -53,7 +49,7 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    namespace_packages=['ckanext'],
+    # namespace_packages=['ckanext'],
 
     install_requires=[
       # CKAN extensions should not list dependencies here, but in a separate
