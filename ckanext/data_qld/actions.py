@@ -261,10 +261,10 @@ def update_datarequest(original_action, context, data_dict):
         users = _get_admin_users_from_organasition(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
         _send_mail(users, 'new_datarequest_organisation', datarequest_dict)
-        
+
         # Email Admin users of unassigned organisation
         org_dict = {
-           'organization' : _get_organization(unassigned_organisation_id) 
+            'organization': _get_organization(unassigned_organisation_id)
         }
         users = _get_admin_users_from_organasition(org_dict)
         users.discard(context['auth_user_obj'].id)
