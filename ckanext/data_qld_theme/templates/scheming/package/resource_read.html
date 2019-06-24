@@ -39,5 +39,36 @@
     </div>
   {% endblock %}
   {% endif %}
+
+  {%- block resource_fields -%}
+    {%- set exclude_fields = [
+      'name',
+      'description',
+      'url',
+      'format',
+      ] -%}
+    {%- if 'schema' not in res -%}
+      {%- do exclude_fields.append('schema') -%}
+      {%- do exclude_fields.append('validation_options') -%}
+      {%- do exclude_fields.append('validation_status') -%}
+      {%- do exclude_fields.append('validation_timestamp') -%}
+    {%- endif -%}
+    {%- for field in schema.resource_fields -%}
+      {%- if field.field_name not in exclude_fields
+          and field.display_snippet is not none -%}
+        <tr>
+          <th scope="row">
+            {{- h.scheming_language_text(field.label) -}}
+          </th>
+          <td>
+            {%- snippet 'scheming/snippets/display_field.html',
+                field=field, data=res, entity_type='dataset',
+                object_type=dataset_type -%}
+          </td>
+        </tr>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endblock -%}
+
   {{ super() }}
 {% endblock %}
