@@ -72,7 +72,9 @@
 		{{ super() }}
 		{% endblock %}
 		{% block data_preview %}
-		{{ super() }}
+		{% if res.datastore_active %}
+			{{ super() }}
+		{% endif %}
 		{% endblock %}
 		{% endblock %}
 </section>
