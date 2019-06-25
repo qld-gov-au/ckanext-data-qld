@@ -36,7 +36,7 @@ class DataQldUI(base.BaseController):
         try:
             tk.check_access(constants.OPEN_DATAREQUEST, context, data_dict)
             c.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
-            
+
             if c.datarequest.get('closed', False) is False:
                 tk.abort(403, tk._('This data request is already open'))
             else:
