@@ -30,7 +30,7 @@ def update_datarequest_organisation(context, data_dict):
 
 
 def open_datarequest(context, data_dict):
-   # Users part of the default data request organisation or selected organisation who have admin access.
+    # Users part of the default data request organisation or selected organisation who have admin access.
     return {'success': user_has_datarequest_admin_access(data_dict.get('id'), False, context)}
 
 
