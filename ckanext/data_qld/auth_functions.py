@@ -8,8 +8,7 @@ import helpers
 def update_datarequest(next_auth, context, data_dict):
     # Users part of the default data request organisation or selected organisation who have admin/editor access
     # If Auth returns false call the next_auth function in the chain to check their access
-    datarequest = toolkit.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
-    if user_has_datarequest_admin_access(data_dict.get('id'), datarequest.get('organization_id'), True):
+    if user_has_datarequest_admin_access(data_dict.get('id'), True, context):
         return {'success': True}
     else:
         return next_auth(context, data_dict)
@@ -17,9 +16,9 @@ def update_datarequest(next_auth, context, data_dict):
 
 @toolkit.chained_auth_function
 def close_datarequest(next_auth, context, data_dict):
-    # Users part of the default data request organisation who have admin access.
+    # Users part of the default data request organisation or selected organisation who have admin access.
     # If Auth returns false, call the next_auth function in the chain to check their access.
-    if user_has_datarequest_admin_access(data_dict.get('id'), None, False):
+    if user_has_datarequest_admin_access(data_dict.get('id'), False, context):
         return {'success': True}
     else:
         return next_auth(context, data_dict)
@@ -27,15 +26,15 @@ def close_datarequest(next_auth, context, data_dict):
 
 def update_datarequest_organisation(context, data_dict):
     # Users part of the default data request organisation or selected organisation who have admin/editor access.
-    return {'success': user_has_datarequest_admin_access(data_dict.get('id'), data_dict.get('organization_id'), True)}
+    return {'success': user_has_datarequest_admin_access(data_dict.get('id'), True, context)}
 
 
 def open_datarequest(context, data_dict):
-    # Users part of the default data request organisation who have admin access.
-    return {'success': user_has_datarequest_admin_access(data_dict.get('id'), None, False)}
+   # Users part of the default data request organisation or selected organisation who have admin access.
+    return {'success': user_has_datarequest_admin_access(data_dict.get('id'), False, context)}
 
 
-def user_has_datarequest_admin_access(datarequest_id, datarequest_organisation_id, include_editor_access):
+def user_has_datarequest_admin_access(datarequest_id, include_editor_access, context):
     user = toolkit.c.userobj
     # If user is 'None' - they are not logged in.
     if user is None:
@@ -54,7 +53,7 @@ def user_has_datarequest_admin_access(datarequest_id, datarequest_organisation_i
     # User has admin/editor access so check if they are a member of the default_organisation_id or datarequest_organisation_id
     elif user_has_access:
         default_organisation_id = helpers.datarequest_default_organisation_id()
-
+        datarequest_organisation_id = toolkit.get_action(constants.SHOW_DATAREQUEST)(context, {'id': datarequest_id}).get('organization_id')
         for organisation in organisation_list:
             print('organisation.id: s%', organisation.id)
             # Is user an admin/editor of the default organisation
