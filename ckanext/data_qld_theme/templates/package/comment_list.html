@@ -6,7 +6,7 @@
 
 {% set content_type = content_type or 'dataset' %}
 
-{% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add") %}
+{% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add", depth=0) %}
     <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
         <hr />
         {% if action == "edit" %}
@@ -18,7 +18,7 @@
             <div class="hidden error-comment">{{ _('Please enter a Comment.') }}</div>
             <div class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</div>
         </div>
-        {% if action == "edit" %}
+        {% if action == "edit" and depth < 1 %}
         <div class="form-group">
             <label for="subject">{{ _('Subject') }}</label>
             <input type="text" class="form-control" name="subject" {% if not empty %}value="{{ values.subject }}" {% endif %}/>
@@ -92,7 +92,7 @@
 
             <div class="comment-content">
                 {% if comment.state != 'deleted' %}
-                    {% if comment.subject|lower != 'no subject' %}
+                    {% if comment.subject|lower not in ['none', 'no subject'] %}
                         <h3>{{ comment.subject }}</h3>
                     {% endif %}
                 {% else %}
@@ -105,7 +105,7 @@
 
                             {% if h.user_can_edit_comment(comment.user_id) or h.user_can_manage_comments(content_type, pkg_id) %}
                                 <div id="comment_form_edit_{{ comment.id }}">
-                                    {{ comment_form(comment, prefix='edit_', action='edit') }}
+                                    {{ comment_form(comment, prefix='edit_', action='edit', depth=depth) }}
                                 </div>
                             {% endif %}
 
