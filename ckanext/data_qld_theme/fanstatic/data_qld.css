@@ -11,11 +11,6 @@ a, a:focus, a:hover, a:link, a:visited {
     color: #fff;
 }
 
-/* Resource Button */
-.resource-btn {
-    background-color: #5bb75b
-}
-
 /* Resource Icon for API */
 .resource-api-available {
     background-color: #ea6f00;
@@ -38,6 +33,59 @@ a, a:focus, a:hover, a:link, a:visited {
 
 a.btn {
     text-decoration: none;
+}
+
+.btn:active,
+.btn.active {
+    box-shadow: none;
+}
+
+/* Blue buttons */
+.btn-primary {
+    color: #fff;
+    background-color: #007eb1;
+    border-color: #007eb1;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0090cb;
+    border-color: #0090cb;
+}
+
+.btn-primary:active,
+.btn-primary:active:hover,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary,
+.btn-primary:focus,
+.btn-primary:active:focus,
+.btn-primary.focus {
+    color: #ffffff;
+    background-color: #545b62;
+    border-color: #4e555b;
+}
+
+/* Green buttons */
+.btn-success {
+    color: #000;
+    background-color: #78ba00;
+    border-color: #78ba00;
+}
+
+.btn-success:hover,
+.form input[type="submit"]:hover{
+    color: #000;
+    background-color: #88d400;
+    border-color: #88d400;
+}
+
+.btn-success:active,
+.btn-success:active:focus,
+form.form input[type="submit"]:active,
+form.form input[type="submit"]:active:focus {
+    color: #fff;
+    background-color: #0062cc;
+    border-color: #005cbf;
 }
 
 /* Fixes a issue with dataset & resource select or multi-select elements not displaying correctly when using the scheming extension */
@@ -190,6 +238,13 @@ form#comment_form textarea {
 .comment-container .form input[type="submit"],
 form#comment_form input[type="submit"] {
     margin-top: 0;
+}
+
+/*
+    Data Requests
+ */
+span.label-open {
+    background-color: #78ba00;
 }
 
 /**
