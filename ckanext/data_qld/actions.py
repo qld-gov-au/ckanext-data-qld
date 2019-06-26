@@ -177,7 +177,7 @@ def create_datarequest(original_action, context, data_dict):
         # Data QLD modification
         users = _get_admin_users_from_organasition(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'new_datarequest_organisation', datarequest_dict)
+        tk.enqueue_job(_send_mail, [users, 'new_datarequest_organisation', datarequest_dict], title=u'Data Request Created Email')
 
     return datarequest_dict
 
@@ -260,15 +260,14 @@ def update_datarequest(original_action, context, data_dict):
         # Email Admin users of the assigned organisation
         users = _get_admin_users_from_organasition(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'new_datarequest_organisation', datarequest_dict)
-
+        tk.enqueue_job(_send_mail, [users, 'new_datarequest_organisation', datarequest_dict], title=u'Data Request Assigned Email')
         # Email Admin users of unassigned organisation
         org_dict = {
             'organization': _get_organization(unassigned_organisation_id)
         }
         users = _get_admin_users_from_organasition(org_dict)
         users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict)
+        tk.enqueue_job(_send_mail, [users, 'unassigned_datarequest_organisation', datarequest_dict], title=u'Data Request Unassigned Email')
 
     return datarequest_dict
 
@@ -337,7 +336,7 @@ def close_datarequest(original_action, context, data_dict):
 
     # Mailing
     users = [data_req.user_id]
-    _send_mail(users, 'close_datarequest_creator', datarequest_dict)
+    tk.enqueue_job(_send_mail, [users, 'close_datarequest_creator', datarequest_dict], title=u'Data Request Closed Send Email')
 
     return datarequest_dict
 
@@ -390,9 +389,11 @@ def open_datarequest(context, data_dict):
 
     # Mailing
     users = [data_req.user_id]
-    _send_mail(users, 'open_datarequest_creator', datarequest_dict)
+    # Creator email
+    tk.enqueue_job(_send_mail, [users, 'open_datarequest_creator', datarequest_dict], title=u'Data Request Opened Creator Email')
     if datarequest_dict['organization']:
         users = _get_admin_users_from_organasition(datarequest_dict)
-        _send_mail(users, 'open_datarequest_organisation', datarequest_dict)
+        # Admins of organisation email
+        tk.enqueue_job(_send_mail, [users, 'open_datarequest_organisation', datarequest_dict], title=u'Data Request Opened Admins Email')
 
     return datarequest_dict
