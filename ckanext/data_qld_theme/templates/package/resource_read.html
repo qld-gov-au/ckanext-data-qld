@@ -108,3 +108,12 @@
   {{ super() }}
 {% endblock %}
 {% endblock %}
+
+{% block resource_read_title %}
+	<h1 class="page-heading">{{ h.resource_display_name(res) | truncate(50) }}
+	{% if res.schema %}
+		{{ h.get_validation_badge(res)|safe }}
+		{% resource 'ckanext-validation/main' %}
+	{% endif %}
+	</h1>
+{% endblock %}

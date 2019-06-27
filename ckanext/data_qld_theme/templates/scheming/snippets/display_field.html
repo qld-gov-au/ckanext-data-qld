@@ -15,7 +15,7 @@
   {%- set display_snippet = 'scheming/display_snippets/' + display_snippet -%}
 {%- endif -%}
 
-{%- if field.field_name in data -%}
+{%- if field.field_name in data and data[field.field_name]|length -%}
   {%- snippet display_snippet, field=field, data=data, errors=errors,
     entity_type=entity_type, object_type=object_type -%}
 {%- elif field.field_name|title in data -%}
@@ -23,5 +23,9 @@
   {%- snippet display_snippet, field=field, data=data, errors=errors,
     entity_type=entity_type, object_type=object_type -%}
 {%- else -%}
-  Field name '{{field.field_name}}' not in data
+  {%- if field.field_name.lower() == 'url' and field.label.lower() == 'source' -%}
+    Not applicable
+  {%- else -%}
+    Field name '{{field.field_name}}' not in data
+  {%- endif -%}
 {%- endif -%}
