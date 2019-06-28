@@ -42,7 +42,7 @@ class DataQldUI(base.BaseController):
             else:
                 data_dict = {}
                 data_dict['id'] = id
-                data_dict['accepted_dataset_id'] = c.datarequest.get('accepted_dataset_id', '')
+                data_dict['organization_id'] = c.datarequest.get('organization_id')
 
                 tk.get_action(constants.OPEN_DATAREQUEST)(context, data_dict)
                 tk.redirect_to(
@@ -57,7 +57,7 @@ class DataQldUI(base.BaseController):
             tk.abort(404, tk._('Data Request %s not found') % id)
         except tk.NotAuthorized as e:
             log.warn(e)
-            tk.abort(403, tk._('You are not authorized to close the Data Request %s' % id))
+            tk.abort(403, tk._('You are not authorized to open the Data Request %s' % id))
 
     def show_schema(self, dataset_id, resource_id):
         data_dict = {'id': resource_id}
