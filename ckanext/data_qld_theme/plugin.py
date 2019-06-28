@@ -15,6 +15,11 @@ def get_year():
     now = datetime.datetime.now()
     return now.year
 
+
+def ytp_comments_enabled():
+    return "ytp_comments" in config.get('ckan.plugins', False)
+
+
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -31,4 +36,5 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
         return {
             'get_gtm_container_id': get_gtm_code,
             'get_year': get_year,
+            'ytp_comments_enabled': ytp_comments_enabled
         }

@@ -1,5 +1,5 @@
 body {
- font-family: 'Lato', sans-serif;
+    font-family: 'Lato', sans-serif;
 }
 
 a, a:focus, a:hover, a:link, a:visited {
@@ -9,11 +9,6 @@ a, a:focus, a:hover, a:link, a:visited {
 .table thead > tr > td, .table thead > tr > th {
     background: #13578b;
     color: #fff;
-}
-
-/* Resource Button */
-.resource-btn {
-    background-color: #5bb75b
 }
 
 /* Resource Icon for API */
@@ -40,15 +35,68 @@ a.btn {
     text-decoration: none;
 }
 
+.btn:active,
+.btn.active {
+    box-shadow: none;
+}
+
+/* Blue buttons */
+.btn-primary {
+    color: #fff;
+    background-color: #007eb1;
+    border-color: #007eb1;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0090cb;
+    border-color: #0090cb;
+}
+
+.btn-primary:active,
+.btn-primary:active:hover,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary,
+.btn-primary:focus,
+.btn-primary:active:focus,
+.btn-primary.focus {
+    color: #ffffff;
+    background-color: #545b62;
+    border-color: #4e555b;
+}
+
+/* Green buttons */
+.btn-success {
+    color: #000;
+    background-color: #78ba00;
+    border-color: #78ba00;
+}
+
+.btn-success:hover,
+.form input[type="submit"]:hover{
+    color: #000;
+    background-color: #88d400;
+    border-color: #88d400;
+}
+
+.btn-success:active,
+.btn-success:active:focus,
+form.form input[type="submit"]:active,
+form.form input[type="submit"]:active:focus {
+    color: #fff;
+    background-color: #0062cc;
+    border-color: #005cbf;
+}
+
 /* Fixes a issue with dataset & resource select or multi-select elements not displaying correctly when using the scheming extension */
 .select2-container.form-control {
     height: 100%;
-    padding:0px;
+    padding: 0px;
 }
 
 /* Fixes a display issues with expiration_date not displaying correctly in firefox browser with scheming extension */
 #field-expiration_date {
-    padding:0px 12px;
+    padding: 0px 12px;
 }
 
 
@@ -61,6 +109,13 @@ a.btn {
     padding: 0;
     border-top: 2px solid #fff;
     border-bottom: 2px solid #fff;
+}
+
+.comment-container .form input[type="text"],
+.comment-container .form textarea, .form textarea,
+form#comment_form input[type="text"],
+form#comment_form textarea {
+    max-width: 100%;
 }
 
 .comment {
@@ -180,6 +235,76 @@ a.btn {
     background-color: #f2dede;
 }
 
-.test {
-    border: 3px solid #ff0;
+.comment-container .form input[type="submit"],
+form#comment_form input[type="submit"] {
+    margin-top: 0;
+}
+
+/*
+    Data Requests
+ */
+span.label-open {
+    background-color: #78ba00;
+}
+
+/**
+    Additions to the Squiz standard CSS library
+ */
+header.account-masthead .account ul.unstyled {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    margin: 0 -0.9375rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -ms-flex-line-pack: center;
+    align-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+header.account-masthead .account ul.unstyled li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: none;
+}
+
+header.account-masthead .account ul.unstyled li a {
+    color: #ffffff;
+    text-decoration: none;
+    line-height: 1rem;
+    -webkit-transition: background-color 0.4s ease;
+    transition: background-color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 600;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-line-pack: center;
+    align-content: center;
+    padding: 0 0.9375rem;
+}
+
+header.account-masthead .account ul.unstyled li a:hover,
+header.account-masthead .account ul.unstyled li a:focus {
+    color: #ffffff;
+    background-color: #007EB1;
+}
+
+@media screen and (min-width: 1200px) {
+    footer .site-footer__signoff {
+        display: block;
+    }
 }
