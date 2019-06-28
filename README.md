@@ -116,5 +116,5 @@ b. The dictionary value is the event_label sent to google analytics with the {0}
 
 4. Restart web server(s), e.g.
 
-        sudo service apache restart
-        sudo service nginx restart
+        sudo service apache reload
+        sudo service nginx reload
