@@ -4,13 +4,12 @@ import sqlalchemy
 from ckan.lib.cli import CkanCommand
 from ckan.model.package import Package
 from ckanapi import LocalCKAN
-from datetime import datetime
 
 _and_ = sqlalchemy.and_
 
 
 class MigrateExtras(CkanCommand):
-    """Migrates
+    """Migrates legacy field values that were added as free extras to datasets to their schema counterparts.
     """
 
     summary = __doc__.split('\n')[0]
@@ -20,9 +19,6 @@ class MigrateExtras(CkanCommand):
         super(MigrateExtras, self).__init__(name)
 
     def get_package_ids(self):
-        # @Todo: Load all packages
-        # package_ids = ['f0742c45-995d-4299-9d79-f0b777e2d0eb']
-        # return package_ids
         session = model.Session
         package_ids = []
 
@@ -75,7 +71,6 @@ class MigrateExtras(CkanCommand):
                 'id': package_id
             })
 
-            # Update the 'Expiration date' field in Resources.
             if pkg['resources']:
                 size = default_size
 
