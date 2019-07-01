@@ -118,3 +118,36 @@ b. The dictionary value is the event_label sent to google analytics with the {0}
 
         sudo service apache reload
         sudo service nginx reload
+
+# Migrating Legacy Extra Fields
+*Note: The following assumes that a dump of production data has been imported into the CKAN database and any necessary database schema updates have been performed (ref.: https://docs.ckan.org/en/2.8/maintaining/database-management.html#upgrading).*
+
+Previously, the "Security classification" and "Used in data-driven application" fields had been added as free extras to datasets, e.g.
+
+
+
+These fields are now part of the dataset schema via the `scheming` extension (ref.: https://github.com/qld-gov-au/ckanext-data-qld/blob/develop/ckanext/data_qld/ckan_dataset.json)
+
+The legacy field values need to be migrated to their schema counterparts.
+
+The `ckanext-data-qld` extension contains a paster command for doing this (ref.: https://github.com/qld-gov-au/ckanext-data-qld/blob/develop/ckanext/data_qld/commands.py)
+
+To run the command:
+
+1. Enable the python virtual environment:
+
+        . /usr/lib/ckan/default/bin/activate
+
+2. Change to the `ckanext-data-qld` directory:
+
+        cd /usr/lib/ckan/default/src/ckanext-data-qld
+
+3. Run the following command:
+
+        paster migrate_extras -c /PATH/TO/YOUR_INI_FILE.ini
+
+4. Rebuild the Solr index:
+
+        paster --plugin=ckan search-index rebuild -c /PATH/TO/YOUR_INI_FILE.ini
+
+This will iterate through each of the datasets in CKAN and copy the *"Security classification"* and *"Used in data-driven application"* extra field values to the dataset schema fields security_classification and data_driven_application respectively.
