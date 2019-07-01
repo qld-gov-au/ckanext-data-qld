@@ -308,3 +308,10 @@ header.account-masthead .account ul.unstyled li a:focus {
         display: block;
     }
 }
+
+@media screen and (min-width: 768px) {
+    .secondary .module-narrow .nav-item.active > a:before,
+    .secondary .module-narrow .nav-aside li.active > a:before {
+        border: none;
+    }
+}
