@@ -37,8 +37,7 @@ class MigrateExtras(CkanCommand):
 
         return package_ids
 
-    def update_package(self, package_id, security_classification, data_driven_application, version, author_email, notes,
-                       resources):
+    def update_package(self, package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources):
         # https://github.com/ckan/ckanext-scheming/issues/158
         destination = LocalCKAN()
         destination.action.package_patch(id=package_id,
@@ -47,19 +46,8 @@ class MigrateExtras(CkanCommand):
                                          version=version,
                                          author_email=author_email,
                                          notes=notes,
+                                         update_frequency=update_frequency,
                                          resources=resources)
-
-    def try_parsing_date(self, text, resource_id, default_expiration_date):
-        for fmt in (
-                '%d/%m/%Y', '%d/%m/%y', '%d.%m.%Y', '%d.%m.%y', '%d-%m-%Y', '%d-%m-%y', '%Y-%m-%d', '%y-%m-%d', '%Y/%m/%d',
-                '%y/%m/%d', '%d-%B-%Y', '%d-%B-%y', '%d %B %Y', '%d %B %y'):
-            try:
-                parsed_date = datetime.strptime(text.strip(), fmt)
-                return parsed_date.strftime('%Y-%m-%d')
-            except ValueError:
-                pass
-        print("try_parsing_date failed: {0} for ResourceId: {1} ".format(str(text), str(resource_id)))
-        return default_expiration_date
 
     def command(self):
         """
@@ -79,7 +67,7 @@ class MigrateExtras(CkanCommand):
             default_data_driven_application = "NO"
             default_version = "1.0"
             default_author_email = "opendata@qld.gov.au"
-            default_expiration_date = "2020-06-30"
+            default_update_frequency = "annually"
             default_size = '1'  # 1 Byte
             resources = []
 
@@ -92,34 +80,6 @@ class MigrateExtras(CkanCommand):
                 size = default_size
 
                 for resource in pkg['resources']:
-                    if 'Expiration date' in resource:
-                        if resource['Expiration date']:
-                            expiration_date = self.try_parsing_date(resource['Expiration date'], resource['id'],
-                                                                    default_expiration_date)
-                        else:
-                            expiration_date = default_expiration_date
-                    elif 'ExpirationDate' in resource:
-                        if resource['ExpirationDate']:
-                            expiration_date = self.try_parsing_date(resource['ExpirationDate'], resource['id'],
-                                                                    default_expiration_date)
-                        else:
-                            expiration_date = default_expiration_date
-                    elif 'expiration_date' in resource:
-                        if resource['expiration_date']:
-                            expiration_date = self.try_parsing_date(resource['expiration_date'], resource['id'],
-                                                                    default_expiration_date)
-                        else:
-                            expiration_date = default_expiration_date
-                    elif 'expiration-date' in resource:
-                        if resource['expiration-date']:
-                            expiration_date = self.try_parsing_date(resource['expiration-date'], resource['id'],
-                                                                    default_expiration_date)
-                        else:
-                            expiration_date = default_expiration_date
-
-                    else:
-                        expiration_date = default_expiration_date
-
                     if 'size' in resource:
                         size = resource['size'] if resource['size'] is not None and resource[
                             'size'] != '0 bytes' else default_size
@@ -132,7 +92,6 @@ class MigrateExtras(CkanCommand):
 
                     update_resource = {
                         "id": resource['id'],
-                        "expiration_date": expiration_date,
                         "size": size,
                         "name": name,
                         "description": description
@@ -145,6 +104,7 @@ class MigrateExtras(CkanCommand):
             data_driven_application = default_data_driven_application
             version = default_version
             author_email = default_author_email
+            update_frequency = default_update_frequency
 
             if pkg.get('extras', None):
 
@@ -163,7 +123,9 @@ class MigrateExtras(CkanCommand):
             if 'notes' in pkg:
                 notes = pkg['notes'] or pkg['title']
 
-            self.update_package(package_id, security_classification, data_driven_application, version, author_email,
-                                notes, resources)
+            if 'update_frequency' in pkg:
+                update_frequency = pkg['update_frequency'] or default_update_frequency
+
+            self.update_package(package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
 
         return 'SUCCESS'
