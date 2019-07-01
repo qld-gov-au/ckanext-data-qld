@@ -232,8 +232,20 @@ form#comment_form textarea {
 
 .comment-container .form input[type="submit"],
 form#comment_form input[type="submit"] {
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 1.42857143;
     margin-top: 0;
+    padding: 6px 12px;
 }
+
+@media screen and (max-width: 991px) {
+    .comment-container .form input[type="submit"],
+    form#comment_form input[type="submit"] {
+        margin-top: 5px;
+    }
+}
+
 
 /*
     Data Requests
