@@ -120,6 +120,54 @@
         }
       ],
       "help_text": "WARNING - This field identifies a critical dataset/resources used by external applications via API. To prevent accidental deletion, use caution when editing."
+    },
+    {
+      "field_name": "update_frequency",
+      "label": "Update Frequency",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "annually",
+          "label": "Annually"
+        },
+        {
+          "value": "near-realtime",
+          "label": "Near-realtime"
+        },
+        {
+          "value": "hourly",
+          "label": "Hourly"
+        },
+        {
+          "value": "daily",
+          "label": "Daily"
+        },
+        {
+          "value": "weekly",
+          "label": "Weekly"
+        },
+        {
+          "value": "fortnightly",
+          "label": "Fortnightly"
+        },
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "half-yearly",
+          "label": "Half-yearly"
+        },
+        {
+          "value": "non-regular",
+          "label": "Non-regular"
+        },
+        {
+          "value": "Not updated",
+          "label": "Not updated"
+        }
+      ]
     }
   ],
   "resource_fields": [
@@ -145,13 +193,6 @@
       "label": "Description",
       "form_snippet": "markdown.html",
       "form_placeholder": "Some useful notes about the data",
-      "required": true
-    },
-    {
-      "field_name": "expiration_date",
-      "label": "Next Review",
-      "form_placeholder": "e.g. dd/mm/yyyy",
-      "preset": "date",
       "required": true
     },
     {
