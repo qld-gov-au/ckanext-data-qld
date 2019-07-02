@@ -94,11 +94,6 @@ form.form input[type="submit"]:active:focus {
     padding: 0px;
 }
 
-/* Fixes a display issues with expiration_date not displaying correctly in firefox browser with scheming extension */
-#field-expiration_date {
-    padding: 0px 12px;
-}
-
 
 /* Comments */
 
@@ -237,8 +232,20 @@ form#comment_form textarea {
 
 .comment-container .form input[type="submit"],
 form#comment_form input[type="submit"] {
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 1.42857143;
     margin-top: 0;
+    padding: 6px 12px;
 }
+
+@media screen and (max-width: 991px) {
+    .comment-container .form input[type="submit"],
+    form#comment_form input[type="submit"] {
+        margin-top: 5px;
+    }
+}
+
 
 /*
     Data Requests
@@ -307,4 +314,15 @@ header.account-masthead .account ul.unstyled li a:focus {
     footer .site-footer__signoff {
         display: block;
     }
+}
+
+@media screen and (min-width: 768px) {
+    .secondary .module-narrow .nav-item.active > a:before,
+    .secondary .module-narrow .nav-aside li.active > a:before {
+        border: none;
+    }
+}
+
+.add-to-group .form-group {
+    margin-bottom: 10px;
 }
