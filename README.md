@@ -138,15 +138,11 @@ To run the command:
 
         . /usr/lib/ckan/default/bin/activate
 
-2. Change to the `ckanext-data-qld` directory:
+2. Run the following command:
 
-        cd /usr/lib/ckan/default/src/ckanext-data-qld
+        paster --plugin=ckanext-data-qld migrate_extras -c /path/to/ini_file.ini
 
-3. Run the following command:
-
-        paster migrate_extras -c /PATH/TO/YOUR_INI_FILE.ini
-
-4. Rebuild the Solr index:
+3. Rebuild the Solr index:
 
         paster --plugin=ckan search-index rebuild -c /PATH/TO/YOUR_INI_FILE.ini
 
