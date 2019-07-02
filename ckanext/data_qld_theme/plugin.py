@@ -2,7 +2,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import datetime
 
-from ckan.common import config
+from ckan.common import c, config
 
 
 def get_gtm_code():
@@ -18,6 +18,16 @@ def get_year():
 
 def ytp_comments_enabled():
     return "ytp_comments" in config.get('ckan.plugins', False)
+
+
+def get_all_groups():
+    groups = toolkit.get_action('group_list')(
+        data_dict={'include_dataset_count': False, 'all_fields': True})
+    pkg_group_ids = set(group['id'] for group
+                        in c.pkg_dict.get('groups', []))
+    return [[group['id'], group['display_name']]
+            for group in groups if
+            group['id'] not in pkg_group_ids]
 
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
@@ -36,5 +46,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
         return {
             'get_gtm_container_id': get_gtm_code,
             'get_year': get_year,
-            'ytp_comments_enabled': ytp_comments_enabled
+            'ytp_comments_enabled': ytp_comments_enabled,
+            'get_all_groups': get_all_groups
         }

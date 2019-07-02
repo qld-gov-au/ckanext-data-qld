@@ -322,3 +322,7 @@ header.account-masthead .account ul.unstyled li a:focus {
         border: none;
     }
 }
+
+.add-to-group .form-group {
+    margin-bottom: 10px;
+}
