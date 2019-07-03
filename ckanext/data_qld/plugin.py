@@ -73,7 +73,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.UPDATE_DATAREQUEST: auth.update_datarequest,
             constants.UPDATE_DATAREQUEST_ORGANISATION: auth.update_datarequest_organisation,
             constants.CLOSE_DATAREQUEST: auth.close_datarequest,
-            constants.OPEN_DATAREQUEST: auth.open_datarequest
+            constants.OPEN_DATAREQUEST: auth.open_datarequest,
+            'member_create': auth.member_create
         }
         return auth_functions
 
