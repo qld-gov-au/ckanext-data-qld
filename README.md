@@ -150,3 +150,20 @@ To run the command:
         paster --plugin=ckan search-index rebuild -c /PATH/TO/YOUR_INI_FILE.ini
 
 This will iterate through each of the datasets in CKAN and copy the *"Security classification"* and *"Used in data-driven application"* extra field values to the dataset schema fields security_classification and data_driven_application respectively.
+
+# Demoting Publishers to Editor role
+*Note: The following assumes that a dump of production data has been imported into the CKAN database and any necessary database schema updates have been performed (ref.: https://docs.ckan.org/en/2.8/maintaining/database-management.html#upgrading).*
+
+There is a paster command to set the role for any users with names starting with `publisher-` from admin to editor where necessary.
+
+*Note: This paster command was designed to be run once. If run multiple times there should not be any issues, as it will not re-assign users who are already assigned the editor role - but it is not designed to be idempotent*
+
+To run the command:
+
+1. Enable the python virtual environment:
+
+        . /usr/lib/ckan/default/bin/activate
+
+2. Run the following command:
+
+        paster --plugin=ckanext-data-qld demote_publishers -c /etc/ckan/default/development.ini
