@@ -132,21 +132,20 @@ The legacy field values need to be migrated to their schema counterparts.
 
 The `ckanext-data-qld` extension contains a paster command for doing this (ref.: https://github.com/qld-gov-au/ckanext-data-qld/blob/develop/ckanext/data_qld/commands.py)
 
+*Note: This paster command was designed to be run once for initial migration of legacy extra fields, so isn't idempotent. 
+If migration command is run multiple times there should not be any issues, but it is not recommended to be used again once the site is live*
+
 To run the command:
 
 1. Enable the python virtual environment:
 
         . /usr/lib/ckan/default/bin/activate
 
-2. Change to the `ckanext-data-qld` directory:
+2. Run the following command:
 
-        cd /usr/lib/ckan/default/src/ckanext-data-qld
+        paster --plugin=ckanext-data-qld migrate_extras -c /path/to/ini_file.ini
 
-3. Run the following command:
-
-        paster migrate_extras -c /PATH/TO/YOUR_INI_FILE.ini
-
-4. Rebuild the Solr index:
+3. Rebuild the Solr index:
 
         paster --plugin=ckan search-index rebuild -c /PATH/TO/YOUR_INI_FILE.ini
 
