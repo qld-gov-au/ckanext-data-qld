@@ -175,7 +175,7 @@
     {
       "field_name": "url",
       "label": "URL",
-      "preset": "resource_url_upload",
+      "preset": "data_qld_resource_url_upload",
       "required": true
     },
     {
