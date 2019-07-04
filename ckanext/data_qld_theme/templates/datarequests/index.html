@@ -1,0 +1,40 @@
+{% ckan_extends %}
+
+{% block page_primary_action %}
+  {% if h.check_access('create_datarequest') %}
+    <div class="page_primary_action">
+      {% link_for _('Add data request'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='new', class_='btn btn-primary', icon=h.get_plus_icon() %}
+    </div>
+  {% endif %}
+  {% if not c.user %}
+    <div class="page_primary_action">
+      {% link_for _('Login to create data request'), controller='user', action='login', class_='btn btn-primary', came_from=h.full_current_url() %}
+    </div>
+  {% endif %}
+  {% snippet 'snippets/custom_search_form.html', query=c.q, fields=(('organization', c.organization), ('state', c.state)), sorting=c.filters, sorting_selected=c.sort, placeholder=_('Search data requests...'), no_bottom_border=true, count=c.datarequest_count, no_title=True %}
+  {{ h.snippet('datarequests/snippets/datarequest_list.html', datarequest_count=c.datarequest_count, datarequests=c.datarequests, page=c.page, q=c.q)}}
+{% endblock %}
+
+{% block secondary_content %}
+  <section class="module module-narrow module-shallow">
+    <h2 class="module-heading"><i class="icon-info-sign fa fa-info-circle"></i>{% trans %}Data request{% endtrans %}</h2>
+    <div class="module-content">
+      <p>
+        {% trans %}Data requests allow registered users to ask for data that is not currently available.{% endtrans %}
+      </p>
+      <p>
+        {% trans %}Prior to making a data request, please use the search and filter tools to attempt to locate the desired data from among the published datasets. You can also review the exisiting data requests as other users may have made requests for similar data.{% endtrans %}
+      </p>
+      {% block secondary_content_additional_info %}
+
+      {% endblock %}
+    </div>
+  </section>
+  {% for facet in c.facet_titles %}
+    {% set title = c.facet_titles[facet] if facet != 'state' else 'Status' %}
+    {{ h.snippet('snippets/facet_list.html', title=title, name=facet) }}
+  {% endfor %}
+{% endblock %}
+
+
+

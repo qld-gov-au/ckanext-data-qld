@@ -17,31 +17,30 @@ Example:
 <tr>
 
   {% block item_inner %}
-  {% block image %}
-  {% endblock %}
-  {% block title %}
-  <td>
-    <a href="{{ url }}" title="{{ _('View {name}').format(name=h.get_translated(group, 'title') or group.display_name) }}">
-      {{ h.get_translated(group, 'title') or group.display_name }}
-    </a>
-  </td>
-  {% endblock %}
-  {% block description %}
-  {% endblock %}
-  {% block datasets %}
+    {% block image %}
+    {% endblock %}
+    {% block title %}
     <td>
-    {% if group.package_count %}
-      <span class="count">{{ group.package_count }}</span>
-    {% elif group.package_count == 0 %}
-      <span class="count">{{ _('0') }}</span>
-    {% endif %}
+      <a href="{{ url }}" title="{{ _('View {name}').format(name=h.get_translated(group, 'title') or group.display_name) }}">
+        {{ h.get_translated(group, 'title') or group.display_name }}
+      </a>
     </td>
-  {% endblock %}
-  {% block link %}
-  {% endblock %}
-  {#% if group.user_member %}
-    <input name="group_remove.{{ group.id }}" value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-small media-edit" title="{{ _('Remove dataset from this group') }}"/>
-  {% endif %#}
+    {% endblock %}
+    {% block description %}
+    {% endblock %}
+    {% block datasets %}
+      <td>
+        {% if c.controller in ['package', 'dataset'] and c.action in ['groups'] %}
+          <input name="group_remove.{{ group.id }}" value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-small media-edit" title="{{ _('Remove dataset from this group') }}"/>
+        {% elif group.package_count %}
+          <span class="count">{{ group.package_count }}</span>
+        {% elif group.package_count == 0 %}
+          <span class="count">{{ _('0') }}</span>
+        {% endif %}
+      </td>
+    {% endblock %}
+    {% block link %}
+    {% endblock %}
   {% endblock %}
 </tr>
 {% endblock %}
