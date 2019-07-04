@@ -4,6 +4,8 @@ import sqlalchemy
 from ckan.lib.cli import CkanCommand
 from ckan.model.package import Package
 from ckanapi import LocalCKAN
+import ckan.logic as logic
+ValidationError = logic.ValidationError
 
 _and_ = sqlalchemy.and_
 
@@ -89,7 +91,8 @@ class MigrateExtras(CkanCommand):
                         "id": resource['id'],
                         "size": size,
                         "name": name,
-                        "description": description
+                        "description": description,
+                        "url": resource['url']
                     }
                     resources.append(update_resource)
 
@@ -121,7 +124,10 @@ class MigrateExtras(CkanCommand):
             if 'update_frequency' in pkg:
                 update_frequency = pkg['update_frequency'] or default_update_frequency
 
-            self.update_package(package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
+            try:
+                self.update_package(package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
+            except ValidationError as e:
+                print ('Package Failed: ', package_id, '\n', e.error_dict)
 
         return 'SUCCESS'
 
