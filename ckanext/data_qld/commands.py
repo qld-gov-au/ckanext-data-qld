@@ -127,7 +127,8 @@ class MigrateExtras(CkanCommand):
             try:
                 self.update_package(package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
             except ValidationError as e:
-                print ('Package Failed: ', package_id, '\n', e.error_dict)
+                print ('Package Failed: ', package_id, '\n', e.error_dict, )
+                print ('Package Payload: ', package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
 
         return 'SUCCESS'
 
