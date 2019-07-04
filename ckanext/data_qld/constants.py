@@ -1,0 +1,11 @@
+DATAREQUESTS_MAIN_PATH = 'datarequest'
+CREATE_DATAREQUEST = 'create_datarequest'
+SHOW_DATAREQUEST = 'show_datarequest'
+UPDATE_DATAREQUEST = 'update_datarequest'
+UPDATE_DATAREQUEST_ORGANISATION = 'update_datarequest_organisation'
+CLOSE_DATAREQUEST = 'close_datarequest'
+OPEN_DATAREQUEST = 'open_datarequest'
+LIST_DATAREQUESTS = 'list_datarequests'
+
+RESOURCE_SHOW = 'resource_show'
+SCHEMA_MAIN_PATH = 'schema'

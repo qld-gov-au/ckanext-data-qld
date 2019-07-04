@@ -1,0 +1,229 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "dataset",
+  "about": "A reimplementation of the default CKAN dataset schema",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "title",
+      "form_placeholder": "eg. A descriptive title"
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset"
+    },
+    {
+      "field_name": "notes",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "required": true
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Tags",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government"
+    },
+    {
+      "field_name": "license_id",
+      "label": "License",
+      "form_snippet": "license.html",
+      "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
+      "required": true
+    },
+    {
+      "field_name": "owner_org",
+      "label": "Organization",
+      "preset": "dataset_organization"
+    },
+    {
+      "field_name": "url",
+      "label": "Source",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html"
+    },
+    {
+      "field_name": "version",
+      "label": "Version",
+      "validators": "scheming_required unicode package_version_validator",
+      "form_placeholder": "1.0",
+      "required": true
+    },
+    {
+      "field_name": "author",
+      "label": "Author",
+      "form_placeholder": "Joe Bloggs",
+      "display_property": "dc:creator",
+      "display_snippet": null,
+      "form_snippet": null
+    },
+    {
+      "field_name": "author_email",
+      "label": "Email",
+      "form_placeholder": "joe@example.com",
+      "display_property": "dc:creator",
+      "display_snippet": "email.html",
+      "display_email_name_field": "author",
+      "required": true
+    },
+    {
+      "field_name": "maintainer",
+      "label": "Maintainer",
+      "form_placeholder": "Joe Bloggs",
+      "display_property": "dc:contributor",
+      "display_snippet": null,
+      "form_snippet": null
+    },
+    {
+      "field_name": "maintainer_email",
+      "label": "Maintainer Email",
+      "form_placeholder": "joe@example.com",
+      "display_property": "dc:contributor",
+      "display_email_name_field": "maintainer",
+      "display_snippet": null,
+      "form_snippet": null
+    },
+    {
+      "field_name": "security_classification",
+      "label": "Security Classification",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "PUBLIC",
+          "label": "PUBLIC"
+        },
+        {
+          "value": "UNCLASSIFIED",
+          "label": "UNCLASSIFIED"
+        }
+      ]
+    },
+    {
+      "field_name": "data_driven_application",
+      "label": "Used in data driven application",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ],
+      "help_text": "WARNING - This field identifies a critical dataset/resources used by external applications via API. To prevent accidental deletion, use caution when editing."
+    },
+    {
+      "field_name": "update_frequency",
+      "label": "Update Frequency",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "annually",
+          "label": "Annually"
+        },
+        {
+          "value": "near-realtime",
+          "label": "Near-realtime"
+        },
+        {
+          "value": "hourly",
+          "label": "Hourly"
+        },
+        {
+          "value": "daily",
+          "label": "Daily"
+        },
+        {
+          "value": "weekly",
+          "label": "Weekly"
+        },
+        {
+          "value": "fortnightly",
+          "label": "Fortnightly"
+        },
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "half-yearly",
+          "label": "Half-yearly"
+        },
+        {
+          "value": "non-regular",
+          "label": "Non-regular"
+        },
+        {
+          "value": "Not updated",
+          "label": "Not updated"
+        }
+      ]
+    }
+  ],
+  "resource_fields": [
+    {
+      "field_name": "url",
+      "label": "URL",
+      "preset": "data_qld_resource_url_upload",
+      "required": true
+    },
+    {
+      "field_name": "name",
+      "label": "Name",
+      "form_placeholder": "eg. January 2011 Gold Prices",
+      "required": true
+    },
+    {
+      "field_name": "format",
+      "label": "Format",
+      "preset": "resource_format_autocomplete",
+      "required": true
+    },
+    {
+      "field_name": "description",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "Some useful notes about the data",
+      "required": true
+    },
+    {
+      "field_name": "size",
+      "label": "Size",
+      "form_placeholder": "e.g. 1024",
+      "validators": "data_qld_filesize_converter",
+      "output_validators": "data_qld_filesize_formatter",
+      "required": false
+    },
+    {
+      "field_name": "schema",
+      "label": "Schema",
+      "preset": "resource_schema"
+    },
+    {
+      "field_name": "validation_options",
+      "label": "Validation options",
+      "preset": "validation_options"
+    },
+    {
+      "field_name": "validation_status",
+      "label": "Validation status",
+      "preset": "hidden_in_form"
+    },
+    {
+      "field_name": "validation_timestamp",
+      "label": "Validation timestamp",
+      "preset": "hidden_in_form"
+    }
+  ]
+}

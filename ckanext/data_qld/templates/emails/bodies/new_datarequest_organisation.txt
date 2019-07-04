@@ -1,0 +1,5 @@
+A new data request has been added and assigned to your organisation.
+
+{{ datarequest['dataset_url'] }}
+
+Do not reply to this email.
