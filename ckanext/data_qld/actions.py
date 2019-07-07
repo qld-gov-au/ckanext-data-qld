@@ -93,7 +93,7 @@ def _undictize_datarequest_basic(data_request, data_dict):
     data_request.organization_id = organization if organization else None
 
 
-def _send_mail(user_ids, action_type, datarequest):
+def _send_mail(user_ids, action_type, datarequest, job_title):
     for user_id in user_ids:
         try:
             user_data = model.User.get(user_id)
@@ -103,12 +103,9 @@ def _send_mail(user_ids, action_type, datarequest):
                 'site_title': config.get('ckan.site_title'),
                 'site_url': config.get('ckan.site_url')
             }
-
             subject = base.render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
             body = base.render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
-
-            mailer.mail_user(user_data, subject, body)
-
+            tk.enqueue_job(mailer.mail_user, [user_data, subject, body], title=job_title)
         except Exception:
             logging.exception("Error sending notification to {0}".format(user_id))
 
@@ -177,7 +174,7 @@ def create_datarequest(original_action, context, data_dict):
         # Data QLD modification
         users = _get_admin_users_from_organasition(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
-        tk.enqueue_job(_send_mail, [users, 'new_datarequest_organisation', datarequest_dict], title=u'Data Request Created Email')
+        _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Created Email')
 
     return datarequest_dict
 
@@ -260,14 +257,14 @@ def update_datarequest(original_action, context, data_dict):
         # Email Admin users of the assigned organisation
         users = _get_admin_users_from_organasition(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
-        tk.enqueue_job(_send_mail, [users, 'new_datarequest_organisation', datarequest_dict], title=u'Data Request Assigned Email')
+        _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Assigned Email')
         # Email Admin users of unassigned organisation
         org_dict = {
             'organization': _get_organization(unassigned_organisation_id)
         }
         users = _get_admin_users_from_organasition(org_dict)
         users.discard(context['auth_user_obj'].id)
-        tk.enqueue_job(_send_mail, [users, 'unassigned_datarequest_organisation', datarequest_dict], title=u'Data Request Unassigned Email')
+        _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict, 'Data Request Unassigned Email')
 
     return datarequest_dict
 
@@ -336,7 +333,7 @@ def close_datarequest(original_action, context, data_dict):
 
     # Mailing
     users = [data_req.user_id]
-    tk.enqueue_job(_send_mail, [users, 'close_datarequest_creator', datarequest_dict], title=u'Data Request Closed Send Email')
+    _send_mail(users, 'close_datarequest_creator', datarequest_dict, 'Data Request Closed Send Email')
 
     return datarequest_dict
 
@@ -390,10 +387,10 @@ def open_datarequest(context, data_dict):
     # Mailing
     users = [data_req.user_id]
     # Creator email
-    tk.enqueue_job(_send_mail, [users, 'open_datarequest_creator', datarequest_dict], title=u'Data Request Opened Creator Email')
+    _send_mail(users, 'open_datarequest_creator', datarequest_dict, 'Data Request Opened Creator Email')
     if datarequest_dict['organization']:
         users = _get_admin_users_from_organasition(datarequest_dict)
         # Admins of organisation email
-        tk.enqueue_job(_send_mail, [users, 'open_datarequest_organisation', datarequest_dict], title=u'Data Request Opened Admins Email')
+        _send_mail(users, 'open_datarequest_organisation', datarequest_dict, 'Data Request Opened Admins Email')
 
     return datarequest_dict
