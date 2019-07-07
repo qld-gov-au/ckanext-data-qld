@@ -20,6 +20,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
+    plugins.implements(plugins.IMiddleware, inherit=True)
 
     # IConfigurer
     def update_config(self, config_):
@@ -72,7 +73,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.UPDATE_DATAREQUEST: auth.update_datarequest,
             constants.UPDATE_DATAREQUEST_ORGANISATION: auth.update_datarequest_organisation,
             constants.CLOSE_DATAREQUEST: auth.close_datarequest,
-            constants.OPEN_DATAREQUEST: auth.open_datarequest
+            constants.OPEN_DATAREQUEST: auth.open_datarequest,
+            'member_create': auth.member_create
         }
         return auth_functions
 
@@ -118,3 +120,22 @@ class DataQldPlugin(plugins.SingletonPlugin):
             data_dict.pop(u'size', None)
 
         return data_dict
+
+    # IMiddleware
+    def make_middleware(self, app, config):
+        return AuthMiddleware(app, config)
+
+
+class AuthMiddleware(object):
+    def __init__(self, app, app_conf):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        # Redirect users to /user/reset page after submitting password reset request
+        if environ['PATH_INFO'] == '/' and 'HTTP_REFERER' in environ and 'user/reset' in environ['HTTP_REFERER']:
+            headers = [('Location', '/user/reset')]
+            status = "302 Found"
+            start_response(status, headers)
+            return ['']
+
+        return self.app(environ, start_response)

@@ -26,6 +26,17 @@
       "values": {
         "form_snippet": "hidden.html"
       }
+    },
+    {
+      "preset_name": "data_qld_resource_url_upload",
+      "values": {
+        "validators": "scheming_required unicode remove_whitespace",
+        "form_snippet": "upload.html",
+        "form_placeholder": "http://example.com/my-data.csv",
+        "upload_field": "upload",
+        "upload_clear": "clear_upload",
+        "upload_label": "File"
+      }
     }
   ]
 }
