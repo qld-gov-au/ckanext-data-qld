@@ -14,3 +14,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     {{ super() }}
 {% endblock %}
+
+
+{% block flash %}
+    <div class="global-alert" style="background-color: #f18d0e; color: #000;">
+        <div class="header">
+            <h2 id="landmark-label7">Maintenance windows</h2>
+            <time datetime="2019-07-10T17:00:00+10:00">Wednesday 10 July, 5-9PM AEST</time>
+        </div>
+        <div class="summary">
+            <p>The Open Data portal will be undergoing maintenance during the maintenance window.</p>
+            <p><strong>Service interruptions for public users are expected.</strong></p>
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %}
