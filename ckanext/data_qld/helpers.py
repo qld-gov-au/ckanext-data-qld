@@ -124,13 +124,13 @@ def format_activity_data(data):
         return data
 
     soup = BeautifulSoup(data, 'html.parser')
-
+    
     for actor in soup.select(".actor"):
         actor.string = 'Publisher'
         # the img element is removed from actor span so need to move actor span to the left to fill up blank space
         actor['style'] = 'margin-left:-40px'
 
-    return str(soup)
+    return soup.prettify(formatter="html5")
 
 
 # Data.Qld specific comments helper functions
