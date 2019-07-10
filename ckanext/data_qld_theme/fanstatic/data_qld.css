@@ -73,7 +73,7 @@ a.btn {
 }
 
 .btn-success:hover,
-.form input[type="submit"]:hover{
+.form input[type="submit"]:hover {
     color: #000;
     background-color: #88d400;
     border-color: #88d400;
@@ -325,4 +325,107 @@ header.account-masthead .account ul.unstyled li a:focus {
 
 .add-to-group .form-group {
     margin-bottom: 10px;
+}
+
+.global-alert {
+    background: #b90824;
+    background-color: rgb(185, 8, 36);
+    background-repeat: repeat;
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color: #fff;
+    overflow: hidden;
+    clear: both;
+    padding: 1em 2em;
+    margin: 0 -3.125em;
+}
+
+.home .global-alert {
+    margin: 0 -1.3em;
+}
+
+.home .global-alert {
+    margin: 0;
+}
+
+.global-alert .header, .global-alert .summary, .global-alert p {
+    margin: 0;
+    padding: 0;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.global-alert .header {
+    padding-left: 4em;
+}
+
+.global-alert .header, .global-alert .summary {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.global-alert .header:before {
+    text-decoration: inherit;
+}
+
+.global-alert .header:before, .global-alert .header:hover:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    font-size: 2.5rem;
+    line-height: 1;
+    padding-right: 16px;
+    padding-right: 1rem;
+    content: "\f071";
+    background: inherit;
+    color: #fff;
+}
+
+.global-alert .header:before {
+    display: block;
+    position: absolute;
+    margin-top: -.3em;
+    margin-left: -1.7em;
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    padding: .4em;
+}
+
+.global-alert h2 {
+    color: #000;
+    font-weight: 700;
+    margin: 0;
+    font-size: 17px;
+}
+
+.global-alert .header, .global-alert .summary, .global-alert p {
+    margin: 0;
+    padding: 0;
+}
+
+.global-alert .summary {
+    padding: 0 1.25em;
+    padding-left: 1.25em;
+}
+
+.global-alert .header, .global-alert .summary {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.global-alert .summary {
+    padding-left: 1em;
+    border-left: 1px solid hsla(0, 0%, 100%, .67);
+}
+
+.global-alert .header {
+    padding-left: 4em;
+    padding-right: 1em;
+    white-space: nowrap;
 }
