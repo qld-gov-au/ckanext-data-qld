@@ -124,7 +124,7 @@ def format_activity_data(data):
         return data
 
     soup = BeautifulSoup(data, 'html.parser')
-    
+
     for actor in soup.select(".actor"):
         actor.string = 'Publisher'
         # the img element is removed from actor span so need to move actor span to the left to fill up blank space
