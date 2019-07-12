@@ -2,12 +2,12 @@ from behave import step
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
+import random
 
 
 @step('I go to homepage')
 def go_to_home(context):
     when_i_visit_url(context, '/')
-
 
 @step('I log in')
 def log_in(context):
@@ -25,3 +25,11 @@ def log_in(context):
 @step('I go to dataset page')
 def go_to_dataset_page(context):
     when_i_visit_url(context, '/dataset')
+
+@step('I go to organisation page')
+def go_to_organisation_page(context):
+    when_i_visit_url(context, '/organization')
+
+@step('I go to register page')
+def go_to_register_page(context):
+    when_i_visit_url(context, '/user/register')
