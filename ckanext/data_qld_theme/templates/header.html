@@ -250,7 +250,7 @@
       <nav class="section navigation">
         <ul class="nav nav-pills">
           {% block header_site_navigation_tabs %}
-          <li class="active"><a href="{{ h.url_for('search') }}">Data</a></li>
+          <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for('search') }}">Data</a></li>
           <li>
             <a href="https://www.qld.gov.au/data/news-and-events">News and events</a>
           </li>
