@@ -31,7 +31,11 @@
         </div>
         <div class="form-actions">
             <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
-            <input type="reset" class="btn" value="{{ _('Clear') }}"/>
+            {% if action == "edit" %}
+                <input type="reset" class="btn btn-cancel" value="{{ _('Cancel') }}"/>
+            {% else %}
+                <input type="reset" class="btn" value="{{ _('Clear') }}"/>
+            {% endif %}
         </div>
     </form>
 {% endmacro %}
