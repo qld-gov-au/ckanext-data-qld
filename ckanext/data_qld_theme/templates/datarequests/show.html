@@ -26,7 +26,7 @@
 {% block content_primary_nav %}
   {{ h.build_nav_icon('show_datarequest', _('Data request'), id=datarequest_id) }}
 
-  {% if h.show_comments_tab() %}
+  {% if h.show_comments_tab() and h.ytp_comments_enabled() %}
     {{ h.build_nav_icon('comment_datarequest', _('Comments') + ' ' + h.get_datarequest_comments_badge(datarequest_id), id=datarequest_id) }}
   {% endif %}
 {% endblock %}

@@ -19,4 +19,8 @@ jQuery(document).ready(function () {
     jQuery('#field-size').parent().parent().fadeIn();
   });
 
+  // Insert field is required asterisk for labels 
+  jQuery('.control-label[for="field-image-upload"').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
+  jQuery('.control-label[for="field-image-url"').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
+
 });
