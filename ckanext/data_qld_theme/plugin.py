@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 import datetime
 
 from ckan.common import c, config
-
+from pylons import request
 
 def get_gtm_code():
     # To get Google Tag Manager Code
@@ -29,6 +29,21 @@ def get_all_groups():
             for group in groups if
             group['id'] not in pkg_group_ids]
 
+def is_request_for_resource():
+    original_request = request.environ.get('pylons.original_request') 
+    dataset_found = False
+    resource_found = False   
+    # Searching for a url path for /dataset/ and /resource/
+    # eg. /dataset/test-dataset-name/resource/b33a702a-f162-44a8-aad9-b9e630a8f56e
+    for path in original_request.path.split('/'):
+        if 'dataset' == path.lower():
+            dataset_found = True
+        elif dataset_found and 'resource' == path.lower(): #dataset path must be found before resource path to be valid
+            resource_found = True
+            break    
+
+    return dataset_found and resource_found
+
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -47,5 +62,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_gtm_container_id': get_gtm_code,
             'get_year': get_year,
             'ytp_comments_enabled': ytp_comments_enabled,
-            'get_all_groups': get_all_groups
+            'get_all_groups': get_all_groups,
+            'is_request_for_resource': is_request_for_resource
         }
