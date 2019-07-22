@@ -6,6 +6,7 @@ from ckan.common import c, config
 from pylons import request
 import re
 
+
 def get_gtm_code():
     # To get Google Tag Manager Code
     gtm_code = config.get('ckan.google_tag_manager.gtm_container_id', False)
@@ -29,6 +30,7 @@ def get_all_groups():
     return [[group['id'], group['display_name']]
             for group in groups if
             group['id'] not in pkg_group_ids]
+
 
 def is_request_for_resource():
     """
