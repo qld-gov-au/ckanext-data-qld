@@ -1,0 +1,13 @@
+{% ckan_extends %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+        {% if h.is_request_for_resource() %}
+          {{ _('This resource no longer exists.') }}
+        {% else %}
+          {{ content}}
+        {% endif %}   
+    </div>
+  </article>
+{% endblock %}

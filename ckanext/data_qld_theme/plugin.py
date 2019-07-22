@@ -3,6 +3,8 @@ import ckan.plugins.toolkit as toolkit
 import datetime
 
 from ckan.common import c, config
+from pylons import request
+import re
 
 
 def get_gtm_code():
@@ -30,6 +32,18 @@ def get_all_groups():
             group['id'] not in pkg_group_ids]
 
 
+def is_request_for_resource():
+    """
+    Searching for a url path for /dataset/ and /resource/
+    eg. /dataset/test-dataset-name/resource/b33a702a-f162-44a8-aad9-b9e630a8f56e
+    :return:
+    """
+    original_request = request.environ.get('pylons.original_request')
+    if original_request:
+        return re.search(r"/dataset/\S+/resource/\S+", original_request.path)
+    return False
+
+
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -47,5 +61,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_gtm_container_id': get_gtm_code,
             'get_year': get_year,
             'ytp_comments_enabled': ytp_comments_enabled,
-            'get_all_groups': get_all_groups
+            'get_all_groups': get_all_groups,
+            'is_request_for_resource': is_request_for_resource
         }
