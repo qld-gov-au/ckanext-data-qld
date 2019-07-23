@@ -157,6 +157,10 @@
           "label": "Monthly"
         },
         {
+          "value": "quarterly",
+          "label": "Quarterly"
+        },
+        {
           "value": "half-yearly",
           "label": "Half-yearly"
         },
