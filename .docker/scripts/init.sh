@@ -5,7 +5,7 @@
 set -e
 
 CKAN_USER_NAME="${CKAN_USER_NAME:-admin}"
-CKAN_USER_PASSWORD="${CKAN_USER_PASSWORD:-password}"
+CKAN_USER_PASSWORD="${CKAN_USER_PASSWORD:-Password123!}"
 CKAN_USER_EMAIL="${CKAN_USER_EMAIL:-admin@localhost}"
 
 . /app/ckan/default/bin/activate \
