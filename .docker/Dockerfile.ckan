@@ -11,7 +11,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERS
     && rm dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
 
 # Install CKAN.
-ENV CKAN_VERSION 2.8.2
+ENV CKAN_VERSION 2.8.3
 RUN . /app/ckan/default/bin/activate \
     && cd /app/ckan/default \
     && pip install setuptools==36.1 \
