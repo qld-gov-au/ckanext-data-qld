@@ -9,6 +9,9 @@ import auth_functions as auth
 import constants
 import converters
 import helpers
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class DataQldPlugin(plugins.SingletonPlugin):
@@ -119,6 +122,17 @@ class DataQldPlugin(plugins.SingletonPlugin):
         if isinstance(file_upload, cgi.FieldStorage):
             data_dict.pop(u'size', None)
 
+        return data_dict
+
+    def after_create(self, context, data_dict):
+        # Set the resource position order for this (latest) resource to first
+        resource_id = data_dict.get('id', None)
+        package_id = data_dict.get('package_id', None)
+        if resource_id and package_id:
+            try:
+                toolkit.get_action('package_resource_reorder')(context, {'id': package_id, 'order': [resource_id]})
+            except Exception, e:
+                log.error(str(e))
         return data_dict
 
     # IMiddleware
