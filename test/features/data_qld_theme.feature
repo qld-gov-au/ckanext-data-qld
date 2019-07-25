@@ -1,3 +1,4 @@
+@data-qld-theme
 Feature: Data QLD Theme
 
        Scenario: Lato font is implemented on homepage

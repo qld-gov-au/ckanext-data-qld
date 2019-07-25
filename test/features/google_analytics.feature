@@ -1,3 +1,4 @@
+@google-analytics
 Feature: GoogleAnalytics
 
     Scenario: When viewing the HTML source code of a CKAN page, the GTM snippet is visible
