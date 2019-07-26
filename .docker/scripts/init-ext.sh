@@ -8,6 +8,8 @@ set -e
 
 pip install -r "/app/requirements.txt"
 pip install -r "/app/requirements-dev.txt"
+pip install -r "/app/ckan/default/src/ckanext-validation/requirements.txt"
+pip install -r "/app/ckan/default/src/ckanext-scheming/requirements.txt"
 python setup.py develop
 
 # Validate that the extension was installed correctly.
