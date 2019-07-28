@@ -1,4 +1,4 @@
-@smoke
+@smoke @login
 Feature: Login
 
     Scenario: Smoke test to ensure Login process works
