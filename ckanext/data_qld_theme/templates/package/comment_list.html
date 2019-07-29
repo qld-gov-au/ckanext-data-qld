@@ -30,12 +30,12 @@
             <textarea name="comment" class="form-control" rows="3" cols="20">{% if not empty %}{% for line in unescaped_content %}{{ line | striptags }}{{'\n'}}{% endfor %}{% endif %}</textarea>
         </div>
         <div class="form-actions">
-            <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
             {% if action == "edit" %}
                 <input type="reset" class="btn btn-cancel" value="{{ _('Cancel') }}"/>
             {% else %}
                 <input type="reset" class="btn btn-reset" value="{{ _('Clear') }}"/>
             {% endif %}
+            <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
         </div>
     </form>
 {% endmacro %}
@@ -160,8 +160,8 @@
             <textarea name="comment" class="form-control" rows="4" placeholder="Add a new comment"></textarea>
         </div>
         <div class="form-actions">
-            <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
             <input type="reset" class="btn" value="{{ _('Clear') }}"/>
+            <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
         </div>
     </form>
 
