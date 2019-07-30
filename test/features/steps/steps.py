@@ -1,15 +1,15 @@
-from behave import when
+from behave import step
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
+import random
 
-
-@when('I go to homepage')
+@step('I go to homepage')
 def go_to_home(context):
     when_i_visit_url(context, '/')
 
 
-@when('I log in')
+@step('I log in')
 def log_in(context):
 
     assert context.persona
@@ -21,3 +21,11 @@ def log_in(context):
         And I press the element with xpath "//button[contains(string(), 'Login')]"
         Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
     """)
+
+@step('I fill in title with random text')
+def title_random_text(context):
+
+    assert context.persona
+    context.execute_steps(u"""
+        When I fill in "title" with "Test Title {0}"
+    """.format(random.randrange(1000)) )

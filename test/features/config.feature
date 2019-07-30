@@ -1,3 +1,4 @@
+@config
 Feature: Config
 
     Scenario: Assert that configuration values are available
