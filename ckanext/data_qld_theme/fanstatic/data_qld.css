@@ -436,3 +436,13 @@ header.account-masthead .account ul.unstyled li a:focus {
   white-space: normal;
   overflow: hidden;
 }
+
+body.qg-training {
+    background: url('/bg_training.png') left top repeat;
+ }
+ body.qg-dev {
+    background: url('/bg_dev.png') left top repeat;
+ }
+ body.qg-staging {
+    background: url('/bg_staging.png') left top repeat;
+ }
