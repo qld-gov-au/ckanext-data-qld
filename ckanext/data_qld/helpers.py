@@ -139,3 +139,13 @@ def get_datarequest_comments_badge(datarequest_id):
     return toolkit.render_snippet('datarequests/snippets/badge.html',
                                   {'comments_count': toolkit.h.get_comment_count_for_dataset(datarequest_id,
                                                                                              'datarequest')})
+                                                                                             
+def resource_formats(field):
+    """Returns a list of resource formats from admin config
+
+    :rtype: Array resource formats
+
+    """                                                                                      
+    resource_formats = config.get('ckanext.data_qld.resource_formats', '').split('\r\n')
+    return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
+        for resource_format in resource_formats]

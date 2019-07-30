@@ -37,6 +37,14 @@
         "upload_clear": "clear_upload",
         "upload_label": "File"
       }
+    },
+    {
+      "preset_name": "data_qld_select",
+      "values": {
+        "form_snippet": "select_case_insensitive.html",
+        "display_snippet": "select.html",
+        "validators": "scheming_required data_qld_scheming_choices"
+      }
     }
   ]
 }
