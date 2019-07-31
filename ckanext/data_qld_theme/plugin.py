@@ -45,7 +45,7 @@ def is_request_for_resource():
 
 def set_background_image_class():
     environment = config.get('ckan.site_url', '')
-    if 'training' in environment or 'loc' in environment:
+    if 'training' in environment:
         background_class = 'qg-training'
     elif 'dev' in environment:
         background_class = 'qg-dev' 
