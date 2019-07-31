@@ -437,12 +437,15 @@ header.account-masthead .account ul.unstyled li a:focus {
   overflow: hidden;
 }
 
-body.qg-training {
+/* The background watermark image for each environment */
+body > div.qg-training {
     background: url('/bg_training.png') left top repeat;
  }
- body.qg-dev {
+
+ body > div.qg-dev {
     background: url('/bg_dev.png') left top repeat;
  }
- body.qg-staging {
+
+ body > div.qg-staging {
     background: url('/bg_staging.png') left top repeat;
  }
