@@ -4,7 +4,9 @@
   <article class="module">
     <div class="module-content">
         {% if h.is_request_for_resource() %}
-          {{ _('This resource no longer exists.') }}
+            <h1>Page not found</h1>
+            <p>Sorry, the page you were looking for could not be found.</p>
+        <p>The resource may have been deleted or the address may have changed since you last accessed the page. We recommend you go to our <a href="{{ h.url_for('/') }}">home page</a> or try <a href="{{ h.url_for('search') }}">searching our website</a> to find what you're looking for.</p>
         {% else %}
           {{ content}}
         {% endif %}   
