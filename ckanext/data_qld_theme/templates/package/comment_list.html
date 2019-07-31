@@ -144,7 +144,7 @@
 
 {% if userobj %}
 
-    <h3>Add a comment</h3>
+    <h3>Add a comment{% if content_type == 'dataset' %} or ask a question about this dataset{% endif %}</h3>
 
     <form id="comment_form" class="form" action="/{{ content_type }}/{{ pkg_id }}/comments/add" method="POST">
         <div id="comment_form_errors" class="alert alert-error form-errors hidden">
@@ -157,7 +157,7 @@
         </div>
         <div class="form-group">
             <label for="comment"><span title="This field is required" class="control-required">*</span> {{ _('Comment') }}</label>
-            <textarea name="comment" class="form-control" rows="4" placeholder="Add a new comment"></textarea>
+            <textarea name="comment" class="form-control" rows="4" placeholder="Add a new comment{% if content_type == 'dataset' %} or ask a question{% endif %}"></textarea>
         </div>
         <div class="form-actions">
             <input type="reset" class="btn" value="{{ _('Clear') }}"/>
