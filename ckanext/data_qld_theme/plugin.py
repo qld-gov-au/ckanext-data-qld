@@ -49,7 +49,7 @@ def set_background_image_class():
     if 'training' in environment:
         background_class = 'qg-training'
     elif 'dev' in environment:
-        background_class = 'qg-dev' 
+        background_class = 'qg-dev'
     elif 'staging' in environment:
         background_class = 'qg-staging'
     else:
