@@ -43,6 +43,7 @@ def is_request_for_resource():
         return re.search(r"/dataset/\S+/resource/\S+", original_request.path)
     return False
 
+
 def set_background_image_class():
     environment = config.get('ckan.site_url', '')
     if 'training' in environment:
@@ -54,6 +55,7 @@ def set_background_image_class():
     else:
         background_class = ''
     return background_class
+
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
