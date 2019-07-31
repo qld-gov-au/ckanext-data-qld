@@ -15,6 +15,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     {{ super() }}
 {% endblock %}
 
+{% block maintag %}
+    <div role="main" class={{ h.set_background_image_class() }}>
+{% endblock %}
 
 {% block flash %}
     {{ super() }}

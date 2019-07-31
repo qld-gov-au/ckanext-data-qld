@@ -44,6 +44,19 @@ def is_request_for_resource():
     return False
 
 
+def set_background_image_class():
+    environment = config.get('ckan.site_url', '')
+    if 'training' in environment:
+        background_class = 'qg-training'
+    elif 'dev' in environment:
+        background_class = 'qg-dev'
+    elif 'staging' in environment:
+        background_class = 'qg-staging'
+    else:
+        background_class = ''
+    return background_class
+
+
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -62,5 +75,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_year': get_year,
             'ytp_comments_enabled': ytp_comments_enabled,
             'get_all_groups': get_all_groups,
-            'is_request_for_resource': is_request_for_resource
+            'is_request_for_resource': is_request_for_resource,
+            'set_background_image_class': set_background_image_class
         }
