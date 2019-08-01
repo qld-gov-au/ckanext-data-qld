@@ -1,5 +1,7 @@
 import ckanext.scheming.helpers as sh
-from ckantoolkit import missing, Invalid, _
+from ckantoolkit import missing, Invalid, _, get_validator
+
+OneOf = get_validator('OneOf')
 
 
 def scheming_validator(fn):
