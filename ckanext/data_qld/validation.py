@@ -1,6 +1,7 @@
 import ckanext.scheming.helpers as sh
 from ckantoolkit import missing, Invalid, _
 
+
 def scheming_validator(fn):
     """
     Decorate a validator that needs to have the scheming fields
@@ -10,6 +11,7 @@ def scheming_validator(fn):
     """
     fn.is_a_scheming_validator = True
     return fn
+
 
 @scheming_validator
 def scheming_choices(field, schema):
