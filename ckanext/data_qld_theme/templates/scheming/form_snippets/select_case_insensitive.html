@@ -16,7 +16,7 @@
 {%- if field.get('sorted_choices') -%}
   {%- set options = options|sort(case_sensitive=false, attribute='text') -%}
 {%- endif -%}
-{%- set selectedValue = data[field.field_name].upper() -%}
+{%- set selectedValue = data.get(field.field_name, '').upper() -%}
 {% call form.select(
     field.field_name,
     id='field-' + field.field_name,
