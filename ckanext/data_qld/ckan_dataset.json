@@ -191,7 +191,8 @@
     {
       "field_name": "format",
       "label": "Format",
-      "preset": "resource_format_autocomplete",
+      "preset": "data_qld_select",
+      "choices_helper": "data_qld_resource_formats",
       "required": true
     },
     {

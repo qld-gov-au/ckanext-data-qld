@@ -23,11 +23,11 @@ Feature: Data Validation
         When I fill in "version" with "1.0"
         When I fill in "author_email" with "test@me.com"
         When I press "Add Data"
-        And I execute the script "document.getElementById('field-image-url').value='http://example.com/external-data.csv'"    
+        And I execute the script "document.getElementById('field-image-url').value='http://example.com/external-data.csv'"   
         And I fill in "name" with "Test Resource"  
         And I execute the script "document.getElementById('field-format').value='JSON'"      
         And I fill in "description" with "Test Resource Description"  
-        And I fill in "size" with "1"  
+        And I fill in "size" with "1mb"  
         And I attach the file "test-resource_schemea.json" to "schema_upload"
         And I press "Finish"
         When I wait for 1 seconds

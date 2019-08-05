@@ -9,6 +9,7 @@ import auth_functions as auth
 import constants
 import converters
 import helpers
+import validation
 import logging
 
 log = logging.getLogger(__name__)
@@ -35,7 +36,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
         ignore_missing = toolkit.get_validator('ignore_missing')
         schema.update({
             # This is a custom configuration option
-            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode]
+            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode],
+            'ckanext.data_qld.resource_formats': [ignore_missing, unicode]
         })
         return schema
 
@@ -49,13 +51,15 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
                 'data_qld_format_activity_data': helpers.format_activity_data,
                 'get_datarequest_comments_badge': helpers.get_datarequest_comments_badge,
+                'data_qld_resource_formats': helpers.resource_formats
                 }
 
     # IValidators
     def get_validators(self):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
-            'data_qld_filesize_formatter': converters.filesize_formatter
+            'data_qld_filesize_formatter': converters.filesize_formatter,
+            'data_qld_scheming_choices': validation.scheming_choices,
         }
 
     # IPackageController
