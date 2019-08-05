@@ -57,4 +57,12 @@ wget -O- --header="Authorization: ${API_KEY}" \
 # Creating basic test data which has datasets with resources
 paster create-test-data -c ${CKAN_INI_FILE}
 
+
+wget -O- --header="Authorization: ${API_KEY}" \
+    --post-data "ckanext.data_qld.resource_formats=JSON" \
+    ${CKAN_ACTION_URL}/config_option_update
+
+# Initialise validation tables
+paster --plugin=ckanext-validation validation init-db -c /app/ckan/default/production.ini
+
 deactivate
