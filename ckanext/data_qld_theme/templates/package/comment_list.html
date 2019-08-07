@@ -5,6 +5,15 @@
 {% resource "data_qld_theme/flag-comment.js" %}
 
 {% set content_type = content_type or 'dataset' %}
+{% set thread = h.get_comment_thread(pkg_name, content_type) %}
+{% set depth = 0 %}
+{% set notification_actions_enabled = userobj and h.comment_notification_recipients_enabled() %}
+
+{% if notification_actions_enabled %}
+    {% resource "comments_js/confirm_mute_content_item.js" %}
+    {% resource "comments_js/follow_or_mute_notifications.js" %}
+    {% set following_content_item, comments_following, comments_muted = h.user_comment_follow_mute_status(userobj.id, thread.id) %}
+{% endif %}
 
 {% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add", depth=0) %}
     <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
@@ -40,14 +49,11 @@
     </form>
 {% endmacro %}
 
-{% set thread = h.get_comment_thread(pkg_name, content_type) %}
-
-{% set depth = 0 %}
-
 {% macro comment_thread(thread, content_type, depth=0) %}
 
     {% for comment in thread.comments %}
     <div id="comment_{{ comment.id }}" class="comment-wrapper">
+
         <div class="comment comment-{{ comment.state }}">
             <div class="comment-header">
                 <div class="comment-actions">
@@ -79,6 +85,9 @@
                                 {% endif %}
                             {% endif %}
                         </div>
+                        {% if notification_actions_enabled and h.threaded_comments_enabled() == true and depth < 1 %}
+                            {% snippet "snippets/comment_thread_notification_actions.html", following_content=following_content_item, following=(comment.id in comments_following), muted=(comment.id in comments_muted), comment_id=comment.id %}
+                        {% endif %}
                     {% endif %}
                     <div class="comment-header-text">
                         {% if 'user_state' in comment and comment.user_state == 'deleted' %}
@@ -128,15 +137,20 @@
                 {% endif %}
             </div>
         </div>
-            {% if comment.comments | length != 0 %}
-                {{ comment_thread(comment, content_type, (depth + 1)) }}
-            {% endif %}
+
+        {% if comment.comments | length != 0 %}
+            {{ comment_thread(comment, content_type, (depth + 1)) }}
+        {% endif %}
     </div>
     {% endfor %}
 
 {% endmacro %}
 
 <h3 id="comments">{{ _('Comments') }}</h3>
+
+{% if notification_actions_enabled %}
+    {% snippet "snippets/content_item_notification_actions.html", following=following_content_item, content_type=content_type, thread_id=thread.id %}
+{% endif %}
 
 <div class="comment-container">
     {{ comment_thread(thread, content_type) }}

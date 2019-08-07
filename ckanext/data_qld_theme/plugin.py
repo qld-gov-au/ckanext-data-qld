@@ -32,6 +32,10 @@ def get_all_groups():
             group['id'] not in pkg_group_ids]
 
 
+def get_comment_notification_recipients_enabled():
+    return config.get('ckan.comments.follow_mute_enabled', False)
+
+
 def is_request_for_resource():
     """
     Searching for a url path for /dataset/ and /resource/
@@ -76,5 +80,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'ytp_comments_enabled': ytp_comments_enabled,
             'get_all_groups': get_all_groups,
             'is_request_for_resource': is_request_for_resource,
-            'set_background_image_class': set_background_image_class
+            'set_background_image_class': set_background_image_class,
+            'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled
         }

@@ -449,7 +449,7 @@ body > div.qg-training {
  body > div.qg-staging {
     background: url('/bg_staging.png') left top repeat;
  }
- 
+
  /* Overriding main.css to fix column not wrapping text in responsive tables */
 .table-responsive > .table > tbody > tr > td {
     white-space: normal;
