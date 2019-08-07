@@ -56,7 +56,21 @@
 							{% endif %}
 						</a>
 						{% block download_resource_button %}
-						{{ super ()}}
+							{% if res.datastore_active %}
+								<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+								<li>
+									<a href="{{ h.url_for(controller='ckanext.datastore.controller:DatastoreController', action='dump', resource_id=res.id, format='tsv', bom=True) }}"
+									target="_blank"><span>TSV</span></a>
+									<a href="{{ h.url_for(controller='ckanext.datastore.controller:DatastoreController', action='dump', resource_id=res.id, format='json') }}"
+									target="_blank"><span>JSON</span></a>
+									<a href="{{ h.url_for(controller='ckanext.datastore.controller:DatastoreController', action='dump', resource_id=res.id, format='xml') }}"
+									target="_blank"><span>XML</span></a>
+								</li>
+								</ul>
+							{% endif %}
 						{% endblock %}
 					</div>
 				</li>

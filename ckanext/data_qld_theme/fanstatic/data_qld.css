@@ -429,3 +429,35 @@ header.account-masthead .account ul.unstyled li a:focus {
     padding-right: 1em;
     white-space: nowrap;
 }
+
+/* Override of main.css to fix white-space: nowrap issue with resource title on left hand side */
+.nav-item.active > a span,
+.nav-aside li.active a span {
+  white-space: normal;
+  overflow: hidden;
+}
+
+/* The background watermark image for each environment */
+body > div.qg-training {
+    background: url('/bg_training.png') left top repeat;
+ }
+
+ body > div.qg-dev {
+    background: url('/bg_dev.png') left top repeat;
+ }
+
+ body > div.qg-staging {
+    background: url('/bg_staging.png') left top repeat;
+ }
+ 
+ /* Overriding main.css to fix column not wrapping text in responsive tables */
+.table-responsive > .table > tbody > tr > td {
+    white-space: normal;
+}
+
+/* Overriding main.css nav tabs displaying outside parent container */
+@media (max-width: 991px) {
+    .page-header .nav-tabs {
+      margin-left: 0px;
+    }
+}
