@@ -88,6 +88,29 @@ form.form input[type="submit"]:active:focus {
     border-color: #005cbf;
 }
 
+/* Orange buttons */
+.btn-warning {
+    background-color: #AD6500;
+    border-color: #AD6500;
+}
+
+.btn-warning:hover {
+    background-color: #945600;
+    border-color: #945600;
+}
+
+.btn-warning:active,
+.btn-warning:active:hover,
+.btn-warning.active,
+.open > .dropdown-toggle.btn-warning,
+.btn-warning:focus,
+.btn-warning:active:focus,
+.btn-warning.focus {
+    color: #ffffff;
+    background-color: #545b62;
+    border-color: #4e555b;
+}
+
 /* Fixes a issue with dataset & resource select or multi-select elements not displaying correctly when using the scheming extension */
 .select2-container.form-control {
     height: 100%;
@@ -449,7 +472,7 @@ body > div.qg-training {
  body > div.qg-staging {
     background: url('/bg_staging.png') left top repeat;
  }
- 
+
  /* Overriding main.css to fix column not wrapping text in responsive tables */
 .table-responsive > .table > tbody > tr > td {
     white-space: normal;
