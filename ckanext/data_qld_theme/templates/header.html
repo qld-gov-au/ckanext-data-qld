@@ -252,15 +252,15 @@
           {% block header_site_navigation_tabs %}
           <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for('search') }}">Data</a></li>
           <li>
-            <a href="https://www.qld.gov.au/data/news-and-events">News and events</a>
+            <a href="/article/news-and-events">News and events</a>
           </li>
           <li>
-            <a href="https://www.qld.gov.au/data/case-studies">Case studies</a>
+            <a href="/article/case-studies">Case studies</a>
           </li>
           <li>
-            <a href="https://www.qld.gov.au/data/standards-and-guidance">Standards and guidance</a>
+            <a href="/article/standards-and-guidance">Standards and guidance</a>
           </li>
-          <li><a href="https://www.qld.gov.au/data/contact">Contact</a></li>
+          <li><a href="/article/contact">Contact</a></li>
 		  {% endblock %}
         </ul>
       </nav>
