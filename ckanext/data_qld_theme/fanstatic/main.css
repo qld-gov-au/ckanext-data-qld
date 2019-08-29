@@ -5568,6 +5568,8 @@ a.tag:hover {
   padding-top: 10px; }
 
 .module h1 {
+  clear: both;
+  width: 100%;
   margin-top: 0;
   margin-bottom: 20px; }
 
@@ -5954,7 +5956,7 @@ a.tag:hover {
     float: left; } }
 
 .nav-item.active > a span, .nav-aside li.active a span {
-  white-space: nowrap;
+  /*white-space: nowrap;*/
   overflow: hidden; }
 
 .module-narrow .nav-item > a, .module-narrow .nav-aside li a {
