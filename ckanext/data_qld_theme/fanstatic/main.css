@@ -5568,6 +5568,8 @@ a.tag:hover {
   padding-top: 10px; }
 
 .module h1 {
+  clear: both;
+  width: 100%;
   margin-top: 0;
   margin-bottom: 20px; }
 
