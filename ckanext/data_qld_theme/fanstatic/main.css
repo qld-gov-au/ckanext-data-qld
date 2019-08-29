@@ -5954,7 +5954,7 @@ a.tag:hover {
     float: left; } }
 
 .nav-item.active > a span, .nav-aside li.active a span {
-  white-space: nowrap;
+  /*white-space: nowrap;*/
   overflow: hidden; }
 
 .module-narrow .nav-item > a, .module-narrow .nav-aside li a {
