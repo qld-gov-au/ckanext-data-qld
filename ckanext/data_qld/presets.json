@@ -37,6 +37,24 @@
         "upload_clear": "clear_upload",
         "upload_label": "File"
       }
+    },
+    {
+      "preset_name": "data_qld_select",
+      "values": {
+        "form_snippet": "select_case_insensitive.html",
+        "display_snippet": "select.html",
+        "validators": "scheming_required data_qld_scheming_choices"
+      }
+    },
+    { 
+      "preset_name": "data_qld_title",
+      "values": {
+        "validators": "if_empty_same_as(name) unicode",
+        "form_snippet": "text.html",
+        "form_attrs": {
+          "data-module": "slug-preview-target"
+        }
+      }
     }
   ]
 }

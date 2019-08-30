@@ -7,7 +7,7 @@
     {
       "field_name": "title",
       "label": "Title",
-      "preset": "title",
+      "preset": "data_qld_title",
       "form_placeholder": "eg. A descriptive title"
     },
     {
@@ -129,10 +129,6 @@
       "required": true,
       "choices": [
         {
-          "value": "annually",
-          "label": "Annually"
-        },
-        {
           "value": "near-realtime",
           "label": "Near-realtime"
         },
@@ -157,15 +153,23 @@
           "label": "Monthly"
         },
         {
+          "value": "quarterly",
+          "label": "Quarterly"
+        },
+        {
           "value": "half-yearly",
           "label": "Half-yearly"
+        },
+        {
+          "value": "annually",
+          "label": "Annually"
         },
         {
           "value": "non-regular",
           "label": "Non-regular"
         },
         {
-          "value": "Not updated",
+          "value": "not-updated",
           "label": "Not updated"
         }
       ]
@@ -187,7 +191,8 @@
     {
       "field_name": "format",
       "label": "Format",
-      "preset": "resource_format_autocomplete",
+      "preset": "data_qld_select",
+      "choices_helper": "data_qld_resource_formats",
       "required": true
     },
     {

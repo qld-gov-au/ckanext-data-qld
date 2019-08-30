@@ -9,6 +9,10 @@ import auth_functions as auth
 import constants
 import converters
 import helpers
+import validation
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class DataQldPlugin(plugins.SingletonPlugin):
@@ -32,7 +36,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
         ignore_missing = toolkit.get_validator('ignore_missing')
         schema.update({
             # This is a custom configuration option
-            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode]
+            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode],
+            'ckanext.data_qld.resource_formats': [ignore_missing, unicode]
         })
         return schema
 
@@ -46,13 +51,15 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
                 'data_qld_format_activity_data': helpers.format_activity_data,
                 'get_datarequest_comments_badge': helpers.get_datarequest_comments_badge,
+                'data_qld_resource_formats': helpers.resource_formats
                 }
 
     # IValidators
     def get_validators(self):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
-            'data_qld_filesize_formatter': converters.filesize_formatter
+            'data_qld_filesize_formatter': converters.filesize_formatter,
+            'data_qld_scheming_choices': validation.scheming_choices,
         }
 
     # IPackageController
@@ -119,6 +126,17 @@ class DataQldPlugin(plugins.SingletonPlugin):
         if isinstance(file_upload, cgi.FieldStorage):
             data_dict.pop(u'size', None)
 
+        return data_dict
+
+    def after_create(self, context, data_dict):
+        # Set the resource position order for this (latest) resource to first
+        resource_id = data_dict.get('id', None)
+        package_id = data_dict.get('package_id', None)
+        if resource_id and package_id:
+            try:
+                toolkit.get_action('package_resource_reorder')(context, {'id': package_id, 'order': [resource_id]})
+            except Exception, e:
+                log.error(str(e))
         return data_dict
 
     # IMiddleware
