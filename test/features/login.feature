@@ -1,7 +1,7 @@
-@smoke
+@smoke @login
 Feature: Login
 
-    Scenario: Login process
+    Scenario: Smoke test to ensure Login process works
         Given "Admin" as the persona
         When I go to homepage
         And I click the link with text that contains "Log in"
@@ -12,7 +12,7 @@ Feature: Login
         And I take a screenshot
         Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
 
-    Scenario: Login step
+    Scenario: Smoke test to ensure Login step works
         Given "Admin" as the persona
         When I log in
         Then I take a screenshot
