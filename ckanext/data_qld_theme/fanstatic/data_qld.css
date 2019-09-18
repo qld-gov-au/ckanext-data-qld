@@ -484,3 +484,10 @@ body > div.qg-training {
       margin-left: 0px;
     }
 }
+
+/* DC-12485 - Override broken border right inherited from out of the box (desktops)  */
+@media (min-width: 768px) {
+    .wrapper:before {
+      border-right: 0px !important;
+    }
+}
