@@ -3,7 +3,7 @@
 {%- block resource_last_updated -%}
   <tr>
     <th scope="row">{{ _('Last updated') }}</th>
-    <td>{{ h.render_datetime(res.last_modified) or h.render_datetime(res.revision_timestamp) or h.render_datetime(res.created or res.Created) or _('unknown') }}</td>
+     <td>{{ h.render_datetime(h.maximum_of(res, 'last_modified', 'revision_timestamp', 'created', 'Created', 'validation_timestamp')) or _('unknown') }}</td>
   </tr>
 {%- endblock -%}
 {%- block resource_created -%}
