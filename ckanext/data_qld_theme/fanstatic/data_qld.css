@@ -473,6 +473,10 @@ div.account-masthead .account ul.unstyled li a:focus {
   overflow: hidden;
 }
 
+li.nav-item a span.badge {
+  float: right;
+}
+
 /* The background watermark image for each environment */
 body > div.qg-training {
   background: url('/bg_training.png') left top repeat;

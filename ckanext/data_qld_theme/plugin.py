@@ -60,6 +60,15 @@ def set_background_image_class():
         background_class = ''
     return background_class
 
+def maximum_of(obj, *keys):
+    """ Identify and return the highest value among the listed keys in the selected dictionary.
+    Any keys that do not exist in the dictionary will be ignored.
+    """
+    highest_value = None
+    for key in keys:
+        if key in obj and (highest_value is None or obj[key] > highest_value):
+            highest_value = obj[key]
+    return highest_value
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -81,5 +90,6 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_all_groups': get_all_groups,
             'is_request_for_resource': is_request_for_resource,
             'set_background_image_class': set_background_image_class,
-            'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled
+            'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled,
+            'maximum_of': maximum_of
         }

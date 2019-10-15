@@ -2,7 +2,7 @@
 
 {% block resource_item_title %}
 <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
-  {{ h.resource_display_name(res) | truncate(50) }}
+  {{ h.resource_display_name(res) | truncate(75) }}
   {% if res.datastore_active %}
   <span class="resource-api-available" title="API available">API</span>
   {% endif  %}
