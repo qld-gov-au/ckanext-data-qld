@@ -60,6 +60,7 @@ def set_background_image_class():
         background_class = ''
     return background_class
 
+
 def maximum_of(obj, *keys):
     """ Identify and return the highest value among the listed keys in the selected dictionary.
     Any keys that do not exist in the dictionary will be ignored.
@@ -69,6 +70,7 @@ def maximum_of(obj, *keys):
         if key in obj and (highest_value is None or obj[key] > highest_value):
             highest_value = obj[key]
     return highest_value
+
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
