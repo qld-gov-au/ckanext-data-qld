@@ -1,0 +1,58 @@
+user-agent: *
+Disallow: /dataset/rate/
+Disallow: /revision/
+Disallow: /dataset/*/history
+Disallow: /api/
+Disallow: /_tracking
+Disallow: /ar/
+Disallow: /bg/
+Disallow: /ca
+Disallow: /cs_CZ/
+Disallow: /da_DK/
+Disallow: /de/
+Disallow: /dv/
+Disallow: /el/
+Disallow: /en_AU/
+Disallow: /en_GB/
+Disallow: /es/
+Disallow: /es_AR/
+Disallow: /fa_IR/
+Disallow: /fi/
+Disallow: /fr/
+Disallow: /hu/
+Disallow: /id/
+Disallow: /is/
+Disallow: /it/
+Disallow: /ja/
+Disallow: /km/
+Disallow: /ko_KR/
+Disallow: /lt/
+Disallow: /lv/
+Disallow: /my_MM/
+Disallow: /nl/
+Disallow: /no/
+Disallow: /pl/
+Disallow: /pt_BR/
+Disallow: /ro/
+Disallow: /ru/
+Disallow: /sk/
+Disallow: /sl/
+Disallow: /sq/
+Disallow: /sr/
+Disallow: /sr_Latn/
+Disallow: /sv/
+Disallow: /tr/
+Disallow: /uk_UA/
+Disallow: /zh_CN/
+Disallow: /zh_TW/
+
+user-agent: *
+Crawl-Delay: 10
+
+user-agent: Funnelback
+Crawl-Delay: 5
+
+# ADDITIONS ########################
+# Allow GoogleBot to access the API
+User-agent: GoogleBot
+Allow: /api/
