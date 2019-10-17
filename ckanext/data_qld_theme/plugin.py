@@ -64,7 +64,8 @@ def set_background_image_class():
 
 def latest_revision(resource_id):
     resource_revisions = model.Session.query(model.resource_revision_table).filter(
-        model.ResourceRevision.id == resource_id
+        model.ResourceRevision.id == resource_id,
+        model.ResourceRevision.expired_timestamp > '9999-01-01'
     )
     highest_value = None
     for revision in resource_revisions:
