@@ -4,7 +4,6 @@ import datetime
 
 from ckan.common import c, config
 import ckan.model as model
-from ckan.model import Session, resource_revision_table
 from pylons import request
 import re
 
