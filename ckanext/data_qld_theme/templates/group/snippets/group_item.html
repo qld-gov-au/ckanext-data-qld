@@ -30,7 +30,12 @@ Example:
     {% endblock %}
     {% block datasets %}
       <td>
-        {% if h.check_access('member_delete', group) and c.controller in ['package', 'dataset'] and c.action in ['groups'] %}
+        {% if h.check_access('member_delete', group) and c.controller in ['package', 'dataset'] and c.action in ['groups']
+            and (
+                c.pkg_dict is none
+                or c.pkg_dict.id is none
+                or h.check_access('package_update', {'id':c.pkg_dict.id })
+            ) %}
           <input name="group_remove.{{ group.id }}" value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-sm media-edit" title="{{ _('Remove dataset from this group') }}"/>
         {% elif group.package_count %}
           <span class="count">{{ group.package_count }}</span>
