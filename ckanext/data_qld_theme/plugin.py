@@ -3,6 +3,7 @@ import ckan.plugins.toolkit as toolkit
 import datetime
 
 from ckan.common import c, config
+import ckan.model as model
 from pylons import request
 import re
 
@@ -60,15 +61,26 @@ def set_background_image_class():
         background_class = ''
     return background_class
 
-def maximum_of(obj, *keys):
-    """ Identify and return the highest value among the listed keys in the selected dictionary.
-    Any keys that do not exist in the dictionary will be ignored.
-    """
+
+def latest_revision(resource_id):
+    resource_revisions = model.Session.query(model.resource_revision_table).filter(
+        model.ResourceRevision.id == resource_id,
+        model.ResourceRevision.expired_timestamp > '9999-01-01'
+    )
     highest_value = None
-    for key in keys:
-        if key in obj and (highest_value is None or obj[key] > highest_value):
-            highest_value = obj[key]
+    for revision in resource_revisions:
+        if highest_value is None or revision.revision_timestamp > highest_value.revision_timestamp:
+            highest_value = revision
     return highest_value
+
+
+def populate_revision(resource):
+    if 'revision_timestamp' in resource:
+        return
+    current_revision = latest_revision(resource['id'])
+    if current_revision is not None:
+        resource['revision_timestamp'] = current_revision.revision_timestamp
+
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -91,5 +103,5 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'is_request_for_resource': is_request_for_resource,
             'set_background_image_class': set_background_image_class,
             'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled,
-            'maximum_of': maximum_of
+            'populate_revision': populate_revision
         }
