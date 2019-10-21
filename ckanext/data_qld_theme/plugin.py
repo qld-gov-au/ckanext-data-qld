@@ -52,9 +52,9 @@ def is_request_for_resource():
 def is_prod():
     environment = config.get('ckan.site_url', '')
     if 'training' in environment:
-        return False;
+        return False
     elif 'dev' in environment:
-        return False;
+        return False
     elif 'staging' in environment:
         return False
     else:
