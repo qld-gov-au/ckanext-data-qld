@@ -51,13 +51,13 @@ def is_request_for_resource():
 def is_prod():
     environment = config.get('ckan.site_url', '')
     if 'training' in environment:
-        return false;
+        return False;
     elif 'dev' in environment:
-        return false;
+        return False;
     elif 'staging' in environment:
-        return false
+        return False
     else:
-        return true
+        return True
 
 def set_background_image_class():
     environment = config.get('ckan.site_url', '')

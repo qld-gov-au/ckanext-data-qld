@@ -1,3 +1,4 @@
+{% ckan_extends %}
 user-agent: *
 
 {% if h.is_prod() %}
