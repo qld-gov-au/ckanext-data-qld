@@ -8964,7 +8964,8 @@ iframe {
   font-size: 1.2em; }
 
 .popular {
-  text-indent: -999em; }
+  text-indent: -999em; 
+  display: none;}
 
 .empty {
   color: #aaaaaa;
