@@ -1,7 +1,8 @@
 {% ckan_extends %}
-user-agent: *
 
+{% block all_user_agents %}
 {% if h.is_prod() %}
+{% raw %}
 Disallow: /dataset/rate/
 Disallow: /revision/
 Disallow: /dataset/*/history
@@ -48,10 +49,16 @@ Disallow: /tr/
 Disallow: /uk_UA/
 Disallow: /zh_CN/
 Disallow: /zh_TW/
-
-user-agent: *
 Crawl-Delay: 10
+{% endraw %}
+{% else %}
+Disallow: /
+{% endif %}
+{% endblock %}
 
+{% block additional_user_agents %}
+{% if h.is_prod() %}
+{% raw %}
 user-agent: Funnelback
 Crawl-Delay: 10
 
@@ -60,6 +67,6 @@ Crawl-Delay: 10
 User-agent: GoogleBot
 Allow: /api/
 
-{% else %}
-Disallow: /
+{% endraw %}
 {% endif %}
+{% endblock %}
