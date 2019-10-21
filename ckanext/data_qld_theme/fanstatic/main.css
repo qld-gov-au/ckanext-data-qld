@@ -8151,8 +8151,8 @@ h1 small, h2 small, h3 small, h4 small {
   line-height: 1.2;
   white-space: nowrap; }
 
-.masthead .logo {
-  display: inline; 
+.masthead .logo { 
+  display: inline;
 }
 
 .masthead .logo img {
