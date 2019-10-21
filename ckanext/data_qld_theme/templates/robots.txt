@@ -1,4 +1,6 @@
 user-agent: *
+
+{% if h.is_prod() %}
 Disallow: /dataset/rate/
 Disallow: /revision/
 Disallow: /dataset/*/history
@@ -50,9 +52,13 @@ user-agent: *
 Crawl-Delay: 10
 
 user-agent: Funnelback
-Crawl-Delay: 5
+Crawl-Delay: 10
 
 # ADDITIONS ########################
 # Allow GoogleBot to access the API
 User-agent: GoogleBot
 Allow: /api/
+
+{% else %}
+Disallow: /
+{% endif %}

@@ -48,6 +48,16 @@ def is_request_for_resource():
         return re.search(r"/dataset/\S+/resource/\S+", original_request.path)
     return False
 
+def is_prod():
+    environment = config.get('ckan.site_url', '')
+    if 'training' in environment:
+        return false;
+    elif 'dev' in environment:
+        return false;
+    elif 'staging' in environment:
+        return false
+    else:
+        return true
 
 def set_background_image_class():
     environment = config.get('ckan.site_url', '')
