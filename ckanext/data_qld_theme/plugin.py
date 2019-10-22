@@ -49,6 +49,18 @@ def is_request_for_resource():
     return False
 
 
+def is_prod():
+    environment = config.get('ckan.site_url', '')
+    if 'training' in environment:
+        return False
+    elif 'dev' in environment:
+        return False
+    elif 'staging' in environment:
+        return False
+    else:
+        return True
+
+
 def set_background_image_class():
     environment = config.get('ckan.site_url', '')
     if 'training' in environment:
@@ -102,6 +114,7 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_all_groups': get_all_groups,
             'is_request_for_resource': is_request_for_resource,
             'set_background_image_class': set_background_image_class,
+            'is_prod': is_prod,
             'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled,
             'populate_revision': populate_revision
         }
