@@ -48,7 +48,8 @@ def is_request_for_resource():
         return re.search(r"/dataset/\S+/resource/\S+", original_request.path)
     return False
 
-#this ensures external css/js is loaded from external staging if running in cicd/pdev environments.
+
+# this ensures external css/js is loaded from external staging if running in cicd/pdev environments.
 def set_external_resources():
     environment = config.get('ckan.site_url', '')
     if 'ckan' in environment:
