@@ -48,6 +48,14 @@ def is_request_for_resource():
         return re.search(r"/dataset/\S+/resource/\S+", original_request.path)
     return False
 
+#this ensures external css/js is loaded from external staging if running in cicd/pdev environments.
+def set_external_resources():
+    environment = config.get('ckan.site_url', '')
+    if 'ckan' in environment:
+        return '//staging.data.qld.gov.au'
+    else:
+        return ''
+
 
 def is_prod():
     environment = config.get('ckan.site_url', '')
@@ -56,6 +64,8 @@ def is_prod():
     elif 'dev' in environment:
         return False
     elif 'staging' in environment:
+        return False
+    elif 'ckan' in environment:
         return False
     else:
         return True
@@ -69,6 +79,8 @@ def set_background_image_class():
         background_class = 'qg-dev'
     elif 'staging' in environment:
         background_class = 'qg-staging'
+    elif 'ckan' in environment:
+        background_class = 'qg-dev'
     else:
         background_class = ''
     return background_class
@@ -114,6 +126,7 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_all_groups': get_all_groups,
             'is_request_for_resource': is_request_for_resource,
             'set_background_image_class': set_background_image_class,
+            'set_external_resources' : set_external_resources,
             'is_prod': is_prod,
             'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled,
             'populate_revision': populate_revision
