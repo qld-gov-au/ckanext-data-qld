@@ -7,6 +7,8 @@ Disallow: /dataset/rate/
 Disallow: /revision/
 Disallow: /dataset/*/history
 Disallow: /api/
+Disallow: /en/storage/
+Disallow: /storage/
 Disallow: /_tracking
 Disallow: /ar/
 Disallow: /bg/
