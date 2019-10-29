@@ -475,6 +475,7 @@ div.account-masthead .account ul.unstyled li a:focus {
 
 li.nav-item a span.badge {
   float: right;
+  margin-right: 10px;
 }
 
 /* The background watermark image for each environment */
