@@ -509,3 +509,8 @@ body > div.qg-staging {
       border-right: 0px !important;
     }
 }
+
+/* QOL-5852 - Override popular icon */
+.popular {
+  visibility: hidden;
+}
