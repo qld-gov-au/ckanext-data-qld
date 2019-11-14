@@ -515,8 +515,9 @@ body > div.qg-staging {
   visibility: hidden;
 }
 
-/* QOL-5853 - Edge/IE wordbreaks */
-.context-info h1.heading {
-  -ms-word-break: break-word;
+/* QOL-5853/QOL-5847 - Edge/IE wordbreaks */
+.context-info h1.heading,
+.break-word {
+  -ms-word-break: break-word !important;
   word-break: break-word !important;
 }
