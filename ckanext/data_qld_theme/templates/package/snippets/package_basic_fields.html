@@ -34,7 +34,7 @@
           <select id="field-license" name="license_id" data-module="autocomplete">
             {% set existing_license_id = data.get('license_id') %}
             {% for license_id, license_desc in h.license_options(existing_license_id) %}
-            <option value="{{ license_id }}" {% if (existing_license_id == license_id) or (license_id == "cc-by-4") %}selected="selected"{% endif %}>{{ license_desc }}</option>
+            <option value="{{ license_id }}" {% if (existing_license_id == license_id) or (existing_license_id is None and license_id =="cc-by-4") %}selected="selected"{% endif %}>{{ license_desc }}</option>
             {% endfor %}
           </select>
           {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
