@@ -509,3 +509,15 @@ body > div.qg-staging {
       border-right: 0px !important;
     }
 }
+
+/* QOL-5852 - Override popular icon */
+.popular {
+  visibility: hidden;
+}
+
+/* QOL-5853/QOL-5847 - Edge/IE wordbreaks */
+.context-info h1.heading,
+.break-word {
+  -ms-word-break: break-word !important;
+  word-break: break-word !important;
+}
