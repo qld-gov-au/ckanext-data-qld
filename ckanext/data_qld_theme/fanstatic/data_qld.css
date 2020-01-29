@@ -510,7 +510,7 @@ body > div.qg-staging {
     }
 }
 
-/* QOL-5852 - Override popular icon */
+/* QOL-5852 - Override popular icon as its no longer needed */
 .popular {
   visibility: hidden;
 }
@@ -520,4 +520,10 @@ body > div.qg-staging {
 .break-word {
   -ms-word-break: break-word !important;
   word-break: break-word !important;
+}
+
+/** @DC-13484 - Unclickable home tiles **/
+/** Too risky to change position value, TODO fix greater positions **/
+body .wrapper .clearfix:before {
+    z-index: -999 !important;
 }
