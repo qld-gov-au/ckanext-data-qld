@@ -524,6 +524,6 @@ body > div.qg-staging {
 
 /** @DC-13484 - Unclickable home tiles **/
 /** Too risky to change position value, TODO fix greater positions **/
-body .wrapper .clearfix:before {
+.wrapper:before  {
     z-index: -999 !important;
 }
