@@ -30,8 +30,8 @@ paster --plugin=ckan user add test_org_member email=test_org_member@localhost pa
 echo "Creating ${TEST_ORG_TITLE} Organisation:"
 
 TEST_ORG=$( \
-    wget -O- --header="Authorization: ${API_KEY}" \
-    --post-data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
+    curl -L -s --header "Authorization: ${API_KEY}" \
+    --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
     ${CKAN_ACTION_URL}/organization_create
 )
 
@@ -39,16 +39,16 @@ TEST_ORG_ID=$(echo $TEST_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
 echo "Assigning test users to ${TEST_ORG_TITLE} Organisation:"
 
-wget -O- --header="Authorization: ${API_KEY}" \
-    --post-data "id=${TEST_ORG_ID}&object=test_org_admin&object_type=user&capacity=admin" \
+curl -L -s --header "Authorization: ${API_KEY}" \
+    --data "id=${TEST_ORG_ID}&object=test_org_admin&object_type=user&capacity=admin" \
     ${CKAN_ACTION_URL}/member_create
 
-wget -O- --header="Authorization: ${API_KEY}" \
-    --post-data "id=${TEST_ORG_ID}&object=test_org_editor&object_type=user&capacity=editor" \
+curl -L -s --header "Authorization: ${API_KEY}" \
+    --data "id=${TEST_ORG_ID}&object=test_org_editor&object_type=user&capacity=editor" \
     ${CKAN_ACTION_URL}/member_create
 
-wget -O- --header="Authorization: ${API_KEY}" \
-    --post-data "id=${TEST_ORG_ID}&object=test_org_member&object_type=user&capacity=member" \
+curl -L -s --header "Authorization: ${API_KEY}" \
+    --data "id=${TEST_ORG_ID}&object=test_org_member&object_type=user&capacity=member" \
     ${CKAN_ACTION_URL}/member_create
 ##
 # END.
@@ -58,8 +58,8 @@ wget -O- --header="Authorization: ${API_KEY}" \
 paster create-test-data -c ${CKAN_INI_FILE}
 
 
-wget -O- --header="Authorization: ${API_KEY}" \
-    --post-data "ckanext.data_qld.resource_formats=JSON" \
+curl -L -s --header "Authorization: ${API_KEY}" \
+    --data "ckanext.data_qld.resource_formats=JSON" \
     ${CKAN_ACTION_URL}/config_option_update
 
 # Initialise validation tables
