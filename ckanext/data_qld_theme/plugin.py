@@ -2,9 +2,8 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import datetime
 
-from ckan.common import c, config
+from ckan.common import c, config, request
 import ckan.model as model
-from pylons import request
 import re
 
 
