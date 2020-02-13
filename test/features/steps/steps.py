@@ -4,6 +4,7 @@ from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
 import random
 
+
 @step('I go to homepage')
 def go_to_home(context):
     when_i_visit_url(context, '/')
@@ -22,10 +23,11 @@ def log_in(context):
         Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
     """)
 
+
 @step('I fill in title with random text')
 def title_random_text(context):
 
     assert context.persona
     context.execute_steps(u"""
         When I fill in "title" with "Test Title {0}"
-    """.format(random.randrange(1000)) )
+    """.format(random.randrange(1000)))
