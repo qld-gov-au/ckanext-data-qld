@@ -1,4 +1,3 @@
-from ckan.common import _, c
 from ckan.plugins import toolkit
 
 import constants
