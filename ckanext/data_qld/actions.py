@@ -110,7 +110,7 @@ def _send_mail(user_ids, action_type, datarequest, job_title):
             logging.exception("Error sending notification to {0}".format(user_id))
 
 
-def _get_admin_users_from_organasition(datarequest_dict):
+def _get_admin_users_from_organisation(datarequest_dict):
     # Data QLD modification.
     users = set([user['id'] for user in datarequest_dict['organization']['users'] if user.get('capacity') == 'admin'])
     return users
@@ -172,7 +172,7 @@ def create_datarequest(original_action, context, data_dict):
 
     if datarequest_dict['organization']:
         # Data QLD modification
-        users = _get_admin_users_from_organasition(datarequest_dict)
+        users = _get_admin_users_from_organisation(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
         _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Created Email')
 
@@ -255,14 +255,14 @@ def update_datarequest(original_action, context, data_dict):
     if datarequest_dict['organization'] and organisation_updated:
         # Data QLD modification
         # Email Admin users of the assigned organisation
-        users = _get_admin_users_from_organasition(datarequest_dict)
+        users = _get_admin_users_from_organisation(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
         _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Assigned Email')
         # Email Admin users of unassigned organisation
         org_dict = {
             'organization': _get_organization(unassigned_organisation_id)
         }
-        users = _get_admin_users_from_organasition(org_dict)
+        users = _get_admin_users_from_organisation(org_dict)
         users.discard(context['auth_user_obj'].id)
         _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict, 'Data Request Unassigned Email')
 
@@ -389,7 +389,7 @@ def open_datarequest(context, data_dict):
     # Creator email
     _send_mail(users, 'open_datarequest_creator', datarequest_dict, 'Data Request Opened Creator Email')
     if datarequest_dict['organization']:
-        users = _get_admin_users_from_organasition(datarequest_dict)
+        users = _get_admin_users_from_organisation(datarequest_dict)
         # Admins of organisation email
         _send_mail(users, 'open_datarequest_organisation', datarequest_dict, 'Data Request Opened Admins Email')
 
