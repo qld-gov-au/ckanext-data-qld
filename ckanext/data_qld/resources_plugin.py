@@ -5,7 +5,6 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
 import auth_functions as auth
-import constants
 import converters
 import helpers
 import logging
