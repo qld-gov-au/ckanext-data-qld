@@ -1,31 +1,20 @@
 # encoding: utf-8
 
 import cgi
+import logging
+
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
+import actions
 import auth_functions as auth
 import constants
+import datarequest_auth_functions as datareq_auth
 import converters
 import helpers
-import logging
+import validation
 
 log = logging.getLogger(__name__)
-
-try:
-    import actions
-    import datarequest_auth_functions as datareq_auth
-    enable_datarequests = True
-except ImportError:
-    log.warn("Unable to find data request requirements, disabling")
-    enable_datarequests = False
-
-try:
-    import validation
-    enable_validation = True
-except ImportError:
-    log.warn("Unable to find validation requirements, disabling")
-    enable_validation = False
 
 
 class DataQldPlugin(plugins.SingletonPlugin):
@@ -69,15 +58,11 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IValidators
     def get_validators(self):
-        validators = {
+        return {
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
+            'data_qld_scheming_choices': validation.scheming_choices,
         }
-
-        if enable_validation:
-            validators['data_qld_scheming_choices'] = validation.scheming_choices
-
-        return validators
 
     # IPackageController
     def set_maintainer_from_author(self, entity):
@@ -93,21 +78,17 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IAuthFunctions
     def get_auth_functions(self):
-        auth_functions = {'member_create': auth.member_create}
-
-        if enable_datarequests:
-            auth_functions[constants.UPDATE_DATAREQUEST] = datareq_auth.update_datarequest
-            auth_functions[constants.UPDATE_DATAREQUEST_ORGANISATION] = datareq_auth.update_datarequest_organisation
-            auth_functions[constants.CLOSE_DATAREQUEST] = datareq_auth.close_datarequest
-            auth_functions[constants.OPEN_DATAREQUEST] = datareq_auth.open_datarequest
-
+        auth_functions = {
+            constants.UPDATE_DATAREQUEST: datareq_auth.update_datarequest,
+            constants.UPDATE_DATAREQUEST_ORGANISATION: datareq_auth.update_datarequest_organisation,
+            constants.CLOSE_DATAREQUEST: datareq_auth.close_datarequest,
+            constants.OPEN_DATAREQUEST: datareq_auth.open_datarequest,
+            'member_create': auth.member_create
+        }
         return auth_functions
 
     # IActions
     def get_actions(self):
-        if not enable_datarequests:
-            return {}
-
         additional_actions = {
             constants.OPEN_DATAREQUEST: actions.open_datarequest,
             constants.CREATE_DATAREQUEST: actions.create_datarequest,
@@ -118,16 +99,14 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IRoutes
     def before_map(self, m):
-        if enable_datarequests:
-            # Re_Open a Data Request
-            m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                      controller='ckanext.data_qld.controller:DataQldUI',
-                      action='open_datarequest', conditions=dict(method=['GET', 'POST']))
+        # Re_Open a Data Request
+        m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
+                  controller='ckanext.data_qld.controller:DataQldUI',
+                  action='open_datarequest', conditions=dict(method=['GET', 'POST']))
 
-        if enable_validation:
-            m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
-                      controller='ckanext.data_qld.controller:DataQldUI',
-                      action='show_schema', conditions=dict(method=['GET']))
+        m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
+                  controller='ckanext.data_qld.controller:DataQldUI',
+                  action='show_schema', conditions=dict(method=['GET']))
 
         return m
 
