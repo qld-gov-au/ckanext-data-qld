@@ -1,44 +1,36 @@
 # encoding: utf-8
 
 import cgi
-import logging
-
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
-import actions
 import auth_functions as auth
-import constants
-import datarequest_auth_functions as datareq_auth
 import converters
 import helpers
-import validation
+import logging
 
 log = logging.getLogger(__name__)
 
 
-class DataQldPlugin(plugins.SingletonPlugin):
+class DataQldResourcesPlugin(plugins.SingletonPlugin):
+    """ Provide this plugin's resources without adding dependencies
+    eg don't force integration with other extensions.
+    """
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
-    plugins.implements(plugins.IActions)
-    plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(plugins.IMiddleware, inherit=True)
 
     # IConfigurer
     def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'data_qld')
 
     def update_config_schema(self, schema):
         ignore_missing = toolkit.get_validator('ignore_missing')
         schema.update({
-            # This is a custom configuration option
-            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode],
             'ckanext.data_qld.resource_formats': [ignore_missing, unicode]
         })
         return schema
@@ -47,12 +39,9 @@ class DataQldPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {'data_qld_data_driven_application': helpers.data_driven_application,
                 'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
-                'data_qld_datarequest_default_organisation_id': helpers.datarequest_default_organisation_id,
                 'data_qld_organisation_list': helpers.organisation_list,
-                'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
                 'data_qld_format_activity_data': helpers.format_activity_data,
-                'get_datarequest_comments_badge': helpers.get_datarequest_comments_badge,
                 'data_qld_resource_formats': helpers.resource_formats
                 }
 
@@ -61,7 +50,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
-            'data_qld_scheming_choices': validation.scheming_choices,
         }
 
     # IPackageController
@@ -78,37 +66,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IAuthFunctions
     def get_auth_functions(self):
-        auth_functions = {
-            constants.UPDATE_DATAREQUEST: datareq_auth.update_datarequest,
-            constants.UPDATE_DATAREQUEST_ORGANISATION: datareq_auth.update_datarequest_organisation,
-            constants.CLOSE_DATAREQUEST: datareq_auth.close_datarequest,
-            constants.OPEN_DATAREQUEST: datareq_auth.open_datarequest,
-            'member_create': auth.member_create
-        }
-        return auth_functions
-
-    # IActions
-    def get_actions(self):
-        additional_actions = {
-            constants.OPEN_DATAREQUEST: actions.open_datarequest,
-            constants.CREATE_DATAREQUEST: actions.create_datarequest,
-            constants.UPDATE_DATAREQUEST: actions.update_datarequest,
-            constants.CLOSE_DATAREQUEST: actions.close_datarequest,
-        }
-        return additional_actions
-
-    # IRoutes
-    def before_map(self, m):
-        # Re_Open a Data Request
-        m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.data_qld.controller:DataQldUI',
-                  action='open_datarequest', conditions=dict(method=['GET', 'POST']))
-
-        m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
-                  controller='ckanext.data_qld.controller:DataQldUI',
-                  action='show_schema', conditions=dict(method=['GET']))
-
-        return m
+        return {'member_create': auth.member_create}
 
     # IResourceController
     def before_create(self, context, data_dict):

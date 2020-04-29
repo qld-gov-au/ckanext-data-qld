@@ -92,6 +92,10 @@ Circle CI supports shell access to the build for 120 minutes after the build is 
 
 3. Add the extension to the relevant CKAN `.ini` file `plugins` definition:
 
+        ckan.plugins = ... data_qld_resources data_qld_integration
+
+Or to enable all at once (deprecated):
+
         ckan.plugins = ... data_qld
 
 # data_qld_google_analytics
