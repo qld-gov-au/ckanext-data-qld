@@ -12,7 +12,7 @@ RUN apk add --no-cache curl && curl -s -L -O https://github.com/jwilder/dockeriz
 RUN apk add build-base
 
 # Install CKAN.
-ENV CKAN_VERSION 2.8.3
+ENV CKAN_VERSION 2.8.4-qgov.4
 RUN . /app/ckan/default/bin/activate \
     && cd /app/ckan/default \
     && pip install setuptools==36.1 \
