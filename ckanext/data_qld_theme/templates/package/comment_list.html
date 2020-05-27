@@ -93,7 +93,7 @@
                         {% if 'user_state' in comment and comment.user_state == 'deleted' %}
                             <em>{{ comment.user_login_name }}</em>
                         {% else %}
-                            {{  h.linked_user(comment.user_id, 0, 0) }}
+                            {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %}
                         {% endif %}
                         commented on {{ h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") }}
                         {% if comment.modified_date %}
