@@ -90,12 +90,21 @@
                         {% endif %}
                     {% endif %}
                     <div class="comment-header-text">
-                        {% if 'user_state' in comment and comment.user_state == 'deleted' %}
-                            <em>{{ comment.user_login_name }}</em>
+                        {% if comment.state == 'active' %}
+                            {% set comment_on = 'commented on ' + h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") %}
+                            {% if 'user_state' in comment and comment.user_state == 'deleted' %}
+                                <em>{{ comment.user_login_name }}</em> {{ comment_on }}
+                            {% else %}
+                                {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %} {{ comment_on }}
+                            {% endif %}
                         {% else %}
-                            {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %}
+                            {% set comment_deleted = 'Comment deleted by' %}
+                            {% if 'deleted_user_state' in comment and comment.deleted_user_state == 'deleted' %}
+                                {{ comment_deleted }} <em>{{ comment.deleted_user_login_name }}</em>
+                            {% else %}
+                                {{ comment_deleted }} {% link_for _(comment.deleted_user_login_name), controller='user', action='read', id=comment.user_id %}
+                            {% endif %}
                         {% endif %}
-                        commented on {{ h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") }}
                         {% if comment.modified_date %}
                         &mdash; <small>({{ _('Modified') }} {{ h.render_datetime(comment.modified_date, "%d %b %Y, %-I:%M%p") }})</small>
                         {% endif %}
