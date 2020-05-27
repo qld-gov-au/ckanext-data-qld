@@ -44,7 +44,7 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {'data_qld_datarequest_default_organisation_id': helpers.datarequest_default_organisation_id,
                 'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
-                'get_datarequest_comments_badge': helpers.get_datarequest_comments_badge
+                'get_content_type_comments_badge': helpers.get_content_type_comments_badge
                 }
 
     # IValidators

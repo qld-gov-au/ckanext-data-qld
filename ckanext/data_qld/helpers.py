@@ -135,10 +135,10 @@ def format_activity_data(data):
 
 # Data.Qld specific comments helper functions
 
-def get_datarequest_comments_badge(datarequest_id):
-    return toolkit.render_snippet('datarequests/snippets/badge.html',
-                                  {'comments_count': toolkit.h.get_comment_count_for_dataset(datarequest_id,
-                                                                                             'datarequest')})
+def get_content_type_comments_badge(dataset_id, content_type):
+    return toolkit.render_snippet('snippets/badge.html',
+                                  {'count': toolkit.h.get_comment_count_for_dataset(dataset_id,
+                                                                                    content_type)})
 
 
 def resource_formats(field):
