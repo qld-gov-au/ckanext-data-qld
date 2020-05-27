@@ -146,7 +146,7 @@
 
 {% endmacro %}
 
-<h3 id="comments">{{ _('Comments') }}</h3>
+<h3 id="comments">{{ _('Comments') }}{{ h.get_content_type_comments_badge(pkg_name, 'dataset')}}</h3>
 
 {% if notification_actions_enabled %}
     {% snippet "snippets/content_item_notification_actions.html", following=following_content_item, content_type=content_type, thread_id=thread.id %}
