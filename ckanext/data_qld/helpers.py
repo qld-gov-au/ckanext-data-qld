@@ -135,12 +135,6 @@ def format_activity_data(data):
 
 # Data.Qld specific comments helper functions
 
-def get_content_type_comments_badge(dataset_id, content_type):
-    return toolkit.render_snippet('snippets/badge.html',
-                                  {'count': toolkit.h.get_comment_count_for_dataset(dataset_id,
-                                                                                    content_type)})
-
-
 def resource_formats(field):
     """Returns a list of resource formats from admin config
 

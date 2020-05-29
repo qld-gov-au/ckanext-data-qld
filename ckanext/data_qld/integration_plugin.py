@@ -43,8 +43,7 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {'data_qld_datarequest_default_organisation_id': helpers.datarequest_default_organisation_id,
-                'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
-                'get_content_type_comments_badge': helpers.get_content_type_comments_badge
+                'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description
                 }
 
     # IValidators
