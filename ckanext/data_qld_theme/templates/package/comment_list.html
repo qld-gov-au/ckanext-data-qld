@@ -90,20 +90,11 @@
                         {% endif %}
                     {% endif %}
                     <div class="comment-header-text">
-                        {% if comment.state == 'active' %}
-                            {% set comment_on = 'commented on ' + h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") %}
-                            {% if 'user_state' in comment and comment.user_state == 'deleted' %}
-                                <em>{{ comment.user_login_name }}</em> {{ comment_on }}
-                            {% else %}
-                                {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %} {{ comment_on }}
-                            {% endif %}
+                        {% set commented_on = 'commented on ' + h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") %}
+                        {% if 'user_state' in comment and comment.user_state == 'deleted' %}
+                            <em>{{ comment.user_login_name }}</em> {{ commented_on }}
                         {% else %}
-                            {% set comment_deleted = 'Comment deleted by' %}
-                            {% if 'deleted_user_state' in comment and comment.deleted_user_state == 'deleted' %}
-                                {{ comment_deleted }} <em>{{ comment.deleted_user_login_name }}</em>
-                            {% else %}
-                                {{ comment_deleted }} {% link_for _(comment.deleted_user_login_name), controller='user', action='read', id=comment.user_id %}
-                            {% endif %}
+                            {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %} {{ commented_on }}
                         {% endif %}
                         {% if comment.modified_date %}
                         &mdash; <small>({{ _('Modified') }} {{ h.render_datetime(comment.modified_date, "%d %b %Y, %-I:%M%p") }})</small>
@@ -118,7 +109,7 @@
                         <h3>{{ comment.subject }}</h3>
                     {% endif %}
                 {% else %}
-                    <p><strong>{{ _('This comment was deleted.') }}</strong></p>
+                    {% snippet "snippets/comment_deleted.html", comment=comment %}
                 {% endif %}
                 {% if comment.state != 'deleted' %}
                     <div class="content">
