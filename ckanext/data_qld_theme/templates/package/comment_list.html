@@ -90,12 +90,12 @@
                         {% endif %}
                     {% endif %}
                     <div class="comment-header-text">
+                        {% set commented_on = 'commented on ' + h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") %}
                         {% if 'user_state' in comment and comment.user_state == 'deleted' %}
-                            <em>{{ comment.user_login_name }}</em>
+                            <em>{{ comment.user_login_name }}</em> {{ commented_on }}
                         {% else %}
-                            {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %}
+                            {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %} {{ commented_on }}
                         {% endif %}
-                        commented on {{ h.render_datetime(comment.creation_date, "%d %b %Y, %-I:%M%p") }}
                         {% if comment.modified_date %}
                         &mdash; <small>({{ _('Modified') }} {{ h.render_datetime(comment.modified_date, "%d %b %Y, %-I:%M%p") }})</small>
                         {% endif %}
@@ -109,7 +109,7 @@
                         <h3>{{ comment.subject }}</h3>
                     {% endif %}
                 {% else %}
-                    <p><strong>{{ _('This comment was deleted.') }}</strong></p>
+                    {% snippet "snippets/comment_deleted.html", comment=comment %}
                 {% endif %}
                 {% if comment.state != 'deleted' %}
                     <div class="content">
