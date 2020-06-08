@@ -111,7 +111,18 @@ class DataQldPlugin(plugins.SingletonPlugin):
                   controller='ckanext.data_qld.controller:DataQldUI',
                   action='show_schema', conditions=dict(method=['GET']))
 
-        # Currently no blueprint available for dataset/package, so we need to override controller actions
+        # This is a pain, but re-assigning the dataset_read route using `before_map` appears to affect these two routes,
+        # so we need to replicate them here
+        m.connect('dataset_new', '/dataset/new', controller='package', action='new')
+        m.connect('/dataset/{action}',
+                  controller='package',
+                  requirements=dict(action='|'.join([
+                      'list',
+                      'autocomplete',
+                      'search'
+                  ])))
+
+        # Currently no dataset/package blueprint available, so we need to override these core routes
         m.connect('dataset_read', '/dataset/{id}',
                   controller='ckanext.data_qld.controller:DataQldDataset',
                   action='read',
