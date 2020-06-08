@@ -56,7 +56,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
                 'data_qld_format_activity_data': helpers.format_activity_data,
-                'data_qld_resource_formats': helpers.resource_formats
+                'data_qld_resource_formats': helpers.resource_formats,
+                'activity_type_nice': helpers.activity_type_nice
                 }
 
     # IValidators
