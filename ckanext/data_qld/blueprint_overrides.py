@@ -1,6 +1,6 @@
 import ckan.lib.helpers as h
 from ckan.common import _, g, request
-from ckan.views.user import login, me
+from ckan.views.user import login, me, EditView
 from ckan.views.dashboard import index
 
 
@@ -27,3 +27,18 @@ def logged_in_override():
     else:
         h.flash_error(_(u'Login failed. Bad username or password.'))
         return login()
+
+
+def user_edit_override():
+    """
+    Override default CKAN behaviour of displaying "No user specified" message for /user/edit page and instead
+    redirect the user to the login page.
+    Ref.: ckan/views/user.py > class EditView(...)
+    :return:
+    """
+    if not g.user:
+        return h.redirect_to(
+            h.url_for(
+                u'user.login',
+                came_from=h.url_for(u'user.edit')))
+    return EditView().dispatch_request()

@@ -179,6 +179,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         """
         blueprint = Blueprint(self.name, self.__module__)
         blueprint.add_url_rule(u'/user/logged_in', u'logged_in', blueprint_overrides.logged_in_override)
+        blueprint.add_url_rule(u'/user/edit', u'edit', blueprint_overrides.user_edit_override)
         blueprint.add_url_rule(
             u'/dashboard/', u'dashboard', blueprint_overrides.dashboard_override, strict_slashes=False, defaults={
                 u'offset': 0
