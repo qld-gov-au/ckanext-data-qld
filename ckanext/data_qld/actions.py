@@ -7,6 +7,7 @@ import ckanext.datarequests.db as db
 import ckanext.datarequests.validator as validator
 import datetime
 import logging
+import ckan.lib.dictization.model_dictize as model_dictize
 from pylons import config
 
 import constants
@@ -173,7 +174,7 @@ def update_datarequest(original_action, context, data_dict):
     # Data QLD modification
     organisation_updated = data_req.organization_id != data_dict['organization_id']
     if organisation_updated:
-        unassigned_organisation_id = data_req.organization_id
+        unassigned_organisation = model_dictize.group_dictize(data_req.organization, context)
 
     # Set the data provided by the user in the data_red
     _undictize_datarequest_basic(data_req, data_dict)
@@ -191,7 +192,7 @@ def update_datarequest(original_action, context, data_dict):
         _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Assigned Email')
         # Email Admin users of unassigned organisation
         org_dict = {
-            'organization': _get_organization(unassigned_organisation_id)
+            'organization': unassigned_organisation
         }
         users = _get_admin_users_from_organisation(org_dict)
         users.discard(context['auth_user_obj'].id)
