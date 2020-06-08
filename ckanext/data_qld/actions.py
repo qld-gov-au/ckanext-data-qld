@@ -15,82 +15,13 @@ c = plugins.toolkit.c
 log = logging.getLogger(__name__)
 tk = plugins.toolkit
 
-# Avoid user_show lag
-USERS_CACHE = {}
-
-
-def _get_user(user_id):
-    try:
-        if user_id in USERS_CACHE:
-            return USERS_CACHE[user_id]
-        else:
-            user = tk.get_action('user_show')({'ignore_auth': True}, {'id': user_id})
-            USERS_CACHE[user_id] = user
-            return user
-    except Exception as e:
-        log.warn(e)
-
-
-def _get_organization(organization_id):
-    try:
-        organization_show = tk.get_action('organization_show')
-        return organization_show({'ignore_auth': True}, {'id': organization_id, 'include_users': True})
-    except Exception as e:
-        log.warn(e)
-
-
-def _get_package(package_id):
-    try:
-        package_show = tk.get_action('package_show')
-        return package_show({'ignore_auth': True}, {'id': package_id})
-    except Exception as e:
-        log.warn(e)
-
 
 def _dictize_datarequest(datarequest):
-    # Transform time
-    open_time = str(datarequest.open_time)
-    # Close time can be None and the transformation is only needed when the
-    # fields contains a valid date
-    close_time = datarequest.close_time
-    close_time = str(close_time) if close_time else close_time
-
-    # Convert the data request into a dict
-    data_dict = {
-        'id': datarequest.id,
-        'user_id': datarequest.user_id,
-        'title': datarequest.title,
-        'description': datarequest.description,
-        'organization_id': datarequest.organization_id,
-        'open_time': open_time,
-        'accepted_dataset_id': datarequest.accepted_dataset_id,
-        'close_time': close_time,
-        'closed': datarequest.closed,
-        'user': _get_user(datarequest.user_id),
-        'organization': None,
-        'accepted_dataset': None,
-        'followers': 0,
-        'dataset_url': helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                                       action='show', id=datarequest.id, qualified=True)
-    }
-
-    if datarequest.organization_id:
-        data_dict['organization'] = _get_organization(datarequest.organization_id)
-
-    if datarequest.accepted_dataset_id:
-        data_dict['accepted_dataset'] = _get_package(datarequest.accepted_dataset_id)
-
-    data_dict['followers'] = db.DataRequestFollower.get_datarequest_followers_number(
-        datarequest_id=datarequest.id)
-
-    return data_dict
+    return datarequest.dictize_datarequest()
 
 
-def _undictize_datarequest_basic(data_request, data_dict):
-    data_request.title = data_dict['title']
-    data_request.description = data_dict['description']
-    organization = data_dict['organization_id']
-    data_request.organization_id = organization if organization else None
+def _undictize_datarequest_basic(datarequest, data_dict):
+    datarequest.undictize_datarequest_basic(data_dict)
 
 
 def _send_mail(user_ids, action_type, datarequest, job_title):
@@ -323,8 +254,11 @@ def close_datarequest(original_action, context, data_dict):
         raise tk.ValidationError([tk._('This Data Request is already closed')])
 
     data_req.closed = True
-    data_req.accepted_dataset_id = data_dict.get('accepted_dataset_id', None)
+    data_req.accepted_dataset_id = data_dict.get('accepted_dataset_id') or None
     data_req.close_time = datetime.datetime.now()
+    if tk.h.closing_circumstances_enabled:
+        data_req.close_circumstance = data_dict.get('close_circumstance') or None
+        data_req.approx_publishing_date = data_dict.get('approx_publishing_date') or None
 
     session.add(data_req)
     session.commit()
@@ -378,6 +312,9 @@ def open_datarequest(context, data_dict):
     data_req.closed = False
     data_req.accepted_dataset_id = None
     data_req.close_time = None
+    if tk.h.closing_circumstances_enabled:
+        data_req.close_circumstance = None
+        data_req.approx_publishing_date = None
 
     session.add(data_req)
     session.commit()
