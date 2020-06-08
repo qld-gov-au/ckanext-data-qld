@@ -3,7 +3,7 @@ A new data request has been added and assigned to your organisation.
 To action or 'Reply' to this data request, follow this link:
 {{ datarequest['dataset_url'] }}
 
-Data request subject: {{ datarequest['title'] }}
-Description: {{ datarequest['description'] }}
+Data request subject: {{ datarequest['title']|striptags }}
+Description: {{ datarequest['description']|striptags }}
 
 Do not reply to this email.
