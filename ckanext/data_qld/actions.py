@@ -1,5 +1,4 @@
 import ckan.lib.base as base
-import ckan.lib.helpers as helpers
 import ckan.lib.mailer as mailer
 import ckan.model as model
 import ckan.plugins as plugins
@@ -182,21 +181,23 @@ def update_datarequest(original_action, context, data_dict):
     session.add(data_req)
     session.commit()
 
-    datarequest_dict = _dictize_datarequest(data_req)
-
-    if datarequest_dict['organization'] and organisation_updated:
-        # Data QLD modification
-        # Email Admin users of the assigned organisation
-        users = _get_admin_users_from_organisation(datarequest_dict)
-        users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Assigned Email')
-        # Email Admin users of unassigned organisation
-        org_dict = {
-            'organization': unassigned_organisation
-        }
-        users = _get_admin_users_from_organisation(org_dict)
-        users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict, 'Data Request Unassigned Email')
+    if organisation_updated:
+        # reload all attributes on data_req from DB to get updated organisation relationship
+        session.refresh(data_req)
+        datarequest_dict = _dictize_datarequest(data_req)
+        if datarequest_dict['organization']:
+            # Data QLD modification
+            # Email Admin users of the assigned organisation
+            users = _get_admin_users_from_organisation(datarequest_dict)
+            users.discard(context['auth_user_obj'].id)
+            _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Assigned Email')
+            # Email Admin users of unassigned organisation
+            org_dict = {
+                'organization': unassigned_organisation
+            }
+            users = _get_admin_users_from_organisation(org_dict)
+            users.discard(context['auth_user_obj'].id)
+            _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict, 'Data Request Unassigned Email')
 
     return datarequest_dict
 
