@@ -24,6 +24,23 @@ def log_in(context):
     """)
 
 
+@step('I log in directly')
+def log_in_directly(context):
+    """
+    This differs to the `log_in` function above by logging in directly to a page where the user login form is presented
+    :param context:
+    :return:
+    """
+
+    assert context.persona
+    context.execute_steps(u"""
+        When I fill in "login" with "$name"
+        And I fill in "password" with "$password"
+        And I press the element with xpath "//button[contains(string(), 'Login')]"
+        Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
+    """)
+
+
 @step('I fill in title with random text')
 def title_random_text(context):
 
