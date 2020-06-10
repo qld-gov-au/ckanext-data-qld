@@ -83,9 +83,7 @@ class DataQldUI(base.BaseController):
 
 class DataQldDataset(PackageController):
     def _get_context(self):
-        return {'model': model, 'session': model.Session,
-                       'user': c.user, 'for_view': True,
-                       'auth_user_obj': c.userobj}
+        return {'model': model, 'session': model.Session, 'user': c.user, 'for_view': True, 'auth_user_obj': c.userobj}
 
     def _is_dataset_private(self, id):
         try:
