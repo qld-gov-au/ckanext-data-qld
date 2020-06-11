@@ -6,4 +6,4 @@ Feature: Config
         When I log in
         And I visit "ckan-admin/config"
         And I should see "Suggested Description"
-        And I should see an element with id "field-ckanext.data_qld.datarequest_suggested_description"
+        Then I should see an element with id "field-ckanext.data_qld.datarequest_suggested_description"
