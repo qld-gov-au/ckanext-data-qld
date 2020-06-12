@@ -53,12 +53,11 @@
 
     {% for comment in thread.comments %}
     <div id="comment_{{ comment.id }}" class="comment-wrapper">
-
+        {% set user_can_manage = h.user_can_manage_comments(content_type, pkg_id) %}
         <div class="comment comment-{{ comment.state }}">
             <div class="comment-header">
                 <div class="comment-actions">
                     {% if comment.state != 'deleted' %}
-                        {% set user_can_manage = h.user_can_manage_comments(content_type, pkg_id) %}
                         {% if user_can_manage %}
                             <div class="comment-action">
                                 <a class="subtle-btn" href="/{{ content_type }}/{{ pkg_id }}/comments/{{ comment.id }}/delete" title="Delete comment" data-module="confirm-action" data-module-i18n="{&quot;content&quot;: &quot;Are you sure you want to delete this comment?&quot;}"><i class="icon-remove fa fa-times"></i></a>
@@ -109,14 +108,14 @@
                         <h3>{{ comment.subject }}</h3>
                     {% endif %}
                 {% else %}
-                    {% snippet "snippets/comment_deleted.html", comment=comment %}
+                    {% snippet "snippets/comment_deleted.html", comment=comment, show_deleter=user_can_manage %}
                 {% endif %}
                 {% if comment.state != 'deleted' %}
                     <div class="content">
                         {{ comment.content|safe }}
                         {% if comment.state == 'active' %}
 
-                            {% if h.user_can_edit_comment(comment.user_id) or h.user_can_manage_comments(content_type, pkg_id) %}
+                            {% if h.user_can_edit_comment(comment.user_id) or user_can_manage %}
                                 <div id="comment_form_edit_{{ comment.id }}">
                                     {{ comment_form(comment, prefix='edit_', action='edit', depth=depth) }}
                                 </div>
@@ -130,7 +129,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                {% elif h.user_can_manage_comments(content_type, pkg_id) %}
+                {% elif user_can_manage %}
                     <div class="deleted-content">
                         {{ comment.content|safe }}
                     </div>
