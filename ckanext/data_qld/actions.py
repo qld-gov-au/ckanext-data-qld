@@ -100,8 +100,8 @@ def _undictize_datarequest_basic(datarequest, data_dict):
 
 def _undictize_datarequest_closing_circumstances(datarequest, data_dict):
     if tk.h.closing_circumstances_enabled:
-        datarequest.close_circumstance = data_dict.get('close_circumstance', None)
-        datarequest.approx_publishing_date = data_dict.get('approx_publishing_date', None)
+        datarequest.close_circumstance = data_dict.get('close_circumstance') or None
+        datarequest.approx_publishing_date = data_dict.get('approx_publishing_date') or None
 
 
 def _send_mail(user_ids, action_type, datarequest, job_title):
@@ -336,7 +336,7 @@ def close_datarequest(original_action, context, data_dict):
     data_req.closed = True
     data_req.accepted_dataset_id = data_dict.get('accepted_dataset_id') or None
     data_req.close_time = datetime.datetime.now()
-    _undictize_datarequest_closing_circumstances()
+    _undictize_datarequest_closing_circumstances(data_req, data_dict)
 
     session.add(data_req)
     session.commit()
