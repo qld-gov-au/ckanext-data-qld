@@ -8,11 +8,14 @@ import ckan.plugins.toolkit as toolkit
 
 import actions
 import auth_functions as auth
+import blueprint_overrides
 import constants
 import datarequest_auth_functions as datareq_auth
 import converters
 import helpers
 import validation
+
+from flask import Blueprint
 
 log = logging.getLogger(__name__)
 
@@ -27,6 +30,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(plugins.IMiddleware, inherit=True)
+    plugins.implements(plugins.IBlueprint)
 
     # IConfigurer
     def update_config(self, config_):
@@ -52,7 +56,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
                 'data_qld_format_activity_data': helpers.format_activity_data,
-                'data_qld_resource_formats': helpers.resource_formats
+                'data_qld_resource_formats': helpers.resource_formats,
+                'activity_type_nice': helpers.activity_type_nice
                 }
 
     # IValidators
@@ -107,6 +112,26 @@ class DataQldPlugin(plugins.SingletonPlugin):
                   controller='ckanext.data_qld.controller:DataQldUI',
                   action='show_schema', conditions=dict(method=['GET']))
 
+        # This is a pain, but re-assigning the dataset_read route using `before_map`
+        # appears to affect these two routes, so we need to replicate them here
+        m.connect('dataset_new', '/dataset/new', controller='package', action='new')
+        m.connect('/dataset/{action}',
+                  controller='package',
+                  requirements=dict(action='|'.join([
+                      'list',
+                      'autocomplete',
+                      'search'
+                  ])))
+
+        # Currently no dataset/package blueprint available, so we need to override these core routes
+        m.connect('dataset_read', '/dataset/{id}',
+                  controller='ckanext.data_qld.controller:DataQldDataset',
+                  action='read',
+                  ckan_icon='sitemap')
+        m.connect('/dataset/{id}/resource/{resource_id}',
+                  controller='ckanext.data_qld.controller:DataQldDataset',
+                  action='resource_read')
+
         return m
 
     # IResourceController
@@ -143,6 +168,23 @@ class DataQldPlugin(plugins.SingletonPlugin):
     # IMiddleware
     def make_middleware(self, app, config):
         return AuthMiddleware(app, config)
+
+    # IBlueprint
+    def get_blueprint(self):
+        """
+        CKAN uses Flask Blueprints in the /ckan/views dir for user and dashboard
+        Here we override some routes to redirect unauthenticated users to the login page, and only redirect the
+        user to the `came_from` URL if they are logged in.
+        :return:
+        """
+        blueprint = Blueprint(self.name, self.__module__)
+        blueprint.add_url_rule(u'/user/logged_in', u'logged_in', blueprint_overrides.logged_in_override)
+        blueprint.add_url_rule(u'/user/edit', u'edit', blueprint_overrides.user_edit_override)
+        blueprint.add_url_rule(
+            u'/dashboard/', u'dashboard', blueprint_overrides.dashboard_override, strict_slashes=False, defaults={
+                u'offset': 0
+            })
+        return blueprint
 
 
 class AuthMiddleware(object):
