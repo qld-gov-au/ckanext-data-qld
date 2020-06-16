@@ -19,13 +19,9 @@
 
 {{ form.select('ckan.homepage_style', id='field-homepage-style', label=_('Homepage'), options=homepages, selected=data['ckan.homepage_style'], error=error) }}
 
-<h3>Data Request Config</h3>
+{{ form.textarea('ckanext.data_qld.resource_formats', id='field-ckanext.data_qld.resource_formats', label=_('Resource formats'), placeholder=_('eg. CSV, DOCX, HTML, PDF'), value=data['ckanext.data_qld.resource_formats'], error=errors['ckanext.data_qld.resource_formats']) }}
 
-{{ form.markdown('ckanext.data_qld.datarequest_suggested_description', id='field-ckanext.data_qld.datarequest_suggested_description', label=_('Suggested Description'), placeholder=_('eg. Data Request suggested description'), value=data['ckanext.data_qld.datarequest_suggested_description'], error=errors['ckanext.data_qld.datarequest_suggested_description']) }}
-
-<h3>Resource Config</h3>
-
-{{ form.textarea('ckanext.data_qld.resource_formats', id='field-ckanext.data_qld.resource_formats', label=_('Resource Formats'), placeholder=_('eg. CSV, DOCX, HTML, PDF'), value=data['ckanext.data_qld.resource_formats'], error=errors['ckanext.data_qld.resource_formats']) }}
+{{ form.markdown('ckanext.data_qld.datarequest_suggested_description', id='field-ckanext.data_qld.datarequest_suggested_description', label=_('Data request suggested description'), placeholder=_('eg. Data Request suggested description'), value=data['ckanext.data_qld.datarequest_suggested_description'], error=errors['ckanext.data_qld.datarequest_suggested_description']) }}
 
 {% endblock %}
 
