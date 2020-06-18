@@ -1,5 +1,6 @@
 import ckan.plugins.toolkit as toolkit
 from bs4 import BeautifulSoup
+from ckan.common import _
 from pylons import config
 
 
@@ -135,12 +136,6 @@ def format_activity_data(data):
 
 # Data.Qld specific comments helper functions
 
-def get_datarequest_comments_badge(datarequest_id):
-    return toolkit.render_snippet('datarequests/snippets/badge.html',
-                                  {'comments_count': toolkit.h.get_comment_count_for_dataset(datarequest_id,
-                                                                                             'datarequest')})
-
-
 def resource_formats(field):
     """Returns a list of resource formats from admin config
 
@@ -150,3 +145,14 @@ def resource_formats(field):
     resource_formats = config.get('ckanext.data_qld.resource_formats', '').split('\r\n')
     return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
             for resource_format in resource_formats]
+
+
+def activity_type_nice(activity_type):
+    """Performs some replacement and rearrangement of the activity type for display in the activity notification email
+    :rtype: string
+    """
+    activity_type = activity_type.replace('organization', _('organization'))
+    activity_type = activity_type.replace('package', 'dataset')
+    activity_type = activity_type.split()
+    activity_type.reverse()
+    return ' '.join(activity_type)
