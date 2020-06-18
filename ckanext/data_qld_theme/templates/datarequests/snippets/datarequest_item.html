@@ -19,7 +19,7 @@
       {% endif %}
       <div class="datarequest-properties">
         {% if h.show_comments_tab() and h.ytp_comments_enabled() %}
-          <a href="{{ h.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='comment', id=datarequest.get('id','')) }}" class="label label-default"><i class="icon-comment fa fa-comment"></i>{{ h.get_content_type_comments_badge(datarequest.get('id', ''), 'datarequest') }}</a>
+          <a href="{{ h.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='comment', id=datarequest.get('id','')) }}" class="label label-default"><i class="icon-comment fa fa-comment"></i>{{ h.get_datarequest_comments_badge(datarequest.get('id', '')) }}</a>
         {% endif %}
         <div class="divider"/>
         <span class="date-datarequests">{{ h.time_ago_from_timestamp(datarequest.open_time) }}</span>
