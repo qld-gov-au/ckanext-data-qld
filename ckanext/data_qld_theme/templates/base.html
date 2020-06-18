@@ -2,10 +2,8 @@
 
   {% block meta %}
     {{ super() }}
-    {% if c.controller in ['dataset', 'package'] %}
-      {% if c.action in ['read', 'resource_read'] and c.pkg_dict['organization'] and c.pkg_dict['organization']['title'] %}
-          <meta name="DCTERMS.creator" content="c=AU; o=The State of Queensland; ou={{ c.pkg_dict['organization']['title'] }}" scheme="AGLSTERMS.GOLD" />
-      {% endif %}
+    {% if c.pkg_dict and c.pkg_dict['organization'] and c.pkg_dict['organization']['title'] %}
+        <meta name="DCTERMS.creator" content="c=AU; o=The State of Queensland; ou={{ c.pkg_dict['organization']['title'] }}" scheme="AGLSTERMS.GOLD" />
     {% endif %}
   {% endblock %}
 
