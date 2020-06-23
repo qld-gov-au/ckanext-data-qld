@@ -9,7 +9,8 @@ log = logging.getLogger(__name__)
 
 
 def check_org_access(org_id):
-    toolkit.check_access('organization_update', get_context(), {'organization_id': org_id})
+    # @TODO: Check for editor of org as well
+    toolkit.check_access('organization_update', get_context(), {'id': org_id})
 
 
 def get_organization_name(org_id):
@@ -30,7 +31,7 @@ def get_context():
 
 
 def get_year_month(year, month):
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
 
     if not year:
         year = now.year

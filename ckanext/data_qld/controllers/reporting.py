@@ -17,6 +17,13 @@ class ReportingController(BaseController):
 
     def index(self, org_id=None, start_date=None, end_date=None):
 
+        # @TODO: Auth check for:
+        # 5.5.2.1 Non-signed in users, General and Member users will have no access to the reporting
+        # 5.5.2.2 Editor & Admin level users of an organisation will have access to only their organisation's data
+        #
+
+        # @TODO: Default date range = 10 July 2019 to present
+
         # @TODO: handle timezone conversion?
         year, month = helpers.get_year_month(start_date, end_date)
         start_date, end_date = helpers.get_report_date_range(year, month)
@@ -52,6 +59,13 @@ class ReportingController(BaseController):
         start_date = '2020-01-01'
 
         # @TODO: Get user's orgs
+        # check helpers `organizations_available` - "create_dataset"
+        # OR:
+        # context = {'user': c.user}
+        # data_dict = {
+        #     'permission': 'create_dataset',
+        #     'include_dataset_count': False}
+        # logic.get_action('organization_list_for_user')(context, data_dict)
         org_ids = [
             'd4e2967a-aa3a-48bb-bb3b-2202b79f53e4', 'd92d8f2f-b704-47e7-b5a3-67fd97f352f2'
         ]
@@ -151,6 +165,8 @@ class ReportingController(BaseController):
     def datarequests(self, org_id, metric):
         """Displays a list of data requests for the given organisation based on the desired metric"""
 
+        # @TODO: Regex org_id against ([a-f0-9\-)
+
         circumstance = None
 
         if metric == 'no-comments':
@@ -160,6 +176,9 @@ class ReportingController(BaseController):
 
         else:
             circumstance = request.GET.get('circumstance', None)
+            # @TODO: Validate `circumstance` against list from
+            #  closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
+            # e.g. /closed?circumstance=To be released as open data at a later date
             datarequests = get_action('datarequests_for_circumstance')(
                         {},
                         {
