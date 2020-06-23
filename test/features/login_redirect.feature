@@ -45,11 +45,3 @@ Feature: Login Redirection
         When I log in directly
         Then I should see an element with xpath "//h1[contains(string(), 'A Novel By Tolstoy')]"
         And I should see an element with xpath "//span[contains(string(), 'Private')]"
-
-    @private_dataset_resource
-    Scenario: As an unauthenticated organisation member, when I visit the URL of a private dataset resource I see the login page. Upon logging in I am taken to the private dataset resource
-        Given "TestOrgMember" as the persona
-        When I visit "/dataset/annakarenina/resource/e5966553-46d7-404c-a08d-67d7331a099e"
-        Then I should see an element with xpath "//h1[contains(string(), 'Login')]"
-        When I log in directly
-        Then I should see an element with xpath "//h1[contains(string(), 'Full text')]"
