@@ -24,7 +24,8 @@ class ReportingPlugin(plugins.SingletonPlugin):
             'datarequests_no_replies_after_x_days': get.datarequests_no_replies_after_x_days,
             'datarequests_for_circumstance': get.datarequests_for_circumstance,
             'open_datarequests_no_comments_after_x_days': get.open_datarequests_no_comments_after_x_days,
-            'datarequests_open_after_x_days': get.datarequests_open_after_x_days
+            'datarequests_open_after_x_days': get.datarequests_open_after_x_days,
+            'comments_no_replies_after_x_days': get.comments_no_replies_after_x_days,
         }
         return actions
 

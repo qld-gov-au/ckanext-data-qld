@@ -451,3 +451,42 @@ def datarequests_for_circumstance(context, data_dict):
 
     except Exception as e:
         log.error(str(e))
+
+
+def comments_no_replies_after_x_days(context, data_dict):
+    """
+    Comments that have no replies whatsoever, and it has been > 10 days since the comment was created
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    thread_url = data_dict.get('thread_url', None)
+    max_days = int(data_dict.get('max_days', 10))
+
+    comment_reply = aliased(Comment, name='comment_reply')
+
+    try:
+        return (
+            _session_.query(
+                CommentThread.url,
+                Comment.id.label("comment_id"),
+                Comment.parent_id,
+                Comment.creation_date,
+            )
+            .filter(
+                _and_(
+                    CommentThread.url == thread_url,
+                    Comment.parent_id == None,
+                    Comment.creation_date < text("(now() at time zone 'utc') - interval '%i day'" % max_days),
+                    Comment.state == ACTIVE_STATE,
+                    comment_reply.id == None
+                )
+            )
+            .join(Comment)
+            .outerjoin(
+                (comment_reply, Comment.id == comment_reply.parent_id)
+            )
+        ).all()
+
+    except Exception as e:
+        log.error(str(e))
