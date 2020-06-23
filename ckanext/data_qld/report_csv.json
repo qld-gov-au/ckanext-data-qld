@@ -7,7 +7,7 @@
   "Organisation followers": {
     "order": 2,
     "type": "scalar",
-    "property": "organization_followers"
+    "property": "organisation_followers"
   },
   "Dataset comments": {
     "order": 3,

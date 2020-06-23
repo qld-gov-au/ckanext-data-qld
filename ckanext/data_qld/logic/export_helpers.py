@@ -35,15 +35,13 @@ def get_row_order_and_properties(report_config):
     return row_order, row_properties
 
 
-def add_org_metrics_to_report(org_id, start_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances, comment_no_reply_max_days, datarequest_open_max_days):
-    # @TODO: de-dupe
-    org = get_action('organization_show')({}, {'id': org_id})
+def add_org_metrics_to_report(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances, comment_no_reply_max_days, datarequest_open_max_days):
 
     # @TODO: dynamic start date
-    metrics = helpers.gather_metrics(org_id, start_date, comment_no_reply_max_days, datarequest_open_max_days)
+    metrics = helpers.gather_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days)
 
     # csv_header_row.append('"%s"' % org['title'])
-    csv_header_row.append(org['title'])
+    csv_header_row.append(org.get('title', ''))
 
     for key, settings in row_properties.items():
         if settings['type'] not in ['complex', 'length']:

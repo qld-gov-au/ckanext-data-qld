@@ -3,21 +3,18 @@ import calendar
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
 import logging
+import pytz
+import ckanext.data_qld.auth_functions as authz
 
 get_action = toolkit.get_action
 log = logging.getLogger(__name__)
 
 
 def check_org_access(org_id):
-    toolkit.check_access('organization_update', get_context(), {'organization_id': org_id})
-
-
-def get_organization_name(org_id):
-    org = get_action('organization_show')({}, {'id': org_id})
-
-    log.debug(org)
-
-    return org['title']
+    context = get_context()
+    data_dict = {'org_id': org_id, 'permission': 'create_dataset'}
+    if not toolkit.check_access('has_user_permission_for_org', context, data_dict):
+        toolkit.abort(403, toolkit._('User {0} is not authorized to create datasets for organisation {1} test'. format(user_name, org_id)))
 
 
 def get_context():
@@ -29,25 +26,26 @@ def get_context():
     }
 
 
-def get_year_month(year, month):
-    now = datetime.datetime.now()
-
-    if not year:
-        year = now.year
-
-    if not month:
-        month = now.month
-
-    return int(year), int(month)
+def get_user():
+    return toolkit.c.userobj
 
 
-def get_report_date_range(year, month):
-    month_range = calendar.monthrange(year, month)
+def get_username():
+    return get_user().name
 
-    start_date = datetime.datetime(year, month, 1).isoformat()
-    end_date = datetime.datetime(year, month, month_range[1], 23, 59, 59).isoformat()
 
-    return start_date, end_date
+def get_report_date_range(start_date, end_date):
+    if start_date:
+        start_date = toolkit.h.date_str_to_datetime(start_date)
+    else:
+        start_date = datetime.datetime(2019, 7, 10)
+
+    if end_date:
+        end_date = toolkit.h.date_str_to_datetime(end_date)
+    else:
+        end_date = datetime.datetime.now()
+
+    return start_date.date().isoformat(), end_date.date().isoformat()
 
 
 def get_closing_circumstance_list():
@@ -67,12 +65,13 @@ def get_closing_circumstance_average(circumstance_data):
     return int(total_days / circumstance_data['count'])
 
 
-def get_data_request_metrics(org_id, max_days):
+def get_data_request_metrics(data_dict):
     # Compile as much info as we can from the one query
     closed = 0
     open = 0
     open_plus_max_days = 0
     total = 0
+    max_days = data_dict.get('datarequest_open_max_days', None)
 
     circumstances = {
         'No circumstance': {
@@ -81,14 +80,14 @@ def get_data_request_metrics(org_id, max_days):
         }
     }
 
-    for data_request in get_action('datarequests')({}, org_id):
-
+    for data_request in get_action('datarequests')({}, data_dict):
         total += 1
 
         if data_request.close_time:
             closed += 1
 
             # @TODO: Handle data requests with No closing circumstance
+            # Even though in the UI you cannot close a datarequest without a circumstance
             close_circumstance = data_request.close_circumstance
 
             if close_circumstance:
@@ -148,30 +147,79 @@ def timedelta_in_days(latest_date, earliest_date):
     return int(timedelta.total_seconds() / 86400)
 
 
-def gather_metrics(org_id, start_date, comment_no_reply_max_days, datarequest_open_max_days):
-    return {
-        'organization_followers': get_action('organization_follower_count')({}, {'id': org_id}),
-        'dataset_followers': get_action('dataset_followers')({}, org_id),
-        'dataset_comments': get_action('dataset_comments')({}, org_id),
-        'dataset_comment_followers': get_action('dataset_comment_followers')({}, org_id),
-        'datasets_min_one_comment_follower': get_action('datasets_min_one_comment_follower')({}, org_id),
-        'datasets_no_replies_after_x_days': get_action('datasets_no_replies_after_x_days')(
-            {},
-            {
-                'org_id': org_id,
-                'start_date': start_date,
-                'max_days': comment_no_reply_max_days
-            }
-        ),
-        'datarequests': get_data_request_metrics(org_id, datarequest_open_max_days),
-        'datarequest_comments': get_action('datarequest_comments')({}, org_id),
-        'datarequests_min_one_comment_follower': get_action('datarequests_min_one_comment_follower')({}, org_id),
-        'datarequests_no_replies_after_x_days': get_action('datarequests_no_replies_after_x_days')(
-            {},
-            {
-                'org_id': org_id,
-                'start_date': start_date
-            }
-        ),
-        'open_datarequests_no_comments_after_x_days': get_action('open_datarequests_no_comments_after_x_days')({}, org_id),
+def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
+    """Process textual date representations"""
+    timezone = pytz.timezone("UTC")
+
+    # Not really necessary, but future proofing in case start date includes time
+    dt = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    start_datetime = timezone.localize(dt)
+    start_date = start_datetime.strftime('%Y-%m-%d 00:00:00')
+
+    dt = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+    end_datetime = timezone.localize(dt)
+    end_date = end_datetime.strftime('%Y-%m-%d 23:59:59')
+
+    if comment_no_reply_max_days:
+        comment_expected_reply_by_date = end_datetime - datetime.timedelta(days=comment_no_reply_max_days)
+
+    if datarequest_open_max_days:
+        datarequests_cut_off_date = end_datetime - datetime.timedelta(days=datarequest_open_max_days)
+
+    if comment_no_reply_max_days and datarequest_open_max_days:
+        return start_date, end_date, comment_expected_reply_by_date, datarequests_cut_off_date
+    elif comment_no_reply_max_days:
+        return start_date, end_date, comment_expected_reply_by_date
+    elif datarequest_open_max_days:
+        return start_date, end_date, datarequests_cut_off_date
+    else:
+        return start_date, end_date
+
+
+def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
+    start_date, end_date, comment_expected_reply_by_date, datarequests_cut_off_date = process_dates(start_date,
+                                                                                           end_date,
+                                                                                           comment_no_reply_max_days,
+                                                                                           datarequest_open_max_days
+                                                                                           )
+
+    data_dict = {
+        'org_id': org_id,
+        'start_date': start_date,
+        'end_date': end_date,
+        'comment_no_reply_max_days': comment_no_reply_max_days,
+        'datarequest_open_max_days': datarequest_open_max_days,
+        'comment_expected_reply_by_date': comment_expected_reply_by_date,
+        'datarequests_cut_off_date': datarequests_cut_off_date
     }
+
+    return {
+        'organisation_followers': get_action('organisation_followers')({}, data_dict),
+        'dataset_followers': get_action('dataset_followers')({}, data_dict),
+        'dataset_comments': get_action('dataset_comments')({}, data_dict),
+        'dataset_comment_followers': get_action('dataset_comment_followers')({}, data_dict),
+        'datasets_min_one_comment_follower': get_action('datasets_min_one_comment_follower')({}, data_dict),
+        'datasets_no_replies_after_x_days': get_action('datasets_no_replies_after_x_days')({}, data_dict),
+        'datarequests': get_data_request_metrics(data_dict),
+        'datarequest_comments': get_action('datarequest_comments')({}, data_dict),
+        'datarequests_min_one_comment_follower': get_action('datarequests_min_one_comment_follower')({}, data_dict),
+        'datarequests_no_replies_after_x_days': get_action('datarequests_no_replies_after_x_days')({}, data_dict),
+        'open_datarequests_no_comments_after_x_days': get_action('open_datarequests_no_comments_after_x_days')({}, data_dict),
+    }
+
+
+def get_organisation_list():
+    organisations = []
+    for user_organisation in get_organisation_list_for_user('create_dataset'):
+        organisations.append({'value': user_organisation.get('id'), 'text': user_organisation.get('display_name')})
+
+    return organisations
+
+
+def get_organisation_list_for_user(permission):
+    try:
+        return toolkit.get_action('organization_list_for_user')(get_context(), {'permission': permission})
+    except Exception as e:
+        log.error('*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
+        log.error(e)
+        return []

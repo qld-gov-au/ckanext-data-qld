@@ -28,7 +28,7 @@
                     <h3 class="dataset-heading">
                         <a href="{{ h.url_for(controller='package', action='read', id=dataset.name) }}/comments">{{ dataset.title }}</a>
                     </h3>
-                    <strong>Comment creation date:</strong> {{ dataset.comment.creation_date }}{{ h.render_datetime(datarequest.open_time, None, True) }}
+                    <strong>Comment creation date:</strong> {{ dataset.comment.creation_date }}
                 </div>
                 {{ dataset }}
             </li>
