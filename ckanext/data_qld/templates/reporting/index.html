@@ -1,0 +1,162 @@
+{% extends "page.html" %}
+
+{%- block main_content %}
+
+    {% block flash %}
+        {{ super() }}
+    {% endblock %}
+
+    {% block toolbar %}
+        {{ super() }}
+    {% endblock %}
+
+    <style type="text/css">
+    table.tabular-report tr {
+        text-align: right;
+    }
+    table.tabular-report tr td:first-child {
+        text-align: left;
+    }
+    table.tabular-report tr.closing-circumstance td:first-child {
+        padding-left: 3em;
+    }
+    table tr.complete {
+        font-weight: bold;
+        letter-spacing: -1px;
+    }
+    </style>
+
+    <h1>Report</h1>
+
+    <h2>Organisation ID: {{ org_id }}</h2>
+
+    <h2>Organisation Name: {{ org_name }}</h2>
+
+    <p>
+        <ul>
+            <li>Start date: {{ start_date }}</li>
+            <li>End date: {{ end_date }}</li>
+        </ul>
+    </p>
+
+    {% if org_id and metrics %}
+        <table class="table table-striped table-bordered tabular-report">
+            <thead>
+                <th width="65%">&nbsp;</th>
+                <th width="20%">{{ org_name }}</th>
+                <th width="15%">Avg. time* (days)</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ _('Dataset') }} {{ _('followers') }}</td>
+                    <td>{{ metrics.dataset_followers }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Organization') }} {{ _('followers') }}</td>
+                    <td>{{ org_followers }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Dataset') }} comments</td>
+                    <td>{{ metrics.dataset_comments }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Dataset') }} comment {{ _('followers') }}</td>
+                    <td>{{ metrics.dataset_comment_followers }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Datasets with at least one comment {{ _('follower') }}</td>
+                    <td>{{ metrics.datasets_min_one_comment_follower }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td align="left">Data requests</td>
+                    <td>{{ metrics.datarequests.total }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Data request comments</td>
+                    <td>{{ metrics.datarequest_comments }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Data requests with at least one comment {{ _('follower') }}</td>
+                    <td>{{ metrics.datarequests_min_one_comment_follower }}</td>
+                    <td>-</td>
+                </tr>
+
+                {% snippet "reporting/snippets/linked_metric.html",
+                    label=_('Dataset') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
+                    count=metrics.datasets_no_replies_after_x_days|length,
+                    link='/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date %}
+
+                <tr>
+                    <td>{{ _('Data request') }} comments with no reply > 10 days</td>
+                    <td>
+                        {% if metrics.datarequests_no_replies_after_x_days|length > 0 %}
+                            <a href="/reporting/dataquests/{{ org_id }}/no-reply?start_date={{ start_date }}&end_date={{ end_date }}">{{ metrics.datarequests_no_replies_after_x_days|length }}</a>
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
+                    <td>-</td>
+                </tr>
+
+                {% set datarequests = metrics.datarequests %}
+
+                {% snippet "reporting/snippets/linked_metric.html",
+                    label='Open data requests > ' + datarequest_open_max_days|string + ' days',
+                    count=datarequests.open_plus_max_days,
+                    link='/reporting/datarequests/' + org_id + '/open-max-days' %}
+
+                {% snippet "reporting/snippets/linked_metric.html",
+                    label='Open data requests with no comment > ' + comment_no_reply_max_days|string + ' days',
+                    count=metrics.open_datarequests_no_comments_after_x_days|length,
+                    link='/reporting/datarequests/' + org_id + '/no-comments' %}
+
+                {% set circumstance = 'To be released as open data at a later date' %}
+                {% set has_data = True if datarequests.circumstances[circumstance] else False %}
+                {% set count = datarequests.circumstances[circumstance].count if has_data else 0 %}
+                {% set average = datarequests.circumstances[circumstance].average if has_data else 0 %}
+                {% set label = 'Closed data requests - ' + circumstance %}
+                <tr>
+                    <td>
+                        {% if count > 0 %}
+                            <a href="/reporting/datarequests/{{ org_id }}/closed?circumstance={{ circumstance }}">{{ label }}</a>
+                        {% else %}
+                            {{ label }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if count > 0 %}
+                            <a href="#">{{ count }}</a>
+                        {% else %}
+                            {{ count }}
+                        {% endif %}
+                    </td>
+                    <td>{{ average }}</td>
+                </tr>
+
+                {% snippet "reporting/snippets/closed_datarequest_metrics.html",
+                    datarequests=datarequests %}
+
+                <tr class="closing-circumstance">
+                    <td>Closed no accepted dataset (pre-July 2020)</td>
+                    <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].count }}</td>
+                    <td>-</td>
+                </tr>
+
+                <tr class="closing-circumstance">
+                    <td>Closed accepted dataset (pre-July 2020)</td>
+                    <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].count }}</td>
+                    <td>-</td>
+                </tr>
+
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock -%}
