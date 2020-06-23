@@ -9,6 +9,10 @@
 {% set depth = 0 %}
 {% set notification_actions_enabled = userobj and h.comment_notification_recipients_enabled() %}
 
+{%- if h.user_can_manage_comments(content_type, pkg_id) -%}
+    {% set unreplied_comments_x_days = h.unreplied_comments_x_days(thread.url) %}
+{%- endif -%}
+
 {% if notification_actions_enabled %}
     {% resource "comments_js/confirm_mute_content_item.js" %}
     {% resource "comments_js/follow_or_mute_notifications.js" %}
@@ -50,11 +54,10 @@
 {% endmacro %}
 
 {% macro comment_thread(thread, content_type, depth=0) %}
-
     {% for comment in thread.comments %}
     <div id="comment_{{ comment.id }}" class="comment-wrapper">
         {% set user_can_manage = h.user_can_manage_comments(content_type, pkg_id) %}
-        <div class="comment comment-{{ comment.state }}">
+        <div class="comment comment-{{ comment.state }} {% if user_can_manage and comment.id in unreplied_comments_x_days %}unreplied{% endif %}">
             <div class="comment-header">
                 <div class="comment-actions">
                     {% if comment.state != 'deleted' %}
