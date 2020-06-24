@@ -116,7 +116,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         # appears to affect these two routes, so we need to replicate them here
         m.connect('dataset_new', '/dataset/new', controller='package', action='new')
         m.connect('/dataset/{action}',
-                  controller='package',
+                  controller='ckan.controllers.package',
                   requirements=dict(action='|'.join([
                       'list',
                       'autocomplete',
