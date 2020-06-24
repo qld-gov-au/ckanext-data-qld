@@ -156,3 +156,13 @@ def activity_type_nice(activity_type):
     activity_type = activity_type.split()
     activity_type.reverse()
     return ' '.join(activity_type)
+
+
+def profanity_checking_enabled():
+    """Check to see if YTP comments extension is enabled and `check_for_profanity` is enabled
+
+    :rtype: bool
+
+    """
+    return 'ytp_comments' in config.get('ckan.plugins', '') \
+           and toolkit.asbool(config.get('ckan.comments.check_for_profanity', False))
