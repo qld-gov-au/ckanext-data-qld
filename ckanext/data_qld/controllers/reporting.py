@@ -1,4 +1,6 @@
 import logging
+import ckanext.data_qld.auth_functions as auth_functions
+import ckan.plugins.toolkit as toolkit
 
 from ckan.lib.base import BaseController, render
 from ckan.plugins.toolkit import get_action, request
@@ -8,26 +10,24 @@ from ckanext.data_qld.logic import export_helpers
 log = logging.getLogger(__name__)
 
 # @TODO: Reset this to 60
-DATAREQUEST_OPEN_MAX_DAYS = 60
+DATAREQUEST_OPEN_MAX_DAYS = 10
 # @TODO: Reset this to 10
 COMMENT_NO_REPLY_MAX_DAYS = 5
 
 
 class ReportingController(BaseController):
 
-    def index(self, org_id=None, start_date=None, end_date=None):
+    @classmethod
+    def check_user_access(cls):
+        context = helpers.get_context()
+        data_dict = {'permission': 'create_dataset'}
+        toolkit.check_access('has_user_permission_for_some_org', context, data_dict)
 
-        # @TODO: Auth check for:
-        # 5.5.2.1 Non-signed in users, General and Member users will have no access to the reporting
-        # 5.5.2.2 Editor & Admin level users of an organisation will have access to only their organisation's data
-        #
+    def index(self):
+        self.check_user_access()
 
-        # @TODO: Default date range = 10 July 2019 to present
-
-        # @TODO: handle timezone conversion?
-        year, month = helpers.get_year_month(start_date, end_date)
-        start_date, end_date = helpers.get_report_date_range(year, month)
-
+        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
+        org_id = request.GET.get('organisation', None)
         extra_vars = {}
 
         if org_id:
@@ -36,10 +36,9 @@ class ReportingController(BaseController):
             extra_vars = {
                 'org_id': org_id,
                 'org_name': org['title'],
-                'org_followers': org['num_followers'],
                 'start_date': start_date,
                 'end_date': end_date,
-                'metrics': helpers.gather_metrics(org_id, start_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
+                'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
             }
@@ -53,28 +52,14 @@ class ReportingController(BaseController):
         import csv
         from pylons import response
 
-        # @TODO: Restrict access to Sysadmin, Admin and Editor roles
+        self.check_user_access()
 
-        # @TODO: dynamic start date
-        start_date = '2020-01-01'
-
-        # @TODO: Get user's orgs
-        # check helpers `organizations_available` - "create_dataset"
-        # OR:
-        # context = {'user': c.user}
-        # data_dict = {
-        #     'permission': 'create_dataset',
-        #     'include_dataset_count': False}
-        # logic.get_action('organization_list_for_user')(context, data_dict)
-        org_ids = [
-            'd4e2967a-aa3a-48bb-bb3b-2202b79f53e4', 'd92d8f2f-b704-47e7-b5a3-67fd97f352f2'
-        ]
+        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
 
         report_config = export_helpers.get_report_config()
 
         row_order, row_properties = export_helpers.get_row_order_and_properties(report_config)
 
-        # csv_header_row = ['""']
         csv_header_row = ['']
 
         dict_csv_rows = {}
@@ -90,10 +75,11 @@ class ReportingController(BaseController):
             dict_csv_rows[key] = []
 
         # Gather all the metrics for each organisation
-        for org_id in org_ids:
+        for organization in helpers.get_organisation_list_for_user('create_dataset'):
             export_helpers.add_org_metrics_to_report(
-                org_id,
+                organization,
                 start_date,
+                end_date,
                 csv_header_row,
                 row_properties,
                 dict_csv_rows,
@@ -104,44 +90,11 @@ class ReportingController(BaseController):
 
         return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows)
 
-        # Compile the CSV output
-        output = ''
-
-        output += ','.join(csv_header_row)
-
-        for label in row_order:
-            output += '\n"%s",' % label + ','.join(dict_csv_rows[label])
-
-        return '<pre>%s</pre>' % output
-
-        # filename = 'report.csv'
-        #
-        # with open('/tmp/' + filename, 'wb') as csvfile:
-        #     csv_writer = csv.writer(csvfile, delimiter=',',
-        #                     ```        quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        #     # Add the header row
-        #     csv_writer.writerow(csv_header_row)
-        #     # Iterate through the results, parse each result and output to csv file
-        #     for key, value in data.items():
-        #         if key == 'organization_followers':
-        #             try:
-        #                 csv_writer.writerow(generate_report_row(result))
-        #             except Exception, e:
-        #                 print(e)
-        #
-        # fh = open('/tmp/' + filename)
-        #
-        # response.headers[b'Content-Type'] = b'text/csv; charset=utf-8'
-        # response.headers[b'Content-Disposition'] = b"attachment;filename=%s" % filename
-        #
-        # return fh.read()
-
-
     def datasets(self, org_id, metric):
 
         # @TODO: Validation
-        start_date = request.GET.get('start_date', None),
-        end_date = request.GET.get('end_date', None)
+        self.check_user_access()
+        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
 
         if metric == 'no-reply':
             datasets = get_action('datasets_no_replies_after_x_days')(
@@ -166,26 +119,33 @@ class ReportingController(BaseController):
         """Displays a list of data requests for the given organisation based on the desired metric"""
 
         # @TODO: Regex org_id against ([a-f0-9\-)
-
+        self.check_user_access() 
+        
+        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
+        data_dict = {
+            'org_id': org_id,
+            'start_date': start_date,
+            'end_date': end_date,
+            'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
+            'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
+        }
         circumstance = None
 
-        if metric == 'no-comments':
-            datarequests = get_action('open_datarequests_no_comments_after_x_days')({}, org_id)
+        if metric == 'no-reply':
+            datarequests = get_action('datarequests_no_replies_after_x_days')({}, data_dict)
+        elif metric == 'no-comments':
+            datarequests = get_action('open_datarequests_no_comments_after_x_days')({}, data_dict)
         elif metric == 'open-max-days':
-            datarequests = get_action('datarequests_open_after_x_days')({}, {'org_id': org_id, 'days': DATAREQUEST_OPEN_MAX_DAYS})
-
+            datarequests = get_action('datarequests_open_after_x_days')({}, data_dict)
         else:
             circumstance = request.GET.get('circumstance', None)
-            # @TODO: Validate `circumstance` against list from
-            #  closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
-            # e.g. /closed?circumstance=To be released as open data at a later date
-            datarequests = get_action('datarequests_for_circumstance')(
-                        {},
-                        {
-                            'org_id': org_id,
-                            'circumstance': circumstance
-                        }
-                    )
+            data_dict['circumstance'] = circumstance
+            closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
+
+            if circumstance not in closing_circumstances:
+                raise toolkit.Invalid(toolkit._('Circumstance {0} is not valid'.format(circumstance)))
+
+            datarequests = get_action('datarequests_for_circumstance')({}, data_dict)
 
         return render(
             'reporting/datarequests.html',

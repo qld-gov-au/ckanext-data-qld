@@ -1,4 +1,5 @@
 {% extends "page.html" %}
+{% import 'macros/form.html' as form %}
 
 {%- block main_content %}
 
@@ -26,139 +27,148 @@
     }
     </style>
 
-    <h1>Report</h1>
+    <div>
+        <form action="/reporting">
+            
+            {{ form.input('start_date', label=_('Start Date'), type='date', value=start_date, placeholder='yyyy-mm-dd') }}
 
-    <h2>Organisation ID: {{ org_id }}</h2>
+            {{ form.input('end_date', label=_('End Date'), type='date', value=end_date, placeholder='yyyy-mm-dd') }}
 
-    <h2>Organisation Name: {{ org_name }}</h2>
+            {% set organisations = h.get_organisation_list() %}
+            {% set attrs = {'data-module': 'autocomplete'} %}
+            {{ form.select('organisation', label=_('Organisations'), options=organisations, selected=org_id, attrs=attrs) }}
 
-    <p>
-        <ul>
-            <li>Start date: {{ start_date }}</li>
-            <li>End date: {{ end_date }}</li>
-        </ul>
-    </p>
+            <button class="btn btn-primary">Show</button>
+            <a href="/reporting/export?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-primary">Export</a>
+            
+        </form>
+    </div>
+    <hr>
+    <div>
+        <h1>Report</h1>
 
-    <a href="/reporting/export" class="btn btn-primary">Export</a>
+        <h2>Organisation ID: {{ org_id }}</h2>
 
-    {% if org_id and metrics %}
-        <table class="table table-striped table-bordered tabular-report">
-            <thead>
-                <th width="65%">&nbsp;</th>
-                <th width="20%">{{ org_name }}</th>
-                <th width="15%">Avg. time* (days)</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ _('Dataset') }} {{ _('followers') }}</td>
-                    <td>{{ metrics.dataset_followers }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Organization') }} {{ _('followers') }}</td>
-                    <td>{{ org_followers }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Dataset') }} comments</td>
-                    <td>{{ metrics.dataset_comments }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Dataset') }} comment {{ _('followers') }}</td>
-                    <td>{{ metrics.dataset_comment_followers }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Datasets with at least one comment {{ _('follower') }}</td>
-                    <td>{{ metrics.datasets_min_one_comment_follower }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td align="left">Data requests</td>
-                    <td>{{ metrics.datarequests.total }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Data request comments</td>
-                    <td>{{ metrics.datarequest_comments }}</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>Data requests with at least one comment {{ _('follower') }}</td>
-                    <td>{{ metrics.datarequests_min_one_comment_follower }}</td>
-                    <td>-</td>
-                </tr>
+        <h2>Organisation Name: {{ org_name }}</h2>
 
-                {% snippet "reporting/snippets/linked_metric.html",
-                    label=_('Dataset') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
-                    count=metrics.datasets_no_replies_after_x_days|length,
-                    link='/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date %}
+        <p>
+            <ul>
+                <li>Start date: {{ start_date }}</li>
+                <li>End date: {{ end_date }}</li>
+            </ul>
+        </p>
 
-                <tr>
-                    <td>{{ _('Data request') }} comments with no reply > 10 days</td>
-                    <td>
-                        {% if metrics.datarequests_no_replies_after_x_days|length > 0 %}
-                            <a href="/reporting/dataquests/{{ org_id }}/no-reply?start_date={{ start_date }}&end_date={{ end_date }}">{{ metrics.datarequests_no_replies_after_x_days|length }}</a>
-                        {% else %}
-                            0
-                        {% endif %}
-                    </td>
-                    <td>-</td>
-                </tr>
+        {% if org_id and metrics %}
+            <table class="table table-striped table-bordered tabular-report">
+                <thead>
+                    <th width="65%">&nbsp;</th>
+                    <th width="20%">{{ org_name }}</th>
+                    <th width="15%">Avg. time* (days)</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ _('Dataset') }} {{ _('followers') }}</td>
+                        <td>{{ metrics.dataset_followers }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('Organization') }} {{ _('followers') }}</td>
+                        <td>{{ metrics.organisation_followers }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('Dataset') }} comments</td>
+                        <td>{{ metrics.dataset_comments }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('Dataset') }} comment {{ _('followers') }}</td>
+                        <td>{{ metrics.dataset_comment_followers }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Datasets with at least one comment {{ _('follower') }}</td>
+                        <td>{{ metrics.datasets_min_one_comment_follower }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td align="left">Data requests</td>
+                        <td>{{ metrics.datarequests.total }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Data request comments</td>
+                        <td>{{ metrics.datarequest_comments }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Data requests with at least one comment {{ _('follower') }}</td>
+                        <td>{{ metrics.datarequests_min_one_comment_follower }}</td>
+                        <td>-</td>
+                    </tr>
 
-                {% set datarequests = metrics.datarequests %}
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label=_('Dataset') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
+                        count=metrics.datasets_no_replies_after_x_days|length,
+                        link='/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date %}
 
-                {% snippet "reporting/snippets/linked_metric.html",
-                    label='Open data requests > ' + datarequest_open_max_days|string + ' days',
-                    count=datarequests.open_plus_max_days,
-                    link='/reporting/datarequests/' + org_id + '/open-max-days' %}
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label=_('Data request') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
+                        count=metrics.datarequests_no_replies_after_x_days|length,
+                        link='/reporting/datarequests/' + org_id + '/no-reply?start_date=' + start_date %}                  
 
-                {% snippet "reporting/snippets/linked_metric.html",
-                    label='Open data requests with no comment > ' + comment_no_reply_max_days|string + ' days',
-                    count=metrics.open_datarequests_no_comments_after_x_days|length,
-                    link='/reporting/datarequests/' + org_id + '/no-comments' %}
+                    {% set datarequests = metrics.datarequests %}
 
-                {% set circumstance = 'To be released as open data at a later date' %}
-                {% set has_data = True if datarequests.circumstances[circumstance] else False %}
-                {% set count = datarequests.circumstances[circumstance].count if has_data else 0 %}
-                {% set average = datarequests.circumstances[circumstance].average if has_data else 0 %}
-                {% set label = 'Closed data requests - ' + circumstance %}
-                <tr>
-                    <td>
-                        {% if count > 0 %}
-                            <a href="/reporting/datarequests/{{ org_id }}/closed?circumstance={{ circumstance }}">{{ label }}</a>
-                        {% else %}
-                            {{ label }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if count > 0 %}
-                            <a href="#">{{ count }}</a>
-                        {% else %}
-                            {{ count }}
-                        {% endif %}
-                    </td>
-                    <td>{{ average }}</td>
-                </tr>
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label='Open data requests > ' + datarequest_open_max_days|string + ' days',
+                        count=datarequests.open_plus_max_days,
+                        link='/reporting/datarequests/' + org_id + '/open-max-days?start_date={0}&end_date={1}'.format(start_date, end_date) %}
 
-                {% snippet "reporting/snippets/closed_datarequest_metrics.html",
-                    datarequests=datarequests %}
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label='Open data requests with no comment > ' + comment_no_reply_max_days|string + ' days',
+                        count=metrics.open_datarequests_no_comments_after_x_days|length,
+                        link='/reporting/datarequests/' + org_id + '/no-comments?start_date={0}&end_date={1}'.format(start_date, end_date) %}
 
-                <tr class="closing-circumstance">
-                    <td>Closed no accepted dataset (pre-July 2020)</td>
-                    <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].count }}</td>
-                    <td>-</td>
-                </tr>
+                    {% set circumstance = 'To be released as open data at a later date' %}
+                    {% set has_data = True if datarequests.circumstances[circumstance] else False %}
+                    {% set count = datarequests.circumstances[circumstance].count if has_data else 0 %}
+                    {% set average = datarequests.circumstances[circumstance].average if has_data else 0 %}
+                    {% set label = 'Closed data requests - ' + circumstance %}
+                    <tr>
+                        <td>
+                            {% if count > 0 %}
+                                <a href="/reporting/datarequests/{{ org_id }}/closed?circumstance={{ circumstance }}">{{ label }}</a>
+                            {% else %}
+                                {{ label }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if count > 0 %}
+                                <a href="#">{{ count }}</a>
+                            {% else %}
+                                {{ count }}
+                            {% endif %}
+                        </td>
+                        <td>{{ average }}</td>
+                    </tr>
 
-                <tr class="closing-circumstance">
-                    <td>Closed accepted dataset (pre-July 2020)</td>
-                    <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].count }}</td>
-                    <td>-</td>
-                </tr>
+                    {% snippet "reporting/snippets/closed_datarequest_metrics.html",
+                        datarequests=datarequests %}
 
-            </tbody>
-        </table>
-    {% endif %}
+                    <tr class="closing-circumstance">
+                        <td>Closed no accepted dataset (pre-July 2020)</td>
+                        <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].count }}</td>
+                        <td>-</td>
+                    </tr>
 
+                    <tr class="closing-circumstance">
+                        <td>Closed accepted dataset (pre-July 2020)</td>
+                        <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].count }}</td>
+                        <td>-</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
 {% endblock -%}

@@ -1,5 +1,6 @@
 import ckan.plugins as plugins
 import logic.action.get as get
+import auth_functions as auth
 
 from ckanext.data_qld.logic import helpers
 
@@ -8,11 +9,13 @@ class ReportingPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions, inherit=True)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.ITemplateHelpers, inherit=True)
+    plugins.implements(plugins.IAuthFunctions)
 
     # IActions
     def get_actions(self):
         actions = {
             'datarequest_comment_followers': get.datarequest_comment_followers,
+            'organisation_followers': get.organisation_followers,
             'dataset_followers': get.dataset_followers,
             'dataset_comments': get.dataset_comments,
             'dataset_comment_followers': get.dataset_comment_followers,
@@ -52,5 +55,14 @@ class ReportingPlugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {
-            'get_closing_circumstance_list': helpers.get_closing_circumstance_list
+            'get_closing_circumstance_list': helpers.get_closing_circumstance_list,
+            'get_organisation_list': helpers.get_organisation_list
         }
+
+        # IAuthFunctions
+    def get_auth_functions(self):
+        auth_functions = {
+            'has_user_permission_for_some_org': auth.has_user_permission_for_some_org,
+            'has_user_permission_for_org': auth.has_user_permission_for_org
+        }
+        return auth_functions
