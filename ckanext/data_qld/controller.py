@@ -87,7 +87,7 @@ class DataQldDataset(PackageController):
                 'user': c.user, 'for_view': True,
                 'auth_user_obj': c.userobj}
 
-    def _is_dataset_private(self, id):
+    def _is_dataset_public(self, id):
         try:
             get_action('package_show')(self._get_context(), {'id': id})
             return True
@@ -104,7 +104,7 @@ class DataQldDataset(PackageController):
         :param id: Package id/name
         :return:
         """
-        if not g.user and not self._is_dataset_private(id):
+        if not g.user and not self._is_dataset_public(id):
             tk.redirect_to(
                 tk.url_for('user.login', came_from='/dataset/{id}'.format(id=id))
             )
@@ -120,7 +120,7 @@ class DataQldDataset(PackageController):
         :param resource_id: Resource id
         :return:
         """
-        if not g.user and not self._is_dataset_private(id):
+        if not g.user and not self._is_dataset_public(id):
             tk.redirect_to(
                 tk.url_for('user.login',
                            came_from='/dataset/{id}/resource/{resource_id}'.format(id=id, resource_id=resource_id))
