@@ -10,19 +10,19 @@
         {{ super() }}
     {% endblock %}
 
-    <p><a href="/reporting/{{ org_id }}">&lt; Back to report</a></p>
+    <p><a href="/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}">&lt; Back to report</a></p>
 
     <h1>Report: Data requests</h1>
 
     <h2>
         {% if metric == 'no-reply' %}
-            Datarequest comments with no reply > 10 days               
+            Datarequest comments with no reply > {{ comment_no_reply_max_days|string }} days               
         {% elif metric == 'no-comments' %}
-            Open data requests with no comment > 10 days            
+            Open data requests with no comment > {{ comment_no_reply_max_days|string }} days            
         {% elif metric == 'closed' %}
             Closed data requests - To be released as open data at a later date
         {% elif metric == 'open-max-days' %}
-            Open data requests > 60 days
+            Open data requests > {{ datarequest_open_max_days|string }} days
         {% endif %}
     </h2>
 

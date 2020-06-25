@@ -324,14 +324,15 @@ def datasets_no_replies_after_x_days(context, data_dict):
             _session_.query(
                 Comment.id,
                 Comment.parent_id,
-                Comment.creation_date,
+                Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
                 CommentThread.url,
                 Package.name,
                 comment_reply.parent_id,
-                comment_reply.creation_date,
+                comment_reply.creation_date.label("comment_reply_creation_date"),
                 comment_reply.comment,
-                Package.title
+                Package.title,
+                func.date(comment_expected_reply_by_date).label("test")
             )
             .filter(
                 _and_(

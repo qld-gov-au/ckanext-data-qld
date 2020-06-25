@@ -10,9 +10,9 @@ from ckanext.data_qld.logic import export_helpers
 log = logging.getLogger(__name__)
 
 # @TODO: Reset this to 60
-DATAREQUEST_OPEN_MAX_DAYS = 10
+DATAREQUEST_OPEN_MAX_DAYS = 5
 # @TODO: Reset this to 10
-COMMENT_NO_REPLY_MAX_DAYS = 5
+COMMENT_NO_REPLY_MAX_DAYS = 2
 
 
 class ReportingController(BaseController):
@@ -116,8 +116,12 @@ class ReportingController(BaseController):
             'reporting/datasets.html',
             extra_vars={
                 'org_id': org_id,
+                'start_date': start_date,
+                'end_date': end_date,
                 'datasets': datasets,
                 'metric': metric,
+                'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
+                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
             }
         )
 
@@ -128,12 +132,17 @@ class ReportingController(BaseController):
         self.check_user_access() 
         
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
+        start_date, end_date, comment_expected_reply_by_date = helpers.process_dates(start_date,
+                                                                                            end_date,
+                                                                                            COMMENT_NO_REPLY_MAX_DAYS
+                                                                                            )
         data_dict = {
             'org_id': org_id,
             'start_date': start_date,
             'end_date': end_date,
             'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-            'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
+            'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
+            'comment_expected_reply_by_date': comment_expected_reply_by_date
         }
         circumstance = None
 
@@ -157,8 +166,12 @@ class ReportingController(BaseController):
             'reporting/datarequests.html',
             extra_vars={
                 'org_id': org_id,
+                'start_date': start_date,
+                'end_date': end_date,
                 'datarequests': datarequests,
                 'metric': metric,
-                'circumstance': circumstance
+                'circumstance': circumstance,
+                'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
+                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
             }
         )

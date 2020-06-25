@@ -10,13 +10,13 @@
         {{ super() }}
     {% endblock %}
 
-    <p><a href="/reporting/{{ org_id }}">&lt; Back to report</a></p>
+    <p><a href="/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}">&lt; Back to report</a></p>
 
     <h1>Report: Datasets</h1>
 
     <h2>
         {% if metric == 'no-reply' %}
-            Dataset comments with no reply > 10 days
+            Dataset comments with no reply > {{ comment_no_reply_max_days|string }} days
         {% endif %}
     </h2>
 
@@ -28,22 +28,22 @@
                     <h3 class="dataset-heading">
                         <a href="{{ h.url_for(controller='package', action='read', id=dataset.name) }}/comments">{{ dataset.title }}</a>
                     </h3>
-                    <strong>Comment creation date:</strong> {{ dataset.comment.creation_date }}
+                    <strong>Comment creation date:</strong> {{ dataset.comment_creation_date }}
                 </div>
                 {{ dataset }}
             </li>
 
-            <h2><a href="{{ h.url_for(controller='package', action='read', id=dataset[3]) }}/comments">{{ dataset[9] }}</a></h2>
+            <h2><a href="{{ h.url_for(controller='package', action='read', id=dataset.name) }}/comments">{{ dataset.title }}</a></h2>
 
             <ul>
-                <li>Comment.id: {{ dataset[0] }}</li>
-                <li>Comment.parent_id: {{ dataset[1] }}</li>
-                <li>Comment.creation_date: {{ dataset[2] }}</li>
-                <li>Package.name: {{ dataset[3] }}</li>
-                <li>Package.title: {{ dataset[4] }}</li>
-                <li>CommentReply.comment: {{ dataset[5] }}</li>
-                <li><a href="{{ h.url_for(controller='package', action='read', id=dataset[3]) }}/comments">{{ dataset[4] }}</a></li>
-                <li>UTC now - 10 days: {{ dataset[10] }}</li>
+                <li>Comment.id: {{ dataset.id }}</li>
+                <li>Comment.parent_id: {{ dataset.parent_id}}</li>
+                <li>Comment.creation_date: {{ dataset.comment_creation_date }}</li>
+                <li>Package.name: {{ dataset.name }}</li>
+                <li>Package.title: {{ dataset.title}}</li>
+                <li>CommentReply.comment: {{ dataset.comment }}</li>
+                <li><a href="{{ h.url_for(controller='package', action='read', id=dataset.name) }}/comments">{{ dataset.title }}</a></li>
+                <li>{{ end_date }} - {{ comment_no_reply_max_days|string }} days: {{ dataset.test }}</li>
             </ul>
 
         {% endfor %}
