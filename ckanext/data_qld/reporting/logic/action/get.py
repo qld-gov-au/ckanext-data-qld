@@ -1,17 +1,16 @@
 import ckan.model as model
-import ckan.plugins.toolkit as toolkit
-from ckan.logic import side_effect_free
-
 import logging
 import sqlalchemy
+
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
 from ckan.model.package import Package
 from ckan.model.group import Group
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
-from sqlalchemy import func, distinct, text
+from sqlalchemy import func, distinct, tuple_
 from sqlalchemy.orm import aliased
-from ckanext.data_qld.logic import helpers
+from ckanext.data_qld.reporting import constants
+from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
 
@@ -152,6 +151,7 @@ def datarequests(context, data_dict):
                 func.date(db.DataRequest.open_time) >= start_date,
                 func.date(db.DataRequest.open_time) <= end_date,
             )
+            .order_by(db.DataRequest.open_time.desc())
         ).all()
 
     except Exception as e:
@@ -211,7 +211,8 @@ def dataset_comment_followers(context, data_dict):
         db.init_db(model)
         return (
             _session_.query(
-                func.count(distinct(CommentNotificationRecipient.user_id))
+                # We want to count a user each time they follow a comment thread, not just unique user IDs
+                func.count(distinct(tuple_(CommentNotificationRecipient.user_id, CommentNotificationRecipient.thread_id)))
             )
             .filter(
                 _and_(
@@ -223,6 +224,7 @@ def dataset_comment_followers(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == CommentNotificationRecipient.thread_id)
+            .join(Comment)
             .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
         ).scalar()
 
@@ -304,7 +306,7 @@ def datarequests_min_one_comment_follower(context, data_dict):
         log.error(str(e))
 
 
-def datasets_no_replies_after_x_days(context, data_dict):
+def dataset_comments_no_replies_after_x_days(context, data_dict):
     """
     Dataset comments that have no replies whatsoever, and it has been > 10 days since the comment was created
     :param context:
@@ -313,35 +315,35 @@ def datasets_no_replies_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    comment_expected_reply_by_date = data_dict.get('comment_expected_reply_by_date', None)
+    reply_expected_by_date = data_dict.get('reply_expected_by_date', None)
 
     check_org_access(org_id)
 
     comment_reply = aliased(Comment, name='comment_reply')
 
     try:
-        datasets = (
+        return (
             _session_.query(
-                Comment.id,
+                Comment.id.label("comment_id"),
                 Comment.parent_id,
-                Comment.creation_date,
+                Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
                 CommentThread.url,
-                Package.name,
+                Package.name.label("package_name"),
                 comment_reply.parent_id,
-                comment_reply.creation_date,
+                comment_reply.creation_date.label("comment_reply_creation_date"),
                 comment_reply.comment,
                 Package.title
             )
             .filter(
                 _and_(
                     CommentThread.url.like(DATASET_LIKE),
-                    Comment.parent_id == None,
+                    Comment.parent_id.is_(None),
                     Comment.creation_date >= start_date,
-                    Comment.creation_date <= comment_expected_reply_by_date,
+                    Comment.creation_date <= reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     Package.owner_org == org_id,
-                    comment_reply.id == None
+                    comment_reply.id.is_(None)
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
@@ -349,11 +351,8 @@ def datasets_no_replies_after_x_days(context, data_dict):
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
-        )
-
-        log.debug(str(datasets))
-
-        return datasets.all()
+            .order_by(Comment.creation_date.desc())
+        ).all()
 
     except Exception as e:
         log.error(str(e))
@@ -368,7 +367,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    comment_expected_reply_by_date = data_dict.get('comment_expected_reply_by_date', None)
+    reply_expected_by_date = data_dict.get('reply_expected_by_date', None)
 
     check_org_access(org_id)
 
@@ -385,6 +384,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 CommentThread.url,
                 db.DataRequest.id.label("datarequest_id"),
                 db.DataRequest.title,
+                db.DataRequest.open_time,
                 comment_reply.parent_id,
                 comment_reply.creation_date,
                 comment_reply.comment
@@ -392,12 +392,12 @@ def datarequests_no_replies_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     CommentThread.url.like(DATAREQUEST_LIKE),
-                    Comment.parent_id == None,
+                    Comment.parent_id.is_(None),
                     Comment.creation_date >= start_date,
-                    Comment.creation_date <= comment_expected_reply_by_date,
+                    Comment.creation_date <= reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     db.DataRequest.organization_id == org_id,
-                    comment_reply.id == None
+                    comment_reply.id.is_(None)
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
@@ -405,6 +405,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
+            .order_by(Comment.creation_date.desc())
         ).all()
 
     except Exception as e:
@@ -421,8 +422,7 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('start_date', None)
-    max_days = int(data_dict.get('comment_no_reply_max_days', 10))
+    reply_expected_by_date = data_dict.get('reply_expected_by_date', None)
 
     check_org_access(org_id)
 
@@ -438,13 +438,15 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     db.DataRequest.organization_id == org_id,
-                    db.DataRequest.closed == False,
+                    db.DataRequest.closed.is_(False),
                     db.DataRequest.open_time >= start_date,
-                    db.DataRequest.open_time <= end_date,
-                    db.DataRequest.open_time < func.date(db.DataRequest.open_time + text("interval '%i day'" % max_days))
+                    db.DataRequest.open_time <= reply_expected_by_date,
+                    Comment.id.is_(None)
                 )
             )
             .outerjoin(CommentThread, CommentThread.url == func.concat(DATAREQUEST_PREFIX, db.DataRequest.id))
+            .outerjoin(Comment, Comment.thread_id == CommentThread.id)
+            .order_by(db.DataRequest.open_time.desc())
         ).all()
 
     except Exception as e:
@@ -461,8 +463,7 @@ def datarequests_open_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
-    max_days = int(data_dict.get('datarequest_open_max_days', 10))
+    expected_closure_date = data_dict.get('expected_closure_date', None)
 
     check_org_access(org_id)
 
@@ -477,12 +478,12 @@ def datarequests_open_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     db.DataRequest.organization_id == org_id,
-                    db.DataRequest.closed == False,
+                    db.DataRequest.closed.is_(False),
                     db.DataRequest.open_time >= start_date,
-                    db.DataRequest.open_time <= end_date,
-                    db.DataRequest.open_time < func.date(db.DataRequest.open_time + text("interval '%i day'" % max_days))
+                    db.DataRequest.open_time <= expected_closure_date
                 )
             )
+            .order_by(db.DataRequest.open_time.desc())
         ).all()
 
     except Exception as e:
@@ -492,7 +493,7 @@ def datarequests_open_after_x_days(context, data_dict):
 def datarequests_for_circumstance(context, data_dict):
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('start_date', None)
+    end_date = data_dict.get('end_date', None)
     circumstance = data_dict.get('circumstance', None)
 
     check_org_access(org_id)
@@ -508,7 +509,9 @@ def datarequests_for_circumstance(context, data_dict):
                 db.DataRequest.close_circumstance == circumstance,
                 db.DataRequest.open_time >= start_date,
                 db.DataRequest.open_time <= end_date,
+                db.DataRequest.closed.is_(True)
             )
+            .order_by(db.DataRequest.close_time.desc())
         ).all()
 
     except Exception as e:
@@ -518,13 +521,16 @@ def datarequests_for_circumstance(context, data_dict):
 def comments_no_replies_after_x_days(context, data_dict):
     """
     Comments that have no replies whatsoever, and it has been > 10 days since the comment was created
+    This action is used for highlighting such comments on the comments page for the given URL
     :param context:
     :param data_dict:
     :return:
     """
     thread_url = data_dict.get('thread_url', None)
-    start_date = data_dict.get('start_date', None)
-    comment_expected_reply_by_date = data_dict.get('comment_expected_reply_by_date', None)
+
+    end_date = datetime.utcnow() + timedelta(days=1)
+
+    reply_expected_by_date = end_date - timedelta(days=constants.COMMENT_NO_REPLY_MAX_DAYS)
 
     comment_reply = aliased(Comment, name='comment_reply')
 
@@ -539,17 +545,17 @@ def comments_no_replies_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     CommentThread.url == thread_url,
-                    Comment.parent_id == None,
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= comment_expected_reply_by_date,
+                    Comment.parent_id.is_(None),
+                    Comment.creation_date <= reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
-                    comment_reply.id == None
+                    comment_reply.id.is_(None)
                 )
             )
             .join(Comment)
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
+            .order_by(Comment.creation_date.desc())
         ).all()
 
     except Exception as e:

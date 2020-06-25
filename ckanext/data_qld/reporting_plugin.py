@@ -1,15 +1,20 @@
 import ckan.plugins as plugins
-import logic.action.get as get
+import ckanext.data_qld.reporting.logic.action.get as get
 import auth_functions as auth
 
-from ckanext.data_qld.logic import helpers
+from ckanext.data_qld.reporting.helpers import helpers
 
 
 class ReportingPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IActions, inherit=True)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.ITemplateHelpers, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+
+    # IConfigurer
+    def update_config(self, config_):
+        plugins.toolkit.add_resource('reporting/fanstatic', 'data_qld_reporting')
 
     # IActions
     def get_actions(self):
@@ -22,7 +27,7 @@ class ReportingPlugin(plugins.SingletonPlugin):
             'datarequests_min_one_comment_follower': get.datarequests_min_one_comment_follower,
             'datarequests': get.datarequests,
             'datarequest_comments': get.datarequest_comments,
-            'datasets_no_replies_after_x_days': get.datasets_no_replies_after_x_days,
+            'dataset_comments_no_replies_after_x_days': get.dataset_comments_no_replies_after_x_days,
             'datarequests_no_replies_after_x_days': get.datarequests_no_replies_after_x_days,
             'datarequests_for_circumstance': get.datarequests_for_circumstance,
             'open_datarequests_no_comments_after_x_days': get.open_datarequests_no_comments_after_x_days,
@@ -34,21 +39,18 @@ class ReportingPlugin(plugins.SingletonPlugin):
     # IRoutes
 
     def before_map(self, map):
-        map.connect('/reporting/export',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='export')
-        map.connect('/reporting',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='index')
-        map.connect('/reporting/{org_id}',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='index')
-        map.connect('/reporting/datasets/{org_id}/{metric}',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='datasets')
-        map.connect('/reporting/datarequests/{org_id}/{metric}',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='datarequests')
+        map.connect('/dashboard/reporting/export',
+                    controller='ckanext.data_qld.reporting.controller:ReportingController',
+                    action='export')
+        map.connect('dashboard.reports', '/dashboard/reporting',
+                    controller='ckanext.data_qld.reporting.controller:ReportingController',
+                    action='index')
+        map.connect('/dashboard/reporting/datasets/{org_id}/{metric}',
+                    controller='ckanext.data_qld.reporting.controller:ReportingController',
+                    action='datasets')
+        map.connect('/dashboard/reporting/datarequests/{org_id}/{metric}',
+                    controller='ckanext.data_qld.reporting.controller:ReportingController',
+                    action='datarequests')
         return map
 
     # ITemplateHelpers

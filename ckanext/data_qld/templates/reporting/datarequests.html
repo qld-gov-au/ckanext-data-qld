@@ -1,39 +1,37 @@
-{% extends "page.html" %}
+{% extends "user/dashboard.html" %}
 
-{%- block main_content %}
+{% block primary_content_inner %}
 
-    {% block flash %}
-        {{ super() }}
-    {% endblock %}
+    <p><a href="/dashboard/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}">&lt; Back to report</a></p>
 
-    {% block toolbar %}
-        {{ super() }}
-    {% endblock %}
-
-    <p><a href="/reporting/{{ org_id }}">&lt; Back to report</a></p>
-
-    <h1>Report: Data requests</h1>
+    <h1>Report: Data requests: {{ org_title }}</h1>
 
     <h2>
         {% if metric == 'no-reply' %}
-            Datarequest comments with no reply > 10 days               
+            Datarequest comments with no reply > {{ comment_no_reply_max_days|string }} days
         {% elif metric == 'no-comments' %}
-            Open data requests with no comment > 10 days            
+            Open data requests with no comment > {{ comment_no_reply_max_days|string }} days            
         {% elif metric == 'closed' %}
             Closed data requests - To be released as open data at a later date
         {% elif metric == 'open-max-days' %}
-            Open data requests > 60 days
+            Open data requests > {{ datarequest_open_max_days|string }} days
         {% endif %}
     </h2>
-
-    {% if datarequests|length > 0 %}
+    {% if metric == 'no-reply' %}
+        <h3>
+            Total number of un-replied comments: {{ total_comments }}
+            <br />
+            Total number of datarequests: {{ datarequests|length }}      
+        </h3>
+    {% endif %}
+    {% if datarequests and datarequests|length > 0 %}
         <ul class="dataset-list list-unstyled">
         {% for datarequest in datarequests %}
             <li class="dataset-item">
                 <div class="dataset-content">
                     <h3 class="dataset-heading">
                         {% if metric == 'no-reply' %}        
-                            {% set datarequest_link = "/datarequest/comment/{0}#comment_{1}".format(datarequest.datarequest_id, datarequest.comment_id) %}
+                            {% set datarequest_link = "/datarequest/comment/{0}?comment_ids={1}#comment_{2}".format(datarequest.datarequest_id, comment_ids[datarequest.datarequest_id]|join(','), datarequest.comment_id) %}
                         {% elif metric == 'no-comments' %}              
                             {% set datarequest_link = "/datarequest/comment/{0}".format(datarequest.id) %}
                         {% elif metric == 'closed' %}
@@ -63,6 +61,8 @@
             </li>
         {% endfor %}
         </ul>
+    {% else %}
+        <h3>No data requests to display.</h3>
     {% endif %}
 
 {% endblock -%}
