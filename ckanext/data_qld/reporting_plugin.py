@@ -14,7 +14,6 @@ class ReportingPlugin(plugins.SingletonPlugin):
     # IActions
     def get_actions(self):
         actions = {
-            'datarequest_comment_followers': get.datarequest_comment_followers,
             'organisation_followers': get.organisation_followers,
             'dataset_followers': get.dataset_followers,
             'dataset_comments': get.dataset_comments,

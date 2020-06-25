@@ -96,13 +96,19 @@ class ReportingController(BaseController):
         self.check_user_access()
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
 
+        start_date, end_date, comment_expected_reply_by_date = helpers.process_dates(start_date,
+                                                                                     end_date,
+                                                                                     COMMENT_NO_REPLY_MAX_DAYS
+                                                                                     )
+
         if metric == 'no-reply':
             datasets = get_action('datasets_no_replies_after_x_days')(
                     {},
                     {
                         'org_id': org_id,
                         'start_date': start_date,
-                        'end_date': end_date
+                        'end_date': end_date,
+                        'comment_expected_reply_by_date': comment_expected_reply_by_date
                     }
                 )
 

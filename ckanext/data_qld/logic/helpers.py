@@ -3,6 +3,7 @@ import calendar
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
 import logging
+import pytz
 import ckanext.data_qld.auth_functions as authz
 
 get_action = toolkit.get_action
@@ -37,12 +38,12 @@ def get_report_date_range(start_date, end_date):
     if start_date:
         start_date = toolkit.h.date_str_to_datetime(start_date)
     else:
-        start_date = datetime.datetime(2019, 6, 10)
+        start_date = datetime.datetime(2019, 7, 10)
 
     if end_date:
         end_date = toolkit.h.date_str_to_datetime(end_date)
     else:
-        end_date = datetime.datetime.utcnow()
+        end_date = datetime.datetime.now()
 
     return start_date.date().isoformat(), end_date.date().isoformat()
 
@@ -146,13 +147,50 @@ def timedelta_in_days(latest_date, earliest_date):
     return int(timedelta.total_seconds() / 86400)
 
 
+def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
+    """Process textual date representations"""
+    timezone = pytz.timezone("UTC")
+
+    # Not really necessary, but future proofing in case start date includes time
+    dt = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    start_datetime = timezone.localize(dt)
+    start_date = start_datetime.strftime('%Y-%m-%d 00:00:00')
+
+    dt = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+    end_datetime = timezone.localize(dt)
+    end_date = end_datetime.strftime('%Y-%m-%d 23:59:59')
+
+    if comment_no_reply_max_days:
+        comment_expected_reply_by_date = end_datetime - datetime.timedelta(days=comment_no_reply_max_days)
+
+    if datarequest_open_max_days:
+        datarequests_cut_off_date = end_datetime - datetime.timedelta(days=datarequest_open_max_days)
+
+    if comment_no_reply_max_days and datarequest_open_max_days:
+        return start_date, end_date, comment_expected_reply_by_date, datarequests_cut_off_date
+    elif comment_no_reply_max_days:
+        return start_date, end_date, comment_expected_reply_by_date
+    elif datarequest_open_max_days:
+        return start_date, end_date, datarequests_cut_off_date
+    else:
+        return start_date, end_date
+
+
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
+    start_date, end_date, comment_expected_reply_by_date, datarequests_cut_off_date = process_dates(start_date,
+                                                                                           end_date,
+                                                                                           comment_no_reply_max_days,
+                                                                                           datarequest_open_max_days
+                                                                                           )
+
     data_dict = {
         'org_id': org_id,
         'start_date': start_date,
         'end_date': end_date,
         'comment_no_reply_max_days': comment_no_reply_max_days,
-        'datarequest_open_max_days': datarequest_open_max_days
+        'datarequest_open_max_days': datarequest_open_max_days,
+        'comment_expected_reply_by_date': comment_expected_reply_by_date,
+        'datarequests_cut_off_date': datarequests_cut_off_date
     }
 
     return {
