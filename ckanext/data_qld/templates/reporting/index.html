@@ -47,7 +47,7 @@
 
             {{ form.input('end_date', label=_('End Date'), type='date', value=end_date, placeholder='yyyy-mm-dd') }}
 
-            {% set organisations = h.get_organisation_list() %}
+            {#% set organisations = h.get_organisation_list() %#}
             {% set attrs = {'data-module': 'autocomplete'} %}
             {{ form.select('organisation', label=_('Organisations'), options=organisations, selected=org_id, attrs=attrs) }}
 
@@ -56,8 +56,8 @@
             </div>
         </form>
     </div>
-    <hr>
     {% if org_id and metrics %}
+    <hr>
     <div>
         <h2>Organisation: {{ org_name }}</h2>
 
@@ -114,7 +114,7 @@
 
                     {% snippet "reporting/snippets/linked_metric.html",
                         label=_('Dataset') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
-                        count=metrics.datasets_no_replies_after_x_days|length,
+                        count=metrics.dataset_comments_no_replies_after_x_days|length,
                         link='/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date + '&end_date=' + end_date %}
 
                     {% snippet "reporting/snippets/linked_metric.html",

@@ -43,7 +43,7 @@
   "Dataset comments with no reply > 10 days": {
     "order": 9,
     "type": "length",
-    "property": "datasets_no_replies_after_x_days"
+    "property": "dataset_comments_no_replies_after_x_days"
   },
   "Data request comments with no reply > 10 days": {
     "order": 10,

@@ -1,18 +1,14 @@
 import logging
-import ckanext.data_qld.auth_functions as auth_functions
 import ckan.plugins.toolkit as toolkit
 
 from ckan.lib.base import BaseController, render
 from ckan.plugins.toolkit import get_action, request
-from ckanext.data_qld.logic import helpers
-from ckanext.data_qld.logic import export_helpers
+from ckanext.data_qld.logic import constants, export_helpers, helpers
 
 log = logging.getLogger(__name__)
 
-# @TODO: Reset this to 60
-DATAREQUEST_OPEN_MAX_DAYS = 5
-# @TODO: Reset this to 10
-COMMENT_NO_REPLY_MAX_DAYS = 2
+DATAREQUEST_OPEN_MAX_DAYS = constants.DATAREQUEST_OPEN_MAX_DAYS
+COMMENT_NO_REPLY_MAX_DAYS = constants.COMMENT_NO_REPLY_MAX_DAYS
 
 
 class ReportingController(BaseController):
@@ -28,12 +24,20 @@ class ReportingController(BaseController):
 
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
         org_id = request.GET.get('organisation', None)
-        extra_vars = {}
+
+        organisations = helpers.get_organisation_list()
+
+        if organisations and len(organisations) == 1:
+            org_id = organisations[0]['value']
+
+        extra_vars = {
+            'organisations': organisations
+        }
 
         if org_id:
             org = get_action('organization_show')({}, {'id': org_id})
 
-            extra_vars = {
+            extra_vars.update({
                 'org_id': org_id,
                 'org_name': org['title'],
                 'start_date': start_date,
@@ -41,7 +45,7 @@ class ReportingController(BaseController):
                 'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
-            }
+            })
 
         return render(
             'reporting/index.html',
@@ -49,9 +53,6 @@ class ReportingController(BaseController):
         )
 
     def export(self):
-        import csv
-        from pylons import response
-
         self.check_user_access()
 
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
@@ -96,21 +97,30 @@ class ReportingController(BaseController):
         self.check_user_access()
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
 
-        start_date, end_date, comment_expected_reply_by_date = helpers.process_dates(start_date,
+        start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
                                                                                      end_date,
                                                                                      COMMENT_NO_REPLY_MAX_DAYS
                                                                                      )
 
         if metric == 'no-reply':
-            datasets = get_action('datasets_no_replies_after_x_days')(
+            comments = get_action('dataset_comments_no_replies_after_x_days')(
                     {},
                     {
                         'org_id': org_id,
                         'start_date': start_date,
                         'end_date': end_date,
-                        'comment_expected_reply_by_date': comment_expected_reply_by_date
+                        'reply_expected_by_date': reply_expected_by_date
                     }
                 )
+            # Action `dataset_comments_no_replies_after_x_days` returns a collection of comments with no replies
+            # On this page we only need to display distinct datasets containing those comments
+            datasets = []
+            names = []
+            for comment in comments:
+                comment_dict = comment._asdict()
+                if comment_dict['package_name'] not in names:
+                    datasets.append(comment)
+                    names.append(comment_dict['package_name'])
 
         return render(
             'reporting/datasets.html',
@@ -120,6 +130,7 @@ class ReportingController(BaseController):
                 'end_date': end_date,
                 'datasets': datasets,
                 'metric': metric,
+                'total': len(comments),
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
             }
@@ -129,10 +140,10 @@ class ReportingController(BaseController):
         """Displays a list of data requests for the given organisation based on the desired metric"""
 
         # @TODO: Regex org_id against ([a-f0-9\-)
-        self.check_user_access() 
-        
+        self.check_user_access()
+
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
-        start_date, end_date, comment_expected_reply_by_date = helpers.process_dates(start_date,
+        start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
                                                                                             end_date,
                                                                                             COMMENT_NO_REPLY_MAX_DAYS
                                                                                             )
@@ -142,7 +153,7 @@ class ReportingController(BaseController):
             'end_date': end_date,
             'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
             'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-            'comment_expected_reply_by_date': comment_expected_reply_by_date
+            'reply_expected_by_date': reply_expected_by_date
         }
         circumstance = None
 

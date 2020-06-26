@@ -130,6 +130,10 @@ def get_data_request_metrics(data_dict):
         if c != 'No circumstance' and circumstances[c]['count'] > 0:
             circumstances[c]['average'] = get_closing_circumstance_average(circumstances[c])
 
+    # @TODO: Averages for No circumstance types
+    # circumstances['No circumstance']['accepted_dataset']['average'] = get_closing_circumstance_average(circumstances['No circumstance']['accepted_dataset'])
+    # circumstances['No circumstance']['no_accepted_dataset']['average'] = get_closing_circumstance_average(circumstances['No circumstance']['no_accepted_dataset'])
+
     data_requests = {
         'total': total,
         'open': open,
@@ -161,15 +165,15 @@ def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
     end_date = end_datetime.strftime('%Y-%m-%d 23:59:59')
 
     if comment_no_reply_max_days:
-        comment_expected_reply_by_date = end_datetime - datetime.timedelta(days=comment_no_reply_max_days)
+        reply_expected_by_date = end_datetime - datetime.timedelta(days=comment_no_reply_max_days)
 
     if datarequest_open_max_days:
         datarequests_cut_off_date = end_datetime - datetime.timedelta(days=datarequest_open_max_days)
 
     if comment_no_reply_max_days and datarequest_open_max_days:
-        return start_date, end_date, comment_expected_reply_by_date, datarequests_cut_off_date
+        return start_date, end_date, reply_expected_by_date, datarequests_cut_off_date
     elif comment_no_reply_max_days:
-        return start_date, end_date, comment_expected_reply_by_date
+        return start_date, end_date, reply_expected_by_date
     elif datarequest_open_max_days:
         return start_date, end_date, datarequests_cut_off_date
     else:
@@ -177,7 +181,7 @@ def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
 
 
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
-    start_date, end_date, comment_expected_reply_by_date, datarequests_cut_off_date = process_dates(start_date,
+    start_date, end_date, reply_expected_by_date, datarequests_cut_off_date = process_dates(start_date,
                                                                                            end_date,
                                                                                            comment_no_reply_max_days,
                                                                                            datarequest_open_max_days
@@ -189,7 +193,7 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
         'end_date': end_date,
         'comment_no_reply_max_days': comment_no_reply_max_days,
         'datarequest_open_max_days': datarequest_open_max_days,
-        'comment_expected_reply_by_date': comment_expected_reply_by_date,
+        'reply_expected_by_date': reply_expected_by_date,
         'datarequests_cut_off_date': datarequests_cut_off_date
     }
 
@@ -199,7 +203,7 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
         'dataset_comments': get_action('dataset_comments')({}, data_dict),
         'dataset_comment_followers': get_action('dataset_comment_followers')({}, data_dict),
         'datasets_min_one_comment_follower': get_action('datasets_min_one_comment_follower')({}, data_dict),
-        'datasets_no_replies_after_x_days': get_action('datasets_no_replies_after_x_days')({}, data_dict),
+        'dataset_comments_no_replies_after_x_days': get_action('dataset_comments_no_replies_after_x_days')({}, data_dict),
         'datarequests': get_data_request_metrics(data_dict),
         'datarequest_comments': get_action('datarequest_comments')({}, data_dict),
         'datarequests_min_one_comment_follower': get_action('datarequests_min_one_comment_follower')({}, data_dict),

@@ -22,7 +22,7 @@ class ReportingPlugin(plugins.SingletonPlugin):
             'datarequests_min_one_comment_follower': get.datarequests_min_one_comment_follower,
             'datarequests': get.datarequests,
             'datarequest_comments': get.datarequest_comments,
-            'datasets_no_replies_after_x_days': get.datasets_no_replies_after_x_days,
+            'dataset_comments_no_replies_after_x_days': get.dataset_comments_no_replies_after_x_days,
             'datarequests_no_replies_after_x_days': get.datarequests_no_replies_after_x_days,
             'datarequests_for_circumstance': get.datarequests_for_circumstance,
             'open_datarequests_no_comments_after_x_days': get.open_datarequests_no_comments_after_x_days,
