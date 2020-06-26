@@ -490,14 +490,14 @@ def datarequests_open_after_x_days(context, data_dict):
 def datarequests_for_circumstance(context, data_dict):
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('start_date', None)
+    end_date = data_dict.get('end_date', None)
     circumstance = data_dict.get('circumstance', None)
 
     check_org_access(org_id)
 
     try:
         db.init_db(model)
-        return (
+        requests = (
             _session_.query(
                 db.DataRequest
             )
@@ -507,7 +507,9 @@ def datarequests_for_circumstance(context, data_dict):
                 db.DataRequest.open_time >= start_date,
                 db.DataRequest.open_time <= end_date,
             )
-        ).all()
+        )
+        # log.debug(requests.statement.compile(compile_kwargs={"literal_binds": True}))
+        return requests.all()
 
     except Exception as e:
         log.error(str(e))

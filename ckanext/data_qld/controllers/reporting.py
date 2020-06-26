@@ -144,18 +144,21 @@ class ReportingController(BaseController):
 
         start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
         start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
-                                                                                            end_date,
-                                                                                            COMMENT_NO_REPLY_MAX_DAYS
-                                                                                            )
+                                                                             end_date,
+                                                                             COMMENT_NO_REPLY_MAX_DAYS
+                                                                             )
+        circumstance = request.GET.get('circumstance', None)
+
         data_dict = {
             'org_id': org_id,
             'start_date': start_date,
             'end_date': end_date,
+            'metric': metric,
+            'circumstance': circumstance,
             'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
             'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
             'reply_expected_by_date': reply_expected_by_date
         }
-        circumstance = None
 
         if metric == 'no-reply':
             datarequests = get_action('datarequests_no_replies_after_x_days')({}, data_dict)
@@ -164,8 +167,6 @@ class ReportingController(BaseController):
         elif metric == 'open-max-days':
             datarequests = get_action('datarequests_open_after_x_days')({}, data_dict)
         else:
-            circumstance = request.GET.get('circumstance', None)
-            data_dict['circumstance'] = circumstance
             closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
 
             if circumstance not in closing_circumstances:
@@ -173,16 +174,9 @@ class ReportingController(BaseController):
 
             datarequests = get_action('datarequests_for_circumstance')({}, data_dict)
 
+        data_dict['datarequests'] = datarequests
+
         return render(
             'reporting/datarequests.html',
-            extra_vars={
-                'org_id': org_id,
-                'start_date': start_date,
-                'end_date': end_date,
-                'datarequests': datarequests,
-                'metric': metric,
-                'circumstance': circumstance,
-                'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
-            }
+            extra_vars=data_dict
         )

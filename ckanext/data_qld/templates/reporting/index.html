@@ -142,7 +142,7 @@
                     <tr>
                         <td>
                             {% if count > 0 %}
-                                <a href="/reporting/datarequests/{{ org_id }}/closed?circumstance={{ circumstance }}">{{ label }}</a>
+                                <a href="/reporting/datarequests/{{ org_id }}/closed?start_date={{ start_date }}&end_date={{ end_date }}&circumstance={{ circumstance }}">{{ label }}</a>
                             {% else %}
                                 {{ label }}
                             {% endif %}
@@ -163,13 +163,13 @@
                     <tr class="closing-circumstance">
                         <td>Closed no accepted dataset (pre-July 2020)</td>
                         <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].count }}</td>
-                        <td>-</td>
+                        <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].average }}</td>
                     </tr>
 
                     <tr class="closing-circumstance">
                         <td>Closed accepted dataset (pre-July 2020)</td>
                         <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].count }}</td>
-                        <td>-</td>
+                        <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].average }}</td>
                     </tr>
 
                 </tbody>

@@ -86,7 +86,10 @@ def get_data_request_metrics(data_dict):
         if data_request.close_time:
             closed += 1
 
-            # @TODO: Handle data requests with No closing circumstance
+            timedelta = data_request.close_time - data_request.open_time
+
+            days = int(timedelta.total_seconds() / 86400)
+
             # Even though in the UI you cannot close a datarequest without a circumstance
             close_circumstance = data_request.close_circumstance
 
@@ -98,10 +101,6 @@ def get_data_request_metrics(data_dict):
                     circumstances[close_circumstance] = {'count': 0, 'average': 0, 'data': []}
 
                 circumstances[close_circumstance]['count'] += 1
-
-                timedelta = data_request.close_time - data_request.open_time
-
-                days = int(timedelta.total_seconds() / 86400)
 
                 circumstances[close_circumstance]['data'].append(
                     {
@@ -115,9 +114,31 @@ def get_data_request_metrics(data_dict):
                 )
             else:
                 if data_request.accepted_dataset_id:
+                    # @TODO: Refactor this code to be easier to read
                     circumstances['No circumstance']['accepted_dataset']['count'] += 1
+                    circumstances['No circumstance']['accepted_dataset']['data'].append(
+                        {
+                            'id': data_request.id,
+                            'open_time': data_request.open_time,
+                            'close_time': data_request.close_time,
+                            'timedelta': timedelta,
+                            'total_seconds': timedelta.total_seconds(),
+                            'days': days
+                        }
+                    )
                 else:
+                    # @TODO: Refactor this code to be easier to read
                     circumstances['No circumstance']['no_accepted_dataset']['count'] += 1
+                    circumstances['No circumstance']['no_accepted_dataset']['data'].append(
+                        {
+                            'id': data_request.id,
+                            'open_time': data_request.open_time,
+                            'close_time': data_request.close_time,
+                            'timedelta': timedelta,
+                            'total_seconds': timedelta.total_seconds(),
+                            'days': days
+                        }
+                    )
         else:
             open += 1
 
@@ -130,9 +151,11 @@ def get_data_request_metrics(data_dict):
         if c != 'No circumstance' and circumstances[c]['count'] > 0:
             circumstances[c]['average'] = get_closing_circumstance_average(circumstances[c])
 
-    # @TODO: Averages for No circumstance types
-    # circumstances['No circumstance']['accepted_dataset']['average'] = get_closing_circumstance_average(circumstances['No circumstance']['accepted_dataset'])
-    # circumstances['No circumstance']['no_accepted_dataset']['average'] = get_closing_circumstance_average(circumstances['No circumstance']['no_accepted_dataset'])
+    # @TODO: Refactor this code to be easier to read
+    if circumstances['No circumstance']['accepted_dataset']['count'] > 0:
+        circumstances['No circumstance']['accepted_dataset']['average'] = get_closing_circumstance_average(circumstances['No circumstance']['accepted_dataset'])
+    if circumstances['No circumstance']['no_accepted_dataset']['count'] > 0:
+        circumstances['No circumstance']['no_accepted_dataset']['average'] = get_closing_circumstance_average(circumstances['No circumstance']['no_accepted_dataset'])
 
     data_requests = {
         'total': total,
