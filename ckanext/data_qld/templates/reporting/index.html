@@ -59,7 +59,7 @@
     {% if org_id and metrics %}
     <hr>
     <div>
-        <h2>Organisation: {{ org_name }}</h2>
+        <h2>Organisation: {{ org_title }}</h2>
 
         {# @TODO: output dates as DD/MM/YYYY #}
         <p>{{start_date }} - {{ end_date }}</p>
@@ -162,14 +162,14 @@
 
                     <tr class="closing-circumstance">
                         <td>Closed no accepted dataset (pre-July 2020)</td>
-                        <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].count }}</td>
-                        <td>{{ datarequests.circumstances['No circumstance']['no_accepted_dataset'].average }}</td>
+                        <td>{{ datarequests.no_circumstance['no_accepted_dataset'].count }}</td>
+                        <td>{{ datarequests.no_circumstance['no_accepted_dataset'].average }}</td>
                     </tr>
 
                     <tr class="closing-circumstance">
                         <td>Closed accepted dataset (pre-July 2020)</td>
-                        <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].count }}</td>
-                        <td>{{ datarequests.circumstances['No circumstance']['accepted_dataset'].average }}</td>
+                        <td>{{ datarequests.no_circumstance['accepted_dataset'].count }}</td>
+                        <td>{{ datarequests.no_circumstance['accepted_dataset'].average }}</td>
                     </tr>
 
                 </tbody>

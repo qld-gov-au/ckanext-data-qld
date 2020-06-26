@@ -15,14 +15,15 @@ class ReportingController(BaseController):
 
     @classmethod
     def check_user_access(cls):
-        context = helpers.get_context()
-        data_dict = {'permission': 'create_dataset'}
-        toolkit.check_access('has_user_permission_for_some_org', context, data_dict)
+        toolkit.check_access(
+            'has_user_permission_for_some_org',
+            helpers.get_context(), {'permission': 'create_dataset'}
+        )
 
     def index(self):
         self.check_user_access()
 
-        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
+        start_date, end_date = helpers.get_report_date_range(request)
         org_id = request.GET.get('organisation', None)
 
         organisations = helpers.get_organisation_list()
@@ -39,7 +40,7 @@ class ReportingController(BaseController):
 
             extra_vars.update({
                 'org_id': org_id,
-                'org_name': org['title'],
+                'org_title': org['title'],
                 'start_date': start_date,
                 'end_date': end_date,
                 'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
@@ -55,11 +56,11 @@ class ReportingController(BaseController):
     def export(self):
         self.check_user_access()
 
-        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
+        start_date, end_date = helpers.get_report_date_range(request)
 
-        report_config = export_helpers.get_report_config()
+        report_config = export_helpers.csv_report_config()
 
-        row_order, row_properties = export_helpers.get_row_order_and_properties(report_config)
+        row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
 
         csv_header_row = ['']
 
@@ -77,7 +78,7 @@ class ReportingController(BaseController):
 
         # Gather all the metrics for each organisation
         for organization in helpers.get_organisation_list_for_user('create_dataset'):
-            export_helpers.add_org_metrics_to_report(
+            export_helpers.csv_add_org_metrics(
                 organization,
                 start_date,
                 end_date,
@@ -95,12 +96,14 @@ class ReportingController(BaseController):
 
         # @TODO: Validation
         self.check_user_access()
-        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
+        start_date, end_date = helpers.get_report_date_range(request)
 
         start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
                                                                                      end_date,
                                                                                      COMMENT_NO_REPLY_MAX_DAYS
                                                                                      )
+
+        org = get_action('organization_show')({}, {'id': org_id})
 
         if metric == 'no-reply':
             comments = get_action('dataset_comments_no_replies_after_x_days')(
@@ -126,6 +129,7 @@ class ReportingController(BaseController):
             'reporting/datasets.html',
             extra_vars={
                 'org_id': org_id,
+                'org_title': org['title'],
                 'start_date': start_date,
                 'end_date': end_date,
                 'datasets': datasets,
@@ -142,22 +146,32 @@ class ReportingController(BaseController):
         # @TODO: Regex org_id against ([a-f0-9\-)
         self.check_user_access()
 
-        start_date, end_date = helpers.get_report_date_range(request.GET.get('start_date', None), request.GET.get('end_date', None))
-        start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
-                                                                             end_date,
-                                                                             COMMENT_NO_REPLY_MAX_DAYS
-                                                                             )
+        start_date, end_date = helpers.get_report_date_range(request)
+
+        start_date, \
+        end_date, \
+        reply_expected_by_date, \
+        expected_closure_date = helpers.process_dates(start_date,
+                                                      end_date,
+                                                      COMMENT_NO_REPLY_MAX_DAYS,
+                                                      DATAREQUEST_OPEN_MAX_DAYS
+                                                      )
+
         circumstance = request.GET.get('circumstance', None)
+
+        org = get_action('organization_show')({}, {'id': org_id})
 
         data_dict = {
             'org_id': org_id,
+            'org_title': org['title'],
             'start_date': start_date,
             'end_date': end_date,
             'metric': metric,
             'circumstance': circumstance,
             'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
             'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-            'reply_expected_by_date': reply_expected_by_date
+            'reply_expected_by_date': reply_expected_by_date,
+            'expected_closure_date': expected_closure_date
         }
 
         if metric == 'no-reply':

@@ -2,26 +2,22 @@ import json
 import logging
 import os
 
-from ckan.plugins.toolkit import get_action
+from ckan.common import config
 from ckanext.data_qld.logic import helpers
 
 log = logging.getLogger(__name__)
 
 
-def get_report_config():
-    path = os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json'
+def csv_report_config():
+    path = config.get('ckan.reporting.json_config', os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json')
 
     log.debug(path)
 
-    #     Load some config info from a json file
-    #     '''
-    #     path = config.get('ckan.workflow.json_config',
-    #                       '/usr/lib/ckan/default/src/ckanext-workflow/ckanext/workflow/example.settings.json')
     with open(path) as json_data:
         return json.load(json_data)
 
 
-def get_row_order_and_properties(report_config):
+def csv_row_order_and_properties(report_config):
     row_order = []
     row_properties = {}
 
@@ -35,9 +31,20 @@ def get_row_order_and_properties(report_config):
     return row_order, row_properties
 
 
-def add_org_metrics_to_report(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances, comment_no_reply_max_days, datarequest_open_max_days):
-
-    # @TODO: dynamic start date
+def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances, comment_no_reply_max_days, datarequest_open_max_days):
+    """
+    Add reporting metrics for a specific organisation to the CSV data
+    :param org:
+    :param start_date:
+    :param end_date:
+    :param csv_header_row:
+    :param row_properties:
+    :param dict_csv_rows:
+    :param closing_circumstances:
+    :param comment_no_reply_max_days:
+    :param datarequest_open_max_days:
+    :return:
+    """
     metrics = helpers.gather_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days)
 
     # csv_header_row.append('"%s"' % org['title'])
@@ -72,11 +79,8 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows):
 
     with open('/tmp/' + filename, 'wb') as csvfile:
         csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        # Add the header row
         csv_writer.writerow(csv_header_row)
-        # Iterate through the results, parse each result and output to csv file
         for label in row_order:
-            # csv_writer.writerow('"%s",' % label + ','.join(dict_csv_rows[label]))
             row = [label] + dict_csv_rows[label]
             csv_writer.writerow(row)
 

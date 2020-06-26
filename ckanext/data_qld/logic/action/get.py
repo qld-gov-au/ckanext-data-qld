@@ -461,7 +461,9 @@ def datarequests_open_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
-    datarequests_cut_off_date = data_dict.get('datarequests_cut_off_date', None)
+    expected_closure_date = data_dict.get('expected_closure_date', None)
+
+    log.debug(data_dict)
 
     check_org_access(org_id)
 
@@ -478,7 +480,7 @@ def datarequests_open_after_x_days(context, data_dict):
                     db.DataRequest.organization_id == org_id,
                     db.DataRequest.closed == False,
                     db.DataRequest.open_time >= start_date,
-                    db.DataRequest.open_time <= datarequests_cut_off_date
+                    db.DataRequest.open_time <= expected_closure_date
                 )
             )
         ).all()
