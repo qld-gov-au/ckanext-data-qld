@@ -12,7 +12,7 @@ def check_org_access(org_id):
     context = get_context()
     data_dict = {'org_id': org_id, 'permission': 'create_dataset'}
     if not toolkit.check_access('has_user_permission_for_org', context, data_dict):
-        toolkit.abort(403, toolkit._('User {0} is not authorized to create datasets for organisation {1} test'. format(user_name, org_id)))
+        toolkit.abort(403, toolkit._('User {0} is not authorized to create datasets for organisation {1} test'. format(get_username(), org_id)))
 
 
 def get_context():
