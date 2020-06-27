@@ -1,12 +1,19 @@
 import logging
 import ckan.plugins.toolkit as toolkit
 
-from ckan.lib.base import BaseController, render
-from ckan.plugins.toolkit import get_action, request
+from ckan.lib.base import BaseController
 from ckanext.data_qld.logic import constants, export_helpers, helpers
 
 log = logging.getLogger(__name__)
-
+get_action = toolkit.get_action
+request = toolkit.request
+render = toolkit.render
+get_validator = toolkit.get_validator
+ObjectNotFound = toolkit.ObjectNotFound
+Invalid = toolkit.Invalid
+NotAuthorized = toolkit.NotAuthorized
+abort = toolkit.abort
+_ = toolkit._
 DATAREQUEST_OPEN_MAX_DAYS = constants.DATAREQUEST_OPEN_MAX_DAYS
 COMMENT_NO_REPLY_MAX_DAYS = constants.COMMENT_NO_REPLY_MAX_DAYS
 
@@ -21,92 +28,107 @@ class ReportingController(BaseController):
         )
 
     def index(self):
-        self.check_user_access()
+        try:
+            self.check_user_access()
 
-        start_date, end_date = helpers.get_report_date_range(request)
-        org_id = request.GET.get('organisation', None)
+            start_date, end_date = helpers.get_report_date_range(request)
+            org_id = request.GET.get('organisation', None)
 
-        organisations = helpers.get_organisation_list()
+            organisations = helpers.get_organisation_list()
 
-        if organisations and len(organisations) == 1:
-            org_id = organisations[0]['value']
+            if organisations and len(organisations) == 1:
+                org_id = organisations[0]['value']
 
-        extra_vars = {
-            'organisations': organisations
-        }
+            extra_vars = {
+                'organisations': organisations,
+                'user_dict': get_action('user_show')({}, {'id': toolkit.c.userobj.id})
+            }
 
-        if org_id:
-            org = get_action('organization_show')({}, {'id': org_id})
+            if org_id:
+                org = get_action('organization_show')({}, {'id': org_id})
 
-            extra_vars.update({
-                'org_id': org_id,
-                'org_title': org['title'],
-                'start_date': start_date,
-                'end_date': end_date,
-                'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
-                'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
-            })
+                extra_vars.update({
+                    'org_id': org_id,
+                    'org_title': org['title'],
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
+                    'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
+                    'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
+                })
 
-        return render(
-            'reporting/index.html',
-            extra_vars=extra_vars
-        )
+            return render(
+                'reporting/index.html',
+                extra_vars=extra_vars
+            )
+        except ObjectNotFound as e:  # Exception raised from get_action('organization_show')
+            log.warn(e)
+            abort(404, _('Organisation %s not found') % org_id)
+        except NotAuthorized as e:  # Exception raised from check_user_access
+            log.warn(e)
+            msg = 'You are not authorised to view the report for organisation %s' % request.GET.get('organisation', None) \
+                if request.GET.get('organisation', None) else 'You are not authorised to view the report'
+            abort(403, _(msg))
 
     def export(self):
-        self.check_user_access()
+        try:
+            self.check_user_access()
 
-        start_date, end_date = helpers.get_report_date_range(request)
+            start_date, end_date = helpers.get_report_date_range(request)
 
-        report_config = export_helpers.csv_report_config()
+            report_config = export_helpers.csv_report_config()
 
-        row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
+            row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
 
-        csv_header_row = ['']
+            csv_header_row = ['']
 
-        dict_csv_rows = {}
+            dict_csv_rows = {}
 
-        for key in row_properties:
-            dict_csv_rows[key] = []
+            for key in row_properties:
+                dict_csv_rows[key] = []
 
-        closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
+            closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
 
-        for circumstance in closing_circumstances:
-            key = 'Closed data requests - %s' % circumstance
-            row_order.append(key)
-            dict_csv_rows[key] = []
+            for circumstance in closing_circumstances:
+                key = 'Closed data requests - %s' % circumstance
+                row_order.append(key)
+                dict_csv_rows[key] = []
 
-        # Gather all the metrics for each organisation
-        for organization in helpers.get_organisation_list_for_user('create_dataset'):
-            export_helpers.csv_add_org_metrics(
-                organization,
-                start_date,
-                end_date,
-                csv_header_row,
-                row_properties,
-                dict_csv_rows,
-                closing_circumstances,
-                COMMENT_NO_REPLY_MAX_DAYS,
-                DATAREQUEST_OPEN_MAX_DAYS
-            )
+            # Gather all the metrics for each organisation
+            for organisation in helpers.get_organisation_list_for_user('create_dataset'):
+                export_helpers.csv_add_org_metrics(
+                    organisation,
+                    start_date,
+                    end_date,
+                    csv_header_row,
+                    row_properties,
+                    dict_csv_rows,
+                    closing_circumstances,
+                    COMMENT_NO_REPLY_MAX_DAYS,
+                    DATAREQUEST_OPEN_MAX_DAYS
+                )
 
-        return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows)
+            return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows)
+        except NotAuthorized as e:  # Exception raised from check_user_access
+            log.warn(e)
+            abort(403, _('You are not authorised to export the report'))
 
     def datasets(self, org_id, metric):
+        try:
+            self.check_user_access()
+            get_validator('group_id_exists')(org_id, helpers.get_context())
 
-        # @TODO: Validation
-        self.check_user_access()
-        start_date, end_date = helpers.get_report_date_range(request)
+            start_date, end_date = helpers.get_report_date_range(request)
 
-        start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
-                                                                                     end_date,
-                                                                                     COMMENT_NO_REPLY_MAX_DAYS
-                                                                                     )
+            start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
+                                                                                 end_date,
+                                                                                 COMMENT_NO_REPLY_MAX_DAYS
+                                                                                 )
 
-        org = get_action('organization_show')({}, {'id': org_id})
+            org = get_action('organization_show')({}, {'id': org_id})
 
-        if metric == 'no-reply':
-            comments = get_action('dataset_comments_no_replies_after_x_days')(
+            if metric == 'no-reply':
+                comments = get_action('dataset_comments_no_replies_after_x_days')(
                     {},
                     {
                         'org_id': org_id,
@@ -115,82 +137,116 @@ class ReportingController(BaseController):
                         'reply_expected_by_date': reply_expected_by_date
                     }
                 )
-            # Action `dataset_comments_no_replies_after_x_days` returns a collection of comments with no replies
-            # On this page we only need to display distinct datasets containing those comments
-            datasets = []
-            names = []
-            for comment in comments:
-                comment_dict = comment._asdict()
-                if comment_dict['package_name'] not in names:
-                    datasets.append(comment)
-                    names.append(comment_dict['package_name'])
+                # Action `dataset_comments_no_replies_after_x_days` returns a collection of comments with no replies
+                # On this page we only need to display distinct datasets containing those comments
+                datasets = []
+                comment_ids = {}
+                for comment in comments:
+                    if comment.package_name in comment_ids:
+                        comment_ids[comment.package_name].append(comment.comment_id)
+                    else:
+                        comment_ids[comment.package_name] = [comment.comment_id]
+                        datasets.append(comment)
 
-        return render(
-            'reporting/datasets.html',
-            extra_vars={
+            return render(
+                'reporting/datasets.html',
+                extra_vars={
+                    'org_id': org_id,
+                    'org_title': org['title'],
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'datasets': datasets,
+                    'metric': metric,
+                    'total_comments': len(comments),
+                    'comment_ids': comment_ids,
+                    'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
+                    'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
+                    'user_dict': get_action('user_show')({}, {'id': toolkit.c.userobj.id})
+                }
+            )
+        except Invalid as e:  # Exception raised from get_validator('group_id_exists')
+            log.warn(e)
+            abort(404, _('Organisation %s not found') % org_id)
+        except NotAuthorized as e:  # Exception raised from check_user_access
+            log.warn(e)
+            abort(403, _('You are not authorised to view the dataset report for organisation %s' % org_id))
+
+    def datarequests(self, org_id, metric):
+        """Displays a list of data requests for the given organisation based on the desired metric"""
+        try:
+            self.check_user_access()
+            get_validator('group_id_exists')(org_id, helpers.get_context())
+
+            start_date, end_date = helpers.get_report_date_range(request)
+
+            start_date, \
+                end_date, \
+                reply_expected_by_date, \
+                expected_closure_date = helpers.process_dates(start_date,
+                                                              end_date,
+                                                              COMMENT_NO_REPLY_MAX_DAYS,
+                                                              DATAREQUEST_OPEN_MAX_DAYS
+                                                              )
+
+            circumstance = request.GET.get('circumstance', None)
+
+            org = get_action('organization_show')({}, {'id': org_id})
+
+            data_dict = {
                 'org_id': org_id,
                 'org_title': org['title'],
                 'start_date': start_date,
                 'end_date': end_date,
-                'datasets': datasets,
                 'metric': metric,
-                'total': len(comments),
+                'circumstance': circumstance,
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
+                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
+                'reply_expected_by_date': reply_expected_by_date,
+                'expected_closure_date': expected_closure_date,
+                'user_dict': get_action('user_show')({}, {'id': toolkit.c.userobj.id})
             }
-        )
 
-    def datarequests(self, org_id, metric):
-        """Displays a list of data requests for the given organisation based on the desired metric"""
+            if metric == 'no-reply':
+                datarequests_comments = get_action('datarequests_no_replies_after_x_days')({}, data_dict)
+                # Action `datarequests_no_replies_after_x_days` returns a collection of comments with no replies
+                # On this page we only need to display distinct datarequests containing those comments
+                distinct_datarequests = []
+                comment_ids = {}
+                for datarequest in datarequests_comments:
+                    if datarequest.datarequest_id in comment_ids:
+                        comment_ids[datarequest.datarequest_id].append(datarequest.comment_id)
+                    else:
+                        comment_ids[datarequest.datarequest_id] = [datarequest.comment_id]
+                        distinct_datarequests.append(datarequest)
 
-        # @TODO: Regex org_id against ([a-f0-9\-)
-        self.check_user_access()
+                datarequests = distinct_datarequests
+                data_dict.update(
+                    {
+                        'total_comments': len(datarequests_comments),
+                        'comment_ids': comment_ids
+                    }
+                )
+            elif metric == 'no-comments':
+                datarequests = get_action('open_datarequests_no_comments_after_x_days')({}, data_dict)
+            elif metric == 'open-max-days':
+                datarequests = get_action('datarequests_open_after_x_days')({}, data_dict)
+            else:
+                closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
 
-        start_date, end_date = helpers.get_report_date_range(request)
+                if circumstance not in closing_circumstances:
+                    raise Invalid(_('Circumstance {0} is not valid'.format(circumstance)))
 
-        start_date, \
-        end_date, \
-        reply_expected_by_date, \
-        expected_closure_date = helpers.process_dates(start_date,
-                                                      end_date,
-                                                      COMMENT_NO_REPLY_MAX_DAYS,
-                                                      DATAREQUEST_OPEN_MAX_DAYS
-                                                      )
+                datarequests = get_action('datarequests_for_circumstance')({}, data_dict)
 
-        circumstance = request.GET.get('circumstance', None)
+            data_dict['datarequests'] = datarequests
 
-        org = get_action('organization_show')({}, {'id': org_id})
-
-        data_dict = {
-            'org_id': org_id,
-            'org_title': org['title'],
-            'start_date': start_date,
-            'end_date': end_date,
-            'metric': metric,
-            'circumstance': circumstance,
-            'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-            'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-            'reply_expected_by_date': reply_expected_by_date,
-            'expected_closure_date': expected_closure_date
-        }
-
-        if metric == 'no-reply':
-            datarequests = get_action('datarequests_no_replies_after_x_days')({}, data_dict)
-        elif metric == 'no-comments':
-            datarequests = get_action('open_datarequests_no_comments_after_x_days')({}, data_dict)
-        elif metric == 'open-max-days':
-            datarequests = get_action('datarequests_open_after_x_days')({}, data_dict)
-        else:
-            closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
-
-            if circumstance not in closing_circumstances:
-                raise toolkit.Invalid(toolkit._('Circumstance {0} is not valid'.format(circumstance)))
-
-            datarequests = get_action('datarequests_for_circumstance')({}, data_dict)
-
-        data_dict['datarequests'] = datarequests
-
-        return render(
-            'reporting/datarequests.html',
-            extra_vars=data_dict
-        )
+            return render(
+                'reporting/datarequests.html',
+                extra_vars=data_dict
+            )
+        except Invalid as e:  # Exception raised from get_validator('group_id_exists')
+            log.warn(e)
+            abort(404, _('Organisation %s not found') % org_id)
+        except NotAuthorized as e:  # Exception raised from check_user_access
+            log.warn(e)
+            abort(403, _('You are not authorised to view the datarequest report for organisation %s' % org_id))

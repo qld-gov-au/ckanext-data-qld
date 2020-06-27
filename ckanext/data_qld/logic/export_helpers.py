@@ -1,7 +1,9 @@
 import json
 import logging
 import os
+import csv
 
+from pylons import response
 from ckan.common import config
 from ckanext.data_qld.logic import helpers
 
@@ -47,7 +49,6 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
     """
     metrics = helpers.gather_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days)
 
-    # csv_header_row.append('"%s"' % org['title'])
     csv_header_row.append(org.get('title', ''))
 
     for key, settings in row_properties.items():
@@ -72,9 +73,6 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
 
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows):
-    import csv
-    from pylons import response
-
     filename = 'report.csv'
 
     with open('/tmp/' + filename, 'wb') as csvfile:

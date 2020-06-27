@@ -152,6 +152,7 @@ def datarequests(context, data_dict):
                 func.date(db.DataRequest.open_time) >= start_date,
                 func.date(db.DataRequest.open_time) <= end_date,
             )
+            .order_by(db.DataRequest.open_time.desc())
         ).all()
 
     except Exception as e:
@@ -322,7 +323,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     try:
         return (
             _session_.query(
-                Comment.id,
+                Comment.id.label("comment_id"),
                 Comment.parent_id,
                 Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
@@ -349,6 +350,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
+            .order_by(Comment.creation_date.desc())
         ).all()
 
     except Exception as e:
@@ -381,6 +383,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 CommentThread.url,
                 db.DataRequest.id.label("datarequest_id"),
                 db.DataRequest.title,
+                db.DataRequest.open_time,
                 comment_reply.parent_id,
                 comment_reply.creation_date,
                 comment_reply.comment
@@ -401,6 +404,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
+            .order_by(Comment.creation_date.desc())
         ).all()
 
     except Exception as e:
@@ -423,7 +427,7 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
 
     try:
         db.init_db(model)
-        requests = (
+        return (
             _session_.query(
                 db.DataRequest.id,
                 db.DataRequest.title,
@@ -441,11 +445,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
             )
             .outerjoin(CommentThread, CommentThread.url == func.concat(DATAREQUEST_PREFIX, db.DataRequest.id))
             .outerjoin(Comment, Comment.thread_id == CommentThread.id)
-        )
-
-        #log.debug(str(requests))
-
-        return requests.all()
+            .order_by(db.DataRequest.open_time.desc())
+        ).all()
 
     except Exception as e:
         log.error(str(e))
@@ -462,8 +463,6 @@ def datarequests_open_after_x_days(context, data_dict):
     org_id = data_dict.get('org_id', None)
     start_date = data_dict.get('start_date', None)
     expected_closure_date = data_dict.get('expected_closure_date', None)
-
-    log.debug(data_dict)
 
     check_org_access(org_id)
 
@@ -483,6 +482,7 @@ def datarequests_open_after_x_days(context, data_dict):
                     db.DataRequest.open_time <= expected_closure_date
                 )
             )
+            .order_by(db.DataRequest.open_time.desc())
         ).all()
 
     except Exception as e:
@@ -499,7 +499,7 @@ def datarequests_for_circumstance(context, data_dict):
 
     try:
         db.init_db(model)
-        requests = (
+        return (
             _session_.query(
                 db.DataRequest
             )
@@ -508,10 +508,10 @@ def datarequests_for_circumstance(context, data_dict):
                 db.DataRequest.close_circumstance == circumstance,
                 db.DataRequest.open_time >= start_date,
                 db.DataRequest.open_time <= end_date,
+                db.DataRequest.closed == True
             )
-        )
-        # log.debug(requests.statement.compile(compile_kwargs={"literal_binds": True}))
-        return requests.all()
+            .order_by(db.DataRequest.close_time.desc())
+        ).all()
 
     except Exception as e:
         log.error(str(e))
@@ -554,6 +554,7 @@ def comments_no_replies_after_x_days(context, data_dict):
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
+            .order_by(Comment.creation_date.desc())
         ).all()
 
     except Exception as e:

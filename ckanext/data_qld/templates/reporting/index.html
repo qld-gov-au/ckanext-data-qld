@@ -1,15 +1,7 @@
-{% extends "page.html" %}
+{% extends "user/dashboard.html" %}
 {% import 'macros/form.html' as form %}
 
-{%- block main_content %}
-
-    {% block flash %}
-        {{ super() }}
-    {% endblock %}
-
-    {% block toolbar %}
-        {{ super() }}
-    {% endblock %}
+{% block primary_content_inner %}
 
     <style type="text/css">
     table.tabular-report tr {
@@ -33,7 +25,7 @@
 
         <p>Export a CSV of data relevant to all organisations for which you are responsible.</p>
 
-        <p><a href="/reporting/export?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-primary">Export</a></p>
+        <p><a href="/dashboard/reporting/export?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-primary">Export</a></p>
 
         <hr />
 
@@ -41,18 +33,19 @@
 
         <p><em>The default report start date of 10/07/2019 reflects the commencement of data requests and comments functionality.</em></p>
 
-        <form action="/reporting" method="get" class="form-horizontal">
-            
-            {{ form.input('start_date', label=_('Start Date'), type='date', value=start_date, placeholder='yyyy-mm-dd') }}
-
-            {{ form.input('end_date', label=_('End Date'), type='date', value=end_date, placeholder='yyyy-mm-dd') }}
-
-            {#% set organisations = h.get_organisation_list() %#}
-            {% set attrs = {'data-module': 'autocomplete'} %}
-            {{ form.select('organisation', label=_('Organisations'), options=organisations, selected=org_id, attrs=attrs) }}
-
-            <div class="form-actions">
-                <button class="btn btn-primary">Show</button>
+        <form action="/dashboard/reporting" method="get">
+            <div class="row">
+                <div class="col-sm-6">
+                    {% set attrs = {'data-module': 'autocomplete'} %}
+                    {{ form.select('organisation', label=_('Organisations'), options=organisations, selected=org_id, attrs=attrs) }}
+                </div>
+                <div class="col-sm-3">{{ form.input('start_date', label=_('Start Date'), type='date', value=start_date, placeholder='yyyy-mm-dd') }}</div>
+                <div class="col-sm-3">{{ form.input('end_date', label=_('End Date'), type='date', value=end_date, placeholder='yyyy-mm-dd') }}</div>
+            </div>
+            <div class="row">
+                <div class="form-actions col-sm-2">
+                    <button class="btn btn-primary form-control">Show</button>
+                </div>
             </div>
         </form>
     </div>
@@ -61,8 +54,7 @@
     <div>
         <h2>Organisation: {{ org_title }}</h2>
 
-        {# @TODO: output dates as DD/MM/YYYY #}
-        <p>{{start_date }} - {{ end_date }}</p>
+        <p>{{ h.render_datetime(start_date, '%d/%m/%Y') }} - {{ h.render_datetime(end_date, '%d/%m/%Y') }}</p>
 
         <table class="table table-striped table-bordered tabular-report">
                 <thead>
@@ -115,24 +107,24 @@
                     {% snippet "reporting/snippets/linked_metric.html",
                         label=_('Dataset') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
                         count=metrics.dataset_comments_no_replies_after_x_days|length,
-                        link='/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date + '&end_date=' + end_date %}
+                        link='/dashboard/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date + '&end_date=' + end_date %}
 
                     {% snippet "reporting/snippets/linked_metric.html",
                         label=_('Data request') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
                         count=metrics.datarequests_no_replies_after_x_days|length,
-                        link='/reporting/datarequests/' + org_id + '/no-reply?start_date=' + start_date %}                  
+                        link='/dashboard/reporting/datarequests/' + org_id + '/no-reply?start_date=' + start_date %}                  
 
                     {% set datarequests = metrics.datarequests %}
 
                     {% snippet "reporting/snippets/linked_metric.html",
                         label='Open data requests > ' + datarequest_open_max_days|string + ' days',
                         count=datarequests.open_plus_max_days,
-                        link='/reporting/datarequests/' + org_id + '/open-max-days?start_date={0}&end_date={1}'.format(start_date, end_date) %}
+                        link='/dashboard/reporting/datarequests/' + org_id + '/open-max-days?start_date={0}&end_date={1}'.format(start_date, end_date) %}
 
                     {% snippet "reporting/snippets/linked_metric.html",
                         label='Open data requests with no comment > ' + comment_no_reply_max_days|string + ' days',
                         count=metrics.open_datarequests_no_comments_after_x_days|length,
-                        link='/reporting/datarequests/' + org_id + '/no-comments?start_date={0}&end_date={1}'.format(start_date, end_date) %}
+                        link='/dashboard/reporting/datarequests/' + org_id + '/no-comments?start_date={0}&end_date={1}'.format(start_date, end_date) %}
 
                     {% set circumstance = 'To be released as open data at a later date' %}
                     {% set has_data = True if datarequests.circumstances[circumstance] else False %}
@@ -142,7 +134,7 @@
                     <tr>
                         <td>
                             {% if count > 0 %}
-                                <a href="/reporting/datarequests/{{ org_id }}/closed?start_date={{ start_date }}&end_date={{ end_date }}&circumstance={{ circumstance }}">{{ label }}</a>
+                                <a href="/dashboard/reporting/datarequests/{{ org_id }}/closed?start_date={{ start_date }}&end_date={{ end_date }}&circumstance={{ circumstance }}">{{ label }}</a>
                             {% else %}
                                 {{ label }}
                             {% endif %}

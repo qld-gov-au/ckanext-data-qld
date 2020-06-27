@@ -34,21 +34,18 @@ class ReportingPlugin(plugins.SingletonPlugin):
     # IRoutes
 
     def before_map(self, map):
-        map.connect('/reporting/export',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='export')
-        map.connect('/reporting',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='index')
-        map.connect('/reporting/{org_id}',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='index')
-        map.connect('/reporting/datasets/{org_id}/{metric}',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='datasets')
-        map.connect('/reporting/datarequests/{org_id}/{metric}',
-                  controller='ckanext.data_qld.controllers.reporting:ReportingController',
-                  action='datarequests')
+        map.connect('/dashboard/reporting/export',
+                    controller='ckanext.data_qld.controllers.reporting:ReportingController',
+                    action='export')
+        map.connect('dashboard.reports', '/dashboard/reporting',
+                    controller='ckanext.data_qld.controllers.reporting:ReportingController',
+                    action='index')
+        map.connect('/dashboard/reporting/datasets/{org_id}/{metric}',
+                    controller='ckanext.data_qld.controllers.reporting:ReportingController',
+                    action='datasets')
+        map.connect('/dashboard/reporting/datarequests/{org_id}/{metric}',
+                    controller='ckanext.data_qld.controllers.reporting:ReportingController',
+                    action='datarequests')
         return map
 
     # ITemplateHelpers
