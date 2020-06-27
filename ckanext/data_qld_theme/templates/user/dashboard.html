@@ -1,0 +1,18 @@
+{% ckan_extends %}
+
+{% block page_header %}
+<header class="module-content page-header hug">
+  <div class="content_action">
+    {% link_for _('Edit settings'), named_route='user.edit', id=user_dict.get('name', ''), class_='btn btn-default', icon='cog' %}
+  </div>
+  <ul class="nav nav-tabs">
+    {{ h.build_nav_icon('dashboard.index', _('News feed')) }}
+    {{ h.build_nav_icon('dashboard.datasets', _('My Datasets')) }}
+    {{ h.build_nav_icon('dashboard.organizations', _('My Organizations')) }}
+    {{ h.build_nav_icon('dashboard.groups', _('My Groups')) }}
+    {% if h.check_access('has_user_permission_for_some_org', {'permission': 'create_dataset'}) %}
+        {{ h.build_nav_icon('dashboard.reports', _('My Reports')) }}         
+    {% endif %}
+  </ul>
+</header>
+{% endblock %}
