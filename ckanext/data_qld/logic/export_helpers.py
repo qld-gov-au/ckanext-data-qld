@@ -1,25 +1,29 @@
+import csv
 import json
 import logging
 import os
-import csv
 
-from pylons import response
 from ckan.common import config
 from ckanext.data_qld.logic import helpers
+from pylons import response
 
 log = logging.getLogger(__name__)
 
 
 def csv_report_config():
+    """Load a CSV report config file specified in the ini file, or
+    fall back to predefined file in the extension"""
     path = config.get('ckan.reporting.json_config', os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json')
-
-    log.debug(path)
 
     with open(path) as json_data:
         return json.load(json_data)
 
 
 def csv_row_order_and_properties(report_config):
+    """Set the desired row order for the CSV file.
+    This is necessary as the metric rows are loaded in
+    semi-random order from the dict_csv_rows dictionary
+    """
     row_order = []
     row_properties = {}
 
@@ -33,7 +37,8 @@ def csv_row_order_and_properties(report_config):
     return row_order, row_properties
 
 
-def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances, comment_no_reply_max_days, datarequest_open_max_days):
+def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances,
+                        comment_no_reply_max_days, datarequest_open_max_days):
     """
     Add reporting metrics for a specific organisation to the CSV data
     :param org:
@@ -47,7 +52,8 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
     :param datarequest_open_max_days:
     :return:
     """
-    metrics = helpers.gather_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days)
+    metrics = helpers.gather_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days,
+                                     datarequest_open_max_days)
 
     csv_header_row.append(org.get('title', ''))
 
