@@ -335,12 +335,12 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     CommentThread.url.like(DATASET_LIKE),
-                    Comment.parent_id is None,
+                    Comment.parent_id.is_(None),
                     Comment.creation_date >= start_date,
                     Comment.creation_date <= reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     Package.owner_org == org_id,
-                    comment_reply.id is None
+                    comment_reply.id.is_(None)
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
@@ -389,12 +389,12 @@ def datarequests_no_replies_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     CommentThread.url.like(DATAREQUEST_LIKE),
-                    Comment.parent_id is None,
+                    Comment.parent_id.is_(None),
                     Comment.creation_date >= start_date,
                     Comment.creation_date <= reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     db.DataRequest.organization_id == org_id,
-                    comment_reply.id is None
+                    comment_reply.id.is_(None)
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
@@ -435,10 +435,10 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     db.DataRequest.organization_id == org_id,
-                    db.DataRequest.closed is False,
+                    db.DataRequest.closed.is_(False),
                     db.DataRequest.open_time >= start_date,
                     db.DataRequest.open_time <= reply_expected_by_date,
-                    Comment.id is None
+                    Comment.id.is_(None)
                 )
             )
             .outerjoin(CommentThread, CommentThread.url == func.concat(DATAREQUEST_PREFIX, db.DataRequest.id))
@@ -475,7 +475,7 @@ def datarequests_open_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     db.DataRequest.organization_id == org_id,
-                    db.DataRequest.closed is False,
+                    db.DataRequest.closed.is_(False),
                     db.DataRequest.open_time >= start_date,
                     db.DataRequest.open_time <= expected_closure_date
                 )
@@ -506,7 +506,7 @@ def datarequests_for_circumstance(context, data_dict):
                 db.DataRequest.close_circumstance == circumstance,
                 db.DataRequest.open_time >= start_date,
                 db.DataRequest.open_time <= end_date,
-                db.DataRequest.closed is True
+                db.DataRequest.closed.is_(True)
             )
             .order_by(db.DataRequest.close_time.desc())
         ).all()
@@ -542,10 +542,10 @@ def comments_no_replies_after_x_days(context, data_dict):
             .filter(
                 _and_(
                     CommentThread.url == thread_url,
-                    Comment.parent_id is None,
+                    Comment.parent_id.is_(None),
                     Comment.creation_date <= reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
-                    comment_reply.id is None
+                    comment_reply.id.is_(None)
                 )
             )
             .join(Comment)

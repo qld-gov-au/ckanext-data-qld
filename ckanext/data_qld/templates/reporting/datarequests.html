@@ -24,7 +24,7 @@
             Total number of datarequests: {{ datarequests|length }}      
         </h3>
     {% endif %}
-    {% if datarequests|length > 0 %}
+    {% if datarequests and datarequests|length > 0 %}
         <ul class="dataset-list list-unstyled">
         {% for datarequest in datarequests %}
             <li class="dataset-item">
