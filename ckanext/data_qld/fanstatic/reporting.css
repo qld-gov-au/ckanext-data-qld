@@ -1,0 +1,13 @@
+table.tabular-report tr {
+    text-align: right;
+}
+table.tabular-report tr td:first-child {
+    text-align: left;
+}
+table.tabular-report tr.closing-circumstance td:first-child {
+    padding-left: 3em;
+}
+table tr.complete {
+    font-weight: bold;
+    letter-spacing: -1px;
+}

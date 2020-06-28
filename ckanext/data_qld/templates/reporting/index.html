@@ -3,24 +3,9 @@
 
 {% block primary_content_inner %}
 
-    <style type="text/css">
-    table.tabular-report tr {
-        text-align: right;
-    }
-    table.tabular-report tr td:first-child {
-        text-align: left;
-    }
-    table.tabular-report tr.closing-circumstance td:first-child {
-        padding-left: 3em;
-    }
-    table tr.complete {
-        font-weight: bold;
-        letter-spacing: -1px;
-    }
-    </style>
-
     <div>
         <h1>Engagement Report</h1>
+
         <p>This report displays information about Queensland Government open data portal user engagement through data requests, dataset and data request comments, and followers.</p>
 
         <p>Export a CSV of data relevant to all organisations for which you are responsible.</p>
@@ -152,17 +137,21 @@
                     {% snippet "reporting/snippets/closed_datarequest_metrics.html",
                         datarequests=datarequests %}
 
+                    {% with no_accepted_dataset = datarequests.no_circumstance['no_accepted_dataset'] %}
                     <tr class="closing-circumstance">
                         <td>Closed no accepted dataset (pre-July 2020)</td>
-                        <td>{{ datarequests.no_circumstance['no_accepted_dataset'].count }}</td>
-                        <td>{{ datarequests.no_circumstance['no_accepted_dataset'].average }}</td>
+                        <td>{{ no_accepted_dataset.count }}</td>
+                        <td>{{ no_accepted_dataset.average }}</td>
                     </tr>
+                    {% endwith %}
 
+                    {% with accepted_dataset = datarequests.no_circumstance['accepted_dataset'] %}
                     <tr class="closing-circumstance">
                         <td>Closed accepted dataset (pre-July 2020)</td>
-                        <td>{{ datarequests.no_circumstance['accepted_dataset'].count }}</td>
-                        <td>{{ datarequests.no_circumstance['accepted_dataset'].average }}</td>
+                        <td>{{ accepted_dataset.count }}</td>
+                        <td>{{ accepted_dataset.average }}</td>
                     </tr>
+                    {% endwith %}
 
                 </tbody>
             </table>
