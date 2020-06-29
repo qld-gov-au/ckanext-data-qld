@@ -9,7 +9,8 @@ from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
 from sqlalchemy import func, distinct
 from sqlalchemy.orm import aliased
-from ckanext.data_qld.logic import helpers, constants
+from ckanext.data_qld.reporting import constants
+from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
 

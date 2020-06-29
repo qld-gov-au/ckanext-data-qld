@@ -4,7 +4,7 @@ import logging
 import os
 
 from ckan.common import config
-from ckanext.data_qld.logic import helpers
+from ckanext.data_qld.reporting.helpers import helpers
 from pylons import response
 
 log = logging.getLogger(__name__)

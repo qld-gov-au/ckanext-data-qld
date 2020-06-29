@@ -7,7 +7,3 @@ table.tabular-report tr td:first-child {
 table.tabular-report tr.closing-circumstance td:first-child {
     padding-left: 3em;
 }
-table tr.complete {
-    font-weight: bold;
-    letter-spacing: -1px;
-}
