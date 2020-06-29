@@ -1,0 +1,26 @@
+{% set options = h.get_closing_circumstance_list() %}
+{% if options|length > 0 %}
+    {% for row in options %}
+        {% if row.circumstance not in ['To be released as open data at a later date'] %}
+            {% set has_data = True if datarequests.circumstances[row.circumstance] else False %}
+            {% set data = datarequests.circumstances[row.circumstance] if has_data else None %}
+            <tr class="closing-circumstance">
+                <td>{{ row.circumstance }}</td>
+                <td>
+                    {% if has_data %}
+                        {{ data.count }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td>
+                    {% if has_data %}
+                        {{ data.average }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+{% endif %}

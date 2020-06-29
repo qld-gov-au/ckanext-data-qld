@@ -1,0 +1,162 @@
+{% extends "user/dashboard.html" %}
+{% import 'macros/form.html' as form %}
+
+{% block primary_content_inner %}
+
+    {% resource "data_qld_reporting/reporting.css" %}
+
+    <div>
+        <h1>Engagement Report</h1>
+
+        <p>This report displays information about Queensland Government open data portal user engagement through data requests, dataset and data request comments, and followers.</p>
+
+        <p>Export a CSV of data relevant to all organisations for which you are responsible.</p>
+
+        <p><a href="/dashboard/reporting/export?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-primary">Export</a></p>
+
+        <hr />
+
+        <p>Generate a table on this page or modify the displayed table by selecting the appropriate date range and the specific organisation for which you are responsible.</p>
+
+        <p><em>The default report start date of 10/07/2019 reflects the commencement of data requests and comments functionality.</em></p>
+
+        <form action="/dashboard/reporting" method="get">
+            <div class="row">
+                <div class="col-sm-6">
+                    {% set attrs = {'data-module': 'autocomplete'} %}
+                    {{ form.select('organisation', label=_('Organisations'), options=organisations, selected=org_id, attrs=attrs) }}
+                </div>
+                <div class="col-sm-3">{{ form.input('start_date', label=_('Start Date'), type='date', value=start_date, placeholder='yyyy-mm-dd') }}</div>
+                <div class="col-sm-3">{{ form.input('end_date', label=_('End Date'), type='date', value=end_date, placeholder='yyyy-mm-dd') }}</div>
+            </div>
+            <div class="row">
+                <div class="form-actions col-sm-2">
+                    <button class="btn btn-primary form-control">Show</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if org_id and metrics %}
+    <hr>
+    <div>
+        <h2>Organisation: {{ org_title }}</h2>
+
+        <p>{{ h.render_datetime(start_date, '%d/%m/%Y') }} - {{ h.render_datetime(end_date, '%d/%m/%Y') }}</p>
+
+        <table class="table table-striped table-bordered tabular-report">
+                <thead>
+                    <th width="65%">&nbsp;</th>
+                    <th width="20%">{{ org_name }}</th>
+                    <th width="15%">Avg. time* (days)</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ _('Dataset') }} {{ _('followers') }}</td>
+                        <td>{{ metrics.dataset_followers }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('Organization') }} {{ _('followers') }}</td>
+                        <td>{{ metrics.organisation_followers }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('Dataset') }} comments</td>
+                        <td>{{ metrics.dataset_comments }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>{{ _('Dataset') }} comment {{ _('followers') }}</td>
+                        <td>{{ metrics.dataset_comment_followers }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Datasets with at least one comment {{ _('follower') }}</td>
+                        <td>{{ metrics.datasets_min_one_comment_follower }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td align="left">Data requests</td>
+                        <td>{{ metrics.datarequests.total }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Data request comments</td>
+                        <td>{{ metrics.datarequest_comments }}</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Data requests with at least one comment {{ _('follower') }}</td>
+                        <td>{{ metrics.datarequests_min_one_comment_follower }}</td>
+                        <td>-</td>
+                    </tr>
+
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label=_('Dataset') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
+                        count=metrics.dataset_comments_no_replies_after_x_days|length,
+                        link='/dashboard/reporting/datasets/' + org_id + '/no-reply?start_date=' + start_date + '&end_date=' + end_date %}
+
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label=_('Data request') + ' comments with no reply > ' + comment_no_reply_max_days|string + ' days',
+                        count=metrics.datarequests_no_replies_after_x_days|length,
+                        link='/dashboard/reporting/datarequests/' + org_id + '/no-reply?start_date=' + start_date %}                  
+
+                    {% set datarequests = metrics.datarequests %}
+
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label='Open data requests > ' + datarequest_open_max_days|string + ' days',
+                        count=datarequests.open_plus_max_days,
+                        link='/dashboard/reporting/datarequests/' + org_id + '/open-max-days?start_date={0}&end_date={1}'.format(start_date, end_date) %}
+
+                    {% snippet "reporting/snippets/linked_metric.html",
+                        label='Open data requests with no comment > ' + comment_no_reply_max_days|string + ' days',
+                        count=metrics.open_datarequests_no_comments_after_x_days|length,
+                        link='/dashboard/reporting/datarequests/' + org_id + '/no-comments?start_date={0}&end_date={1}'.format(start_date, end_date) %}
+
+                    {% set circumstance = 'To be released as open data at a later date' %}
+                    {% set has_data = True if datarequests.circumstances[circumstance] else False %}
+                    {% set count = datarequests.circumstances[circumstance].count if has_data else 0 %}
+                    {% set average = datarequests.circumstances[circumstance].average if has_data else 0 %}
+                    {% set label = 'Closed data requests - ' + circumstance %}
+                    <tr>
+                        <td>
+                            {% if count > 0 %}
+                                <a href="/dashboard/reporting/datarequests/{{ org_id }}/closed?start_date={{ start_date }}&end_date={{ end_date }}&circumstance={{ circumstance }}">{{ label }}</a>
+                            {% else %}
+                                {{ label }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if count > 0 %}
+                                <a href="#">{{ count }}</a>
+                            {% else %}
+                                {{ count }}
+                            {% endif %}
+                        </td>
+                        <td>{{ average }}</td>
+                    </tr>
+
+                    {% snippet "reporting/snippets/closed_datarequest_metrics.html",
+                        datarequests=datarequests %}
+
+                    {% with no_accepted_dataset = datarequests.no_circumstance['no_accepted_dataset'] %}
+                    <tr class="closing-circumstance">
+                        <td>Closed no accepted dataset (pre-July 2020)</td>
+                        <td>{{ no_accepted_dataset.count }}</td>
+                        <td>{{ no_accepted_dataset.average }}</td>
+                    </tr>
+                    {% endwith %}
+
+                    {% with accepted_dataset = datarequests.no_circumstance['accepted_dataset'] %}
+                    <tr class="closing-circumstance">
+                        <td>Closed accepted dataset (pre-July 2020)</td>
+                        <td>{{ accepted_dataset.count }}</td>
+                        <td>{{ accepted_dataset.average }}</td>
+                    </tr>
+                    {% endwith %}
+
+                </tbody>
+            </table>
+    </div>
+    {% endif %}
+{% endblock -%}
