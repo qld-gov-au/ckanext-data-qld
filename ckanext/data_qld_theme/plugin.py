@@ -107,12 +107,14 @@ def populate_revision(resource):
 
 
 def unreplied_comments_x_days(thread_url):
+    """A helper function for Data.Qld Engagement Reporting to highlight un-replied comments
+    after x number of days (number of days is a constant in the reporting plugin).
+    """
     comment_ids = []
 
     if 'data_qld_reporting' in config.get('ckan.plugins', False):
         unreplied_comments = toolkit.get_action('comments_no_replies_after_x_days')({}, {
-            'thread_url': thread_url,
-            'max_days': 10
+            'thread_url': thread_url
         })
 
         comment_ids = [comment[1] for comment in unreplied_comments]
