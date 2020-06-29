@@ -7,7 +7,7 @@ from ckan.model.package import Package
 from ckan.model.group import Group
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, tuple_
 from sqlalchemy.orm import aliased
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
@@ -211,7 +211,8 @@ def dataset_comment_followers(context, data_dict):
         db.init_db(model)
         return (
             _session_.query(
-                func.count(distinct(CommentNotificationRecipient.user_id))
+                # We want to count a user each time they follow a comment thread, not just unique user IDs
+                func.count(distinct(tuple_(CommentNotificationRecipient.user_id, CommentNotificationRecipient.thread_id)))
             )
             .filter(
                 _and_(
@@ -223,6 +224,7 @@ def dataset_comment_followers(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == CommentNotificationRecipient.thread_id)
+            .join(Comment)
             .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
         ).scalar()
 
