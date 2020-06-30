@@ -88,10 +88,31 @@ class ReportingController(BaseController):
             for key in row_properties:
                 dict_csv_rows[key] = []
 
+            # This is to allow for closing circumstances to be configurable through the CKAN UI
             closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
+
+            no_closing_circumstances = ['accepted_dataset', 'no_accepted_dataset']
 
             for circumstance in closing_circumstances:
                 key = 'Closed data requests - %s' % circumstance
+                row_order.append(key)
+                dict_csv_rows[key] = []
+
+            # Data requests without closing circumstance, i.e. those prior to ~July 2020
+            for no_circumstance in no_closing_circumstances:
+                key = 'Closed data requests - Closed %s' % no_circumstance.replace('_', ' ')
+                row_order.append(key)
+                dict_csv_rows[key] = []
+
+            # Add the average closing time column for each circumstance
+            for circumstance in closing_circumstances:
+                key = 'Average days closed data request - %s' % circumstance
+                row_order.append(key)
+                dict_csv_rows[key] = []
+
+            # Add the average closing time column for each closure without circumstance
+            for no_circumstance in no_closing_circumstances:
+                key = 'Average days closed data request - Closed %s' % no_circumstance.replace('_', ' ')
                 row_order.append(key)
                 dict_csv_rows[key] = []
 
