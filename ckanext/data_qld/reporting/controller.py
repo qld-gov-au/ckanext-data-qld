@@ -104,6 +104,10 @@ class ReportingController(BaseController):
                 row_order.append(key)
                 dict_csv_rows[key] = []
 
+            key = 'Average days closed data requests - overall'
+            dict_csv_rows[key] = []
+            row_order.append(key)
+
             # Add the average closing time column for each circumstance
             for circumstance in closing_circumstances:
                 key = 'Average days closed data request - %s' % circumstance

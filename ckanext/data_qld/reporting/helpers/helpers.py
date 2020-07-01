@@ -68,7 +68,7 @@ def get_average_closing_days(circumstance_data):
 
 def get_data_request_metrics(data_dict):
     """Compile as much info as we can from the one query"""
-    closed = open = open_plus_max_days = total = 0
+    closed = open = open_plus_max_days = total = total_close_days = 0
 
     max_days = data_dict.get('datarequest_open_max_days', None)
 
@@ -94,10 +94,12 @@ def get_data_request_metrics(data_dict):
             closed += 1
             delta = data_request.close_time - data_request.open_time
             days = int(delta.total_seconds() / 86400)
+            total_close_days += days
+
             circumstance = data_request.close_circumstance
 
             if circumstance:
-                if circumstance not in [circumstances]:
+                if circumstance not in circumstances.keys():
                     circumstances[circumstance] = {'data': []}
                 append_data(circumstances[circumstance], data_request, days)
             else:
@@ -127,6 +129,7 @@ def get_data_request_metrics(data_dict):
         'closed': closed,
         'circumstances': circumstances,
         'no_circumstance': no_circumstance,
+        'average_overall': int(total_close_days / closed) if total_close_days > 0 else 0
     }
 
     return data_requests
