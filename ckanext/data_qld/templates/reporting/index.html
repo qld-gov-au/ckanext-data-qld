@@ -143,7 +143,7 @@
                     <tr class="closing-circumstance">
                         <td>Closed no accepted dataset (pre-July 2020)</td>
                         <td>{{ no_accepted_dataset.count }}</td>
-                        <td>{{ no_accepted_dataset.average }}</td>
+                        <td>{{ no_accepted_dataset.average|default('-') }}</td>
                     </tr>
                     {% endwith %}
 
@@ -151,7 +151,7 @@
                     <tr class="closing-circumstance">
                         <td>Closed accepted dataset (pre-July 2020)</td>
                         <td>{{ accepted_dataset.count }}</td>
-                        <td>{{ accepted_dataset.average }}</td>
+                        <td>{{ accepted_dataset.average|default('-') }}</td>
                     </tr>
                     {% endwith %}
 

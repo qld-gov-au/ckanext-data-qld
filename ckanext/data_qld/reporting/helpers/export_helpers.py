@@ -69,7 +69,7 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
             metric_value = metrics.get(settings['property'], {})[settings['element']]
             dict_csv_rows[key].append(str(int(metric_value)))
 
-    # output the closing circumstances rows:
+    # Output the closing circumstances rows:
     datarequest_metrics = metrics.get('datarequests', {})
 
     circumstance_metrics = datarequest_metrics.get('circumstances', {})
@@ -92,6 +92,8 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
     for n in no_circumstance_closures:
         dict_csv_rows['Average days closed data request - Closed %s' % n.replace('_', ' ')].append(
             str(int(no_circumstance_closures[n].get('average', 0))))
+
+    dict_csv_rows['Average days closed data requests - overall'].append(str(int(datarequest_metrics.get('average_overall', 0))))
 
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows):
