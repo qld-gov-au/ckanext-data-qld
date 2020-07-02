@@ -1,26 +1,32 @@
-{% set options = h.get_closing_circumstance_list() %}
-{% if options|length > 0 %}
-    {% for row in options %}
-        {% if row.circumstance not in ['To be released as open data at a later date'] %}
-            {% set has_data = True if datarequests.circumstances[row.circumstance] else False %}
-            {% set data = datarequests.circumstances[row.circumstance] if has_data else None %}
-            <tr class="closing-circumstance">
-                <td>{{ row.circumstance }}</td>
-                <td>
-                    {% if has_data %}
-                        {{ data.count }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </td>
-                <td>
-                    {% if has_data %}
-                        {{ data.average }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-            </tr>
-        {% endif %}
-    {% endfor %}
-{% endif %}
+{% for row in h.get_closing_circumstance_list() %}
+    {% set data = datarequests.circumstances[row.circumstance]|default(None) %}
+    {% if row.condition == 'nominate_approximate_date' %}
+        {% set url = h.url_for(
+            controller='ckanext.data_qld.reporting.controller:ReportingController',
+            action='datarequests',
+            org_id=org_id,
+            metric='closed') + '?start_date=' + start_date + '&end_date=' + end_date + '&circumstance=' + row.circumstance
+        %}
+    {% else %}
+        {% set url = None %}
+    {% endif %}
+    <tr class="closing-circumstance">
+        <td>
+            {% if url %}
+                <a href="{{ url }}">{{ row.circumstance }}</a>
+            {% else %}
+                {{ row.circumstance }}
+            {% endif %}
+        </td>
+        <td>
+            {% if url %}
+                <a href="{{ url }}">{{ data.count|default(0) }}</a>
+            {% else %}
+                {{ data.count|default(0) }}
+            {% endif %}
+        </td>
+        <td>
+            {{ data.average|default('-') }}
+        </td>
+    </tr>
+{% endfor %}
