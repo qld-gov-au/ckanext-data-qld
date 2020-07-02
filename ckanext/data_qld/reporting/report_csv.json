@@ -56,9 +56,15 @@
     "property": "datarequests",
     "element": "open_plus_max_days"
   },
-  "Open data requests with no comment >10 days": {
+  "Open data requests with no comment > 10 days": {
     "order": 12,
     "type": "length",
     "property": "open_datarequests_no_comments_after_x_days"
+  },
+  "Closed data requests - overall": {
+    "order": 13,
+    "type": "complex",
+    "property": "datarequests",
+    "element": "closed"
   }
 }

@@ -5,6 +5,7 @@ import os
 
 from ckan.common import config
 from ckanext.data_qld.reporting.helpers import helpers
+from datetime import datetime
 from pylons import response
 
 log = logging.getLogger(__name__)
@@ -68,18 +69,35 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
             metric_value = metrics.get(settings['property'], {})[settings['element']]
             dict_csv_rows[key].append(str(int(metric_value)))
 
-    # output the closing circumstances rows:
+    # Output the closing circumstances rows:
     datarequest_metrics = metrics.get('datarequests', {})
 
     circumstance_metrics = datarequest_metrics.get('circumstances', {})
+    no_circumstance_closures = datarequest_metrics.get('no_circumstance', {})
 
     for circumstance in closing_circumstances:
         metric_dict = circumstance_metrics.get(circumstance, {})
         dict_csv_rows['Closed data requests - %s' % circumstance].append(str(int(metric_dict.get('count', 0))))
 
+    for n in no_circumstance_closures:
+        dict_csv_rows['Closed data requests - Closed %s' % n.replace('_', ' ')].append(
+            str(int(no_circumstance_closures[n]['count'])))
+
+    # Now the average closing time for each circumstance
+    for circumstance in closing_circumstances:
+        metric_dict = circumstance_metrics.get(circumstance, {})
+        dict_csv_rows['Average days closed data request - %s' % circumstance].append(str(int(metric_dict.get('average', 0))))
+
+    # Now the average closing time for no circumstance data request closures
+    for n in no_circumstance_closures:
+        dict_csv_rows['Average days closed data request - Closed %s' % n.replace('_', ' ')].append(
+            str(int(no_circumstance_closures[n].get('average', 0))))
+
+    dict_csv_rows['Average days closed data requests - overall'].append(str(int(datarequest_metrics.get('average_overall', 0))))
+
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows):
-    filename = 'report.csv'
+    filename = '%s-report.csv' % datetime.now().isoformat("-")
 
     with open('/tmp/' + filename, 'wb') as csvfile:
         csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
