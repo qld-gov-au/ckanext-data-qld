@@ -112,8 +112,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
                   controller='ckanext.data_qld.controller:DataQldUI',
                   action='show_schema', conditions=dict(method=['GET']))
 
-        # This is a pain, but re-assigning the dataset_read route using `before_map` appears to affect these two routes,
-        # so we need to replicate them here
+        # This is a pain, but re-assigning the dataset_read route using `before_map`
+        # appears to affect these two routes, so we need to replicate them here
         m.connect('dataset_new', '/dataset/new', controller='package', action='new')
         m.connect('/dataset/{action}',
                   controller='ckan.controllers.package',
