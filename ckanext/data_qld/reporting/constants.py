@@ -1,4 +1,4 @@
-# @TODO: Reset this to 60
-DATAREQUEST_OPEN_MAX_DAYS = 60
-# @TODO: Reset this to 10
-COMMENT_NO_REPLY_MAX_DAYS = 10
+from ckan.common import config
+
+DATAREQUEST_OPEN_MAX_DAYS = config.get('ckan.reporting.datarequest_open_max_days', 3)
+COMMENT_NO_REPLY_MAX_DAYS = config.get('ckan.reporting.comment_no_reply_max_days', 2)

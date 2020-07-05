@@ -1,20 +1,15 @@
+import authz
 import logging
-import ckan.plugins.toolkit as toolkit
 
 from ckan.lib.base import BaseController
+from ckan.plugins.toolkit import \
+    _, abort, c, check_access, get_action,  get_validator, request, render, \
+    Invalid, NotAuthorized, ObjectNotFound
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import export_helpers, helpers
 
 log = logging.getLogger(__name__)
-get_action = toolkit.get_action
-request = toolkit.request
-render = toolkit.render
-get_validator = toolkit.get_validator
-ObjectNotFound = toolkit.ObjectNotFound
-Invalid = toolkit.Invalid
-NotAuthorized = toolkit.NotAuthorized
-abort = toolkit.abort
-_ = toolkit._
+
 DATAREQUEST_OPEN_MAX_DAYS = constants.DATAREQUEST_OPEN_MAX_DAYS
 COMMENT_NO_REPLY_MAX_DAYS = constants.COMMENT_NO_REPLY_MAX_DAYS
 
@@ -23,17 +18,22 @@ class ReportingController(BaseController):
 
     @classmethod
     def check_user_access(cls):
-        toolkit.check_access(
+        check_access(
             'has_user_permission_for_some_org',
             helpers.get_context(), {'permission': 'create_dataset'}
         )
 
+    def check_user_org_access(self, org_id, user_name):
+        if not authz.has_user_permission_for_group_or_org(org_id, user_name, 'create_dataset'):
+            raise NotAuthorized
+
     def index(self):
+        org_id = request.GET.get('organisation', None)
+
         try:
             self.check_user_access()
 
             start_date, end_date = helpers.get_report_date_range(request)
-            org_id = request.GET.get('organisation', None)
 
             organisations = helpers.get_organisation_list()
 
@@ -42,7 +42,7 @@ class ReportingController(BaseController):
 
             extra_vars = {
                 'organisations': organisations,
-                'user_dict': get_action('user_show')({}, {'id': toolkit.c.userobj.id})
+                'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
             }
 
             if org_id:
@@ -141,7 +141,8 @@ class ReportingController(BaseController):
 
     def datasets(self, org_id, metric):
         try:
-            self.check_user_access()
+            self.check_user_org_access(org_id, c.userobj.name)
+
             get_validator('group_id_exists')(org_id, helpers.get_context())
 
             start_date, end_date = helpers.get_report_date_range(request)
@@ -187,7 +188,7 @@ class ReportingController(BaseController):
                     'comment_ids': comment_ids,
                     'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                     'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-                    'user_dict': get_action('user_show')({}, {'id': toolkit.c.userobj.id})
+                    'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
                 }
             )
         except Invalid as e:  # Exception raised from get_validator('group_id_exists')
@@ -200,7 +201,8 @@ class ReportingController(BaseController):
     def datarequests(self, org_id, metric):
         """Displays a list of data requests for the given organisation based on the desired metric"""
         try:
-            self.check_user_access()
+            self.check_user_org_access(org_id, c.userobj.name)
+
             get_validator('group_id_exists')(org_id, helpers.get_context())
 
             start_date, end_date = helpers.get_report_date_range(request)
@@ -229,7 +231,7 @@ class ReportingController(BaseController):
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
                 'reply_expected_by_date': reply_expected_by_date,
                 'expected_closure_date': expected_closure_date,
-                'user_dict': get_action('user_show')({}, {'id': toolkit.c.userobj.id})
+                'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
             }
 
             if metric == 'no-reply':
@@ -257,7 +259,7 @@ class ReportingController(BaseController):
             elif metric == 'open-max-days':
                 datarequests = get_action('datarequests_open_after_x_days')({}, data_dict)
             else:
-                closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
+                closing_circumstances = [x['circumstance'] for x in helpers.get_closing_circumstance_list()]
 
                 if circumstance not in closing_circumstances:
                     raise Invalid(_('Circumstance {0} is not valid'.format(circumstance)))
