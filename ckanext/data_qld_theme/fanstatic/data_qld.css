@@ -527,3 +527,7 @@ body > div.qg-staging {
 .wrapper:before  {
     z-index: -999 !important;
 }
+
+.comment.unreplied {
+  background-color: #eea236;
+}
