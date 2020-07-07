@@ -36,6 +36,10 @@ def get_comment_notification_recipients_enabled():
     return config.get('ckan.comments.follow_mute_enabled', False)
 
 
+def is_reporting_enabled():
+    return 'data_qld_reporting' in config.get('ckan.plugins', '')
+
+
 def is_request_for_resource():
     """
     Searching for a url path for /dataset/ and /resource/
@@ -147,4 +151,5 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled,
             'populate_revision': populate_revision,
             'unreplied_comments_x_days': unreplied_comments_x_days,
+            'is_reporting_enabled': is_reporting_enabled
         }
