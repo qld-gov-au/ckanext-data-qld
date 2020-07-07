@@ -42,6 +42,8 @@ class ReportingController(BaseController):
 
             extra_vars = {
                 'organisations': organisations,
+                'start_date': start_date,
+                'end_date': end_date,
                 'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
             }
 
@@ -51,8 +53,6 @@ class ReportingController(BaseController):
                 extra_vars.update({
                     'org_id': org_id,
                     'org_title': org['title'],
-                    'start_date': start_date,
-                    'end_date': end_date,
                     'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
                     'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                     'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
