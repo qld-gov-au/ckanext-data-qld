@@ -171,3 +171,19 @@ To run the command:
 2. Run the following command:
 
         paster --plugin=ckanext-data-qld demote_publishers -c /etc/ckan/default/development.ini
+
+# Data.Qld Engagement Reporting Plugin
+
+## Configuration
+
+1. Add the extension to the relevant CKAN `.ini` file `plugins` definition:
+
+        ckan.plugins = ... data_qld_reporting
+
+ 2. Add the following optional config settings to relevant CKAN `.ini` file, if desired:
+
+        # ckanext-data_qld_reporting
+        ckan.reporting.datarequest_open_max_days = 60 # Defaults to 60
+        ckan.reporting.comment_no_reply_max_days = 10 # Defaults to 10
+        ckan.reporting.json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json'
+

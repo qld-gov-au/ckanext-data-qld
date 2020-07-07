@@ -1,0 +1,70 @@
+{
+  "Dataset followers": {
+    "order": 1,
+    "type": "scalar",
+    "property": "dataset_followers"
+  },
+  "Organisation followers": {
+    "order": 2,
+    "type": "scalar",
+    "property": "organisation_followers"
+  },
+  "Dataset comments": {
+    "order": 3,
+    "type": "scalar",
+    "property": "dataset_comments"
+  },
+  "Dataset comment followers": {
+    "order": 4,
+    "type": "scalar",
+    "property": "dataset_comment_followers"
+  },
+  "Datasets with at least one comment follower": {
+    "order": 5,
+    "type": "scalar",
+    "property": "datasets_min_one_comment_follower"
+  },
+  "Data requests": {
+    "order": 6,
+    "type": "complex",
+    "property": "datarequests",
+    "element": "total"
+  },
+  "Data request comments": {
+    "order": 7,
+    "type": "scalar",
+    "property": "datarequest_comments"
+  },
+  "Data requests with at least one comment follower": {
+    "order": 8,
+    "type": "scalar",
+    "property": "datarequests_min_one_comment_follower"
+  },
+  "Dataset comments with no reply > 10 days": {
+    "order": 9,
+    "type": "length",
+    "property": "dataset_comments_no_replies_after_x_days"
+  },
+  "Data request comments with no reply > 10 days": {
+    "order": 10,
+    "type": "length",
+    "property": "datarequests_no_replies_after_x_days"
+  },
+  "Open data requests >60 days": {
+    "order": 11,
+    "type": "complex",
+    "property": "datarequests",
+    "element": "open_plus_max_days"
+  },
+  "Open data requests with no comment > 10 days": {
+    "order": 12,
+    "type": "length",
+    "property": "open_datarequests_no_comments_after_x_days"
+  },
+  "Closed data requests - overall": {
+    "order": 13,
+    "type": "complex",
+    "property": "datarequests",
+    "element": "closed"
+  }
+}

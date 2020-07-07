@@ -1,0 +1,37 @@
+{% extends "user/dashboard.html" %}
+
+{% block primary_content_inner %}
+
+    <p><a href="/dashboard/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}">&lt; Back to report</a></p>
+
+    <h1>Report: Datasets: {{ org_title }}</h1>
+
+    <h2>
+        {% if metric == 'no-reply' %}
+            Dataset comments with no reply > {{ comment_no_reply_max_days|string }} days
+        {% endif %}
+    </h2>
+
+    {% if datasets|length > 0 %}
+        <h3>
+            Total number of un-replied comments: {{ total_comments }}
+            <br />
+            Total number of datasets: {{ datasets|length }}
+        </h3>
+        <hr />
+        <ul class="dataset-list list-unstyled">
+        {% for dataset in datasets %}
+            <li class="dataset-item">
+                <div class="dataset-content">
+                    <h3 class="dataset-heading">
+                        <a href="{{ h.url_for(controller='package', action='read', id=dataset.package_name) }}/comments?comment_ids={{ comment_ids[dataset.package_name]|join(',') }}#comment_{{ dataset.comment_id }}">{{ dataset.title }}</a>
+                    </h3>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <h3>No datasets to display.</h3>
+    {% endif %}
+
+{% endblock -%}
