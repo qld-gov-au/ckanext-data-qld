@@ -18,13 +18,4 @@ OR the package_show's package['qa'] e.g.
 "updated": "2015-11-19T16:54:49.480393",
 
 #}
-<div class="qa openness-{{ openness_score }}">
-  {% if openness_score != None %}
-    <span title="{{ _('Reason') }} : {{ openness_score_reason }} {{ _('Checked') }}: {{ h.render_datetime(updated) }}">
-      <a href="https://www.data.qld.gov.au/article/standards-and-guidance/data-usability-rating" target="_blank">{{ _('Data usability rating') }}</a>
-      : {% snippet "qa/stars.html", stars=openness_score %} <br>
-      {% snippet "qa/stars_explained.html", openness_score=openness_score %} <br>
-  {% else %}
-    {{ _('No data usability rating information yet.') }}
-  {% endif %}
-</div>
+{% snippet 'qa/snippets/data_usability_rating.html', openness_score=openness_score%}
