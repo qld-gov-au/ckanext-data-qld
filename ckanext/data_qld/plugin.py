@@ -17,7 +17,6 @@ import validation
 
 from flask import Blueprint
 from ckanext.qa.interfaces import IQA
-from ckanext.report.interfaces import IReport
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +33,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IMiddleware, inherit=True)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(IQA)
-    plugins.implements(IReport)
 
     # IConfigurer
     def update_config(self, config_):
@@ -193,38 +191,15 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IQA
     def custom_resource_score(self, resource, resource_score):
-        # If resource score is 3 and is of CSV format
+        # If resource openness_score is 3 and format is CSV
         if resource_score.get('openness_score', 0) == 3 and resource_score.get('format', '').upper() == 'CSV':
-            # If resource has a JSON schema which validated , set score to 4
+            # If resource has a JSON schema which validated successfully, set score to 4
             if hasattr(resource, 'extras') and resource.extras.get('schema', None) and resource.extras.get('validation_status', None) == 'success':
                 resource_score['openness_score'] = 4
                 resource_score['openness_score_reason'] = toolkit._('Content of file appeared to be format "{0}" which receives openness score: {1}.'
                                                                     .format(resource_score.get('format', ''), resource_score.get('openness_score', '')))
 
         return resource_score
-
-    # IReport
-    def register_reports(self):
-        """Register details of an extension's reports"""
-        from ckanext.qa import reports
-        try:
-            from collections import OrderedDict  # from python 2.7
-        except ImportError:
-            from sqlalchemy.util import OrderedDict
-
-        data_usability_rating_info = {
-            'name': 'data_usability_rating',
-            'title': toolkit._('Data usability rating'),
-            'description': toolkit._("Datasets rated according to rules similar to those used by the Australian Government's Linked Data Rating derived from (but different to) Tim Berners-Lee's Five Stars of Openness."),
-            'option_defaults': OrderedDict((('organization', None),
-                                            ('include_sub_organizations', False),
-                                            )),
-            'option_combinations': reports.openness_report_combinations,
-            'generate': reports.openness_report,
-            'template': 'report/openness.html',
-        }
-
-        return [data_usability_rating_info]
 
 
 class AuthMiddleware(object):
