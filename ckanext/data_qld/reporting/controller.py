@@ -34,7 +34,6 @@ class ReportingController(BaseController):
             self.check_user_access()
 
             start_date, end_date = helpers.get_report_date_range(request)
-            org_id = request.GET.get('organisation', None)
 
             organisations = helpers.get_organisation_list()
 
