@@ -2,6 +2,7 @@ import csv
 import json
 import logging
 import os
+from tempfile import gettempdir
 
 from ckan.common import config
 from ckanext.data_qld.reporting.helpers import helpers
@@ -98,17 +99,22 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows):
     filename = '%s-report.csv' % datetime.now().isoformat("-")
+    filepath = gettempdir() + '/' + filename
 
-    with open('/tmp/' + filename, 'wb') as csvfile:
-        csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        csv_writer.writerow(csv_header_row)
-        for label in row_order:
-            row = [label] + dict_csv_rows[label]
-            csv_writer.writerow(row)
+    try:
+        with open(filepath, 'wb') as csvfile:
+            csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            csv_writer.writerow(csv_header_row)
+            for label in row_order:
+                row = [label] + dict_csv_rows[label]
+                csv_writer.writerow(row)
 
-    fh = open('/tmp/' + filename)
+        fh = open(filepath)
 
-    response.headers[b'Content-Type'] = b'text/csv; charset=utf-8'
-    response.headers[b'Content-Disposition'] = b"attachment;filename=%s" % filename
+        response.headers[b'Content-Type'] = b'text/csv; charset=utf-8'
+        response.headers[b'Content-Disposition'] = b"attachment;filename=%s" % filename
 
-    return fh.read()
+        return fh.read()
+    except Exception as e:
+        log.error('Error creating reporting CSV export file: %s' % filepath)
+        log.error(str(e))
