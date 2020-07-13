@@ -229,6 +229,7 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
         end_date = process_dates(start_date,
                                  end_date
                                  )
+
     data_dict = {
         'org_id': org_id,
         'start_date': start_date,
