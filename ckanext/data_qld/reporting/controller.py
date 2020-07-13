@@ -176,7 +176,7 @@ class ReportingController(BaseController):
             if metric == 'no-reply':
                 comments = get_action('dataset_comments_no_replies_after_x_days')(
                     {},
-                    extra_vars
+                    data_dict
                 )
                 # Action `dataset_comments_no_replies_after_x_days` returns a
                 # collection of comments with no replies
