@@ -147,24 +147,39 @@ class ReportingController(BaseController):
 
             start_date, end_date = helpers.get_report_date_range(request)
 
-            start_date, end_date, reply_expected_by_date = helpers.process_dates(start_date,
-                                                                                 end_date,
-                                                                                 COMMENT_NO_REPLY_MAX_DAYS
-                                                                                 )
+            utc_start_date, \
+                utc_end_date, \
+                utc_reply_expected_by_date = helpers.get_utc_dates(start_date,
+                                                                   end_date,
+                                                                   COMMENT_NO_REPLY_MAX_DAYS
+                                                                   )
+
+            start_date, end_date = helpers.process_dates(start_date,
+                                                         end_date
+                                                         )
 
             org = get_action('organization_show')({}, {'id': org_id})
+
+            data_dict = {
+                'org_id': org_id,
+                'org_title': org['title'],
+                'start_date': start_date,
+                'end_date': end_date,
+                'metric': metric,
+                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
+                'user_dict': get_action('user_show')({}, {'id': c.userobj.id}),
+                'utc_start_date': utc_start_date,
+                'utc_end_date': utc_end_date,
+                'utc_reply_expected_by_date': utc_reply_expected_by_date
+            }
 
             if metric == 'no-reply':
                 comments = get_action('dataset_comments_no_replies_after_x_days')(
                     {},
-                    {
-                        'org_id': org_id,
-                        'start_date': start_date,
-                        'end_date': end_date,
-                        'reply_expected_by_date': reply_expected_by_date
-                    }
+                    data_dict
                 )
-                # Action `dataset_comments_no_replies_after_x_days` returns a collection of comments with no replies
+                # Action `dataset_comments_no_replies_after_x_days` returns a
+                # collection of comments with no replies
                 # On this page we only need to display distinct datasets containing those comments
                 datasets = []
                 comment_ids = {}
@@ -175,21 +190,17 @@ class ReportingController(BaseController):
                         comment_ids[comment.package_name] = [comment.comment_id]
                         datasets.append(comment)
 
+                data_dict.update(
+                    {
+                        'datasets': datasets,
+                        'total_comments': len(comments),
+                        'comment_ids': comment_ids
+                    }
+                )
+
             return render(
                 'reporting/datasets.html',
-                extra_vars={
-                    'org_id': org_id,
-                    'org_title': org['title'],
-                    'start_date': start_date,
-                    'end_date': end_date,
-                    'datasets': datasets,
-                    'metric': metric,
-                    'total_comments': len(comments),
-                    'comment_ids': comment_ids,
-                    'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-                    'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-                    'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
-                }
+                extra_vars=data_dict
             )
         except Invalid as e:  # Exception raised from get_validator('group_id_exists')
             log.warn(e)
@@ -207,14 +218,16 @@ class ReportingController(BaseController):
 
             start_date, end_date = helpers.get_report_date_range(request)
 
-            start_date, \
-                end_date, \
-                reply_expected_by_date, \
-                expected_closure_date = helpers.process_dates(start_date,
-                                                              end_date,
-                                                              COMMENT_NO_REPLY_MAX_DAYS,
-                                                              DATAREQUEST_OPEN_MAX_DAYS
-                                                              )
+            utc_start_date, \
+                utc_end_date, \
+                utc_reply_expected_by_date, \
+                utc_expected_closure_date = helpers.get_utc_dates(start_date,
+                                                                  end_date,
+                                                                  COMMENT_NO_REPLY_MAX_DAYS,
+                                                                  DATAREQUEST_OPEN_MAX_DAYS
+                                                                  )
+
+            start_date, end_date = helpers.process_dates(start_date, end_date)
 
             circumstance = request.GET.get('circumstance', None)
 
@@ -229,9 +242,11 @@ class ReportingController(BaseController):
                 'circumstance': circumstance,
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-                'reply_expected_by_date': reply_expected_by_date,
-                'expected_closure_date': expected_closure_date,
-                'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
+                'user_dict': get_action('user_show')({}, {'id': c.userobj.id}),
+                'utc_start_date': utc_start_date,
+                'utc_end_date': utc_end_date,
+                'utc_reply_expected_by_date': utc_reply_expected_by_date,
+                'utc_expected_closure_date': utc_expected_closure_date
             }
 
             if metric == 'no-reply':

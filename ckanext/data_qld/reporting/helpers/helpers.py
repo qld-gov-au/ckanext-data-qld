@@ -12,7 +12,8 @@ def check_org_access(org_id):
     context = get_context()
     data_dict = {'org_id': org_id, 'permission': 'create_dataset'}
     if not toolkit.check_access('has_user_permission_for_org', context, data_dict):
-        toolkit.abort(403, toolkit._('User {0} is not authorized to create datasets for organisation {1} test'. format(get_username(), org_id)))
+        toolkit.abort(403, toolkit._(
+            'User {0} is not authorized to create datasets for organisation {1} test'.format(get_username(), org_id)))
 
 
 def get_context():
@@ -141,6 +142,51 @@ def delta_in_days(latest_date, earliest_date):
     return int(delta.total_seconds() / 86400)
 
 
+def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
+    """Process textual date representations"""
+    date_format = '%Y-%m-%d %H:%M:%S'
+
+    timezone = pytz.timezone("UTC")
+    local_timezone = pytz.timezone(toolkit.config.get('ckan.display_timezone'))
+
+    # Always consider `start_date` and `end_date` as local dates
+    start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
+    end_datetime = datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=1)
+
+    # Make the local datetimes timezone aware
+    tz_start_datetime = local_timezone.localize(start_datetime)
+    tz_end_datetime = local_timezone.localize(end_datetime)
+
+    utc_start_datetime = tz_start_datetime.astimezone(timezone)
+    utc_end_datetime = tz_end_datetime.astimezone(timezone)
+
+    if comment_no_reply_max_days:
+        utc_reply_expected_by_date = utc_end_datetime - timedelta(days=comment_no_reply_max_days)
+
+    if datarequest_open_max_days:
+        utc_expected_closure_date = utc_end_datetime - timedelta(days=datarequest_open_max_days)
+
+    utc_start_datetime = utc_start_datetime.strftime(date_format)
+    utc_end_datetime = utc_end_datetime.strftime(date_format)
+
+    if comment_no_reply_max_days and datarequest_open_max_days:
+        return utc_start_datetime, \
+            utc_end_datetime, \
+            utc_reply_expected_by_date, \
+            utc_expected_closure_date
+    elif comment_no_reply_max_days:
+        return utc_start_datetime, \
+            utc_end_datetime, \
+            utc_reply_expected_by_date
+    elif datarequest_open_max_days:
+        return utc_start_datetime, \
+            utc_end_datetime, \
+            utc_expected_closure_date
+    else:
+        return utc_start_datetime, \
+            utc_end_datetime
+
+
 def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
     """Process textual date representations"""
     timezone = pytz.timezone("UTC")
@@ -171,14 +217,19 @@ def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
 
 
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
+    """Collect statistics for all metrics for the provided organisation"""
+    utc_start_date, \
+        utc_end_date, \
+        utc_reply_expected_by_date, \
+        utc_expected_closure_date = get_utc_dates(start_date,
+                                                  end_date,
+                                                  comment_no_reply_max_days,
+                                                  datarequest_open_max_days
+                                                  )
     start_date, \
-        end_date, \
-        reply_expected_by_date, \
-        expected_closure_date = process_dates(start_date,
-                                              end_date,
-                                              comment_no_reply_max_days,
-                                              datarequest_open_max_days
-                                              )
+        end_date = process_dates(start_date,
+                                 end_date
+                                 )
 
     data_dict = {
         'org_id': org_id,
@@ -186,8 +237,10 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
         'end_date': end_date,
         'comment_no_reply_max_days': comment_no_reply_max_days,
         'datarequest_open_max_days': datarequest_open_max_days,
-        'reply_expected_by_date': reply_expected_by_date,
-        'expected_closure_date': expected_closure_date
+        'utc_start_date': utc_start_date,
+        'utc_end_date': utc_end_date,
+        'utc_reply_expected_by_date': utc_reply_expected_by_date,
+        'utc_expected_closure_date': utc_expected_closure_date,
     }
 
     return {
@@ -196,12 +249,14 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
         'dataset_comments': get_action('dataset_comments')({}, data_dict),
         'dataset_comment_followers': get_action('dataset_comment_followers')({}, data_dict),
         'datasets_min_one_comment_follower': get_action('datasets_min_one_comment_follower')({}, data_dict),
-        'dataset_comments_no_replies_after_x_days': get_action('dataset_comments_no_replies_after_x_days')({}, data_dict),
+        'dataset_comments_no_replies_after_x_days': get_action('dataset_comments_no_replies_after_x_days')({},
+                                                                                                           data_dict),
         'datarequests': get_data_request_metrics(data_dict),
         'datarequest_comments': get_action('datarequest_comments')({}, data_dict),
         'datarequests_min_one_comment_follower': get_action('datarequests_min_one_comment_follower')({}, data_dict),
         'datarequests_no_replies_after_x_days': get_action('datarequests_no_replies_after_x_days')({}, data_dict),
-        'open_datarequests_no_comments_after_x_days': get_action('open_datarequests_no_comments_after_x_days')({}, data_dict),
+        'open_datarequests_no_comments_after_x_days': get_action('open_datarequests_no_comments_after_x_days')({},
+                                                                                                               data_dict),
     }
 
 
