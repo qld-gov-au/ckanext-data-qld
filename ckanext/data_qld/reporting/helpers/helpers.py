@@ -187,35 +187,6 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
             utc_end_datetime
 
 
-def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
-    """Process textual date representations"""
-    timezone = pytz.timezone("UTC")
-
-    # Not really necessary, but future proofing in case start date includes time
-    dt = datetime.strptime(start_date, '%Y-%m-%d')
-    start_datetime = timezone.localize(dt)
-    start_date = start_datetime.strftime('%Y-%m-%d 00:00:00')
-
-    dt = datetime.strptime(end_date, '%Y-%m-%d')
-    end_datetime = timezone.localize(dt)
-    end_date = end_datetime.strftime('%Y-%m-%d 23:59:59')
-
-    if comment_no_reply_max_days:
-        reply_expected_by_date = end_datetime - timedelta(days=comment_no_reply_max_days)
-
-    if datarequest_open_max_days:
-        expected_closure_date = end_datetime - timedelta(days=datarequest_open_max_days)
-
-    if comment_no_reply_max_days and datarequest_open_max_days:
-        return start_date, end_date, reply_expected_by_date, expected_closure_date
-    elif comment_no_reply_max_days:
-        return start_date, end_date, reply_expected_by_date
-    elif datarequest_open_max_days:
-        return start_date, end_date, expected_closure_date
-    else:
-        return start_date, end_date
-
-
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
     """Collect statistics for all metrics for the provided organisation"""
     utc_start_date, \
@@ -226,10 +197,6 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
                                                   comment_no_reply_max_days,
                                                   datarequest_open_max_days
                                                   )
-    start_date, \
-        end_date = process_dates(start_date,
-                                 end_date
-                                 )
 
     data_dict = {
         'org_id': org_id,

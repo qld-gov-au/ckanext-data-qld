@@ -154,10 +154,6 @@ class ReportingController(BaseController):
                                                                    COMMENT_NO_REPLY_MAX_DAYS
                                                                    )
 
-            start_date, end_date = helpers.process_dates(start_date,
-                                                         end_date
-                                                         )
-
             org = get_action('organization_show')({}, {'id': org_id})
 
             data_dict = {
@@ -226,8 +222,6 @@ class ReportingController(BaseController):
                                                                   COMMENT_NO_REPLY_MAX_DAYS,
                                                                   DATAREQUEST_OPEN_MAX_DAYS
                                                                   )
-
-            start_date, end_date = helpers.process_dates(start_date, end_date)
 
             circumstance = request.GET.get('circumstance', None)
 
