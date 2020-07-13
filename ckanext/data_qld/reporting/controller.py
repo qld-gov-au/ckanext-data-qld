@@ -148,11 +148,11 @@ class ReportingController(BaseController):
             start_date, end_date = helpers.get_report_date_range(request)
 
             utc_start_date, \
-            utc_end_date, \
-            utc_reply_expected_by_date = helpers.get_utc_dates(start_date,
-                                                               end_date,
-                                                               COMMENT_NO_REPLY_MAX_DAYS
-                                                               )
+                utc_end_date, \
+                utc_reply_expected_by_date = helpers.get_utc_dates(start_date,
+                                                                   end_date,
+                                                                   COMMENT_NO_REPLY_MAX_DAYS
+                                                                   )
 
             start_date, end_date = helpers.process_dates(start_date,
                                                          end_date
@@ -192,7 +192,7 @@ class ReportingController(BaseController):
 
                 data_dict.update(
                     {
-                        'datasets': len(datarequests_comments),
+                        'datasets': datasets,
                         'total_comments': len(comments),
                         'comment_ids': comment_ids
                     }
@@ -219,18 +219,15 @@ class ReportingController(BaseController):
             start_date, end_date = helpers.get_report_date_range(request)
 
             utc_start_date, \
-            utc_end_date, \
-            utc_reply_expected_by_date, \
-            utc_expected_closure_date = helpers.get_utc_dates(start_date,
-                                                              end_date,
-                                                              COMMENT_NO_REPLY_MAX_DAYS,
-                                                              DATAREQUEST_OPEN_MAX_DAYS
-                                                              )
+                utc_end_date, \
+                utc_reply_expected_by_date, \
+                utc_expected_closure_date = helpers.get_utc_dates(start_date,
+                                                                  end_date,
+                                                                  COMMENT_NO_REPLY_MAX_DAYS,
+                                                                  DATAREQUEST_OPEN_MAX_DAYS
+                                                                  )
 
-            start_date, \
-            end_date = helpers.process_dates(start_date,
-                                             end_date
-                                             )
+            start_date, end_date = helpers.process_dates(start_date, end_date)
 
             circumstance = request.GET.get('circumstance', None)
 
