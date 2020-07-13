@@ -218,17 +218,17 @@ def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
 
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
     utc_start_date, \
-    utc_end_date, \
-    utc_reply_expected_by_date, \
-    utc_expected_closure_date = get_utc_dates(start_date,
-                                              end_date,
-                                              comment_no_reply_max_days,
-                                              datarequest_open_max_days
-                                              )
+        utc_end_date, \
+        utc_reply_expected_by_date, \
+        utc_expected_closure_date = get_utc_dates(start_date,
+                                                  end_date,
+                                                  comment_no_reply_max_days,
+                                                  datarequest_open_max_days
+                                                  )
     start_date, \
-    end_date = process_dates(start_date,
-                             end_date
-                             )
+        end_date = process_dates(start_date,
+                                 end_date
+                                 )
     data_dict = {
         'org_id': org_id,
         'start_date': start_date,
