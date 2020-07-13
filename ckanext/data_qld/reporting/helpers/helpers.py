@@ -225,7 +225,6 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
                                               comment_no_reply_max_days,
                                               datarequest_open_max_days
                                               )
-
     start_date, \
     end_date = process_dates(start_date,
                              end_date
