@@ -217,6 +217,7 @@ def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
 
 
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
+    """"""
     utc_start_date, \
         utc_end_date, \
         utc_reply_expected_by_date, \
