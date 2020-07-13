@@ -171,20 +171,20 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
 
     if comment_no_reply_max_days and datarequest_open_max_days:
         return utc_start_datetime, \
-                   utc_end_datetime, \
-                   utc_reply_expected_by_date, \
-                   utc_expected_closure_date
+            utc_end_datetime, \
+            utc_reply_expected_by_date, \
+            utc_expected_closure_date
     elif comment_no_reply_max_days:
         return utc_start_datetime, \
-                   utc_end_datetime, \
-                   utc_reply_expected_by_date
+            utc_end_datetime, \
+            utc_reply_expected_by_date
     elif datarequest_open_max_days:
         return utc_start_datetime, \
-                   utc_end_datetime, \
-                   utc_expected_closure_date
+            utc_end_datetime, \
+            utc_expected_closure_date
     else:
         return utc_start_datetime, \
-                   utc_end_datetime
+            utc_end_datetime
 
 
 def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
@@ -218,16 +218,16 @@ def process_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
 
 def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
     utc_start_date, \
-        utc_end_date, \
-        utc_reply_expected_by_date, \
-        utc_expected_closure_date = get_utc_dates(start_date,
-                                                  end_date,
-                                                  comment_no_reply_max_days,
-                                                  datarequest_open_max_days
-                                                  )
+    utc_end_date, \
+    utc_reply_expected_by_date, \
+    utc_expected_closure_date = get_utc_dates(start_date,
+                                              end_date,
+                                              comment_no_reply_max_days,
+                                              datarequest_open_max_days
+                                              )
 
     start_date, \
-        end_date = process_dates(start_date,
+    end_date = process_dates(start_date,
                              end_date
                              )
     data_dict = {
