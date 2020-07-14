@@ -36,8 +36,8 @@ def organisation_followers(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -49,8 +49,8 @@ def organisation_followers(context, data_dict):
             .filter(
                 _and_(
                     Group.id == org_id,
-                    UserFollowingGroup.datetime >= start_date,
-                    UserFollowingGroup.datetime <= end_date,
+                    UserFollowingGroup.datetime >= utc_start_date,
+                    UserFollowingGroup.datetime < utc_end_date,
                 )
             )
             .join(Group, Group.id == UserFollowingGroup.object_id)
@@ -68,8 +68,8 @@ def dataset_followers(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -81,8 +81,8 @@ def dataset_followers(context, data_dict):
             .filter(
                 _and_(
                     Package.owner_org == org_id,
-                    UserFollowingDataset.datetime >= start_date,
-                    UserFollowingDataset.datetime <= end_date,
+                    UserFollowingDataset.datetime >= utc_start_date,
+                    UserFollowingDataset.datetime < utc_end_date,
                 )
             )
             .join(Package, Package.id == UserFollowingDataset.object_id)
@@ -100,8 +100,8 @@ def dataset_comments(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -114,8 +114,8 @@ def dataset_comments(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATASET_LIKE),
                     Comment.state == ACTIVE_STATE,
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= end_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_end_date,
                     Package.owner_org == org_id,
                 )
             )
@@ -135,8 +135,8 @@ def datarequests(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -148,8 +148,8 @@ def datarequests(context, data_dict):
             )
             .filter(
                 db.DataRequest.organization_id == org_id,
-                func.date(db.DataRequest.open_time) >= start_date,
-                func.date(db.DataRequest.open_time) <= end_date,
+                func.date(db.DataRequest.open_time) >= utc_start_date,
+                func.date(db.DataRequest.open_time) < utc_end_date,
             )
             .order_by(db.DataRequest.open_time.desc())
         ).all()
@@ -166,8 +166,8 @@ def datarequest_comments(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -181,8 +181,8 @@ def datarequest_comments(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATAREQUEST_LIKE),
                     Comment.state == ACTIVE_STATE,
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= end_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_end_date,
                     db.DataRequest.organization_id == org_id
                 )
             )
@@ -202,8 +202,8 @@ def dataset_comment_followers(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -218,8 +218,8 @@ def dataset_comment_followers(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATASET_LIKE),
                     Comment.state == ACTIVE_STATE,
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= end_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_end_date,
                     Package.owner_org == org_id
                 )
             )
@@ -240,8 +240,8 @@ def datasets_min_one_comment_follower(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -254,8 +254,8 @@ def datasets_min_one_comment_follower(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATASET_LIKE),
                     Comment.state == ACTIVE_STATE,
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= end_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_end_date,
                     Package.owner_org == org_id
                 )
             )
@@ -277,8 +277,8 @@ def datarequests_min_one_comment_follower(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
 
     check_org_access(org_id)
 
@@ -292,8 +292,8 @@ def datarequests_min_one_comment_follower(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATAREQUEST_LIKE),
                     Comment.state == ACTIVE_STATE,
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= end_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_end_date,
                     db.DataRequest.organization_id == org_id
                 )
             )
@@ -314,8 +314,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    reply_expected_by_date = data_dict.get('reply_expected_by_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
 
     check_org_access(org_id)
 
@@ -339,8 +339,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATASET_LIKE),
                     Comment.parent_id.is_(None),
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= reply_expected_by_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     Package.owner_org == org_id,
                     comment_reply.id.is_(None)
@@ -366,8 +366,8 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    reply_expected_by_date = data_dict.get('reply_expected_by_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
 
     check_org_access(org_id)
 
@@ -393,8 +393,8 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 _and_(
                     CommentThread.url.like(DATAREQUEST_LIKE),
                     Comment.parent_id.is_(None),
-                    Comment.creation_date >= start_date,
-                    Comment.creation_date <= reply_expected_by_date,
+                    Comment.creation_date >= utc_start_date,
+                    Comment.creation_date < utc_reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     db.DataRequest.organization_id == org_id,
                     comment_reply.id.is_(None)
@@ -421,8 +421,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    reply_expected_by_date = data_dict.get('reply_expected_by_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
 
     check_org_access(org_id)
 
@@ -439,8 +439,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
                 _and_(
                     db.DataRequest.organization_id == org_id,
                     db.DataRequest.closed.is_(False),
-                    db.DataRequest.open_time >= start_date,
-                    db.DataRequest.open_time <= reply_expected_by_date,
+                    db.DataRequest.open_time >= utc_start_date,
+                    db.DataRequest.open_time < utc_reply_expected_by_date,
                     Comment.id.is_(None)
                 )
             )
@@ -462,8 +462,8 @@ def datarequests_open_after_x_days(context, data_dict):
     :return:
     """
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    expected_closure_date = data_dict.get('expected_closure_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_expected_closure_date = data_dict.get('utc_expected_closure_date', None)
 
     check_org_access(org_id)
 
@@ -479,8 +479,8 @@ def datarequests_open_after_x_days(context, data_dict):
                 _and_(
                     db.DataRequest.organization_id == org_id,
                     db.DataRequest.closed.is_(False),
-                    db.DataRequest.open_time >= start_date,
-                    db.DataRequest.open_time <= expected_closure_date
+                    db.DataRequest.open_time >= utc_start_date,
+                    db.DataRequest.open_time < utc_expected_closure_date
                 )
             )
             .order_by(db.DataRequest.open_time.desc())
@@ -492,8 +492,8 @@ def datarequests_open_after_x_days(context, data_dict):
 
 def datarequests_for_circumstance(context, data_dict):
     org_id = data_dict.get('org_id', None)
-    start_date = data_dict.get('start_date', None)
-    end_date = data_dict.get('end_date', None)
+    utc_start_date = data_dict.get('utc_start_date', None)
+    utc_end_date = data_dict.get('utc_end_date', None)
     circumstance = data_dict.get('circumstance', None)
 
     check_org_access(org_id)
@@ -507,8 +507,8 @@ def datarequests_for_circumstance(context, data_dict):
             .filter(
                 db.DataRequest.organization_id == org_id,
                 db.DataRequest.close_circumstance == circumstance,
-                db.DataRequest.open_time >= start_date,
-                db.DataRequest.open_time <= end_date,
+                db.DataRequest.open_time >= utc_start_date,
+                db.DataRequest.open_time < utc_end_date,
                 db.DataRequest.closed.is_(True)
             )
             .order_by(db.DataRequest.close_time.desc())
