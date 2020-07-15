@@ -16,6 +16,7 @@ import helpers
 import validation
 
 from flask import Blueprint
+from ckanext.qa.interfaces import IQA
 
 log = logging.getLogger(__name__)
 
@@ -31,6 +32,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(plugins.IMiddleware, inherit=True)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(IQA)
 
     # IConfigurer
     def update_config(self, config_):
@@ -186,6 +188,18 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 u'offset': 0
             })
         return blueprint
+
+    # IQA
+    def custom_resource_score(self, resource, resource_score):
+        # If resource openness_score is 3 and format is CSV
+        if resource_score.get('openness_score', 0) == 3 and resource_score.get('format', '').upper() == 'CSV':
+            # If resource has a JSON schema which validated successfully, set score to 4
+            if hasattr(resource, 'extras') and resource.extras.get('schema', None) and resource.extras.get('validation_status', None) == 'success':
+                resource_score['openness_score'] = 4
+                resource_score['openness_score_reason'] = toolkit._('Content of file appeared to be format "{0}" which receives openness score: {1}.'
+                                                                    .format(resource_score.get('format', ''), resource_score.get('openness_score', '')))
+
+        return resource_score
 
 
 class AuthMiddleware(object):
