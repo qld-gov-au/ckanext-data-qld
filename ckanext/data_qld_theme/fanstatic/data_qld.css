@@ -531,3 +531,8 @@ body > div.qg-staging {
 .comment.unreplied {
   background-color: #eea236;
 }
+
+/* [DQL2-9] - Style for star openness explained */
+.star-openness_score-entry {
+  font-style: italic;
+}
