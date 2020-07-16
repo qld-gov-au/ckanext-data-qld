@@ -520,17 +520,31 @@ def datarequests_for_circumstance(context, data_dict):
 
 def comments_no_replies_after_x_days(context, data_dict):
     """
-    Comments that have no replies whatsoever, and it has been > 10 days since the comment was created
+    Comments that have no replies whatsoever, and it has been > X days since the comment was created
     This action is used for highlighting such comments on the comments page for the given URL
+    There is no date range for this query - it is simply X days from the current date (in UTC)
     :param context:
     :param data_dict:
     :return:
     """
+    import pytz
+    from ckan.plugins.toolkit import config
+
     thread_url = data_dict.get('thread_url', None)
 
-    end_date = datetime.utcnow() + timedelta(days=1)
+    ckan_timezone = config.get('ckan.display_timezone', None)
+    date_format = '%Y-%m-%d %H:%M:%S'
 
-    reply_expected_by_date = end_date - timedelta(days=constants.COMMENT_NO_REPLY_MAX_DAYS)
+    # Comment.creation_date is stored as UTC without timezone
+    # We need to check for any comments whose creation date is earlier than
+    # the end of today minus the number of days a reply is expected by (in UTC)
+    today = datetime.now(pytz.timezone(ckan_timezone))
+
+    days_to_reply = timedelta(days=constants.COMMENT_NO_REPLY_MAX_DAYS)
+
+    x_days_from_today = today - days_to_reply
+
+    utc_x_days_from_today = helpers.get_utc_datetime_no_offset(x_days_from_today).strftime(date_format)
 
     comment_reply = aliased(Comment, name='comment_reply')
 
@@ -546,7 +560,7 @@ def comments_no_replies_after_x_days(context, data_dict):
                 _and_(
                     CommentThread.url == thread_url,
                     Comment.parent_id.is_(None),
-                    Comment.creation_date <= reply_expected_by_date,
+                    Comment.creation_date < utc_x_days_from_today,
                     Comment.state == ACTIVE_STATE,
                     comment_reply.id.is_(None)
                 )
