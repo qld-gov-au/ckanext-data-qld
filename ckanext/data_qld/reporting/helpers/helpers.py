@@ -142,6 +142,14 @@ def delta_in_days(latest_date, earliest_date):
     return int(delta.total_seconds() / 86400)
 
 
+def get_utc_datetime_no_offset(local_datetime):
+    return datetime(
+        local_datetime.year,
+        local_datetime.month,
+        local_datetime.day,
+        tzinfo=pytz.timezone("UTC")) - local_datetime.utcoffset()
+
+
 def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):
     """Process textual date representations"""
     date_format = '%Y-%m-%d %H:%M:%S'
