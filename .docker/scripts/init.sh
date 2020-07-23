@@ -24,5 +24,10 @@ paster --plugin=ckanext-archiver archiver init -c /app/ckan/default/production.i
 # Initialise the ckanext-qa tables
 paster --plugin=ckanext-qa qa init -c /app/ckan/default/production.ini
 
+# Initialise the Comments database tables
+paster --plugin=ckanext-ytp-comments initdb --config=/app/ckan/default/production.ini
+paster --plugin=ckanext-ytp-comments updatedb --c /app/ckan/default/production.ini
+paster --plugin=ckanext-ytp-comments init_notifications_db --c /app/ckan/default/production.ini
+
 # Create some base test data
 . /app/scripts/create-test-data.sh
