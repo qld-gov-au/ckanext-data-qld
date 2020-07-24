@@ -6,3 +6,10 @@
     <li class="active"><a href="{{ h.url_for(controller='package', action='read', id=pkg.name) }}">{{ pkg.title }}</a></li>
 {% endblock %}
 
+{% block package_notes %}
+    <section>
+      {{ h.qa_openness_stars_dataset_html(pkg) }}
+    </section>
+ {{ super() }}
+{% endblock %}
+
