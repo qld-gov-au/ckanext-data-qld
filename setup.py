@@ -79,6 +79,7 @@ setup(
         data_qld_resources=ckanext.data_qld.resources_plugin:DataQldResourcesPlugin
         data_qld_integration=ckanext.data_qld.integration_plugin:DataQldIntegrationPlugin
         data_qld_google_analytics=ckanext.data_qld.google_analytics.plugin:GoogleAnalyticsPlugin
+        data_qld_reporting=ckanext.data_qld.reporting_plugin:ReportingPlugin
 
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras
