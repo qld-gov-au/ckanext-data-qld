@@ -533,18 +533,17 @@ def comments_no_replies_after_x_days(context, data_dict):
     thread_url = data_dict.get('thread_url', None)
 
     ckan_timezone = config.get('ckan.display_timezone', None)
-    date_format = '%Y-%m-%d %H:%M:%S'
 
     # Comment.creation_date is stored as UTC without timezone
     # We need to check for any comments whose creation date is earlier than
-    # the end of today minus the number of days a reply is expected by (in UTC)
+    # NOW, minus the number of days a reply is expected by (in UTC)
     today = datetime.now(pytz.timezone(ckan_timezone))
 
     days_to_reply = timedelta(days=constants.COMMENT_NO_REPLY_MAX_DAYS)
 
     x_days_from_today = today - days_to_reply
 
-    utc_x_days_from_today = helpers.get_utc_datetime_no_offset(x_days_from_today).strftime(date_format)
+    utc_x_days_from_today = x_days_from_today.astimezone(pytz.timezone('UTC'))
 
     comment_reply = aliased(Comment, name='comment_reply')
 
