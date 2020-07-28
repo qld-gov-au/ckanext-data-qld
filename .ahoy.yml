@@ -119,7 +119,7 @@ commands:
   test-bdd:
     usage: Run BDD tests.
     cmd: |
-      ahoy start-ckan-job-workers &
+      ahoy start-ckan-job-workers
       sleep 5
       ahoy cli "behave ${*:-/app/test/features}" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
