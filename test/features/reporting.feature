@@ -26,43 +26,51 @@ Feature: Reporting
         When I log in
         And I go to my reports page
         And I press the element with xpath "//button[contains(string(), 'Show')]"
-        Then I should see an element with xpath "//td[@id='datarequests_total' and string()='0']"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
         When I create a datarequest
         And I go to my reports page
         And I press the element with xpath "//button[contains(string(), 'Show')]"
-        Then I should see an element with xpath "//td[@id='datarequests_total' and string()='1']"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
 
 
     Scenario: As an admin user of my organisation, when I view my organisation report, I can verify the number of dataset followers is correct and increments
         Given "TestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
-        Then I should see an element with xpath "//td[@id='dataset_followers' and string()='0']" 
+        Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
         When I visit "/dataset/warandpeace"
         And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
         And I go to my reports page
-        Then I should see an element with xpath "//td[@id='dataset_followers' and string()='1']"  
+        Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='1' and position()=2]" 
 
 
     Scenario: As an admin user of my organisation, when I view my organisation report, I can verify the number of dataset comments is correct and increments
         Given "TestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
-        Then I should see an element with xpath "//td[@id='dataset_comments' and string()='0']" 
+        Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-title') and string()='Dataset comments' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"  
         When I go to dataset "warandpeace" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
         And I go to my reports page
-        Then I should see an element with xpath "//td[@id='dataset_comments' and string()='1']"
+        Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-title') and string()='Dataset comments' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"  
 
 
     Scenario: As an admin user of my organisation, when I view my organisation report, I can verify the number of data request comments is correct and increments
         Given "TestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
-        Then I should see an element with xpath "//td[@id='datarequest_comments' and string()='0']" 
+        Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-title') and string()='Data request comments' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"  
         When I go to datarequest page
         And I click the link with text that contains "Test Request"
         And I click the link with text that contains "Comments"
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
         And I go to my reports page
-        Then I should see an element with xpath "//td[@id='datarequest_comments' and string()='1']"
+        Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-title') and string()='Data request comments' and position()=1]"
+        Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='1' and position()=2]" 
