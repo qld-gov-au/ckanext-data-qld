@@ -2,7 +2,6 @@
 ahoyapi: v2
 
 commands:
-
   # Docker commands.
   build:
     usage: Build or rebuild project.
@@ -39,7 +38,7 @@ commands:
 
   down:
     usage: Stop Docker containers and remove container, images, volumes and networks.
-    cmd: "if [ -f \"docker-compose.yml\" ]; then docker-compose down --volumes; fi"
+    cmd: 'if [ -f "docker-compose.yml" ]; then docker-compose down --volumes; fi'
 
   start:
     usage: Start existing Docker containers.
@@ -68,7 +67,6 @@ commands:
   doctor:
     usage: Find problems with current project setup.
     cmd: .docker/scripts/doctor.sh "$@"
-
 
   install-site:
     usage: Install a site.
@@ -121,8 +119,40 @@ commands:
   test-bdd:
     usage: Run BDD tests.
     cmd: |
+      ahoy start-ckan-job-workers &
+      sleep 5
       ahoy cli "behave ${*:-/app/test/features}" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+      ahoy stop-ckan-job-workers
+
+  start-ckan-job-workers:
+    usage: Starts CKAN background job workers
+    cmd: |
+      ahoy title 'Starting CKAN background job workers'
+      ahoy start-ckan-job-worker-priority &
+      ahoy start-ckan-job-worker-bulk &
+
+  start-ckan-job-worker-priority:
+    usage: Starts CKAN background job worker
+    cmd: |
+      ahoy title 'Starting CKAN background job worker priority'
+      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
+                paster jobs clear priority --config=/app/ckan/default/production.ini && \
+                paster jobs worker priority --config=/app/ckan/default/production.ini"
+
+  start-ckan-job-worker-bulk:
+    usage: Starts CKAN background job worker bulk
+    cmd: |
+      ahoy title 'Starting CKAN background job worker bulk'
+      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
+                paster jobs clear bulk --config=/app/ckan/default/production.ini && \
+                paster jobs worker bulk --config=/app/ckan/default/production.ini"
+
+  stop-ckan-job-workers:
+    usage: Stops CKAN background job worker
+    cmd: |
+      ahoy title 'Stopping CKAN background job worker'
+      ahoy cli "pkill -f 'jobs worker'"
 
   # Utilities.
   title:
@@ -158,5 +188,5 @@ entrypoint:
     export LAGOON_LOCALDEV_URL=http://ckanext-data-qld.docker.amazee.io
     [ -f .env ] && [ -s .env ] && export $(grep -v '^#' .env | xargs) && if [ -f .env.local ] && [ -s .env.local ]; then export $(grep -v '^#' .env.local | xargs); fi
     bash -e -c "$0" "$@"
-  - '{{cmd}}'
-  - '{{name}}'
+  - "{{cmd}}"
+  - "{{name}}"
