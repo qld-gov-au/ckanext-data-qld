@@ -51,42 +51,42 @@
             <tbody>
                 <tr>
                     <td>{{ _('Dataset') }} {{ _('followers') }}</td>
-                    <td>{{ metrics.dataset_followers }}</td>
+                    <td id="dataset_followers" >{{ metrics.dataset_followers }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td>{{ _('Organization') }} {{ _('followers') }}</td>
-                    <td>{{ metrics.organisation_followers }}</td>
+                    <td id="organisation_followers" >{{ metrics.organisation_followers }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td>{{ _('Dataset') }} comments</td>
-                    <td>{{ metrics.dataset_comments }}</td>
+                    <td id="dataset_comments" >{{ metrics.dataset_comments }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td>{{ _('Dataset') }} comment {{ _('followers') }}</td>
-                    <td>{{ metrics.dataset_comment_followers }}</td>
+                    <td id="dataset_comment_followers" >{{ metrics.dataset_comment_followers }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td>Datasets with at least one comment {{ _('follower') }}</td>
-                    <td>{{ metrics.datasets_min_one_comment_follower }}</td>
+                    <td id="datasets_min_one_comment_follower"  >{{ metrics.datasets_min_one_comment_follower }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td align="left">Data requests</td>
-                    <td>{{ metrics.datarequests.total }}</td>
+                    <td id="datarequests_total">{{ metrics.datarequests.total }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td>Data request comments</td>
-                    <td>{{ metrics.datarequest_comments }}</td>
+                    <td id="datarequest_comments" >{{ metrics.datarequest_comments }}</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td>Data requests with at least one comment {{ _('follower') }}</td>
-                    <td>{{ metrics.datarequests_min_one_comment_follower }}</td>
+                    <td id="datarequests_min_one_comment_follower" >{{ metrics.datarequests_min_one_comment_follower }}</td>
                     <td>-</td>
                 </tr>
 
@@ -114,8 +114,8 @@
 
                 <tr>
                     <td>Closed data requests (circumstances broken out below)</td>
-                    <td>{{ datarequests.closed }}</td>
-                    <td>{{ datarequests.average_overall }}</td>
+                    <td id="datarequests_closed" >{{ datarequests.closed }}</td>
+                    <td id="datarequests_average_overall" >{{ datarequests.average_overall }}</td>
                 </tr>
 
                 {% snippet "reporting/snippets/closed_datarequest_metrics.html",
@@ -127,16 +127,16 @@
                 {% with no_accepted_dataset = datarequests.no_circumstance['no_accepted_dataset'] %}
                 <tr class="closing-circumstance">
                     <td>Closed no accepted dataset (pre-July 2020)</td>
-                    <td>{{ no_accepted_dataset.count }}</td>
-                    <td>{{ no_accepted_dataset.average|default('-') }}</td>
+                    <td id="no_accepted_dataset_count" >{{ no_accepted_dataset.count }}</td>
+                    <td id="no_accepted_dataset_average" >{{ no_accepted_dataset.average|default('-') }}</td>
                 </tr>
                 {% endwith %}
 
                 {% with accepted_dataset = datarequests.no_circumstance['accepted_dataset'] %}
                 <tr class="closing-circumstance">
                     <td>Closed accepted dataset (pre-July 2020)</td>
-                    <td>{{ accepted_dataset.count }}</td>
-                    <td>{{ accepted_dataset.average|default('-') }}</td>
+                    <td id="accepted_dataset_count" >{{ accepted_dataset.count }}</td>
+                    <td id="accepted_dataset_average" >{{ accepted_dataset.average|default('-') }}</td>
                 </tr>
                 {% endwith %}
             </tbody>

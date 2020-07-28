@@ -44,6 +44,21 @@ PERSONAS = {
         name=u'test_org_member',
         email=u'test_org_member@localhost',
         password=u'password'
+    ),
+    'DataRequestOrgAdmin': dict(
+        name=u'dr_admin',
+        email=u'dr_admin@localhost',
+        password=u'password'
+    ),
+    'DataRequestOrgEditor': dict(
+        name=u'dr_editor',
+        email=u'dr_editor@localhost',
+        password=u'password'
+    ),
+    'DataRequestOrgMember': dict(
+        name=u'dr_member',
+        email=u'dr_member@localhost',
+        password=u'password'
     )
 }
 
