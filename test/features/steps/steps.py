@@ -124,3 +124,22 @@ def submit_comment_with_subject_and_comment(context, subject, comment):
         "document.querySelector('form#comment_form textarea[name=\"comment\"]').value = '%s';" % comment)
     context.browser.execute_script(
         "document.querySelector('form#comment_form .form-actions input[type=\"submit\"]').click();")
+
+@step('I create a dataset with license {license} and resource file {file}')
+def create_dataset(context, license, file):
+
+    assert context.persona
+    context.execute_steps(u"""
+        When I visit "dataset/new"
+        And I fill in title with random text
+        And I fill in "notes" with "Description"
+        And I fill in "version" with "1.0"
+        And I fill in "author_email" with "test@me.com"
+        And I execute the script "document.getElementById('field-license_id').value={license}"
+        And I press "Add Data"
+        And I attach the file {file} to "upload"
+        And I fill in "name" with "Test Resource"
+        And I execute the script "document.getElementById('field-format').value='JSON'"
+        And I fill in "description" with "Test Resource Description"
+        And I press "Finish"
+    """.format(license=license, file=file))
