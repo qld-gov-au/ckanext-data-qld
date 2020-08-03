@@ -204,7 +204,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         if resource_score.get('openness_score', 0) == 3 and resource_score_format == 'CSV':
             # If resource has a JSON schema which validated successfully, set score to 4
             if hasattr(resource, 'extras') and resource.extras.get('schema', None) and resource.extras.get(
-                    'validation_status', None) == 'success':
+                    'validation_status', '').lower() == 'success':
                 resource_score['openness_score'] = 4
                 resource_score['openness_score_reason'] = toolkit._(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
@@ -235,8 +235,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
         # QA by default does not know how to handle GPKG formats, check the
         # resource format selected and extension, if it's GPKG apply custom score
-        log.debug('url: {0}'.format(resource.url))
-        log.debug('url: {0}'.format(qa_tasks.extension_variants(resource.url)))
         if 'GPKG' in resource_format:
             if resource.url_type == 'upload' and 'GPKG' in os.path.splitext(resource.url)[1].upper() \
                     or resource.url_type == 'url' and 'GPKG' in (ext.upper() for ext in
