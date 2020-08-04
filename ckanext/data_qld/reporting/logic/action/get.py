@@ -150,8 +150,8 @@ def datarequests(context, data_dict):
             )
             .filter(
                 db.DataRequest.organization_id == org_id,
-                func.date(db.DataRequest.open_time) >= utc_start_date,
-                func.date(db.DataRequest.open_time) < utc_end_date,
+                db.DataRequest.open_time >= utc_start_date,
+                db.DataRequest.open_time < utc_end_date,
             )
             .order_by(db.DataRequest.open_time.desc())
         ).all()
