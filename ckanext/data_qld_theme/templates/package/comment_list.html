@@ -54,6 +54,11 @@
 {% endmacro %}
 
 {% macro comment_thread(thread, content_type, depth=0) %}
+
+    {% if thread.comments | length > 0 and notification_actions_enabled %}
+        {% snippet "snippets/content_item_notification_actions.html", following=following_content_item, content_type=content_type, thread_id=thread.id %}
+    {% endif %}
+
     {% for comment in thread.comments %}
     <div id="comment_{{ comment.id }}" class="comment-wrapper">
         {% set user_can_manage = h.user_can_manage_comments(content_type, pkg_id) %}
@@ -149,10 +154,6 @@
 {% endmacro %}
 
 <h3 id="comments">{{ _('Comments') }}</h3>
-
-{% if notification_actions_enabled %}
-    {% snippet "snippets/content_item_notification_actions.html", following=following_content_item, content_type=content_type, thread_id=thread.id %}
-{% endif %}
 
 <div class="comment-container">
     {{ comment_thread(thread, content_type) }}
