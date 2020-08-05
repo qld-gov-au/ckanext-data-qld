@@ -210,40 +210,41 @@ class DataQldPlugin(plugins.SingletonPlugin):
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_score_format, resource_score.get('openness_score', '')))
 
-        # QA cannot determine file formats that are not part of its own
-        # 'resource_format_openness_scores.json' file and CKAN resource_formats.json file
-        # The below are dataqld specific file formats that are not part of the default
-        # CKAN resource_formats.json file and need custom scoring
+        if resource_score.get('openness_score', 0) > 0:
+            # QA cannot determine file formats that are not part of its own
+            # 'resource_format_openness_scores.json' file and CKAN resource_formats.json file
+            # The below are dataqld specific file formats that are not part of the default
+            # CKAN resource_formats.json file and need custom scoring
 
-        # If QA believes the resource is a TIFF file, check the resource format selected,
-        # if it's GEOTIFF apply custom score
-        if resource_score_format == 'TIFF' and resource_format == 'GEOTIFF':
-            resource_score['openness_score'] = resource_score['openness_score'] = qa_lib.resource_format_scores().get(
-                resource_format)
-            resource_score['openness_score_reason'] = toolkit._(
-                'Content of file appeared to be format "{0}" which receives openness score: {1}.'
-                .format(resource_format, resource_score.get('openness_score', '')))
+            # If QA believes the resource is a TIFF file, check the resource format selected,
+            # if it's GEOTIFF apply custom score
+            if resource_score_format == 'TIFF' and resource_format == 'GEOTIFF':
+                resource_score['openness_score'] = resource_score['openness_score'] = qa_lib.resource_format_scores().get(
+                    resource_format)
+                resource_score['openness_score_reason'] = toolkit._(
+                    'Content of file appeared to be format "{0}" which receives openness score: {1}.'
+                    .format(resource_format, resource_score.get('openness_score', '')))
 
-        # If QA believes the resource is a ZIP file, check the resource format selected,
-        # if it's GDB apply custom score
-        if resource_score_format == 'ZIP' and 'GDB' in resource_format:
-            resource_score['format'] = 'GDB'
-            resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
-            resource_score['openness_score_reason'] = toolkit._(
-                'Content of file appeared to be format "{0}" which receives openness score: {1}.'
-                .format(resource_format, resource_score.get('openness_score', '')))
-
-        # QA by default does not know how to handle GPKG formats, check the
-        # resource format selected and extension, if it's GPKG apply custom score
-        if 'GPKG' in resource_format:
-            if resource.url_type == 'upload' and 'GPKG' in os.path.splitext(resource.url)[1].upper() \
-                    or resource.url_type == 'url' and 'GPKG' in (ext.upper() for ext in
-                                                                 qa_tasks.extension_variants(resource.url)):
-                resource_score['format'] = 'GPKG'
+            # If QA believes the resource is a ZIP file, check the resource format selected,
+            # if it's GDB apply custom score
+            if resource_score_format == 'ZIP' and 'GDB' in resource_format:
+                resource_score['format'] = 'GDB'
                 resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
                 resource_score['openness_score_reason'] = toolkit._(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_format, resource_score.get('openness_score', '')))
+
+            # QA by default does not know how to handle GPKG formats, check the
+            # resource format selected and extension, if it's GPKG apply custom score
+            if 'GPKG' in resource_format:
+                if resource.url_type == 'upload' and 'GPKG' in os.path.splitext(resource.url)[1].upper() \
+                        or resource.url_type == 'url' and 'GPKG' in (ext.upper() for ext in
+                                                                     qa_tasks.extension_variants(resource.url)):
+                    resource_score['format'] = 'GPKG'
+                    resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
+                    resource_score['openness_score_reason'] = toolkit._(
+                        'Content of file appeared to be format "{0}" which receives openness score: {1}.'
+                        .format(resource_format, resource_score.get('openness_score', '')))
 
         return resource_score
 
