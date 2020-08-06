@@ -45,7 +45,8 @@ def get_report_date_range(request):
     if end_date:
         end_date = toolkit.h.date_str_to_datetime(end_date)
     else:
-        end_date = datetime.now()
+        ckan_timezone = toolkit.config.get('ckan.display_timezone', None)
+        end_date = datetime.now(pytz.timezone(ckan_timezone))
 
     return start_date.date().isoformat(), end_date.date().isoformat()
 
@@ -140,14 +141,6 @@ def delta_in_days(latest_date, earliest_date):
     delta = latest_date - earliest_date
 
     return int(delta.total_seconds() / 86400)
-
-
-def get_utc_datetime_no_offset(local_datetime):
-    return datetime(
-        local_datetime.year,
-        local_datetime.month,
-        local_datetime.day,
-        tzinfo=pytz.timezone("UTC")) - local_datetime.utcoffset()
 
 
 def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequest_open_max_days=None):

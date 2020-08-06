@@ -81,6 +81,7 @@ def dataset_followers(context, data_dict):
             .filter(
                 _and_(
                     Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE,
                     UserFollowingDataset.datetime >= utc_start_date,
                     UserFollowingDataset.datetime < utc_end_date,
                 )
@@ -117,6 +118,7 @@ def dataset_comments(context, data_dict):
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
                     Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
@@ -148,8 +150,8 @@ def datarequests(context, data_dict):
             )
             .filter(
                 db.DataRequest.organization_id == org_id,
-                func.date(db.DataRequest.open_time) >= utc_start_date,
-                func.date(db.DataRequest.open_time) < utc_end_date,
+                db.DataRequest.open_time >= utc_start_date,
+                db.DataRequest.open_time < utc_end_date,
             )
             .order_by(db.DataRequest.open_time.desc())
         ).all()
@@ -220,7 +222,8 @@ def dataset_comment_followers(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id
+                    Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.id == CommentNotificationRecipient.thread_id)
@@ -256,7 +259,8 @@ def datasets_min_one_comment_follower(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id
+                    Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.url == func.concat(DATASET_PREFIX, Package.name))
@@ -343,6 +347,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                     Comment.creation_date < utc_reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE,
                     comment_reply.id.is_(None)
                 )
             )
@@ -533,18 +538,17 @@ def comments_no_replies_after_x_days(context, data_dict):
     thread_url = data_dict.get('thread_url', None)
 
     ckan_timezone = config.get('ckan.display_timezone', None)
-    date_format = '%Y-%m-%d %H:%M:%S'
 
     # Comment.creation_date is stored as UTC without timezone
     # We need to check for any comments whose creation date is earlier than
-    # the end of today minus the number of days a reply is expected by (in UTC)
+    # NOW, minus the number of days a reply is expected by (in UTC)
     today = datetime.now(pytz.timezone(ckan_timezone))
 
     days_to_reply = timedelta(days=constants.COMMENT_NO_REPLY_MAX_DAYS)
 
     x_days_from_today = today - days_to_reply
 
-    utc_x_days_from_today = helpers.get_utc_datetime_no_offset(x_days_from_today).strftime(date_format)
+    utc_x_days_from_today = x_days_from_today.astimezone(pytz.timezone('UTC'))
 
     comment_reply = aliased(Comment, name='comment_reply')
 
