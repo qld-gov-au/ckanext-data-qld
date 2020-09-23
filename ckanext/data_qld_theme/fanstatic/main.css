@@ -5402,8 +5402,7 @@ button.close {
     display: none !important; } }
 
 .break-word {
-  -ms-word-break: break-all;
-  word-break: break-all;
+  -ms-word-break: break-word;
   word-break: break-word;
   -webkit-hyphens: auto;
   -ms-hyphens: auto;

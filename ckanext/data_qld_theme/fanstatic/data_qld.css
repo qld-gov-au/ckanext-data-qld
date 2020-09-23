@@ -510,13 +510,20 @@ body > div.qg-staging {
     }
 }
 
-/* QOL-5852 - Override popular icon */
+/* QOL-5852 - Override popular icon as its no longer needed */
 .popular {
   visibility: hidden;
 }
 
-/* QOL-5853 - Edge/IE wordbreaks */
-.context-info h1.heading {
-  -ms-word-break: break-word;
+/* QOL-5853/QOL-5847 - Edge/IE wordbreaks */
+.context-info h1.heading,
+.break-word {
+  -ms-word-break: break-word !important;
   word-break: break-word !important;
+}
+
+/** @DC-13484 - Unclickable home tiles **/
+/** Too risky to change position value, TODO fix greater positions **/
+.wrapper:before  {
+    z-index: -999 !important;
 }
