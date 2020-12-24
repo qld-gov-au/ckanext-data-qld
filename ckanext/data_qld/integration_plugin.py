@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import logging
+import sys
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
@@ -10,6 +11,9 @@ import constants
 import datarequest_auth_functions as auth
 import helpers
 import validation
+
+if sys.version_info[0] >= 3:
+    unicode = str
 
 if ' qa' in toolkit.config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA
@@ -165,4 +169,3 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
                         .format(resource_format, resource_score.get('openness_score', '')))
 
         return resource_score
-

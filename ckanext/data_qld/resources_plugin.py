@@ -1,15 +1,20 @@
 # encoding: utf-8
 
 import cgi
+import sys
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
 import auth_functions as auth
+import blueprint_overrides
 import converters
 import helpers
 import logging
 
 from flask import Blueprint
+
+if sys.version_info[0] >= 3:
+    unicode = str
 
 log = logging.getLogger(__name__)
 
@@ -100,7 +105,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         if resource_id and package_id:
             try:
                 toolkit.get_action('package_resource_reorder')(context, {'id': package_id, 'order': [resource_id]})
-            except Exception, e:
+            except Exception as e:
                 log.error(str(e))
         return data_dict
 
