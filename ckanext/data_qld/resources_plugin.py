@@ -9,6 +9,8 @@ import converters
 import helpers
 import logging
 
+from flask import Blueprint
+
 log = logging.getLogger(__name__)
 
 
@@ -23,6 +25,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(plugins.IMiddleware, inherit=True)
+    plugins.implements(plugins.IBlueprint)
 
     # IConfigurer
     def update_config(self, config_):
@@ -42,7 +45,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'data_qld_organisation_list': helpers.organisation_list,
                 'data_qld_user_has_admin_access': helpers.user_has_admin_access,
                 'data_qld_format_activity_data': helpers.format_activity_data,
-                'data_qld_resource_formats': helpers.resource_formats
+                'data_qld_resource_formats': helpers.resource_formats,
+                'activity_type_nice': helpers.activity_type_nice,
+                'profanity_checking_enabled': helpers.profanity_checking_enabled
                 }
 
     # IValidators
@@ -102,6 +107,23 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     # IMiddleware
     def make_middleware(self, app, config):
         return AuthMiddleware(app, config)
+
+    # IBlueprint
+    def get_blueprint(self):
+        """
+        CKAN uses Flask Blueprints in the /ckan/views dir for user and dashboard
+        Here we override some routes to redirect unauthenticated users to the login page, and only redirect the
+        user to the `came_from` URL if they are logged in.
+        :return:
+        """
+        blueprint = Blueprint(self.name, self.__module__)
+        blueprint.add_url_rule(u'/user/logged_in', u'logged_in', blueprint_overrides.logged_in_override)
+        blueprint.add_url_rule(u'/user/edit', u'edit', blueprint_overrides.user_edit_override)
+        blueprint.add_url_rule(
+            u'/dashboard/', u'dashboard', blueprint_overrides.dashboard_override, strict_slashes=False, defaults={
+                u'offset': 0
+            })
+        return blueprint
 
 
 class AuthMiddleware(object):
