@@ -2,6 +2,7 @@
 
 import cgi
 import logging
+import sys
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
@@ -16,6 +17,9 @@ import helpers
 import validation
 
 from flask import Blueprint
+
+if sys.version_info[0] >= 3:
+    unicode = str
 
 if ' qa' in toolkit.config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA
@@ -171,7 +175,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         if resource_id and package_id:
             try:
                 toolkit.get_action('package_resource_reorder')(context, {'id': package_id, 'order': [resource_id]})
-            except Exception, e:
+            except Exception as e:
                 log.error(str(e))
         return data_dict
 
