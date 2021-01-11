@@ -22,6 +22,10 @@ def ytp_comments_enabled():
     return "ytp_comments" in config.get('ckan.plugins', False)
 
 
+def is_datarequests_enabled():
+    return "datarequests" in config.get('ckan.plugins', False)
+
+
 def get_all_groups():
     groups = toolkit.get_action('group_list')(
         data_dict={'include_dataset_count': False, 'all_fields': True})
@@ -143,6 +147,7 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'get_gtm_container_id': get_gtm_code,
             'get_year': get_year,
             'ytp_comments_enabled': ytp_comments_enabled,
+            'is_datarequests_enabled': is_datarequests_enabled,
             'get_all_groups': get_all_groups,
             'is_request_for_resource': is_request_for_resource,
             'set_background_image_class': set_background_image_class,
