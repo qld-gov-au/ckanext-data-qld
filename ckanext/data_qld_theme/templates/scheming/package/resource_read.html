@@ -1,5 +1,7 @@
 {% ckan_extends %}
 
+{% block subtitle %}{{ h.resource_display_name(res) }} - {{ h.dataset_display_name(c.package) }}{% endblock %}
+
 {%- block resource_last_updated -%}
   {% do h.populate_revision(res) %}
   <tr>
@@ -29,3 +31,10 @@
 
  {{ super() }}
 {%- endblock -%}
+
+{% block resource_additional_information_inner %}
+  {{ super() }}
+  {{ h.qa_openness_stars_resource_html(res) }}
+  {{ h.archiver_is_resource_broken_html(res) }}<br>
+  {{ h.archiver_is_resource_cached_html(res) }}
+{% endblock %}

@@ -1,0 +1,21 @@
+{# Shows the five star openness_score meanings, optionally with a certain openness_score highlighted
+
+Pass in:
+  openness_score - number of stars (or None if you don't want to highlight a particular one)
+#}
+
+{% if openness_score != None %}
+  <div class="star-openness_score-entry">
+    {% if openness_score == 0 %}
+      {{ _('Contains no active link to open data.') }}
+    {% elif openness_score == 1 %}
+      {{ _('Contains non-machine readable open data.') }}
+    {% elif openness_score == 2 %}
+      {{ _('Contains proprietary format machine-readable open data.') }}
+    {% elif openness_score == 3 %}
+      {{ _('Contains open format machine-readable open data.') }}
+    {% elif openness_score == 4 %}
+      {{ _('Contains file schema and open format machine-readable open data.') }}
+    {% endif %}
+  </div>
+{% endif %}

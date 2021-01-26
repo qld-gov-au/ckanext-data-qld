@@ -527,3 +527,12 @@ body > div.qg-staging {
 .wrapper:before  {
     z-index: -999 !important;
 }
+
+.comment.unreplied {
+  background-color: #eea236;
+}
+
+/* [DQL2-9] - Style for star openness explained */
+.star-openness_score-entry {
+  font-style: italic;
+}
