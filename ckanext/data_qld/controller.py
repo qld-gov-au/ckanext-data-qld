@@ -75,6 +75,7 @@ class DataQldUI(base.BaseController):
             c.schema_data = json.dumps(schema_data, indent=2, sort_keys=True)
             return tk.render('schema/show.html')
         except tk.ObjectNotFound as e:
+            log.warn(e)
             tk.abort(404, tk._('Resource %s not found') % resource_id)
         except tk.NotAuthorized as e:
             log.warn(e)
