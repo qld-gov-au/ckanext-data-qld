@@ -16,6 +16,12 @@
 {%- if field.get('sorted_choices') -%}
   {%- set options = options|sort(case_sensitive=false, attribute='text') -%}
 {%- endif -%}
+
+{%- set csv_option = {'text': 'CSV', 'value':'CSV'} -%}
+{% if csv_option in options %}
+  {% do options.remove(csv_option) %}
+  {% do options.insert(0, csv_option) %}
+{% endif %}
 {%- set selectedValue = data.get(field.field_name, '').upper() -%}
 {% call form.select(
     field.field_name,
