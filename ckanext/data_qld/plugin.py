@@ -39,7 +39,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
-    plugins.implements(plugins.IMiddleware, inherit=True)
     plugins.implements(plugins.IBlueprint)
 
     if ' qa' in toolkit.config.get('ckan.plugins', ''):
@@ -179,10 +178,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
                 log.error(str(e))
         return data_dict
 
-    # IMiddleware
-    def make_middleware(self, app, config):
-        return AuthMiddleware(app, config)
-
     # IBlueprint
     def get_blueprint(self):
         """
@@ -251,18 +246,3 @@ class DataQldPlugin(plugins.SingletonPlugin):
                         .format(resource_format, resource_score.get('openness_score', '')))
 
         return resource_score
-
-
-class AuthMiddleware(object):
-    def __init__(self, app, app_conf):
-        self.app = app
-
-    def __call__(self, environ, start_response):
-        # Redirect users to /user/reset page after submitting password reset request
-        if environ['PATH_INFO'] == '/' and 'HTTP_REFERER' in environ and 'user/reset' in environ['HTTP_REFERER']:
-            headers = [('Location', '/user/reset')]
-            status = "302 Found"
-            start_response(status, headers)
-            return ['']
-
-        return self.app(environ, start_response)
