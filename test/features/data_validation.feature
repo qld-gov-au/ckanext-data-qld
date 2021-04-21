@@ -28,7 +28,7 @@ Feature: Data Validation
         And I execute the script "document.getElementById('field-format').value='JSON'"
         And I fill in "description" with "Test Resource Description"
         And I fill in "size" with "1mb"
-        And I take a screenshot
+        And I execute the script "document.getElementById('field-schema-upload').parentNode.parentNode.setAttribute('style', '')"
         And I attach the file "test-resource_schemea.json" to "schema_upload"
         And I press "Finish"
         When I wait for 1 seconds
