@@ -11,6 +11,9 @@ CKAN_INI_FILE=/app/ckan/default/production.ini
 . /app/ckan/default/bin/activate \
     && cd /app/ckan/default/src/ckan
 
+# Initialise validation tables
+paster --plugin=ckanext-validation validation init-db -c /app/ckan/default/production.ini
+
 # We know the "admin" sysadmin account exists, so we'll use her API KEY to create further data
 API_KEY=$(paster --plugin=ckan user admin -c ${CKAN_INI_FILE} | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/')
 
@@ -117,8 +120,5 @@ echo "Creating config value for resource formats:"
 curl -L -s --header "Authorization: ${API_KEY}" \
     --data "ckanext.data_qld.resource_formats=JSON" \
     ${CKAN_ACTION_URL}/config_option_update
-
-# Initialise validation tables
-paster --plugin=ckanext-validation validation init-db -c /app/ckan/default/production.ini
 
 deactivate
