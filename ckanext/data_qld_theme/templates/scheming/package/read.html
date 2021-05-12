@@ -7,16 +7,9 @@
 {% endblock %}
 
 {% block package_notes %}
-
-    {% resource "odi_certificates/odi_certificate.js" %}
-    {% resource "odi_certificates/odi_certificate.css" %}
-
-    <div id="odi_certificates"
-      data-module="odi_certificates"
-      data-module-certificate_api_urls="{{ h.odi_certificates_certificate_api_urls()}}"">
-        {% snippet "package/snippets/odi_certificate.html" %}
-    </div>
-
-    {{ super() }}
-
+    <section>
+      {{ h.qa_openness_stars_dataset_html(pkg) }}
+    </section>
+ {{ super() }}
 {% endblock %}
+
