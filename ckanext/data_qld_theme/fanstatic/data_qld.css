@@ -528,6 +528,12 @@ body > div.qg-staging {
     z-index: -999 !important;
 }
 
+/** @DC-13148 - CSS height diff on utils bar (caused by squiz overlay on pages > ckan) **/
+/** Setting standard height value to 44px, as rendered on mobile/ipad/desktop etc. **/
+div.page-wrapper div.account-masthead {
+  height: 44px; 
+}
+
 .comment.unreplied {
   background-color: #eea236;
 }
