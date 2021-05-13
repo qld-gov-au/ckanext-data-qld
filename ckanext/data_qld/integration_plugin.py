@@ -11,6 +11,7 @@ import constants
 import datarequest_auth_functions as auth
 import helpers
 import validation
+import views
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -35,7 +36,11 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IActions)
-    plugins.implements(plugins.IRoutes, inherit=True)
+
+    if toolkit.check_ckan_version(min_version='2.8.0'):
+        plugins.implements(plugins.IBlueprint)
+    else:
+        plugins.implements(plugins.IRoutes, inherit=True)
 
     if ' qa' in toolkit.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
@@ -86,6 +91,8 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
         return additional_actions
 
     # IRoutes
+    # Ignored on CKAN >= 2.8
+
     def before_map(self, m):
         # Re_Open a Data Request
         m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
@@ -117,6 +124,12 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
                   action='resource_read')
 
         return m
+
+    # IBlueprint
+    # Ignored on CKAN < 2.8
+
+    def get_blueprint(self):
+        return views.get_blueprints()
 
     # IQA
     def custom_resource_score(self, resource, resource_score):
