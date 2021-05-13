@@ -32,7 +32,6 @@ def _get_errors_summary(errors):
 def open_datarequest(id):
     """ Opens a closed Data Request.
     """
-    log.debug("Blueprint open_datarequest")
     data_dict = {'id': id}
     context = _get_context()
 

@@ -52,7 +52,6 @@ def dataset_read(package_type, id):
     :param id: Package id/name
     :return:
     """
-    log.debug("Blueprint dataset_read")
     if not g.user and not _is_dataset_public(id):
         tk.redirect_to(
             tk.url_for('user.login', came_from='/dataset/{id}'.format(id=id))
@@ -70,7 +69,6 @@ def resource_read(package_type, id, resource_id):
     :param resource_id: Resource id
     :return:
     """
-    log.debug("Blueprint resource_read")
     if not g.user and not _is_dataset_public(id):
         tk.redirect_to(
             tk.url_for('user.login',
@@ -83,7 +81,6 @@ def resource_read(package_type, id, resource_id):
 def show_schema(package_type, id, resource_id):
     """ Display the resource validation schema, if any.
     """
-    log.debug("Blueprint show_schema")
     data_dict = {'id': resource_id}
     context = _get_context()
 
