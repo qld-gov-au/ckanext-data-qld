@@ -11,7 +11,6 @@ import constants
 import datarequest_auth_functions as auth
 import helpers
 import validation
-import views
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -37,10 +36,13 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IActions)
 
+    # CKAN <= 2.7 requires just Pylons.
+    # CKAN 2.8 requires a mix of Pylons and Flask.
+    # CKAN 2.9 requires just Flask.
+    if not toolkit.check_ckan_version(min_version='2.9.0'):
+        plugins.implements(plugins.IRoutes, inherit=True)
     if toolkit.check_ckan_version(min_version='2.8.0'):
         plugins.implements(plugins.IBlueprint)
-    else:
-        plugins.implements(plugins.IRoutes, inherit=True)
 
     if ' qa' in toolkit.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
@@ -91,13 +93,15 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
         return additional_actions
 
     # IRoutes
-    # Ignored on CKAN >= 2.8
+    # Ignored on CKAN >= 2.9
 
     def before_map(self, m):
-        # Re_Open a Data Request
-        m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.data_qld.controller:DataQldUI',
-                  action='open_datarequest', conditions=dict(method=['GET', 'POST']))
+        """ Route via Pylons if blueprints aren't available yet.
+        """
+        if not toolkit.check_ckan_version(min_version='2.8.0'):
+            m.connect('/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH,
+                      controller='ckanext.data_qld.controller:DataQldUI',
+                      action='open_datarequest', conditions=dict(method=['GET', 'POST']))
 
         m.connect('/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
                   controller='ckanext.data_qld.controller:DataQldUI',
@@ -129,7 +133,12 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
     # Ignored on CKAN < 2.8
 
     def get_blueprint(self):
-        return views.get_blueprints()
+        import datarequest_view
+        blueprints = datarequest_view.get_blueprints()
+        if toolkit.check_ckan_version(min_version='2.9.0'):
+            import dataset_view
+            blueprints.extend(dataset_view.get_blueprints())
+        return blueprints
 
     # IQA
     def custom_resource_score(self, resource, resource_score):

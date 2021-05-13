@@ -5,18 +5,14 @@ import logging
 
 from flask import Blueprint
 
-from ckan.common import _, g
-from ckan.logic import get_action, NotFound, NotAuthorized
-import ckan.lib.base as base
+from ckan.common import g
 import ckan.model as model
-import ckan.plugins as plugins
+from ckan.plugins import toolkit as tk
 from ckan.views import dataset, resource
 
 import constants
 
-abort = base.abort
 log = logging.getLogger(__name__)
-tk = plugins.toolkit
 c = tk.c
 
 
@@ -25,12 +21,6 @@ _dataset = Blueprint(
     __name__,
     url_prefix=u'/dataset/<id>',
     url_defaults={u'package_type': u'dataset'}
-)
-
-_datarequest = Blueprint(
-    u'data_qld_datarequest',
-    __name__,
-    url_prefix='/' + constants.DATAREQUESTS_MAIN_PATH
 )
 
 
@@ -46,11 +36,11 @@ def _get_errors_summary(errors):
 
 def _is_dataset_public(id):
     try:
-        get_action('package_show')(_get_context(), {'id': id})
+        tk.get_action('package_show')(_get_context(), {'id': id})
         return True
-    except NotFound:
-        abort(404, _('Dataset not found'))
-    except NotAuthorized:
+    except tk.NotFound:
+        tk.abort(404, tk._('Dataset not found'))
+    except tk.NotAuthorized:
         return False
 
 
@@ -111,46 +101,10 @@ def show_schema(package_type, id, resource_id):
         tk.abort(403, tk._('You are not authorized to view the Data Scheme for the resource %s' % resource_id))
 
 
-def open_datarequest(id):
-    """ Opens a closed Data Request.
-    """
-    log.debug("Blueprint open_datarequest")
-    data_dict = {'id': id}
-    context = _get_context()
-
-    # Basic initialization
-    c.datarequest = {}
-    try:
-        tk.check_access(constants.OPEN_DATAREQUEST, context, data_dict)
-        c.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
-
-        if c.datarequest.get('closed', False) is False:
-            tk.abort(403, tk._('This data request is already open'))
-        else:
-            data_dict = {}
-            data_dict['id'] = id
-            data_dict['organization_id'] = c.datarequest.get('organization_id')
-
-            tk.get_action(constants.OPEN_DATAREQUEST)(context, data_dict)
-            tk.redirect_to('datarequest.show', id=data_dict['id'])
-    except tk.ValidationError as e:
-        log.warn(e)
-        errors_summary = _get_errors_summary(e.error_dict)
-        tk.abort(403, errors_summary)
-    except tk.ObjectNotFound as e:
-        log.warn(e)
-        tk.abort(404, tk._('Data Request %s not found') % id)
-    except tk.NotAuthorized as e:
-        log.warn(e)
-        tk.abort(403, tk._('You are not authorized to open the Data Request %s' % id))
-
-
 _dataset.add_url_rule(u'', view_func=dataset_read)
 _dataset.add_url_rule(u'/resource/<resource_id>', view_func=resource_read)
 _dataset.add_url_rule(u'/resource/<resource_id>/{}/show'.format(constants.SCHEMA_MAIN_PATH), view_func=show_schema)
 
-_datarequest.add_url_rule(u'/open/<id>', view_func=open_datarequest)
-
 
 def get_blueprints():
-    return [_dataset, _datarequest]
+    return [_dataset]
