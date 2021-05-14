@@ -70,8 +70,7 @@ def _dictize_datarequest(datarequest):
         'organization': None,
         'accepted_dataset': None,
         'followers': 0,
-        'dataset_url': helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                                       action='show', id=datarequest.id, qualified=True)
+        'dataset_url': helpers.url_for('datarequest.show', id=datarequest.id, qualified=True)
     }
 
     if datarequest.organization_id:
