@@ -3,8 +3,8 @@
 {% block subtitle %}{{ _('Close data request') }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li>{% link_for _('Data requests'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='index' %}</li>
-  <li>{% link_for c.datarequest.get('title')|truncate(30), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='show', id=c.datarequest.get('id') %}</li>
+  <li>{% link_for _('Data requests'), named_route='datarequest.index' %}</li>
+  <li>{% link_for c.datarequest.get('title')|truncate(30), named_route='datarequest.show', id=c.datarequest.get('id') %}</li>
   <li class="active"><a href="">{{ _('Close data request') }}</a></li>
 {% endblock %}
 
