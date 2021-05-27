@@ -107,7 +107,7 @@ def latest_revision(resource_id):
 
 
 def populate_revision(resource):
-    if 'revision_timestamp' in resource:
+    if 'revision_timestamp' in resource or toolkit.check_ckan_version(min_version='2.9'):
         return
     current_revision = latest_revision(resource['id'])
     if current_revision is not None:

@@ -101,7 +101,7 @@
                         {% if 'user_state' in comment and comment.user_state == 'deleted' %}
                             <em>{{ comment.user_login_name }}</em> {{ commented_on }}
                         {% else %}
-                            {% link_for _(comment.user_login_name), controller='user', action='read', id=comment.user_id %} {{ commented_on }}
+                            {% link_for _(comment.user_login_name), named_route='user.read', id=comment.user_id %} {{ commented_on }}
                         {% endif %}
                         {% if comment.modified_date %}
                         &mdash; <small>({{ _('Modified') }} {{ h.render_datetime(comment.modified_date, "%d %b %Y, %-I:%M%p") }})</small>
@@ -184,6 +184,6 @@
 
 {% else %}
 
-    {% link_for _('Login to comment'), controller='user', action='login', class_='btn btn-primary', came_from=h.full_current_url() %}
+    {% link_for _('Login to comment'), named_route='user.login', class_='btn btn-primary', came_from=h.full_current_url() %}
 
 {% endif %}
