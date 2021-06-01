@@ -3,7 +3,7 @@
 {% block breadcrumb_content %}
     <li>{% link_for _('Organizations'), named_route='organization.index' %}</li>
     <li>{% link_for pkg.organization.title, named_route='organization.read', id=pkg.organization.name %}</li>
-    <li class="active"><a href="{{ h.url_for('package.read', id=pkg.name) }}">{{ pkg.title }}</a></li>
+    <li class="active"><a href="{{ h.url_for('dataset_read', id=pkg.name) }}">{{ pkg.title }}</a></li>
 {% endblock %}
 
 {% block package_notes %}

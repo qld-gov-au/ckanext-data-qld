@@ -14,7 +14,7 @@
     {% else %}
       <li>{% link_for _('Datasets'), named_route='package.search' %}</li>
     {% endif %}
-    <li{{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), named_route='package.read', id=pkg.name %}</li>
+    <li{{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), named_route='dataset_read', id=pkg.name %}</li>
   {% else %}
     <li>{% link_for _('Datasets'), named_route='package.search' %}</li>
     <li class="active"><a href="">{{ _('Create Dataset') }}</a></li>
