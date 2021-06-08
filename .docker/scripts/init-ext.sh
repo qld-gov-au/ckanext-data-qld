@@ -4,13 +4,12 @@
 #
 set -e
 
-. /app/ckan/default/bin/activate
-
-pip install -r "/app/requirements.txt"
-pip install -r "/app/requirements-dev.txt"
-python setup.py develop
+PIP="${APP_DIR}/bin/pip"
+cd $WORKDIR
+$PIP install -r "requirements.txt"
+$PIP install -r "requirements-dev.txt"
+$APP_DIR/bin/python setup.py develop
 
 # Validate that the extension was installed correctly.
-if ! pip list | grep ckanext-data-qld-theme > /dev/null; then echo "Unable to find the extension in the list"; exit 1; fi
+if ! $PIP list | grep ckanext-data-qld-theme > /dev/null; then echo "Unable to find the extension in the list"; exit 1; fi
 
-deactivate

@@ -1,0 +1,21 @@
+FROM openknowledge/ckan-dev:2.8
+
+WORKDIR /app
+
+ARG SITE_URL
+ENV SITE_URL="${SITE_URL}"
+
+RUN mkdir $SRC_DIR/app
+
+COPY .docker/test.ini $CKAN_INI
+
+COPY .docker/scripts $SRC_DIR/app/scripts
+
+RUN chmod +x $SRC_DIR/app/scripts/*.sh
+
+# Add current extension and files.
+COPY ckanext $SRC_DIR/app/ckanext
+COPY requirements.txt requirements-dev.txt setup.cfg setup.py $SRC_DIR/app/
+
+# Init current extension.
+RUN $SRC_DIR/app/scripts/init-ext.sh

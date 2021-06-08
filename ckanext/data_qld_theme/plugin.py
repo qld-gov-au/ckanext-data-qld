@@ -47,16 +47,18 @@ def is_reporting_enabled():
 def is_request_for_resource():
     """
     Searching for a url path for /dataset/ and /resource/
-    eg. /dataset/test-dataset-name/resource/b33a702a-f162-44a8-aad9-b9e630a8f56e
+    eg. /dataset/example/resource/b33a702a-f162-44a8-aad9-b9e630a8f56e
     :return:
     """
     original_request = request.environ.get('pylons.original_request')
     if original_request:
-        return re.search(r"/dataset/\S+/resource/\S+", original_request.path)
+        return re.search(r"/dataset/\S+/resource/\S+",
+                         original_request.path)
     return False
 
 
-# this ensures external css/js is loaded from external staging if running in cicd/pdev environments.
+# this ensures external css/js is loaded from external staging
+# if running in cicd/pdev environments.
 def set_external_resources():
     environment = config.get('ckan.site_url', '')
     if 'ckan' in environment:
@@ -95,19 +97,20 @@ def set_background_image_class():
 
 
 def latest_revision(resource_id):
-    resource_revisions = model.Session.query(model.resource_revision_table).filter(
-        model.ResourceRevision.id == resource_id,
-        model.ResourceRevision.expired_timestamp > '9999-01-01'
-    )
+    resource_revisions = model.Session.query(model.resource_revision_table)\
+        .filter(model.ResourceRevision.id == resource_id,
+                model.ResourceRevision.expired_timestamp > '9999-01-01')
     highest_value = None
     for revision in resource_revisions:
-        if highest_value is None or revision.revision_timestamp > highest_value.revision_timestamp:
+        if highest_value is None or revision.revision_timestamp > \
+                highest_value.revision_timestamp:
             highest_value = revision
     return highest_value
 
 
 def populate_revision(resource):
-    if 'revision_timestamp' in resource or toolkit.check_ckan_version(min_version='2.9'):
+    if 'revision_timestamp' in resource \
+            or toolkit.check_ckan_version(min_version='2.9'):
         return
     current_revision = latest_revision(resource['id'])
     if current_revision is not None:
@@ -115,15 +118,16 @@ def populate_revision(resource):
 
 
 def unreplied_comments_x_days(thread_url):
-    """A helper function for Data.Qld Engagement Reporting to highlight un-replied comments
-    after x number of days (number of days is a constant in the reporting plugin).
+    """A helper function for Data.Qld Engagement Reporting
+    to highlight un-replied comments after x number of days.
+    (Number of days is a constant in the reporting plugin)
     """
     comment_ids = []
 
     if 'data_qld_reporting' in config.get('ckan.plugins', False):
-        unreplied_comments = toolkit.get_action('comments_no_replies_after_x_days')({}, {
-            'thread_url': thread_url
-        })
+        unreplied_comments = toolkit.get_action(
+            'comments_no_replies_after_x_days'
+        )({}, {'thread_url': thread_url})
 
         comment_ids = [comment[1] for comment in unreplied_comments]
 
@@ -153,7 +157,8 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'set_background_image_class': set_background_image_class,
             'set_external_resources': set_external_resources,
             'is_prod': is_prod,
-            'comment_notification_recipients_enabled': get_comment_notification_recipients_enabled,
+            'comment_notification_recipients_enabled':
+                get_comment_notification_recipients_enabled,
             'populate_revision': populate_revision,
             'unreplied_comments_x_days': unreplied_comments_x_days,
             'is_reporting_enabled': is_reporting_enabled

@@ -1,0 +1,5 @@
+name: 'BDD tests'
+description: Run scenario tests with Behave
+runs:
+  using: 'docker'
+  image: "../../../.docker/Dockerfile.ckan"
