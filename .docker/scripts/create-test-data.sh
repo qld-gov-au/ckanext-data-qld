@@ -54,7 +54,7 @@ curl -L -s --header "Authorization: ${API_KEY}" \
 #
 
 # Creating basic test data which has datasets with resources
-$CKAN_CLI create-test-data -c ${CKAN_INI_FILE}
+$CKAN_CLI create-test-data
 
 # Datasets need to be assigned to an organisation
 
