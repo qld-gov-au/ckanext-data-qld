@@ -6,16 +6,12 @@
 set -e
 
 CKAN_ACTION_URL=http://ckan:3000/api/action
-CKAN_INI_FILE=/app/ckan/default/production.ini
+CKAN_CLI=$WORKDIR/scripts/ckan_cli
 
-. /app/ckan/default/bin/activate \
-    && cd /app/ckan/default/src/ckan
-
-# Initialise validation tables
-paster --plugin=ckanext-validation validation init-db -c /app/ckan/default/production.ini
+. ${APP_DIR}/bin/activate
 
 # We know the "admin" sysadmin account exists, so we'll use her API KEY to create further data
-API_KEY=$(paster --plugin=ckan user admin -c ${CKAN_INI_FILE} | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/')
+API_KEY=$($CKAN_CLI user admin | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/')
 
 ##
 # BEGIN: Create a test organisation with test users for admin, editor and member
@@ -25,10 +21,10 @@ TEST_ORG_TITLE="Test"
 
 echo "Creating test users for ${TEST_ORG_TITLE} Organisation:"
 
-paster --plugin=ckan user add ckan_user email=ckan_user@localhost password=password -c ${CKAN_INI_FILE}
-paster --plugin=ckan user add test_org_admin email=test_org_admin@localhost password=password -c ${CKAN_INI_FILE}
-paster --plugin=ckan user add test_org_editor email=test_org_editor@localhost password=password -c ${CKAN_INI_FILE}
-paster --plugin=ckan user add test_org_member email=test_org_member@localhost password=password -c ${CKAN_INI_FILE}
+$CKAN_CLI user add ckan_user email=ckan_user@localhost password=password
+$CKAN_CLI user add test_org_admin email=test_org_admin@localhost password=password
+$CKAN_CLI user add test_org_editor email=test_org_editor@localhost password=password
+$CKAN_CLI user add test_org_member email=test_org_member@localhost password=password
 
 echo "Creating ${TEST_ORG_TITLE} Organisation:"
 
@@ -87,8 +83,9 @@ DR_ORG_TITLE="Open Data Administration (data requests)"
 
 echo "Creating test users for ${DR_ORG_TITLE} Organisation:"
 
-paster --plugin=ckan user add dr_admin email=dr_admin@localhost password=password -c ${CKAN_INI_FILE}
-paster --plugin=ckan user add dr_editor email=dr_editor@localhost password=password -c ${CKAN_INI_FILE}
+$CKAN_CLI user add dr_admin email=dr_admin@localhost password=password
+$CKAN_CLI user add dr_editor email=dr_editor@localhost password=password
+$CKAN_CLI user add dr_member email=dr_member@localhost password=password
 
 echo "Creating Data Request Organisation:"
 
@@ -101,6 +98,8 @@ DR_ORG=$( \
 
 DR_ORG_ID=$(echo $DR_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
+echo "Assigning test users to Data Request Organisation:"
+
 curl -L -s --header "Authorization: ${API_KEY}" \
     --data "id=${DR_ORG_ID}&object=dr_admin&object_type=user&capacity=admin" \
     ${CKAN_ACTION_URL}/member_create
@@ -108,6 +107,11 @@ curl -L -s --header "Authorization: ${API_KEY}" \
 curl -L -s --header "Authorization: ${API_KEY}" \
     --data "id=${DR_ORG_ID}&object=dr_editor&object_type=user&capacity=editor" \
     ${CKAN_ACTION_URL}/member_create
+
+curl -L -s --header "Authorization: ${API_KEY}" \
+    --data "id=${DR_ORG_ID}&object=dr_member&object_type=user&capacity=member" \
+    ${CKAN_ACTION_URL}/member_create
+
 
 echo "Creating test Data Request:"
 
