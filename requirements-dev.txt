@@ -8,6 +8,8 @@ xlrd==1.2.0
 python-magic==0.4.18
 messytables==0.15.2
 progressbar==2.5
+git+https://github.com/ckan/ckanapi@ckanapi-4.3#egg=ckanapi
+git+https://github.com/ckan/ckantoolkit@release-0.0.4#egg=ckantoolkit
 -e git+https://github.com/qld-gov-au/ckanext-datarequests.git@develop#egg=ckanext-datarequests
 -e git+https://github.com/frictionlessdata/ckanext-validation.git#egg=ckanext-validation
 -e git+https://github.com/qld-gov-au/ckanext-data-qld-theme.git@develop#egg=ckanext-data-qld-theme

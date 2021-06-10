@@ -17,7 +17,7 @@ PERSONAS = {
     'Admin': dict(
         name=u'admin',
         email=u'admin@localhost',
-        password=u'password'
+        password=u'Password123!'
     ),
     'Unauthenticated': dict(
         name=u'',
