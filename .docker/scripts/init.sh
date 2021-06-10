@@ -12,11 +12,6 @@ CKAN_USER_EMAIL="${CKAN_USER_EMAIL:-admin@localhost}"
 . ${APP_DIR}/bin/activate
 ckan_cli db clean
 ckan_cli db init
-ckan_cli user add "${CKAN_USER_NAME}"\
- fullname="${CKAN_DISPLAY_NAME}"\
- email="${CKAN_USER_EMAIL}"\
- password="${CKAN_USER_PASSWORD}"
-ckan_cli sysadmin add "${CKAN_USER_NAME}"
 
 # Initialise validation tables
 PASTER_PLUGIN=ckanext-validation ckan_cli validation init-db
@@ -34,6 +29,12 @@ PASTER_PLUGIN=ckanext-report ckan_cli report initdb
 
 # Initialise the QA database tables
 PASTER_PLUGIN=ckanext-qa ckan_cli qa init
+
+ckan_cli user add "${CKAN_USER_NAME}"\
+ fullname="${CKAN_DISPLAY_NAME}"\
+ email="${CKAN_USER_EMAIL}"\
+ password="${CKAN_USER_PASSWORD}"
+ckan_cli sysadmin add "${CKAN_USER_NAME}"
 
 # Create some base test data
 . $WORKDIR/scripts/create-test-data.sh
