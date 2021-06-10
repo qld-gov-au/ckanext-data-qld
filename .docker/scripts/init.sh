@@ -18,6 +18,9 @@ ckan_cli user add "${CKAN_USER_NAME}"\
  password="${CKAN_USER_PASSWORD}"
 ckan_cli sysadmin add "${CKAN_USER_NAME}"
 
+# Initialise validation tables
+PASTER_PLUGIN=ckanext-validation ckan_cli validation init-db
+
 # Initialise the Comments database tables
 PASTER_PLUGIN=ckanext-ytp-comments ckan_cli initdb
 PASTER_PLUGIN=ckanext-ytp-comments ckan_cli updatedb
