@@ -32,6 +32,7 @@ TEST_ORG=$( \
     $CURL --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
     ${CKAN_ACTION_URL}/organization_create
 )
+echo $TEST_ORG
 
 TEST_ORG_ID=$(echo $TEST_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
