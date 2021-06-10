@@ -1,4 +1,8 @@
-# ckanext-data-qld
+[![Tests](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml/badge.svg)](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml)
+================
+ckanext-data-qld
+================
+
 A custom CKAN extension for Data.Qld
 
 [![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop.svg?style=shield)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop)
