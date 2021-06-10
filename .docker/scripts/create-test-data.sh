@@ -11,8 +11,6 @@ CKAN_ACTION_URL=http://ckan:3000/api/action
 
 # We know the "admin" sysadmin account exists, so we'll use her API KEY to create further data
 API_KEY=$(ckan_cli user admin | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/')
-CURL="curl -L -s --header 'Authorization: ${API_KEY}'"
-echo "DEBUG: Running API calls with: $CURL"
 
 ##
 # BEGIN: Create a test organisation with test users for admin, editor and member
@@ -30,7 +28,8 @@ ckan_cli user add test_org_member email=test_org_member@localhost password=passw
 echo "Creating ${TEST_ORG_TITLE} Organisation:"
 
 TEST_ORG=$( \
-    $CURL --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
+    curl -LsH "Authorization: ${API_KEY}" \
+    --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
     ${CKAN_ACTION_URL}/organization_create
 )
 echo $TEST_ORG
@@ -39,13 +38,16 @@ TEST_ORG_ID=$(echo $TEST_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
 echo "Assigning test users to ${TEST_ORG_TITLE} Organisation:"
 
-$CURL --data "id=${TEST_ORG_ID}&object=test_org_admin&object_type=user&capacity=admin" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${TEST_ORG_ID}&object=test_org_admin&object_type=user&capacity=admin" \
     ${CKAN_ACTION_URL}/member_create
 
-$CURL --data "id=${TEST_ORG_ID}&object=test_org_editor&object_type=user&capacity=editor" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${TEST_ORG_ID}&object=test_org_editor&object_type=user&capacity=editor" \
     ${CKAN_ACTION_URL}/member_create
 
-$CURL --data "id=${TEST_ORG_ID}&object=test_org_member&object_type=user&capacity=member" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${TEST_ORG_ID}&object=test_org_member&object_type=user&capacity=member" \
     ${CKAN_ACTION_URL}/member_create
 ##
 # END.
@@ -60,14 +62,16 @@ echo "Assigning test Datasets to Organisation..."
 
 echo "Updating annakarenina to use ${TEST_ORG_TITLE} organisation:"
 package_owner_org_update=$( \
-    $CURL --data "id=annakarenina&organization_id=${TEST_ORG_NAME}" \
+    curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=annakarenina&organization_id=${TEST_ORG_NAME}" \
     ${CKAN_ACTION_URL}/package_owner_org_update
 )
 echo ${package_owner_org_update}
 
 echo "Updating warandpeace to use ${TEST_ORG_TITLE} organisation:"
 package_owner_org_update=$( \
-    $CURL --data "id=warandpeace&organization_id=${TEST_ORG_NAME}" \
+    curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=warandpeace&organization_id=${TEST_ORG_NAME}" \
     ${CKAN_ACTION_URL}/package_owner_org_update
 )
 echo ${package_owner_org_update}
@@ -96,24 +100,29 @@ DR_ORG_ID=$(echo $DR_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
 echo "Assigning test users to Data Request Organisation:"
 
-$CURL --data "id=${DR_ORG_ID}&object=dr_admin&object_type=user&capacity=admin" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${DR_ORG_ID}&object=dr_admin&object_type=user&capacity=admin" \
     ${CKAN_ACTION_URL}/member_create
 
-$CURL --data "id=${DR_ORG_ID}&object=dr_editor&object_type=user&capacity=editor" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${DR_ORG_ID}&object=dr_editor&object_type=user&capacity=editor" \
     ${CKAN_ACTION_URL}/member_create
 
-$CURL --data "id=${DR_ORG_ID}&object=dr_member&object_type=user&capacity=member" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${DR_ORG_ID}&object=dr_member&object_type=user&capacity=member" \
     ${CKAN_ACTION_URL}/member_create
 
 
 echo "Creating test Data Request:"
 
-$CURL --data "title=Test Request&description=This is an example&organization_id=${TEST_ORG_ID}" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "title=Test Request&description=This is an example&organization_id=${TEST_ORG_ID}" \
     ${CKAN_ACTION_URL}/create_datarequest
 
 echo "Creating config value for resource formats:"
 
-$CURL --data "ckanext.data_qld.resource_formats=JSON" \
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "ckanext.data_qld.resource_formats=JSON" \
     ${CKAN_ACTION_URL}/config_option_update
 
 deactivate
