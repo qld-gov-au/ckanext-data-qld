@@ -12,6 +12,9 @@ RUN apk add --no-cache curl && curl -s -L -O https://github.com/jwilder/dockeriz
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     && rm dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
 
+# Install 'file' utility for file type sniffing
+RUN apk add build-base
+
 # Install CKAN.
 ENV CKAN_VERSION 2.8.8-qgov.2
 
