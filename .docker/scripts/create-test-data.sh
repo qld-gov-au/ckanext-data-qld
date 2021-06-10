@@ -12,6 +12,7 @@ CKAN_ACTION_URL=http://ckan:3000/api/action
 # We know the "admin" sysadmin account exists, so we'll use her API KEY to create further data
 API_KEY=$(ckan_cli user admin | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/')
 CURL="curl -L -s --header 'Authorization: ${API_KEY}'"
+echo "DEBUG: Running API calls with: $CURL"
 
 ##
 # BEGIN: Create a test organisation with test users for admin, editor and member
