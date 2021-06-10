@@ -139,16 +139,15 @@ commands:
     usage: Starts CKAN background job worker
     cmd: |
       ahoy title 'Starting CKAN background job worker priority'
-      ahoy cli "/app/scripts/ckan_cli jobs clear priority && \
-                /app/scripts/ckan_cli jobs worker priority"
+      ahoy cli "ckan_cli jobs clear priority && \
+                ckan_cli jobs worker priority"
 
   start-ckan-job-worker-bulk:
     usage: Starts CKAN background job worker bulk
     cmd: |
       ahoy title 'Starting CKAN background job worker bulk'
-      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
-                /app/scripts/ckan_cli jobs clear bulk && \
-                /app/scripts/ckan_cli jobs worker bulk"
+      ahoy cli "ckan_cli jobs clear bulk && \
+                ckan_cli jobs worker bulk"
 
   stop-ckan-job-workers:
     usage: Stops CKAN background job worker

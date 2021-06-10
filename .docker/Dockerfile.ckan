@@ -11,10 +11,10 @@ ENV DOCKERIZE_VERSION v0.6.1
 RUN apk add --no-cache curl && curl -s -L -O https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
     && rm dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
-RUN apk add build-base
 
 # Install CKAN.
 ENV CKAN_VERSION 2.8.8-qgov.2
+
 RUN . ${APP_DIR}/bin/activate \
     && cd ${APP_DIR} \
     && pip install setuptools==36.1 \
@@ -25,17 +25,20 @@ RUN . ${APP_DIR}/bin/activate \
     && deactivate \
     && ln -s /app/ckan /usr/lib/ckan
 
-COPY .docker/test.ini /app/ckan/default/production.ini
+COPY .docker/test.ini $APP_DIR/production.ini
 
-COPY .docker/scripts /app/scripts
+COPY .docker/scripts $WORKDIR/scripts
 
-RUN fix-permissions /app/ckan \
-    && chmod +x /app/scripts/*.sh\
-    && chmod +x /app/scripts/ckan_cli
+COPY .docker/scripts/ckan_cli ${APP_DIR}/bin/
 
 # Add current extension and files.
-COPY ckanext /app/ckanext
-COPY requirements.txt requirements-dev.txt setup.cfg setup.py .flake8 /app/
+COPY ckanext $WORKDIR/ckanext
+
+COPY requirements.txt requirements-dev.txt setup.cfg setup.py .flake8 $WORKDIR/
+
+RUN fix-permissions $WORKDIR/ckan \
+    && chmod +x $WORKDIR/scripts/*.sh\
+    && chmod +x ${APP_DIR}/bin/ckan_cli
 
 # Init current extension.
 RUN /app/scripts/init-ext.sh
