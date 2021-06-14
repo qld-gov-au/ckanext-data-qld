@@ -7,6 +7,7 @@
     <div class="account avatar authed" data-module="me" data-me="{{ c.userobj.id }}">
       <ul class="unstyled">
         {% block header_account_logged %} {% if c.userobj.sysadmin %}
+        <li>CKAN {{ h.ckan_version() }}</li>
         <li>
           <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
             <i class="fa fa-gavel" aria-hidden="true"></i>
