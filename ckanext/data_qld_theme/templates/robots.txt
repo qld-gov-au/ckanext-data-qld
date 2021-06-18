@@ -71,4 +71,7 @@ Allow: /api/
 
 {% endraw %}
 {% endif %}
+
+# presigned S3 URLs that are only temporary
+Disallow: /ckan-*-attachments-*/
 {% endblock %}
