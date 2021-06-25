@@ -71,10 +71,10 @@ ckan_cli create-test-data
 
 echo "Assigning test Datasets to Organisation..."
 
-echo "Updating annakarenina to use ${TEST_ORG_TITLE} organisation:"
+echo "Updating annakarenina to use 'Department of Health' organisation:"
 package_owner_org_update=$( \
     curl -LsH "Authorization: ${API_KEY}" \
-    --data "id=annakarenina&organization_id=${TEST_ORG_NAME}" \
+    --data "id=annakarenina&organization_id=department-of-health" \
     ${CKAN_ACTION_URL}/package_owner_org_update
 )
 echo ${package_owner_org_update}
