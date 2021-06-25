@@ -2,7 +2,7 @@
 Feature: Login
 
     Scenario: Smoke test to ensure Login process works
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I go to homepage
         And I click the link with text that contains "Log in"
         And I fill in "login" with "$name"
@@ -13,6 +13,6 @@ Feature: Login
         Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
 
     Scenario: Smoke test to ensure Login step works
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I log in
         Then I take a screenshot
