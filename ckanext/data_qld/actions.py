@@ -70,8 +70,7 @@ def _dictize_datarequest(datarequest):
         'organization': None,
         'accepted_dataset': None,
         'followers': 0,
-        'dataset_url': helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                                       action='show', id=datarequest.id, qualified=True)
+        'dataset_url': helpers.url_for('datarequest.show', id=datarequest.id, qualified=True)
     }
 
     if datarequest.organization_id:
@@ -174,7 +173,7 @@ def create_datarequest(original_action, context, data_dict):
     data_req = db.DataRequest()
     _undictize_datarequest_basic(data_req, data_dict)
     data_req.user_id = context['auth_user_obj'].id
-    data_req.open_time = datetime.datetime.now()
+    data_req.open_time = datetime.datetime.utcnow()
 
     session.add(data_req)
     session.commit()
@@ -335,7 +334,7 @@ def close_datarequest(original_action, context, data_dict):
 
     data_req.closed = True
     data_req.accepted_dataset_id = data_dict.get('accepted_dataset_id') or None
-    data_req.close_time = datetime.datetime.now()
+    data_req.close_time = datetime.datetime.utcnow()
     _undictize_datarequest_closing_circumstances(data_req, data_dict)
 
     session.add(data_req)

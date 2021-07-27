@@ -125,9 +125,9 @@ def submit_comment_with_subject_and_comment(context, subject, comment):
     context.browser.execute_script(
         "document.querySelector('form#comment_form .form-actions input[type=\"submit\"]').click();")
 
+
 @step('I create a dataset with license {license} and resource file {file}')
 def create_dataset(context, license, file):
-
     assert context.persona
     context.execute_steps(u"""
         When I visit "dataset/new"

@@ -14,7 +14,7 @@ commands:
       ahoy up -- --build --force-recreate
       ahoy install-dev
       ahoy install-site
-      # ahoy title "Build complete"
+      ahoy title "Build complete"
       ahoy doctor
       ahoy info 1
 
@@ -31,6 +31,8 @@ commands:
     usage: Build and start Docker containers.
     cmd: |
       docker-compose up -d "$@"
+      sleep 10
+      docker-compose logs
       ahoy cli "dockerize -wait tcp://ckan:3000 -timeout 1m"
       if docker-compose logs | grep -q "\[Error\]"; then docker-compose logs; exit 1; fi
       if docker-compose logs | grep -q "Exception"; then docker-compose logs; exit 1; fi
@@ -39,7 +41,7 @@ commands:
 
   down:
     usage: Stop Docker containers and remove container, images, volumes and networks.
-    cmd: "if [ -f \"docker-compose.yml\" ]; then docker-compose down --volumes; fi"
+    cmd: 'if [ -f "docker-compose.yml" ]; then docker-compose down --volumes; fi'
 
   start:
     usage: Start existing Docker containers.
@@ -51,7 +53,7 @@ commands:
 
   restart:
     usage: Restart all stopped and running Docker containers.
-    cmd: docker-compose restart
+    cmd: docker-compose restart "$@"
 
   logs:
     usage: Show Docker logs.
@@ -63,12 +65,11 @@ commands:
 
   cli:
     usage: Start a shell inside CLI container or run a command.
-    cmd: if \[ "${#}" -ne 0 \]; then docker exec -i $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate; $*"; else docker exec -it $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate && sh"; fi
+    cmd: if \[ "${#}" -ne 0 \]; then docker exec $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate; cd /app/; $*"; else docker exec $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate && cd /app/ && sh"; fi
 
   doctor:
     usage: Find problems with current project setup.
     cmd: .docker/scripts/doctor.sh "$@"
-
 
   install-site:
     usage: Install a site.
@@ -121,7 +122,7 @@ commands:
   test-bdd:
     usage: Run BDD tests.
     cmd: |
-      ahoy start-ckan-job-workers &
+      ahoy start-ckan-job-workers
       sleep 5
       ahoy cli "behave ${*:-/app/test/features}" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
@@ -138,18 +139,16 @@ commands:
     usage: Starts CKAN background job worker
     cmd: |
       ahoy title 'Starting CKAN background job worker priority'
-      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
-                paster jobs clear priority --config=/app/ckan/default/production.ini && \
-                paster jobs worker priority --config=/app/ckan/default/production.ini"
+      ahoy cli "ckan_cli jobs clear priority && \
+                ckan_cli jobs worker priority"
 
   start-ckan-job-worker-bulk:
     usage: Starts CKAN background job worker bulk
     cmd: |
       ahoy title 'Starting CKAN background job worker bulk'
-      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
-                paster jobs clear bulk --config=/app/ckan/default/production.ini && \
-                paster jobs worker bulk --config=/app/ckan/default/production.ini"
-     
+      ahoy cli "ckan_cli jobs clear bulk && \
+                ckan_cli jobs worker bulk"
+
   stop-ckan-job-workers:
     usage: Stops CKAN background job worker
     cmd: |
@@ -190,5 +189,5 @@ entrypoint:
     export LAGOON_LOCALDEV_URL=http://ckanext-data-qld.docker.amazee.io
     [ -f .env ] && [ -s .env ] && export $(grep -v '^#' .env | xargs) && if [ -f .env.local ] && [ -s .env.local ]; then export $(grep -v '^#' .env.local | xargs); fi
     bash -e -c "$0" "$@"
-  - '{{cmd}}'
-  - '{{name}}'
+  - "{{cmd}}"
+  - "{{name}}"

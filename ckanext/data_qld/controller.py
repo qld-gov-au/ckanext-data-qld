@@ -51,8 +51,7 @@ class DataQldUI(base.BaseController):
 
                 tk.get_action(constants.OPEN_DATAREQUEST)(context, data_dict)
                 tk.redirect_to(
-                    helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                                    action='show', id=data_dict['id']))
+                    helpers.url_for('datarequest.show', id=data_dict['id']))
         except tk.ValidationError as e:
             log.warn(e)
             errors_summary = _get_errors_summary(e.error_dict)
@@ -75,6 +74,7 @@ class DataQldUI(base.BaseController):
             c.schema_data = json.dumps(schema_data, indent=2, sort_keys=True)
             return tk.render('schema/show.html')
         except tk.ObjectNotFound as e:
+            log.warn(e)
             tk.abort(404, tk._('Resource %s not found') % resource_id)
         except tk.NotAuthorized as e:
             log.warn(e)

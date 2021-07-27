@@ -81,6 +81,7 @@ def dataset_followers(context, data_dict):
             .filter(
                 _and_(
                     Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE,
                     UserFollowingDataset.datetime >= utc_start_date,
                     UserFollowingDataset.datetime < utc_end_date,
                 )
@@ -117,6 +118,7 @@ def dataset_comments(context, data_dict):
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
                     Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
@@ -220,7 +222,8 @@ def dataset_comment_followers(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id
+                    Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.id == CommentNotificationRecipient.thread_id)
@@ -256,7 +259,8 @@ def datasets_min_one_comment_follower(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id
+                    Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.url == func.concat(DATASET_PREFIX, Package.name))
@@ -343,6 +347,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                     Comment.creation_date < utc_reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
                     Package.owner_org == org_id,
+                    Package.state == ACTIVE_STATE,
                     comment_reply.id.is_(None)
                 )
             )

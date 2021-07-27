@@ -45,8 +45,8 @@ def get_report_date_range(request):
     if end_date:
         end_date = toolkit.h.date_str_to_datetime(end_date)
     else:
-        ckan_timezone = toolkit.config.get('ckan.display_timezone', None)
-        end_date = datetime.now(pytz.timezone(ckan_timezone))
+        # internal ckan datetimes is utc, presentation is ckan_timezone
+        end_date = datetime.utcnow()
 
     return start_date.date().isoformat(), end_date.date().isoformat()
 
