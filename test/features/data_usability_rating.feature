@@ -1,5 +1,6 @@
 @data_usability_rating
 Feature: Data usability rating
+
     Scenario: As an admin user of my organisation, when I create a dataset with a license that is not open, I can verify the score is 0
         Given "TestOrgAdmin" as the persona
         When I log in

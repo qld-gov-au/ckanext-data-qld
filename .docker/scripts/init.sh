@@ -36,10 +36,5 @@ ckan_cli user add "${CKAN_USER_NAME}"\
  password="${CKAN_USER_PASSWORD}"
 ckan_cli sysadmin add "${CKAN_USER_NAME}"
 
-# Initialise the Comments database tables
-paster --plugin=ckanext-ytp-comments initdb --config=/app/ckan/default/production.ini
-paster --plugin=ckanext-ytp-comments updatedb --c /app/ckan/default/production.ini
-paster --plugin=ckanext-ytp-comments init_notifications_db --c /app/ckan/default/production.ini
-
 # Create some base test data
 . $WORKDIR/scripts/create-test-data.sh
