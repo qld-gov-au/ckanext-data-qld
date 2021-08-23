@@ -55,6 +55,13 @@
           "data-module": "slug-preview-target"
         }
       }
+    },
+    {
+      "preset_name": "update_due",
+      "values":{
+        "validators":"ignore_missing resource_schema_validator",
+        "form_snippet": "update_due.html"
+      }
     }
   ]
 }

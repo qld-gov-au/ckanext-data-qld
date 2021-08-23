@@ -173,6 +173,11 @@
           "label": "Not updated"
         }
       ]
+    },
+    {
+      "field_name": "next_update_due",
+      "label": "Next update due",
+      "preset": "update_due"
     }
   ],
   "resource_fields": [
