@@ -7,7 +7,7 @@ Feature: SchemaMetadata
         When I log in
         And I go to "/dataset/new"
         Then I should see an element with id "field-author_email"
-    
+
     Scenario: When a go to the dataset new page, the field field-maintainer_email should not be visible
         Given "Admin" as the persona
         When I log in
