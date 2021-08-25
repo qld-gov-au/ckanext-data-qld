@@ -13,6 +13,8 @@ import logging
 
 from flask import Blueprint
 
+import ckanext.data_qld.currency.helpers.helpers as ch
+
 if sys.version_info[0] >= 3:
     unicode = str
 
@@ -69,9 +71,11 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def create(self, entity):
         self.set_maintainer_from_author(entity)
+        entity.next_update_due = ch.recalculate_due_date(entity.update_frequency, entity.next_update_due)
 
     def edit(self, entity):
         self.set_maintainer_from_author(entity)
+        entity.next_update_due = ch.recalculate_due_date(entity.update_frequency, entity.next_update_due)
 
     # IAuthFunctions
     def get_auth_functions(self):

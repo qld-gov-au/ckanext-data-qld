@@ -177,8 +177,10 @@
     {
       "field_name": "next_update_due",
       "label": "Next update due",
-      "preset": "update_due"
-    }
+      "preset": "update_due",
+      "validators": "validate_next_due_date"
+
+     }
   ],
   "resource_fields": [
     {
@@ -234,6 +236,23 @@
       "field_name": "validation_timestamp",
       "label": "Validation timestamp",
       "preset": "hidden_in_form"
+    },
+    {
+      "field_name": "nature_of_change",
+      "label": "Nature of change to data",
+      "form_include_blank_choice": true,
+      "preset": "select",
+      "validators": "scheming_choices",
+      "choices":[
+        {
+          "value": "add-new-time-series",
+          "label": "Adding new time series data to the resource"
+        },
+        {
+          "value": "edit-resource-with-no-new-data",
+          "label": "Editing resource with no new time series data added"
+        }
+      ]
     }
   ]
 }

@@ -3,6 +3,8 @@ import ckanext.data_qld.reporting.logic.action.get as get
 import auth_functions as auth
 
 from ckanext.data_qld.reporting.helpers import helpers
+import ckanext.data_qld.currency.validation as currency_validator
+import ckanext.data_qld.currency.helpers.helpers as ch
 
 
 class ReportingPlugin(plugins.SingletonPlugin):
@@ -11,6 +13,8 @@ class ReportingPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.ITemplateHelpers, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(plugins.IValidators)
+    plugins.implements(plugins.IPackageController, inherit=True)
 
     # IConfigurer
     def update_config(self, config_):
@@ -67,3 +71,18 @@ class ReportingPlugin(plugins.SingletonPlugin):
             'has_user_permission_for_org': auth.has_user_permission_for_org
         }
         return auth_functions
+
+    # IValidator
+    def get_validators(self):
+        return {'validate_next_due_date':
+                currency_validator.validate_next_due_date}
+
+    # # IPackageController
+
+    # def create(self, entity):
+    #     import pdb; pdb.set_trace()
+    #     entity.next_update_due = ch.recalculate_due_date(entity.update_frequency)
+
+    # def update(self, entity):
+    #     import pdb; pdb.set_trace()
+    #     entity.next_update_due = ch.recalculate_due_date(entity.update_frequency)
