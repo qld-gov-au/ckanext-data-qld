@@ -76,13 +76,3 @@ class ReportingPlugin(plugins.SingletonPlugin):
     def get_validators(self):
         return {'validate_next_due_date':
                 currency_validator.validate_next_due_date}
-
-    # # IPackageController
-
-    # def create(self, entity):
-    #     import pdb; pdb.set_trace()
-    #     entity.next_update_due = ch.recalculate_due_date(entity.update_frequency)
-
-    # def update(self, entity):
-    #     import pdb; pdb.set_trace()
-    #     entity.next_update_due = ch.recalculate_due_date(entity.update_frequency)

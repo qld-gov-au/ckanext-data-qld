@@ -55,12 +55,6 @@
           "data-module": "slug-preview-target"
         }
       }
-    },
-    {
-      "preset_name": "update_due",
-      "values":{
-        "form_snippet": "update_due.html"
-      }
     }
   ]
 }

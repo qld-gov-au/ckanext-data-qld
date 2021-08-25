@@ -177,7 +177,7 @@
     {
       "field_name": "next_update_due",
       "label": "Next update due",
-      "preset": "update_due",
+      "forform_snippetm_": "update_due.html",
       "validators": "validate_next_due_date"
 
      }
