@@ -12,6 +12,7 @@ import helpers
 import logging
 
 from flask import Blueprint
+from de_identified_data import helpers as de_identified_data_helpers
 
 import ckanext.data_qld.currency.helpers.helpers as ch
 
@@ -53,7 +54,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'data_qld_format_activity_data': helpers.format_activity_data,
                 'data_qld_resource_formats': helpers.resource_formats,
                 'activity_type_nice': helpers.activity_type_nice,
-                'profanity_checking_enabled': helpers.profanity_checking_enabled
+                'profanity_checking_enabled': helpers.profanity_checking_enabled,
+                'data_qld_user_has_admin_editor_org_access': de_identified_data_helpers.user_has_admin_editor_org_access,
+                'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
                 }
 
     # IValidators
@@ -76,6 +79,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     def edit(self, entity):
         self.set_maintainer_from_author(entity)
         entity.next_update_due = ch.recalculate_due_date(entity.update_frequency, entity.next_update_due)
+
+    def after_show(self, context, data_dict):
+        de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
 
     # IAuthFunctions
     def get_auth_functions(self):

@@ -180,7 +180,25 @@
       "forform_snippetm_": "update_due.html",
       "validators": "validate_next_due_date"
 
-     }
+     },
+     {
+      "field_name": "de_identified_data",
+      "label": "Contains de-identified data",
+      "required": true,
+      "form_include_blank_choice": true,
+      "validators": "scheming_required scheming_choices",
+      "form_snippet": "de_identified_data.html",
+      "choices": [
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ]
+    }
   ],
   "resource_fields": [
     {
