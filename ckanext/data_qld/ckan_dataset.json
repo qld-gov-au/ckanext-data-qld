@@ -177,7 +177,7 @@
     {
       "field_name": "next_update_due",
       "label": "Next update due",
-      "forform_snippetm_": "update_due.html",
+      "form_snippet": "update_due.html",
       "validators": "validate_next_due_date"
 
      },
@@ -260,7 +260,7 @@
       "label": "Nature of change to data",
       "form_include_blank_choice": true,
       "preset": "select",
-      "validators": "scheming_choices",
+      "validators": "scheming_choices validate_nature_of_change_data",
       "choices":[
         {
           "value": "add-new-time-series",

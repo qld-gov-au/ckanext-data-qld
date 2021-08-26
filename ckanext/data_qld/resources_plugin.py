@@ -12,9 +12,11 @@ import helpers
 import logging
 
 from flask import Blueprint
-from de_identified_data import helpers as de_identified_data_helpers
+import ckanext.data_qld.currency.helpers.helpers as currency_helpers
+import ckanext.data_qld.currency.validation as currency_validator
 
-import ckanext.data_qld.currency.helpers.helpers as ch
+from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
+
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -57,6 +59,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'profanity_checking_enabled': helpers.profanity_checking_enabled,
                 'data_qld_user_has_admin_editor_org_access': de_identified_data_helpers.user_has_admin_editor_org_access,
                 'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
+                'data_qld_update_frequencies_from_config': currency_helpers.update_frequencies_from_config,
                 }
 
     # IValidators
@@ -64,6 +67,10 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
+            'validate_next_due_date':
+                currency_validator.validate_next_due_date,
+                'validate_nature_of_change_data':
+                currency_validator.validate_nature_of_change_data
         }
 
     # IPackageController
@@ -74,11 +81,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def create(self, entity):
         self.set_maintainer_from_author(entity)
-        entity.next_update_due = ch.recalculate_due_date(entity.update_frequency, entity.next_update_due)
 
     def edit(self, entity):
         self.set_maintainer_from_author(entity)
-        entity.next_update_due = ch.recalculate_due_date(entity.update_frequency, entity.next_update_due)
 
     def after_show(self, context, data_dict):
         de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)

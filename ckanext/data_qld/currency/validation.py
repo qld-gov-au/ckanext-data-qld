@@ -1,18 +1,12 @@
 # encoding: utf-8
 
-import pdb
 from sqlalchemy.sql.expression import update
-import ckan.logic as logic
 import ckan.plugins.toolkit as tk
-import ckan.lib.uploader as uploader
 import ckan.lib.navl.dictization_functions as df
-import ckan.model as model
 import logging
-import datetime
+import datetime as dt
 
 from ckanext.data_qld.currency.helpers import helpers as h
-
-UPDATE_FREQUENCY = ['annually', 'semiannually', 'quarterly', 'monthly']
 
 
 def validate_next_due_date(keys, flattened_data, errors, context):
@@ -21,6 +15,25 @@ def validate_next_due_date(keys, flattened_data, errors, context):
     '''
     data = df.unflatten(flattened_data)
     key, = keys
+    if data['update_frequency'] in h.get_update_frequencies():
+        if not data[key]:
+            raise tk.ValidationError({key: [tk._("Missing value")]})
 
-    if not data[key] and data['update_frequency'] in UPDATE_FREQUENCY:
-        raise tk.ValidationError({key: [tk._("Missing value")]})
+        if dt.datetime.strptime(data[key], '%Y-%m-%d').date() < dt.date.today():
+            raise tk.ValidationError({key: [tk._("Date should be in future")]}) 
+
+        flattened_data[keys] = h.recalculate_due_date(data['update_frequency'], data[key])
+
+
+def validate_nature_of_change_data(keys, flattened_data, errors, context):
+    '''
+    Validate the nature of change data
+    '''
+    # import pdb; pdb.set_trace()
+    data = df.unflatten(flattened_data)
+    res, _, key = keys
+    for resource in data[res]:
+        if not resource[key]:
+            raise tk.ValidationError({key: [tk._("Missing value")]})
+        if resource[key] == 'add-new-time-series' and data['update_frequency'] in h.get_update_frequencies():
+            flattened_data[('next_update_due',)] = h.recalculate_due_date(data['update_frequency'], data['next_update_due'])
