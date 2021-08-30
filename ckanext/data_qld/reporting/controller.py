@@ -3,7 +3,7 @@ import logging
 
 from ckan.lib.base import BaseController
 from ckan.plugins.toolkit import \
-    _, abort, c, check_access, get_action, get_validator, request, render, \
+    _, abort, g, check_access, get_action, get_validator, request, render, \
     Invalid, NotAuthorized, ObjectNotFound
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import export_helpers, helpers
@@ -23,12 +23,21 @@ class ReportingController(BaseController):
             helpers.get_context(), {'permission': 'create_dataset'}
         )
 
-    def check_user_org_access(self, org_id, user_name):
+    @classmethod
+    def check_user_org_access(cls, org_id, user_name):
         if not authz.has_user_permission_for_group_or_org(org_id, user_name, 'create_dataset'):
             raise NotAuthorized
 
+    @classmethod
+    def valid_report_type(cls, report_type):
+        if report_type not in constants.REPORT_TYPES:
+            msg = _('Report type {0} not valid').format(report_type)
+            log.warn(msg)
+            abort(404, msg)
+
     def index(self):
         org_id = request.GET.get('organisation', None)
+        report_type = request.GET.get('report_type', None)
 
         try:
             self.check_user_access()
@@ -44,7 +53,8 @@ class ReportingController(BaseController):
                 'organisations': organisations,
                 'start_date': start_date,
                 'end_date': end_date,
-                'user_dict': get_action('user_show')({}, {'id': c.userobj.id})
+                'user_dict': g.userobj.as_dict(),
+                'report_type': report_type
             }
 
             if org_id:
@@ -53,10 +63,19 @@ class ReportingController(BaseController):
                 extra_vars.update({
                     'org_id': org_id,
                     'org_title': org['title'],
-                    'metrics': helpers.gather_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
-                    'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
-                    'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
                 })
+
+                self.valid_report_type(report_type)
+                if report_type == constants.REPORT_TYPE_ENGAGEMENT:
+                    extra_vars.update({
+                        'metrics': helpers.gather_engagement_metrics(org_id, start_date, end_date, COMMENT_NO_REPLY_MAX_DAYS, DATAREQUEST_OPEN_MAX_DAYS),
+                        'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
+                        'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
+                    })
+                elif report_type == constants.REPORT_TYPE_ADMIN:
+                    extra_vars.update({
+                        'metrics': helpers.gather_admin_metrics(org_id)
+                    })
 
             return render(
                 'reporting/index.html',
@@ -72,12 +91,21 @@ class ReportingController(BaseController):
             abort(403, _(msg))
 
     def export(self):
+        report_type = request.GET.get('report_type', None)
+        self.valid_report_type(report_type)
+
+        if report_type == constants.REPORT_TYPE_ENGAGEMENT:
+            return self.export_engagement_report(report_type)
+        elif report_type == constants.REPORT_TYPE_ADMIN:
+            return self.export_admin_report(report_type)
+
+    def export_engagement_report(self, report_type):
         try:
             self.check_user_access()
 
             start_date, end_date = helpers.get_report_date_range(request)
 
-            report_config = export_helpers.csv_report_config()
+            report_config = export_helpers.csv_report_config(report_type)
 
             row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
 
@@ -122,7 +150,7 @@ class ReportingController(BaseController):
 
             # Gather all the metrics for each organisation
             for organisation in helpers.get_organisation_list_for_user('create_dataset'):
-                export_helpers.csv_add_org_metrics(
+                export_helpers.engagement_csv_add_org_metrics(
                     organisation,
                     start_date,
                     end_date,
@@ -134,42 +162,77 @@ class ReportingController(BaseController):
                     DATAREQUEST_OPEN_MAX_DAYS
                 )
 
-            return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows)
+            return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type)
+        except NotAuthorized as e:  # Exception raised from check_user_access
+            log.warn(e)
+            abort(403, _('You are not authorised to export the report'))
+
+    def export_admin_report(self, report_type):
+        try:
+            self.check_user_access()
+
+            report_config = export_helpers.csv_report_config(report_type)
+
+            row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
+
+            csv_header_row = ['']
+
+            dict_csv_rows = {}
+
+            for key in row_properties:
+                dict_csv_rows[key] = []
+
+            # Gather all the metrics for each organisation
+            for organisation in helpers.get_organisation_list_for_user('create_dataset'):
+                export_helpers.admin_csv_add_org_metrics(
+                    organisation,
+                    csv_header_row,
+                    row_properties,
+                    dict_csv_rows
+                )
+
+            return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type)
         except NotAuthorized as e:  # Exception raised from check_user_access
             log.warn(e)
             abort(403, _('You are not authorised to export the report'))
 
     def datasets(self, org_id, metric):
         try:
-            self.check_user_org_access(org_id, c.userobj.name)
+            self.check_user_org_access(org_id, g.userobj.name)
 
             get_validator('group_id_exists')(org_id, helpers.get_context())
-
-            start_date, end_date = helpers.get_report_date_range(request)
-
-            utc_start_date, \
-                utc_end_date, \
-                utc_reply_expected_by_date = helpers.get_utc_dates(start_date,
-                                                                   end_date,
-                                                                   COMMENT_NO_REPLY_MAX_DAYS
-                                                                   )
 
             org = get_action('organization_show')({}, {'id': org_id})
 
             data_dict = {
                 'org_id': org_id,
                 'org_title': org['title'],
-                'start_date': start_date,
-                'end_date': end_date,
                 'metric': metric,
-                'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-                'user_dict': get_action('user_show')({}, {'id': c.userobj.id}),
-                'utc_start_date': utc_start_date,
-                'utc_end_date': utc_end_date,
-                'utc_reply_expected_by_date': utc_reply_expected_by_date
+                'user_dict': g.userobj.as_dict(),
+                'report_type': request.GET.get('report_type', None)
             }
 
             if metric == 'no-reply':
+
+                start_date, end_date = helpers.get_report_date_range(request)
+
+                utc_start_date, \
+                    utc_end_date, \
+                    utc_reply_expected_by_date = helpers.get_utc_dates(start_date,
+                                                                       end_date,
+                                                                       COMMENT_NO_REPLY_MAX_DAYS
+                                                                       )
+
+                data_dict.update(
+                    {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
+                        'utc_start_date': utc_start_date,
+                        'utc_end_date': utc_end_date,
+                        'utc_reply_expected_by_date': utc_reply_expected_by_date,
+                    })
+
                 comments = get_action('dataset_comments_no_replies_after_x_days')(
                     {},
                     data_dict
@@ -186,13 +249,27 @@ class ReportingController(BaseController):
                         comment_ids[comment.package_name] = [comment.comment_id]
                         datasets.append(comment)
 
-                data_dict.update(
-                    {
-                        'datasets': datasets,
-                        'total_comments': len(comments),
-                        'comment_ids': comment_ids
-                    }
-                )
+                data_dict.update({
+                    'datasets': datasets,
+                    'total_comments': len(comments),
+                    'comment_ids': comment_ids
+                })
+            elif metric == 'de-identified-datasets':
+                data_dict.update({
+                    'return_count_only': False
+                })
+                datasets = get_action('de_identified_datasets')({}, data_dict)
+                data_dict.update({
+                    'datasets': datasets
+                })
+            elif metric == 'overdue-datasets':
+                data_dict.update({
+                    'return_count_only': False
+                })
+                datasets = get_action('overdue_datasets')({}, data_dict)
+                data_dict.update({
+                    'datasets': datasets
+                })
 
             return render(
                 'reporting/datasets.html',
@@ -208,7 +285,7 @@ class ReportingController(BaseController):
     def datarequests(self, org_id, metric):
         """Displays a list of data requests for the given organisation based on the desired metric"""
         try:
-            self.check_user_org_access(org_id, c.userobj.name)
+            self.check_user_org_access(org_id, g.userobj.name)
 
             get_validator('group_id_exists')(org_id, helpers.get_context())
 
@@ -236,11 +313,12 @@ class ReportingController(BaseController):
                 'circumstance': circumstance,
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-                'user_dict': get_action('user_show')({}, {'id': c.userobj.id}),
+                'user_dict': g.userobj.as_dict(),
                 'utc_start_date': utc_start_date,
                 'utc_end_date': utc_end_date,
                 'utc_reply_expected_by_date': utc_reply_expected_by_date,
-                'utc_expected_closure_date': utc_expected_closure_date
+                'utc_expected_closure_date': utc_expected_closure_date,
+                'report_type': request.GET.get('report_type', None)
             }
 
             if metric == 'no-reply':

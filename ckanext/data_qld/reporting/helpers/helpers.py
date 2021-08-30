@@ -188,8 +188,8 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
             utc_end_datetime
 
 
-def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
-    """Collect statistics for all metrics for the provided organisation"""
+def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
+    """Collect engagement statistics metrics for the provided organisation"""
     utc_start_date, \
         utc_end_date, \
         utc_reply_expected_by_date, \
@@ -225,6 +225,20 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
         'datarequests_no_replies_after_x_days': get_action('datarequests_no_replies_after_x_days')({}, data_dict),
         'open_datarequests_no_comments_after_x_days': get_action('open_datarequests_no_comments_after_x_days')({},
                                                                                                                data_dict),
+    }
+
+
+def gather_admin_metrics(org_id):
+    """Collect admin statistics metrics for the provided organisation"""
+
+    data_dict = {
+        'org_id': org_id,
+        'return_count_only': True
+    }
+
+    return {
+        'de_identified_datasets': get_action('de_identified_datasets')({}, data_dict),
+        'overdue_datasets': get_action('overdue_datasets')({}, data_dict)
     }
 
 
