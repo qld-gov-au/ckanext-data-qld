@@ -175,6 +175,13 @@
       ]
     },
     {
+      "field_name": "next_update_due",
+      "label": "Next update due",
+      "form_snippet": "next_update_due.html",
+      "validators": "isodate data_qld_validate_next_update_due convert_to_json_if_date"
+
+     },
+     {
       "field_name": "de_identified_data",
       "label": "Contains de-identified data",
       "required": true,
@@ -247,6 +254,23 @@
       "field_name": "validation_timestamp",
       "label": "Validation timestamp",
       "preset": "hidden_in_form"
+    },
+    {
+      "field_name": "nature_of_change",
+      "label": "Nature of change to data",
+      "form_include_blank_choice": true,
+      "preset": "select",
+      "validators": "data_qld_validate_nature_of_change_data ignore_empty scheming_choices",
+      "choices":[
+        {
+          "value": "add-new-time-series",
+          "label": "Adding new time series data to the resource"
+        },
+        {
+          "value": "edit-resource-with-no-new-data",
+          "label": "Editing resource with no new time series data added"
+        }
+      ]
     }
   ]
 }

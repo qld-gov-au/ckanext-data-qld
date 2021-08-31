@@ -11,8 +11,12 @@ import converters
 import helpers
 import logging
 
+import ckanext.data_qld.resource_freshness.helpers.helpers as resource_freshness_helpers
+import ckanext.data_qld.resource_freshness.validation as resource_freshness_validator
+
 from flask import Blueprint
-from de_identified_data import helpers as de_identified_data_helpers
+from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
+
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -55,6 +59,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'profanity_checking_enabled': helpers.profanity_checking_enabled,
                 'data_qld_user_has_admin_editor_org_access': de_identified_data_helpers.user_has_admin_editor_org_access,
                 'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
+                'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
                 }
 
     # IValidators
@@ -62,6 +67,8 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
+            'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
+            'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
         }
 
     # IPackageController
@@ -78,6 +85,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def after_show(self, context, data_dict):
         de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
+        resource_freshness_helpers.process_next_update_due(data_dict)
 
     # IAuthFunctions
     def get_auth_functions(self):
@@ -89,6 +97,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def before_update(self, context, current_resource, updated_resource):
         return self.check_file_upload(updated_resource)
+
+    def before_show(self, resource_dict):
+        resource_freshness_helpers.process_nature_of_change(resource_dict)
 
     def check_file_upload(self, data_dict):
         # This method is to fix a bug that the ckanext-scheming creates for setting the file size of an uploaded
