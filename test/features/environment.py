@@ -14,52 +14,52 @@ REMOTE_CHROME_URL = 'http://chrome:4444/wd/hub'
 
 # @see .docker/scripts/init.sh for credentials.
 PERSONAS = {
-    'Admin': dict(
-        name=u'admin',
-        email=u'admin@localhost',
-        password=u'Password123!'
-    ),
-    'Unauthenticated': dict(
-        name=u'',
-        email=u'',
-        password=u''
-    ),
+    'SysAdmin': {
+        'name': u'admin',
+        'email': u'admin@localhost',
+        'password': u'Password123!'
+    },
+    'Unauthenticated': {
+        'name': u'',
+        'email': u'',
+        'password': u''
+    },
     # This user will not be assigned to any organisations
-    'CKANUser': dict(
-        name=u'ckan_user',
-        email=u'ckan_user@localhost',
-        password=u'password'
-    ),
-    'TestOrgAdmin': dict(
-        name=u'test_org_admin',
-        email=u'test_org_admin@localhost',
-        password=u'password'
-    ),
-    'TestOrgEditor': dict(
-        name=u'test_org_editor',
-        email=u'test_org_editor@localhost',
-        password=u'password'
-    ),
-    'TestOrgMember': dict(
-        name=u'test_org_member',
-        email=u'test_org_member@localhost',
-        password=u'password'
-    ),
-    'DataRequestOrgAdmin': dict(
-        name=u'dr_admin',
-        email=u'dr_admin@localhost',
-        password=u'password'
-    ),
-    'DataRequestOrgEditor': dict(
-        name=u'dr_editor',
-        email=u'dr_editor@localhost',
-        password=u'password'
-    ),
-    'DataRequestOrgMember': dict(
-        name=u'dr_member',
-        email=u'dr_member@localhost',
-        password=u'password'
-    )
+    'CKANUser': {
+        'name': u'ckan_user',
+        'email': u'ckan_user@localhost',
+        'password': u'Password123!'
+    },
+    'TestOrgAdmin': {
+        'name': u'test_org_admin',
+        'email': u'test_org_admin@localhost',
+        'password': u'Password123!'
+    },
+    'TestOrgEditor': {
+        'name': u'test_org_editor',
+        'email': u'test_org_editor@localhost',
+        'password': u'Password123!'
+    },
+    'TestOrgMember': {
+        'name': u'test_org_member',
+        'email': u'test_org_member@localhost',
+        'password': u'Password123!'
+    },
+    'DataRequestOrgAdmin': {
+        'name': u'dr_admin',
+        'email': u'dr_admin@localhost',
+        'password': u'password'
+    },
+    'DataRequestOrgEditor': {
+        'name': u'dr_editor',
+        'email': u'dr_editor@localhost',
+        'password': u'password'
+    },
+    'DataRequestOrgMember': {
+        'name': u'dr_member',
+        'email': u'dr_member@localhost',
+        'password': u'password'
+    }
 }
 
 

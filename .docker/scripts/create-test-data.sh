@@ -6,7 +6,17 @@ set -e
 
 CKAN_ACTION_URL=http://ckan:3000/api/action
 
-. ${APP_DIR}/bin/activate
+if [ "$VENV_DIR" != "" ]; then
+  . ${VENV_DIR}/bin/activate
+fi
+
+add_user_if_needed () {
+    echo "Adding user '$2' ($1) with email address [$3]"
+    ckan_cli user "$1" | grep "$1" || ckan_cli user add "$1"\
+        fullname="$2"\
+        email="$3"\
+        password="${4:-Password123!}"
+}
 
 # We know the "admin" sysadmin account exists, so we'll use her API KEY to create further data
 API_KEY=$(ckan_cli user admin | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/')
@@ -14,15 +24,15 @@ API_KEY=$(ckan_cli user admin | tr -d '\n' | sed -r 's/^(.*)apikey=(\S*)(.*)/\2/
 ##
 # BEGIN: Create a test organisation with test users for admin, editor and member
 #
-TEST_ORG_NAME=test
-TEST_ORG_TITLE="Test"
+TEST_ORG_NAME=test-organisation
+TEST_ORG_TITLE="Test Organisation"
 
 echo "Creating test users for ${TEST_ORG_TITLE} Organisation:"
 
-ckan_cli user add ckan_user email=ckan_user@localhost password=password
-ckan_cli user add test_org_admin email=test_org_admin@localhost password=password
-ckan_cli user add test_org_editor email=test_org_editor@localhost password=password
-ckan_cli user add test_org_member email=test_org_member@localhost password=password
+add_user_if_needed ckan_user "CKAN User" ckan_user@localhost
+add_user_if_needed test_org_admin "Test Admin" test_org_admin@localhost
+add_user_if_needed test_org_editor "Test Editor" test_org_editor@localhost
+add_user_if_needed test_org_member "Test Member" test_org_member@localhost
 
 echo "Creating ${TEST_ORG_TITLE} Organisation:"
 
@@ -31,7 +41,6 @@ TEST_ORG=$( \
     --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
     ${CKAN_ACTION_URL}/organization_create
 )
-echo $TEST_ORG
 
 TEST_ORG_ID=$(echo $TEST_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
@@ -51,6 +60,9 @@ curl -LsH "Authorization: ${API_KEY}" \
 ##
 # END.
 #
+
+# Creating test data hierarchy which creates organisations assigned to datasets
+ckan_cli create-test-data hierarchy
 
 # Creating basic test data which has datasets with resources
 ckan_cli create-test-data
@@ -75,29 +87,30 @@ package_owner_org_update=$( \
 )
 echo ${package_owner_org_update}
 
-
+##
+# BEGIN: Create a Data Request organisation with test users for admin, editor and member and default data requests
+#
 # Data Requests requires a specific organisation to exist in order to create DRs for Data.Qld
 DR_ORG_NAME=open-data-administration-data-requests
 DR_ORG_TITLE="Open Data Administration (data requests)"
 
 echo "Creating test users for ${DR_ORG_TITLE} Organisation:"
 
-ckan_cli user add dr_admin email=dr_admin@localhost password=password
-ckan_cli user add dr_editor email=dr_editor@localhost password=password
-ckan_cli user add dr_member email=dr_member@localhost password=password
+add_user_if_needed dr_admin "Data Request Admin" dr_admin@localhost
+add_user_if_needed dr_editor "Data Request Editor" dr_editor@localhost
+add_user_if_needed dr_member "Data Request Member" dr_member@localhost
 
-echo "Creating Data Request Organisation:"
+echo "Creating ${DR_ORG_TITLE} Organisation:"
 
 DR_ORG=$( \
-    curl -L -s \
-    --header "Authorization: ${API_KEY}" \
+    curl -LsH "Authorization: ${API_KEY}" \
     --data "name=${DR_ORG_NAME}&title=${DR_ORG_TITLE}" \
     ${CKAN_ACTION_URL}/organization_create
 )
 
 DR_ORG_ID=$(echo $DR_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
-echo "Assigning test users to Data Request Organisation:"
+echo "Assigning test users to ${DR_ORG_TITLE} Organisation:"
 
 curl -LsH "Authorization: ${API_KEY}" \
     --data "id=${DR_ORG_ID}&object=dr_admin&object_type=user&capacity=admin" \
@@ -124,4 +137,6 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data "ckanext.data_qld.resource_formats=JSON" \
     ${CKAN_ACTION_URL}/config_option_update
 
-deactivate
+if [ "$VENV_DIR" != "" ]; then
+  deactivate
+fi

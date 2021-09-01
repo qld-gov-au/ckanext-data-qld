@@ -4,8 +4,9 @@
 #
 set -e
 
-. ${APP_DIR}/bin/activate
-cd $WORKDIR
+if [ "$VENV_DIR" != "" ]; then
+  . ${VENV_DIR}/bin/activate
+fi
 pip install -r "requirements.txt"
 pip install -r "requirements-dev.txt"
 pip install -r "$APP_DIR/src/ckanext-validation/requirements.txt"
@@ -18,4 +19,6 @@ installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1
 # Validate that the extension was installed correctly.
 if ! pip list | grep "$installed_name" > /dev/null; then echo "Unable to find the extension in the list"; exit 1; fi
 
-deactivate
+if [ "$VENV_DIR" != "" ]; then
+  deactivate
+fi
