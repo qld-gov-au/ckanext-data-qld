@@ -9,10 +9,10 @@ if [ "$VENV_DIR" != "" ]; then
 fi
 pip install -r "requirements.txt"
 pip install -r "requirements-dev.txt"
-pip install -r "$APP_DIR/src/ckanext-validation/requirements.txt"
-pip install -r "$APP_DIR/src/ckanext-data-qld-theme/requirements.txt"
-pip install -r "$APP_DIR/src/ckanext-dcat/requirements.txt"
-pip install -r "$APP_DIR/src/ckanext-ytp-comments/requirements.txt"
+pip install -r "$VENV_DIR/src/ckanext-validation/requirements.txt"
+pip install -r "$VENV_DIR/src/ckanext-data-qld-theme/requirements.txt"
+pip install -r "$VENV_DIR/src/ckanext-dcat/requirements.txt"
+pip install -r "$VENV_DIR/src/ckanext-ytp-comments/requirements.txt"
 python setup.py develop
 installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1|")
 
