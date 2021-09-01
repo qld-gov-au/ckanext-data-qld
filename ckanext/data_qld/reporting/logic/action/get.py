@@ -595,6 +595,7 @@ def de_identified_datasets(context, data_dict):
         query = (
             _session_.query(Package)
             .join(model.PackageExtra)
+            .filter(Package.owner_org == org_id)
             .filter(PackageExtra.key == 'de_identified_data')
             .filter(PackageExtra.value == 'YES')
         )
@@ -627,6 +628,7 @@ def overdue_datasets(context, data_dict):
         query = (
             _session_.query(Package)
             .join(model.PackageExtra)
+            .filter(Package.owner_org == org_id)
             .filter(PackageExtra.key == 'next_update_due')
             .filter(PackageExtra.value < today_utc)
         )

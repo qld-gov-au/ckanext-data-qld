@@ -10,8 +10,10 @@
     <p>Please select the report to generate:</p>
 
     <p><a href="/dashboard/reporting?report_type=engagement" class="btn btn-primary">Engagement Report</a></p>
-    <hr />
-    <p><a href="/dashboard/reporting?report_type=admin" class="btn btn-primary">Admin Report</a></p>
+    {% if h.check_access('has_user_permission_for_some_org', {'permission': 'admin'}) %}
+        <hr />
+        <p><a href="/dashboard/reporting?report_type=admin" class="btn btn-primary">Admin Report</a></p>
+    {% endif %}
     <hr class="double-thickness" />
 
     {% if report_type == 'engagement' %}
