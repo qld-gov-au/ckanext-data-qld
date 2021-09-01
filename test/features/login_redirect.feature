@@ -23,7 +23,7 @@ Feature: Login Redirection
 
     @dataset_setup
     Scenario: As a Sysadmin I set the visibility of a public record to private for the following scenarios
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I log in
         Then I visit "/dataset/edit/annakarenina"
         When I select "True" from "private"
