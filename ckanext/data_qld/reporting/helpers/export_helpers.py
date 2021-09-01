@@ -123,7 +123,7 @@ def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows
 
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
-    filename = '{0}-{1}-report.csv'.format(datetime.now().isoformat("-"), report_type)
+    filename = '{0}-{1}-report.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"), report_type)
     filepath = gettempdir() + '/' + filename
 
     try:
