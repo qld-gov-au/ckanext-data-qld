@@ -621,21 +621,14 @@ def overdue_datasets(context, data_dict):
     check_org_access(org_id)
 
     try:
-        # due_date is stored as UTC without timezone
-        # We need to check for any datasets whose due_date is earlier than
-        # NOW, minus the number of days a dataset is due by (in UTC)
-        ckan_timezone = config.get('ckan.display_timezone', None)
-        dataset_overdue_days = asint(config.get('ckan.reporting.dataset_overdue_days', 30))
-        today = datetime.now(pytz.timezone(ckan_timezone))
-        overdue_days = timedelta(days=dataset_overdue_days)
-        x_days_from_today = today - overdue_days
-        utc_x_days_from_today = x_days_from_today.astimezone(pytz.timezone('UTC')).strftime('%Y-%m-%d')
-
+        # next_update_due is stored as UTC without timezone as isoformat
+        today_utc = datetime.utcnow().date().isoformat()
+        # We need to check for any datasets whose next_update_due is earlier than today
         query = (
             _session_.query(Package)
             .join(model.PackageExtra)
-            .filter(PackageExtra.key == 'due_date')
-            .filter(PackageExtra.value < utc_x_days_from_today)
+            .filter(PackageExtra.key == 'next_update_due')
+            .filter(PackageExtra.value < today_utc)
         )
 
         if return_count_only:

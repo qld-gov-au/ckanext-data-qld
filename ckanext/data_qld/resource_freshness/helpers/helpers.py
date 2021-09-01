@@ -25,7 +25,7 @@ def get_update_frequencies():
 
 
 def update_frequencies_from_config():
-    return config.get('ckanext.resource_freshness.update_frequencies')
+    return config.get('ckanext.resource_freshness.update_frequencies', json.dumps(update_frequencies))
 
 
 def recalculate_next_update_due_date(update_frequency, next_update_due=None):
