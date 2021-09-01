@@ -1,7 +1,7 @@
 @config
 Feature: Data Validation
 
-    Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I cannot see the  "</> JSON" button
+    Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I cannot see the '</> JSON' button
        Given "<User>" as the persona
         When I log in
         And I visit "dataset/new_resource/annakarenina"
@@ -14,7 +14,7 @@ Feature: Data Validation
         | TestOrgEditor     |
 
 
-     Scenario: As any user, I can view the "Data Schema" link in the "Additional Info" table of the resource read-view page
+     Scenario: As any user, I can view the 'Data Schema' link in the 'Additional Info' table of the resource read-view page
        Given "Admin" as the persona
         When I log in
         And I visit "dataset/new"
