@@ -33,6 +33,8 @@ class ReportingPlugin(plugins.SingletonPlugin):
             'open_datarequests_no_comments_after_x_days': get.open_datarequests_no_comments_after_x_days,
             'datarequests_open_after_x_days': get.datarequests_open_after_x_days,
             'comments_no_replies_after_x_days': get.comments_no_replies_after_x_days,
+            'de_identified_datasets': get.de_identified_datasets,
+            'overdue_datasets': get.overdue_datasets
         }
         return actions
 

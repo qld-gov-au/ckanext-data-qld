@@ -179,7 +179,6 @@
       "label": "Next update due",
       "form_snippet": "next_update_due.html",
       "validators": "isodate data_qld_validate_next_update_due convert_to_json_if_date"
-
      },
      {
       "field_name": "de_identified_data",

@@ -1,18 +1,20 @@
 {#- linked_metric.html -#}
-<tr class="complete">
-    <td>
+<tr id="{{metric}}" class="complete">
+    <td class="metric-title" >
         {% if count > 0 %}
             <a href="{{ link }}">{{ label }}</a>
         {% else %}
             {{ label }}
         {% endif %}
     </td>
-    <td>
+    <td class="metric-data" >
         {% if count > 0 %}
             <a href="{{ link }}">{{ count }}</a>
         {% else %}
             {{ count }}
         {% endif %}
     </td>
-    <td>-</td>
+    {% if report_type == 'engagement' %}
+        <td>-</td>
+    {% endif %}
 </tr>

@@ -1,0 +1,12 @@
+{
+  "De-Identified Datasets": {
+    "order": 1,
+    "type": "scalar",
+    "property": "de_identified_datasets"
+  },
+  "Overdue Datasets": {
+    "order": 2,
+    "type": "scalar",
+    "property": "overdue_datasets"
+  }
+}
