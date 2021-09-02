@@ -97,7 +97,7 @@ def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, ro
     dict_csv_rows['Average days closed data requests - overall'].append(str(int(datarequest_metrics.get('average_overall', 0))))
 
 
-def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows):
+def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows, permission):
     """
     Add admin eporting metrics for a specific organisation to the CSV data
     :param org:
@@ -106,7 +106,7 @@ def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows
     :param dict_csv_rows:
     :return:
     """
-    metrics = helpers.gather_admin_metrics(org.get('id', ''))
+    metrics = helpers.gather_admin_metrics(org.get('id', ''), permission)
 
     csv_header_row.append(org.get('title', ''))
 
