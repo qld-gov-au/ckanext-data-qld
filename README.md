@@ -1,4 +1,3 @@
-======================
 ckanext-data-qld-theme
 ======================
 A custom CKAN extension for Data.Qld
