@@ -1,4 +1,5 @@
-# ckanext-data-qld-theme
+ckanext-data-qld-theme
+======================
 A custom CKAN extension for Data.Qld
 
 [![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld-theme/tree/develop.svg?style=shield)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld-theme/tree/develop)
