@@ -178,8 +178,7 @@
       "field_name": "next_update_due",
       "label": "Next update due",
       "form_snippet": "next_update_due.html",
-      "validators": "isodate data_qld_validate_next_update_due convert_to_json_if_date",
-      "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page."
+      "validators": "data_qld_validate_next_update_due convert_to_json_if_date"
      },
      {
       "field_name": "de_identified_data",
@@ -259,8 +258,10 @@
       "field_name": "nature_of_change",
       "label": "Nature of change to data",
       "form_include_blank_choice": true,
-      "preset": "select",
-      "validators": "data_qld_validate_nature_of_change_data scheming_choices",
+      "form_snippet": "select.html",
+      "display_snippet": null,
+      "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
+      "validators": "data_qld_validate_nature_of_change_data ignore_missing scheming_choices",
       "choices":[
         {
           "value": "add-new-time-series",

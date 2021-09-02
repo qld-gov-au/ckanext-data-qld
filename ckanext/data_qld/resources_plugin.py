@@ -1,9 +1,8 @@
 # encoding: utf-8
-
-import cgi
 import sys
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import ckan.lib.uploader as uploader
 
 import auth_functions as auth
 import blueprint_overrides
@@ -93,10 +92,11 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     # IResourceController
     def before_create(self, context, data_dict):
-        return self.check_file_upload(data_dict)
+        self.check_file_upload(data_dict)
 
     def before_update(self, context, current_resource, updated_resource):
-        return self.check_file_upload(updated_resource)
+        self.check_file_upload(updated_resource)
+        resource_freshness_helpers.check_resource_data(current_resource, updated_resource)
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
@@ -109,10 +109,8 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         # The action resource_create and resource_update will then set the data_dict['size'] = upload.filesize if
         # 'size' not in data_dict.
         file_upload = data_dict.get(u'upload', None)
-        if isinstance(file_upload, cgi.FieldStorage):
+        if isinstance(file_upload, uploader.ALLOWED_UPLOAD_TYPES):
             data_dict.pop(u'size', None)
-
-        return data_dict
 
     def after_create(self, context, data_dict):
         # Set the resource position order for this (latest) resource to first
@@ -123,7 +121,6 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 toolkit.get_action('package_resource_reorder')(context, {'id': package_id, 'order': [resource_id]})
             except Exception as e:
                 log.error(str(e))
-        return data_dict
 
     # IBlueprint
     def get_blueprint(self):
