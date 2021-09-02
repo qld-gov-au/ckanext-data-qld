@@ -3,7 +3,7 @@ import logging
 
 from ckan.lib.base import BaseController
 from ckan.plugins.toolkit import \
-    _, abort, g, check_access, get_action, get_validator, request, render, \
+    _, abort, g, get_action, get_validator, request, render, \
     Invalid, NotAuthorized, ObjectNotFound
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import export_helpers, helpers
@@ -16,33 +16,22 @@ COMMENT_NO_REPLY_MAX_DAYS = constants.COMMENT_NO_REPLY_MAX_DAYS
 
 class ReportingController(BaseController):
 
-    @classmethod
-    def check_user_access(cls, report_type):
-        permission = 'admin' if report_type == constants.REPORT_TYPE_ADMIN else 'create_dataset'
-        check_access(
-            'has_user_permission_for_some_org',
-            helpers.get_context(), {'permission': permission}
-        )
-
-    @classmethod
-    def check_user_org_access(cls, org_id, user_name, report_type):
-        permission = 'admin' if report_type == constants.REPORT_TYPE_ADMIN else 'create_dataset'
-        if not authz.has_user_permission_for_group_or_org(org_id, user_name, permission):
-            raise NotAuthorized
-
-    @classmethod
-    def valid_report_type(cls, report_type):
+    def valid_report_type(self, report_type):
         if report_type not in constants.REPORT_TYPES:
             msg = _('Report type {0} not valid').format(report_type)
             log.warn(msg)
             abort(404, msg)
+
+    def get_report_type_permission(self, report_type):
+        return 'admin' if report_type == constants.REPORT_TYPE_ADMIN else 'create_dataset'
 
     def index(self):
         org_id = request.GET.get('organisation', None)
         report_type = request.GET.get('report_type', '')
 
         try:
-            self.check_user_access(report_type)
+            report_permission = self.get_report_type_permission(report_type)
+            helpers.check_user_access(report_permission)
 
             extra_vars = {
                 'user_dict': g.userobj.as_dict(),
@@ -51,7 +40,7 @@ class ReportingController(BaseController):
             if report_type:
                 self.valid_report_type(report_type)
 
-                organisations = helpers.get_organisation_list()
+                organisations = helpers.get_organisation_list(report_permission)
 
                 extra_vars.update({
                     'organisations': organisations,
@@ -80,7 +69,7 @@ class ReportingController(BaseController):
                         })
                     elif report_type == constants.REPORT_TYPE_ADMIN:
                         extra_vars.update({
-                            'metrics': helpers.gather_admin_metrics(org_id)
+                            'metrics': helpers.gather_admin_metrics(org_id, report_permission)
                         })
 
             return render(
@@ -102,18 +91,19 @@ class ReportingController(BaseController):
     def export(self):
         report_type = request.GET.get('report_type', '')
         try:
-            self.check_user_access(report_type)
+            report_permission = self.get_report_type_permission(report_type)
+            helpers.check_user_access(report_permission)
             self.valid_report_type(report_type)
 
             if report_type == constants.REPORT_TYPE_ENGAGEMENT:
-                return self.export_engagement_report(report_type)
+                return self.export_engagement_report(report_type, report_permission)
             elif report_type == constants.REPORT_TYPE_ADMIN:
-                return self.export_admin_report(report_type)
+                return self.export_admin_report(report_type, report_permission)
         except NotAuthorized as e:  # Exception raised from check_user_access
             log.warn(e)
             abort(403, _('You are not authorised to export the {0} report'.format(report_type)))
 
-    def export_engagement_report(self, report_type):
+    def export_engagement_report(self, report_type, report_permission):
         start_date, end_date = helpers.get_report_date_range(request)
 
         report_config = export_helpers.csv_report_config(report_type)
@@ -160,7 +150,7 @@ class ReportingController(BaseController):
             dict_csv_rows[key] = []
 
         # Gather all the metrics for each organisation
-        for organisation in helpers.get_organisation_list_for_user('create_dataset'):
+        for organisation in helpers.get_organisation_list_for_user(report_permission):
             export_helpers.engagement_csv_add_org_metrics(
                 organisation,
                 start_date,
@@ -175,7 +165,7 @@ class ReportingController(BaseController):
 
         return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type)
 
-    def export_admin_report(self, report_type):
+    def export_admin_report(self, report_type, report_permission):
         report_config = export_helpers.csv_report_config(report_type)
 
         row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
@@ -188,12 +178,13 @@ class ReportingController(BaseController):
             dict_csv_rows[key] = []
 
         # Gather all the metrics for each organisation
-        for organisation in helpers.get_organisation_list_for_user('create_dataset'):
+        for organisation in helpers.get_organisation_list_for_user(report_permission):
             export_helpers.admin_csv_add_org_metrics(
                 organisation,
                 csv_header_row,
                 row_properties,
-                dict_csv_rows
+                dict_csv_rows,
+                report_permission
             )
 
         return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type)
@@ -201,7 +192,8 @@ class ReportingController(BaseController):
     def datasets(self, org_id, metric):
         report_type = request.GET.get('report_type', '')
         try:
-            self.check_user_org_access(org_id, g.userobj.name, report_type)
+            report_permission = self.get_report_type_permission(report_type)
+            helpers.check_user_org_access(org_id, report_permission)
             self.valid_report_type(report_type)
 
             get_validator('group_id_exists')(org_id, helpers.get_context())
@@ -260,7 +252,8 @@ class ReportingController(BaseController):
                 })
             elif metric == 'de-identified-datasets':
                 data_dict.update({
-                    'return_count_only': False
+                    'return_count_only': False,
+                    'permission': report_permission
                 })
                 datasets = get_action('de_identified_datasets')({}, data_dict)
                 data_dict.update({
@@ -268,7 +261,8 @@ class ReportingController(BaseController):
                 })
             elif metric == 'overdue-datasets':
                 data_dict.update({
-                    'return_count_only': False
+                    'return_count_only': False,
+                    'permission': report_permission
                 })
                 datasets = get_action('overdue_datasets')({}, data_dict)
                 data_dict.update({
@@ -290,7 +284,8 @@ class ReportingController(BaseController):
         """Displays a list of data requests for the given organisation based on the desired metric"""
         report_type = request.GET.get('report_type', '')
         try:
-            self.check_user_org_access(org_id, g.userobj.name, report_type)
+            report_permission = self.get_report_type_permission(report_type)
+            helpers.check_user_org_access(org_id, report_permission)
             self.valid_report_type(report_type)
 
             get_validator('group_id_exists')(org_id, helpers.get_context())

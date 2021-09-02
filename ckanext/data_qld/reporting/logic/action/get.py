@@ -20,7 +20,7 @@ from ckan.plugins.toolkit import config, asint
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
 _session_ = model.Session
-check_org_access = helpers.check_org_access
+check_org_access = helpers.check_user_org_access
 log = logging.getLogger(__name__)
 
 #
@@ -589,7 +589,8 @@ def de_identified_datasets(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    check_org_access(org_id)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
 
     try:
         query = (
@@ -619,7 +620,8 @@ def overdue_datasets(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    check_org_access(org_id)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
 
     try:
         # next_update_due is stored as UTC without timezone as isoformat
