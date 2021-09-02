@@ -25,6 +25,10 @@
     {%- do exclude_fields.append('validation_timestamp') -%}
   {%- endif -%}
 
+  {%- if h.data_qld_user_has_admin_access(True) == False -%}
+    {%- do exclude_fields.append('nature_of_change') -%}
+  {%- endif -%}
+
   {%- if 'validation_options' not in res and 'validation_options' not in exclude_fields -%}
     {%- do exclude_fields.append('validation_options') -%}
   {%- endif -%}

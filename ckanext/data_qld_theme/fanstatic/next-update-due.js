@@ -4,25 +4,29 @@ jQuery(document).ready(function () {
     update_frequency_changed();
 
     jQuery("#field-update_frequency").change(function () {
-        update_frequency_changed();
+        update_frequency_changed(true);
     });
 
-    function update_frequency_changed() {
-        let update_frequency = jQuery("#field-update_frequency :selected").val();
-        if (update_frequency in UPDATE_FREQUENCY_DAYS) {
-            jQuery("#field-next_update_due").parent().parent().show();
+    function update_frequency_changed(change_event) {
+        let update_frequency = jQuery("#field-update_frequency :selected");
+        let control_label = jQuery('.control-label[for="field-next_update_due"').parent();
+        let next_update_due_field = jQuery("#field-next_update_due");
+        if (update_frequency.val() in UPDATE_FREQUENCY_DAYS) {
+            next_update_due_field.parent().parent().show();
             // Check if required asterix is already shown to prevent duplicates
-            if (jQuery('.control-label[for="field-next_update_due"').parent().children('span.control-required').length == 0) {
-                jQuery('.control-label[for="field-next_update_due"').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
+            if (control_label.children('span.control-required').length == 0) {
+                control_label.prepend('<span title="This field is required" class="control-required">*</span> ')
             }
-            due_date = recalculate_due_date(update_frequency);
-            // convert the date format to apply the datepicker element
-            next_update_due = moment(due_date).format('YYYY-MM-DD');
-            jQuery("#field-next_update_due").val(next_update_due);
+            if (change_event) {
+                due_date = recalculate_due_date(update_frequency.val());
+                // convert the date format to apply the datepicker element
+                next_update_due = moment(due_date).format('YYYY-MM-DD');
+                next_update_due_field.val(next_update_due);
+            }
         }
         else {
-            jQuery("#field-next_update_due").val("");
-            jQuery("#field-next_update_due").parent().parent().hide();
+            next_update_due_field.val("");
+            next_update_due_field.parent().parent().hide();
         }
     };
 
