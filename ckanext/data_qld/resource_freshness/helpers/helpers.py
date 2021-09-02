@@ -38,7 +38,7 @@ def recalculate_next_update_due_date(update_frequency, next_update_due=None):
         # Recalculate the UpdateDue date if its None
         due_date = dt.datetime.utcnow().date() + dt.timedelta(days=days)
 
-    return due_date
+    return get_validator('convert_to_json_if_date')(due_date, {})
 
 
 def process_next_update_due(data_dict):
