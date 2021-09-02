@@ -19,8 +19,9 @@ def validate_next_update_due(keys, flattened_data, errors, context):
         if not next_update_due:
             raise tk.ValidationError({key: [tk._("Missing value")]})
 
-        if next_update_due.date() < dt.date.today():
-            raise tk.ValidationError({key: [tk._("Date should be in future")]})
+        next_update_due = tk.get_validator('isodate')(next_update_due, {})
+        if next_update_due.date() <= dt.date.today():
+            raise tk.ValidationError({key: [tk._("Valid date in the future is required")]})
 
         # Recalculate only IF the request is API call
         if tk.get_endpoint()[1] == 'action':
@@ -35,23 +36,28 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     res, index, key = keys
     resource = data.get(res, [])[index]
 
-    res_id = resource.get('id', None)
-    if not res_id:
-        return
+    next_update_due = data.get('next_update_due')
+    update_frequency = data.get('update_frequency')
     nature_of_change = resource.get(key)
-    file_upload = tk.request.params.get('upload', None)
-    if isinstance(file_upload, uploader.ALLOWED_UPLOAD_TYPES):
-        if not nature_of_change:
-            raise tk.ValidationError({key: [tk._("Missing value")]})
-    else:
-        old_res = tk.get_action('resource_show')(context, {'id': res_id})
-        if old_res.get('url') == resource.get('url'):
-            return
+    res_id = resource.get('id', None)
+
+    if not res_id:
+        # New resource created, recalculate next_update_due date
+        flattened_data[('next_update_due',)] = h.recalculate_next_update_due_date(update_frequency)
+        tk.get_validator('convert_to_extras')(('next_update_due', ), flattened_data, errors, context)
+        return
+
+    # Compare old resource url with current url to find out if the resource data has changed
+    # url value can be updated from either a new file uploaded which stores the filename in URL or the url link updated
+    old_res = tk.get_action('resource_show')(context, {'id': res_id})
+    if resource.get('url', '').endswith(old_res.get('url', '')):
+        # URL has not been updated so no nature_of_change validation required
+        return
 
     if not nature_of_change:
         raise tk.ValidationError({key: [tk._("Missing value")]})
 
-    next_update_due = data.get('next_update_due')
-    update_frequency = data.get('update_frequency')
     if nature_of_change == 'add-new-time-series' and update_frequency in h.get_update_frequencies():
+        # Resource data has been updated and the correct nature of change provided, recalculate next_update_due date
         flattened_data[('next_update_due',)] = h.recalculate_next_update_due_date(update_frequency, next_update_due)
+        tk.get_validator('convert_to_extras')(('next_update_due', ), flattened_data, errors, context)
