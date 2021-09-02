@@ -1,6 +1,12 @@
 jQuery(document).ready(function () {
 
-  jQuery('#field-nature_of_change').parent().parent().hide();
+  // if there is a validation error block on updating a resource, show the field nature_of_change, otherwise hide it by default
+  if (jQuery('input[name="id"]').val().length > 0 && jQuery('#field-nature_of_change').parent().children('.error-block').length > 0) {
+    jQuery('#field-nature_of_change').parent().parent().show();
+  }
+  else {
+    jQuery('#field-nature_of_change').parent().parent().hide();
+  }
 
   // Hide resource size element on loading of a resource edit form if the resource file was uploaded
   if (jQuery('.image-upload[data-module="image-upload"]').data('module-is_upload') == true) {
