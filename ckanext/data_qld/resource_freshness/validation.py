@@ -53,7 +53,8 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     if resource.get('url', '').endswith(old_res.get('url', '')):
         # URL has not been updated so no nature_of_change validation required
         return
-
+    flattened_data[('data_last_updated', )] = tk.get_validator('convert_to_json_if_date')(dt.datetime.utcnow().date(), {})
+    tk.get_validator('convert_to_extras')(('data_last_updated', ), flattened_data, errors, context)
     if not nature_of_change:
         raise tk.ValidationError({key: [tk._("Missing value")]})
 
@@ -61,3 +62,21 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
         # Resource data has been updated and the correct nature of change provided, recalculate next_update_due date
         flattened_data[('next_update_due',)] = h.recalculate_next_update_due_date(update_frequency, next_update_due)
         tk.get_validator('convert_to_extras')(('next_update_due', ), flattened_data, errors, context)
+
+
+def data_last_updated(key, flattened_data, errors, context):
+    '''
+    Validate last data updated
+    '''
+    key, = key
+    data = df.unflatten(flattened_data)
+    # set default time just for comparing with the first resource
+    last_updated = dt.date(1970, 1, 1)
+    resources = data.get('resources', [])
+    for resource in resources:
+        last_modified = tk. get_validator('isodate')(resource.get('last_modified'), context)
+        # Cycle thoriugh the resources to compare last_modified field
+        if last_modified.date() > last_updated:
+            last_updated = last_modified.date()
+
+    flattened_data[('data_last_updated', )] = tk.get_validator('convert_to_json_if_date')(last_updated, {})
