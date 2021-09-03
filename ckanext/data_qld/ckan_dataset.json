@@ -45,7 +45,8 @@
       "field_name": "data_last_updated",
       "label": "Data last updated",
       "form_snippet": null,
-      "output_validators": "data_qld_data_last_updated"
+      "display_snippet": "date.html",
+      "validators": "data_qld_data_last_updated"
     },
     {
       "field_name": "url",

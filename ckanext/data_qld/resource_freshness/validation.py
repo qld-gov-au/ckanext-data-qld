@@ -64,13 +64,18 @@ def data_last_updated(key, flattened_data, errors, context):
     '''
     key, = key
     data = df.unflatten(flattened_data)
-    # set default time just for comparing with the first resource
-    last_updated = dt.date(1970, 1, 1)
-    resources = data.get('resources', [])
+    # Get package with 'pakcage_sho' because the validator doesnt have the all data required
+    package = tk.get_action('package_show')(context, data)
+    resources = package.get('resources')
+    last_updated = tk.get_validator('isodate')(package.get('data_last_updated', ""), context)
+    # Cycle through the resources to compare data_last_updated field with last_modified
     for resource in resources:
-        last_modified = tk. get_validator('isodate')(resource.get('last_modified'), context)
-        # Cycle thoriugh the resources to compare last_modified field
-        if last_modified.date() > last_updated:
-            last_updated = last_modified.date()
+        last_modified = tk.get_validator('isodate')(resource.get('last_modified', ""), context)
+        if last_modified is None:
+            return
+        if last_updated is None:
+            last_updated = last_modified
+        if last_modified > last_updated:
+            last_updated = last_modified
 
-    flattened_data[('data_last_updated', )] = tk.get_validator('convert_to_json_if_date')(last_updated, {})
+    flattened_data[('data_last_updated', )] = tk.get_validator('convert_to_json_if_datetime')(last_updated, context)
