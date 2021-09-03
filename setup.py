@@ -16,7 +16,7 @@ setup(
     long_description='''''',
 
     # The project's main homepage.
-    url='''https://servicesmadesimpler.govnet.qld.gov.au/bitbucket/scm/ckan/ckanext-data-qld-theme.git''',
+    url='https://github.com/qld-gov-au/ckanext-data-qld',
 
     # Author details
     author='''Salsa Digital''',
