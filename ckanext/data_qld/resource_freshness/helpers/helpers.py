@@ -1,12 +1,14 @@
 import datetime as dt
 import json
 import logging
+import ckan.plugins.toolkit as tk
+import ckan.lib.uploader as uploader
 
-from ckan.plugins.toolkit import get_validator
 from ckan.lib.base import config
 from ckanext.data_qld import helpers as h
 
 log = logging.getLogger(__name__)
+get_validator = tk.get_validator
 
 update_frequencies = {
     "monthly": 30,
@@ -41,6 +43,29 @@ def recalculate_next_update_due_date(update_frequency, next_update_due=None):
     return get_validator('convert_to_json_if_date')(due_date, {})
 
 
+def resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context):
+    flattened_data[('next_update_due',)] = recalculate_next_update_due_date(update_frequency, next_update_due)
+    get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)
+    flattened_data[('resources', index, 'last_modified')] = dt.datetime.utcnow()
+
+
+def check_resource_data(current_resource, updated_resource):
+    resource_data_updated = False
+    # If there is a file upload object of ALLOWED_UPLOAD_TYPES a new file is being uploaded
+    resource_data_updated = isinstance(updated_resource.get(u'upload'), uploader.ALLOWED_UPLOAD_TYPES)
+    if not resource_data_updated:
+        current_resource_url = ''
+        if current_resource.get('url_type') == 'upload':
+            # Strip the full url for resources of type 'upload' to get filename for compare
+            current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
+        else:
+            current_resource_url = current_resource.get('url', '')
+        # Compare old resource url with current url to find out if the resource data has changed
+        resource_data_updated = current_resource_url != updated_resource.get('url', '')
+    # The resource_data_updated value will be used in the validator 'validate_nature_of_change_data'
+    updated_resource['resource_data_updated'] = resource_data_updated
+
+
 def process_next_update_due(data_dict):
     if not h.user_has_admin_access(True):
         if 'next_update_due' in data_dict:
@@ -51,5 +76,5 @@ def process_next_update_due(data_dict):
 
 
 def process_nature_of_change(resource_dict):
-    if not h.user_has_admin_access(True) and 'nature_of_change' in resource_dict:
+    if 'nature_of_change' in resource_dict:
         del resource_dict['nature_of_change']
