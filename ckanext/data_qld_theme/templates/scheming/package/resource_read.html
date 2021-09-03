@@ -33,6 +33,10 @@
     {%- do exclude_fields.append('validation_options') -%}
   {%- endif -%}
 
+  {%- if not h.data_qld_show_resource_visibility(res) -%}
+    {%- do exclude_fields.append('resource_visibility') -%}
+  {%- endif -%}
+
  {{ super() }}
 {%- endblock -%}
 
