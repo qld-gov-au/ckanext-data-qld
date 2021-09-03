@@ -104,7 +104,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def before_update(self, context, current_resource, updated_resource):
         self.check_file_upload(updated_resource)
-        resource_freshness_helpers.check_resource_data(current_resource, updated_resource)
+        resource_freshness_helpers.check_resource_data(current_resource, updated_resource, context)
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
