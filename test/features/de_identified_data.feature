@@ -1,7 +1,7 @@
 @schema_metadata
 Feature: De-identified data
 
-Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset new page, the field field-de_identified_data should be visible with the correct values
+    Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset new page, the field field-de_identified_data should be visible with the correct values
         Given "<User>" as the persona
         When I log in
         And I go to "/dataset/new"
@@ -14,10 +14,10 @@ Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset ne
         Then I should not see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and  @value='']"
 
         Examples: Users
-        | User              |
-        | Admin             |
-        | TestOrgAdmin      |
-        | TestOrgEditor     |
+            | User          |
+            | Admin         |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
 
 
     Scenario Outline: An editor, admin or sysadmin user, when I go to the edit dataset page, the field field-de_identified_data should be visible with the correct values
@@ -29,10 +29,10 @@ Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset ne
         Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and @value='NO']"
 
         Examples: Users
-        | User              |
-        | Admin             |
-        | TestOrgAdmin      |
-        | TestOrgEditor     |
+            | User          |
+            | Admin         |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
 
     Scenario Outline: An editor, admin or sysadmin user can view the de-identified data
         Given "<User>" as the persona
@@ -46,10 +46,10 @@ Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset ne
         Then I should see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
 
         Examples: Users
-        | User              |
-        | Admin             |
-        | TestOrgAdmin      |
-        | TestOrgEditor     |
+            | User          |
+            | Admin         |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
 
     Scenario: Unauthenticated user cannot view the de-identified data
         Given "Unauthenticated" as the persona

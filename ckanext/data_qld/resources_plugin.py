@@ -15,11 +15,13 @@ import ckanext.data_qld.resource_freshness.validation as resource_freshness_vali
 
 from flask import Blueprint
 from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
-
+from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
+from ckanext.data_qld.resource_visibility import validators as resource_visibility_validators
 
 if sys.version_info[0] >= 3:
     unicode = str
 
+request = toolkit.request
 log = logging.getLogger(__name__)
 
 
@@ -58,6 +60,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'profanity_checking_enabled': helpers.profanity_checking_enabled,
                 'data_qld_user_has_admin_editor_org_access': de_identified_data_helpers.user_has_admin_editor_org_access,
                 'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
+                'data_qld_get_package_dict': resource_visibility_helpers.get_package_dict,
+                'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
+                'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
                 'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
                 }
 
@@ -66,6 +71,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         return {
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
+            'data_qld_resource_visibility': resource_visibility_validators.resource_visibility,
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
@@ -85,6 +91,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def after_show(self, context, data_dict):
         de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
+        resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
         resource_freshness_helpers.process_next_update_due(data_dict)
 
     # IAuthFunctions
@@ -101,6 +108,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
+
+        if toolkit.get_endpoint()[1] == 'action':
+            resource_visibility_helpers.process_resource_visibility(resource_dict)
 
     def check_file_upload(self, data_dict):
         # This method is to fix a bug that the ckanext-scheming creates for setting the file size of an uploaded
