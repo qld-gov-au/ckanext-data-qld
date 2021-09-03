@@ -2,7 +2,6 @@
 import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import datetime as dt
-import ckan.lib.uploader as uploader
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as h
 
@@ -46,7 +45,7 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     if resource.get('id'):
         # Resource updated
         # # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
-        if resource.get('__extras').get('resource_data_updated', False):
+        if resource.get('__extras', {}).get('resource_data_updated', False):
             # Resource data has updated so the nature_of_change validation is required
             if not nature_of_change:
                 raise tk.ValidationError({key: [tk._("Missing value")]})
