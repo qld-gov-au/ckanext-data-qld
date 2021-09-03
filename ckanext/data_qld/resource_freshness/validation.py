@@ -2,7 +2,6 @@
 import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import datetime as dt
-import ckan.lib.uploader as uploader
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as h
 
@@ -21,12 +20,11 @@ def validate_next_update_due(keys, flattened_data, errors, context):
             next_update_due = tk.get_validator('isodate')(next_update_due, {})
             if next_update_due.date() <= dt.date.today():
                 raise tk.ValidationError({key: [tk._("Valid date in the future is required")]})
+        # Recalculate only if the request is coming from the API action
+        elif tk.get_endpoint()[1] == 'action':
+            flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency)
         else:
-            # Recalculate only if the request is coming from the API action
-            if tk.get_endpoint()[1] == 'action':
-                flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency)
-            else:
-                raise tk.ValidationError({key: [tk._("Missing value")]})
+            raise tk.ValidationError({key: [tk._("Missing value")]})
     else:
         flattened_data[keys] = None
 
