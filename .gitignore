@@ -40,6 +40,7 @@ nosetests.xml
 coverage.xml
 
 # Translations
+*.mo
 *.pot
 
 # Django stuff:
@@ -48,6 +49,6 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 .env.local
-/test/screenshots
+screenshots
 !/test/screenshots/.gitkeep
 .idea
