@@ -69,11 +69,7 @@ services:
       <<: *default-environment
 
   redis:
-<<<<<<< HEAD
-    image: amazeeio/redis
-=======
     image: redis:6-alpine
->>>>>>> 4cdc80329d8c825f877ca40369b6f6c268a15073
     <<: *default-user
     environment:
       <<: *default-environment
