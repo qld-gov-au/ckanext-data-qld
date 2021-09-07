@@ -22,6 +22,7 @@ Feature: Data Validation
         When I fill in "notes" with "Description"
         When I fill in "version" with "1.0"
         When I fill in "author_email" with "test@me.com"
+        Then I select "NO" from "de_identified_data"
         When I press "Add Data"
         And I execute the script "document.getElementById('field-image-url').value='http://example.com/external-data.csv'"
         And I fill in "name" with "Test Resource"

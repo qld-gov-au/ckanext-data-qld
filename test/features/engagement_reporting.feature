@@ -13,7 +13,7 @@ Feature: Engagement Reporting
         And I should see an element with id "end_date"
         And I fill in "end_date" with "01-01-2020"
         When I press the element with xpath "//button[contains(string(), 'Show')]"
-        Then I should see "Organisation: Test" within 1 seconds
+        Then I should see "Organisation: Test Organisation" within 1 seconds
         And I should see "01/01/2019 - 01/01/2020" within 1 seconds
 
         Examples: Users

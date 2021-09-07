@@ -129,6 +129,7 @@ def create_dataset(context, license, file):
         And I fill in "version" with "1.0"
         And I fill in "author_email" with "test@me.com"
         And I execute the script "document.getElementById('field-license_id').value={license}"
+        Then I select "NO" from "de_identified_data"
         And I press "Add Data"
         And I attach the file {file} to "upload"
         And I fill in "name" with "Test Resource"

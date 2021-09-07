@@ -15,7 +15,7 @@ Feature: De-identified data
 
         Examples: Users
             | User          |
-            | Admin         |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -30,7 +30,7 @@ Feature: De-identified data
 
         Examples: Users
             | User          |
-            | Admin         |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -47,7 +47,7 @@ Feature: De-identified data
 
         Examples: Users
             | User          |
-            | Admin         |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
