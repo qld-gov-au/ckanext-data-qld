@@ -3,12 +3,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
 
     Scenario: Sysadmin creates dataset with Contains de-identified data is YES
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I log in
         And I go to "/dataset/new"
         Then I fill in "title" with "Contains de-identified data - YES"
         Then I fill in "notes" with "notes"
-        Then I execute the script "document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == "Test"; }).attr('value')"
+        Then I execute the script "document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == "Test Organisation"; }).attr('value')"
         Then I select "False" from "private"
         Then I fill in "version" with "1"
         Then I fill in "author_email" with "test@test.com"
@@ -26,12 +26,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
 
     Scenario: Sysadmin creates dataset with Contains de-identified data is NO
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I log in
         And I go to "/dataset/new"
         Then I fill in "title" with "Contains de-identified data - NO"
         Then I fill in "notes" with "notes"
-        Then I execute the script "document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == "Test"; }).attr('value')"
+        Then I execute the script "document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == "Test Organisation"; }).attr('value')"
         Then I select "False" from "private"
         Then I fill in "version" with "1"
         Then I fill in "author_email" with "test@test.com"
@@ -98,7 +98,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | Admin         |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -163,7 +163,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | Admin         |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -173,12 +173,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         When I log in
 
         And I go to "/dataset/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@title='resource created by Admin and is available']"
+        Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
         Then I should see "Re-identification risk governance acknowledgement/Resource visibility"
 
         Examples: Users
             | User          |
-            | Admin         |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -188,19 +188,19 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         When I log in
 
         And I go to "/dataset/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@title='resource created by Admin and is available']"
+        Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
         Then I should not see "Re-identification risk governance acknowledgement/Resource visibility"
 
     Scenario: A general user views a dataset resource additional info
         Given "Unauthenticated" as the persona
 
         And I go to "/dataset/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@title='resource created by Admin and is available']"
+        Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
         Then I should not see "Re-identification risk governance acknowledgement/Resource visibility"
 
 
     Scenario: Clean up
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I log in
         And I go to "/dataset/delete/contains-de-identified-data-yes"
         Then I press the element with xpath "//button[@name='delete']"

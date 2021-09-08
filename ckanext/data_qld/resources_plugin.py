@@ -108,7 +108,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
 
-        if toolkit.get_endpoint()[1] == 'action':
+        if toolkit.get_endpoint()[1] == 'action' and 'package_show' not in toolkit.request.path:
             resource_visibility_helpers.process_resource_visibility(resource_dict)
 
     def check_file_upload(self, data_dict):
