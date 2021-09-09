@@ -55,13 +55,16 @@ def check_resource_data(current_resource, updated_resource, context):
     data_updated = isinstance(updated_resource.get(u'upload'), uploader.ALLOWED_UPLOAD_TYPES)
     if not data_updated:
         current_resource_url = ''
+        updated_resource_url = ''
         if current_resource.get('url_type') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
             current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
+            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
         else:
             current_resource_url = current_resource.get('url', '')
+            updated_resource_url = updated_resource.get('url', '')
         # Compare old resource url with current url to find out if the resource data has changed
-        data_updated = current_resource_url != updated_resource.get('url', '')
+        data_updated = current_resource_url != updated_resource_url
     # The context['resource_data_updated'] value will be used in the validator 'validate_nature_of_change_data'
     context['resource_data_updated'] = {
         'id': updated_resource.get('id'),
