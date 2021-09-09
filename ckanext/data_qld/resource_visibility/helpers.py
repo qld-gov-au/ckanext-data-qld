@@ -34,7 +34,8 @@ def get_select_field_options(field_name, field_schema='resource_fields'):
     """
     Return a list of select options.
     """
-    schema = h.scheming_get_dataset_schema('dataset')
+    schema = h.scheming_get_dataset_schema('dataset') \
+        if 'scheming_datasets' in toolkit.config.get('ckan.plugins', '') else {}
 
     for field in schema.get(field_schema, []):
         if field.get('field_name') == field_name and field.get('choices', None):
@@ -73,7 +74,8 @@ def process_resources(data_dict, user_obj):
                 resource_visibility = resource.get('resource_visibility', '')
 
                 # Value of options[2] == Resource NOT visible/Pending acknowledgement.
-                if resource_visibility == options[2].get('value') or (len(resource_visibility) == 0 and de_identified_data):
+                if (resource_visibility in [option.get('value') for option in options]) \
+                        or (len(resource_visibility) == 0 and de_identified_data):
                     data_dict.get('resources').pop(index)
                     data_dict['num_resources'] -= 1
                 else:
