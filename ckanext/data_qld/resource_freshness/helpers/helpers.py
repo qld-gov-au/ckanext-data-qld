@@ -68,7 +68,8 @@ def check_resource_data(current_resource, updated_resource, context):
     # The context['resource_data_updated'] value will be used in the validator 'validate_nature_of_change_data'
     context['resource_data_updated'] = {
         'id': updated_resource.get('id'),
-        'data_updated': data_updated
+        'data_updated': data_updated,
+        'url_type': current_resource.get('url_type')
     }
 
 

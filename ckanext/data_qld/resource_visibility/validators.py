@@ -18,12 +18,12 @@ def resource_visibility(key, data, errors, context):
     if de_identified_data == 'YES':
         # Field is required.
         if len(value) == 0:
-            raise toolkit.Invalid('This dataset has been recorded as containing de-identified data. A re-identification risk governance acknowledgement for this resource must be made prior to publishing')
+            errors[key].append(toolkit.Invalid('This dataset has been recorded as containing de-identified data. A re-identification risk governance acknowledgement for this resource must be made prior to publishing')) 
 
         # First option will be disabled.
         if value == options[0].get('value'):
-            raise toolkit.Invalid('Illegal option selected')
+            errors[key].append(toolkit.Invalid('Illegal option selected'))
     else:
         # Second option will be disabled.
         if value == options[1].get('value'):
-            raise toolkit.Invalid('Illegal option selected')
+            errors[key].append(toolkit.Invalid('Illegal option selected'))
