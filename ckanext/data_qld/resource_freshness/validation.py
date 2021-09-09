@@ -1,5 +1,4 @@
 # encoding: utf-8
-from pdb import set_trace
 import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import datetime as dt
