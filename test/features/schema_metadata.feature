@@ -47,10 +47,10 @@ Feature: SchemaMetadata
         Then I should not see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and  @value='']"
 
         Examples: Users
-        | User              |
-        | Admin             |
-        | TestOrgAdmin      |
-        | TestOrgEditor     |
+            | User          |
+            | SysAdmin      |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
 
 
     Scenario Outline: Edit existing dataset, field de_identified_data value should be NO
@@ -62,10 +62,10 @@ Feature: SchemaMetadata
         Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and @value='NO']"
 
         Examples: Users
-        | User              |
-        | Admin             |
-        | TestOrgAdmin      |
-        | TestOrgEditor     |
+            | User          |
+            | SysAdmin      |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
 
     Scenario Outline: When viewing existing dataset, field de_identified_data should be NO
         Given "<User>" as the persona
@@ -79,10 +79,10 @@ Feature: SchemaMetadata
         Then I should see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
 
         Examples: Users
-        | User              |
-        | Admin             |
-        | TestOrgAdmin      |
-        | TestOrgEditor     |
+            | User          |
+            | SysAdmin      |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
 
     Scenario: Non logged-in user should not see de_identified_data value.
         Given "Unauthenticated" as the persona

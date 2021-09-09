@@ -46,8 +46,8 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
         # Resource updated
         # # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
         resource_data_updated = context.get('resource_data_updated', {})
-        if (resource_data_updated.get('id') == resource.get('id') and
-                resource_data_updated.get('data_updated', False) == True):
+        if resource_data_updated.get('id') == resource.get('id') and \
+           resource_data_updated.get('data_updated', False) is True:
             # Resource data has updated so the nature_of_change validation is required
             if not nature_of_change:
                 raise tk.ValidationError({key: [tk._("Missing value")]})
