@@ -3,6 +3,7 @@ import json
 import logging
 import ckan.plugins.toolkit as tk
 import ckan.lib.uploader as uploader
+import ckan.lib.helpers as core_helpers
 
 from ckan.lib.base import config
 from ckanext.data_qld import helpers as h
@@ -71,6 +72,26 @@ def check_resource_data(current_resource, updated_resource, context):
         'data_updated': data_updated,
         'url_type': current_resource.get('url_type')
     }
+
+
+def get_resource_file_url(resource_dict):
+    """
+    Return resource file/url.
+    """
+    from ckan.model import Package
+
+    url = resource_dict.get('url', '')
+    if len(url.rsplit('/')) == 1:
+        pkg_id = resource_dict.get('package_id', '')
+        res_id = resource_dict.get('id', '')
+
+        return core_helpers.url_for(controller='package',
+                                    action='resource_download',
+                                    id=Package.get(pkg_id).id,
+                                    resource_id=res_id,
+                                    _external=True) + '/' + resource_dict.get('url')
+
+    return url
 
 
 def process_next_update_due(data_dict):
