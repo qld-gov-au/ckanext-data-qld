@@ -89,7 +89,8 @@ def get_resource_file_url(resource_dict):
                                     action='resource_download',
                                     id=Package.get(pkg_id).id,
                                     resource_id=res_id,
-                                    _external=True) + '/' + resource_dict.get('url')
+                                    filename=url,
+                                    _external=True)
 
     return url
 
