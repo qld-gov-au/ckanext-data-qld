@@ -2,6 +2,10 @@
 
 {% import 'macros/data_qld_form.html' as data_qld_form %}
 
+{%- if data[field.field_name]|length > 0 -%}
+    {%- do data.update({field.field_name: h.data_qld_get_resource_file_url(data)}) -%}
+{%- endif -%}
+
 {%- set is_upload = (data.url_type == 'upload') -%}
 {{ data_qld_form.data_qld_image_upload(
     data,
