@@ -3,6 +3,7 @@ import json
 import logging
 import ckan.plugins.toolkit as tk
 import ckan.lib.uploader as uploader
+import ckan.lib.helpers as core_helpers
 
 from ckan.lib.base import config
 from ckanext.data_qld import helpers as h
@@ -55,18 +56,43 @@ def check_resource_data(current_resource, updated_resource, context):
     data_updated = isinstance(updated_resource.get(u'upload'), uploader.ALLOWED_UPLOAD_TYPES)
     if not data_updated:
         current_resource_url = ''
+        updated_resource_url = ''
         if current_resource.get('url_type') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
             current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
+            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
         else:
             current_resource_url = current_resource.get('url', '')
+            updated_resource_url = updated_resource.get('url', '')
         # Compare old resource url with current url to find out if the resource data has changed
-        data_updated = current_resource_url != updated_resource.get('url', '')
+        data_updated = current_resource_url != updated_resource_url
     # The context['resource_data_updated'] value will be used in the validator 'validate_nature_of_change_data'
     context['resource_data_updated'] = {
         'id': updated_resource.get('id'),
-        'data_updated': data_updated
+        'data_updated': data_updated,
+        'url_type': current_resource.get('url_type')
     }
+
+
+def get_resource_file_url(resource_dict):
+    """
+    Return resource file/url.
+    """
+    from ckan.model import Package
+
+    url = resource_dict.get('url', '')
+    if len(url.rsplit('/')) == 1:
+        pkg_id = resource_dict.get('package_id', '')
+        res_id = resource_dict.get('id', '')
+
+        return core_helpers.url_for(controller='package',
+                                    action='resource_download',
+                                    id=Package.get(pkg_id).id,
+                                    resource_id=res_id,
+                                    filename=url,
+                                    _external=True)
+
+    return url
 
 
 def process_next_update_due(data_dict):

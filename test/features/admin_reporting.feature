@@ -11,12 +11,12 @@ Feature: AdminReporting
         And I click the link with text that contains "Admin Report"
         Then I should see an element with id "organisation"
         When I press the element with xpath "//button[contains(string(), 'Show')]"
-        Then I should see "Organisation: Test" within 1 seconds
+        Then I should see "Organisation: Test Organisation" within 1 seconds
         Then I should see an element with xpath "//tr/th[string()='Criteria' and position()=1]"
         Then I should see an element with xpath "//tr/th[string()='Figure' and position()=2]"
 
-    
-    Scenario: As an editor user of my organisation, I can view 'My Reports' tab in the dashboard but I cannot view the "Admin Report" link 
+
+    Scenario: As an editor user of my organisation, I can view 'My Reports' tab in the dashboard but I cannot view the "Admin Report" link
         Given "TestOrgEditor" as the persona
         When I log in
         And I visit "dashboard"
@@ -41,23 +41,3 @@ Feature: AdminReporting
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='overdue-datasets']/td[contains(@class, 'metric-title') and contains(string(), 'Overdue Datasets') and position()=1]"
         Then I should see an element with xpath "//tr[@id='overdue-datasets']/td[contains(@class, 'metric-data') and position()=2]"
-
-    # TODO: Need to create a dataset with de-identified data
-    # Scenario: As an admin user of my organisation, when I view my admin report, I can view the de-indentified datasets report
-    #     Given "TestOrgAdmin" as the persona
-    #     When I log in
-    #     And I go to my reports page
-    #     And I click the link with text that contains "Admin Report"
-    #     And I press the element with xpath "//button[contains(string(), 'Show')]"
-    #     And I click the link with text that contains "De-identified Datasets"
-    #     Then I should see "Admin Report: De-identified Datasets" within 1 seconds
-
-    # TODO: Need to create a dataset with overdue data. Not sure how because the validator will stop this
-    # Scenario: As an admin user of my organisation, when I view my admin report, I can view the overdue datasets report
-    #     Given "TestOrgAdmin" as the persona
-    #     When I log in
-    #     And I go to my reports page
-    #     And I click the link with text that contains "Admin Report"
-    #     And I press the element with xpath "//button[contains(string(), 'Show')]"
-    #     And I click the link with text that contains "Overdue Datasets"
-    #     Then I should see "Admin Report: Overdue Datasets" within 1 seconds

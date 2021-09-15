@@ -12,15 +12,11 @@ def go_to_home(context):
 
 @step('I log in')
 def log_in(context):
-
     assert context.persona
     context.execute_steps(u"""
         When I go to homepage
         And I click the link with text that contains "Log in"
-        And I fill in "login" with "$name"
-        And I fill in "password" with "$password"
-        And I press the element with xpath "//button[contains(string(), 'Login')]"
-        Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
+        And I log in directly
     """)
 
 
@@ -37,7 +33,7 @@ def log_in_directly(context):
         When I fill in "login" with "$name"
         And I fill in "password" with "$password"
         And I press the element with xpath "//button[contains(string(), 'Login')]"
-        Then I should see an element with xpath "//a[contains(string(), 'Log out')]"
+        Then I should see an element with xpath "//a[@title='Log out']"
     """)
 
 
@@ -52,12 +48,9 @@ def title_random_text(context):
 
 @step('I log in and go to datarequest page')
 def log_in_go_to_datarequest_page(context):
-
     assert context.persona
     context.execute_steps(u"""
-        When I go to homepage
-        And I click the link with text that contains "Log in"
-        And I log in
+        When I log in
         And I go to datarequest page
     """)
 
@@ -136,6 +129,7 @@ def create_dataset(context, license, file):
         And I fill in "version" with "1.0"
         And I fill in "author_email" with "test@me.com"
         And I execute the script "document.getElementById('field-license_id').value={license}"
+        Then I select "NO" from "de_identified_data"
         And I press "Add Data"
         And I attach the file {file} to "upload"
         And I fill in "name" with "Test Resource"

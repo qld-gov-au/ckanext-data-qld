@@ -1,4 +1,3 @@
-import authz
 import logging
 
 from ckan.lib.base import BaseController
