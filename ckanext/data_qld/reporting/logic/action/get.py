@@ -15,7 +15,7 @@ from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
-from ckan.plugins.toolkit import config, asint
+from ckan.plugins.toolkit import config
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace

@@ -5,6 +5,9 @@ import datetime as dt
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as h
 
+missing = df.missing
+StopOnError = df.StopOnError
+
 
 def validate_next_update_due(keys, flattened_data, errors, context):
     '''
@@ -19,12 +22,12 @@ def validate_next_update_due(keys, flattened_data, errors, context):
         if next_update_due:
             next_update_due = tk.get_validator('isodate')(next_update_due, {})
             if next_update_due.date() <= dt.date.today():
-                raise tk.ValidationError({key: [tk._("Valid date in the future is required")]})
-        # Recalculate only if the request is coming from the API action
+                errors[keys].append(tk._("Valid date in the future is required"))
         elif tk.get_endpoint()[1] == 'action':
             flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency)
         else:
-            raise tk.ValidationError({key: [tk._("Missing value")]})
+            errors[keys].append(tk._('Missing value'))
+            raise StopOnError
     else:
         flattened_data[keys] = None
 
@@ -45,11 +48,11 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
         # Resource updated
         # # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
         resource_data_updated = context.get('resource_data_updated', {})
-        if (resource_data_updated.get('id') == resource.get('id') and
-                resource_data_updated.get('data_updated', False) == True):
+        if resource_data_updated.get('id') == resource.get('id') and \
+           resource_data_updated.get('data_updated', False) is True:
             # Resource data has updated so the nature_of_change validation is required
-            if not nature_of_change:
-                raise tk.ValidationError({key: [tk._("Missing value")]})
+            if not nature_of_change or nature_of_change is missing:
+                errors[keys].append(tk._('Missing value'))
             elif nature_of_change == 'add-new-time-series' and update_frequency in h.get_update_frequencies():
                 # Resource data has updated and the correct nature of change provided
                 h.resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context)

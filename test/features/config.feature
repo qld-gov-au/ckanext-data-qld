@@ -2,7 +2,7 @@
 Feature: Config
 
     Scenario: Assert that configuration values are available
-        Given "Admin" as the persona
+        Given "SysAdmin" as the persona
         When I log in
         And I visit "ckan-admin/config"
         And I should see "Suggested Description"

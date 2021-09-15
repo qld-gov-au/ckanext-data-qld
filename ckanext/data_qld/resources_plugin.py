@@ -64,6 +64,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
                 'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
                 'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
+                'data_qld_get_resource_file_url': resource_freshness_helpers.get_resource_file_url,
                 }
 
     # IValidators
@@ -108,8 +109,8 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
-
-        if toolkit.get_endpoint()[1] == 'action':
+        # CKAN background jobs that call 'package_show` will not have request objects
+        if hasattr(request, 'endpoint') and toolkit.get_endpoint()[1] == 'action' and 'package_show' not in request.path:
             resource_visibility_helpers.process_resource_visibility(resource_dict)
 
     def check_file_upload(self, data_dict):
