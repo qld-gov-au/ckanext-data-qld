@@ -2,7 +2,6 @@
 import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import datetime as dt
-import ckan.lib.uploader as uploader
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as h
 
@@ -21,12 +20,11 @@ def validate_next_update_due(keys, flattened_data, errors, context):
             next_update_due = tk.get_validator('isodate')(next_update_due, {})
             if next_update_due.date() <= dt.date.today():
                 raise tk.ValidationError({key: [tk._("Valid date in the future is required")]})
+        # Recalculate only if the request is coming from the API action
+        elif tk.get_endpoint()[1] == 'action':
+            flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency)
         else:
-            # Recalculate only if the request is coming from the API action
-            if tk.get_endpoint()[1] == 'action':
-                flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency)
-            else:
-                raise tk.ValidationError({key: [tk._("Missing value")]})
+            raise tk.ValidationError({key: [tk._("Missing value")]})
     else:
         flattened_data[keys] = None
 
@@ -46,7 +44,9 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     if resource.get('id'):
         # Resource updated
         # # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
-        if resource.get('__extras').get('resource_data_updated', False):
+        resource_data_updated = context.get('resource_data_updated', {})
+        if (resource_data_updated.get('id') == resource.get('id') and
+                resource_data_updated.get('data_updated', False) == True):
             # Resource data has updated so the nature_of_change validation is required
             if not nature_of_change:
                 raise tk.ValidationError({key: [tk._("Missing value")]})
@@ -64,13 +64,18 @@ def data_last_updated(key, flattened_data, errors, context):
     '''
     key, = key
     data = df.unflatten(flattened_data)
-    # set default time just for comparing with the first resource
-    last_updated = dt.date(1970, 1, 1)
-    resources = data.get('resources', [])
+    # Get package with 'pakcage_sho' because the validator doesnt have the all data required
+    package = tk.get_action('package_show')(context, data)
+    resources = package.get('resources')
+    last_updated = tk.get_validator('isodate')(package.get('data_last_updated', ""), context)
+    # Cycle through the resources to compare data_last_updated field with last_modified
     for resource in resources:
-        last_modified = tk. get_validator('isodate')(resource.get('last_modified'), context)
-        # Cycle thoriugh the resources to compare last_modified field
-        if last_modified.date() > last_updated:
-            last_updated = last_modified.date()
+        last_modified = tk.get_validator('isodate')(resource.get('last_modified', ""), context)
+        if last_modified is None:
+            return
+        if last_updated is None:
+            last_updated = last_modified
+        if last_modified > last_updated:
+            last_updated = last_modified
 
-    flattened_data[('data_last_updated', )] = tk.get_validator('convert_to_json_if_date')(last_updated, {})
+    flattened_data[('data_last_updated', )] = tk.get_validator('convert_to_json_if_datetime')(last_updated, context)

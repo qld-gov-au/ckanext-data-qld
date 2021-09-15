@@ -45,7 +45,8 @@
       "field_name": "data_last_updated",
       "label": "Data last updated",
       "form_snippet": null,
-      "output_validators": "data_qld_data_last_updated"
+      "display_snippet": "date.html",
+      "validators": "data_qld_data_last_updated"
     },
     {
       "field_name": "url",
@@ -259,6 +260,28 @@
       "field_name": "validation_timestamp",
       "label": "Validation timestamp",
       "preset": "hidden_in_form"
+    },
+    {
+      "field_name": "resource_visibility",
+      "label": "Re-identification risk governance acknowledgement/Resource visibility",
+      "form_include_blank_choice": true,
+      "validators": "ignore_missing data_qld_resource_visibility",
+      "form_snippet": "resource_visibility.html",
+      "help_text": "Datasets containing de-identified data will not be published and visible until a re-identification risk governance acknowledgement has been made.<br/><br/>This resource can be hidden pending an acknowledgement or otherwise hidden until suitable for publishing.",
+      "choices": [
+        {
+          "value": "Resource visible and re-identification risk governance acknowledgement not required",
+          "label": "Resource visible and re-identification risk governance acknowledgement not required"
+        },
+        {
+          "value": "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing",
+          "label": "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing"
+        },
+        {
+          "value": "Resource NOT visible/Pending acknowledgement",
+          "label": "Resource NOT visible/Pending acknowledgement"
+        }
+      ]
     },
     {
       "field_name": "nature_of_change",

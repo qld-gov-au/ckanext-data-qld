@@ -33,3 +33,63 @@ Feature: SchemaMetadata
         When I log in
         When I go to "/dataset/warandpeace"
         Then I should see an element with xpath "//link[@type='application/ld+json']"
+
+    Scenario Outline: Check value of de_identified_data dropdown field
+        Given "<User>" as the persona
+        When I log in
+        And I go to "/dataset/new"
+        Then I should see an element with id "field-de_identified_data"
+        Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@value='YES']"
+        Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@value='NO']"
+        Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@value='']"
+        Then I should not see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and  @value='YES']"
+        Then I should not see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and  @value='NO']"
+        Then I should not see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and  @value='']"
+
+        Examples: Users
+        | User              |
+        | Admin             |
+        | TestOrgAdmin      |
+        | TestOrgEditor     |
+
+
+    Scenario Outline: Edit existing dataset, field de_identified_data value should be NO
+        Given "<User>" as the persona
+        When I log in
+        And I go to "/dataset/edit/warandpeace"
+        Then I should see an element with id "field-de_identified_data"
+        Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@value='YES']"
+        Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and @value='NO']"
+
+        Examples: Users
+        | User              |
+        | Admin             |
+        | TestOrgAdmin      |
+        | TestOrgEditor     |
+
+    Scenario Outline: When viewing existing dataset, field de_identified_data should be NO
+        Given "<User>" as the persona
+        When I log in
+
+        And I go to "/dataset/warandpeace"
+        Then I should see "Contains de-identified data"
+        Then I should see an element with xpath "//th[contains(text(), 'Contains de-identified data')]/following-sibling::td[contains(text(), 'NO')]"
+
+        When I go to "/api/3/action/package_show?id=warandpeace"
+        Then I should see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
+
+        Examples: Users
+        | User              |
+        | Admin             |
+        | TestOrgAdmin      |
+        | TestOrgEditor     |
+
+    Scenario: Non logged-in user should not see de_identified_data value.
+        Given "Unauthenticated" as the persona
+        When I go to "/dataset/warandpeace"
+        Then I should not see "Contains de-identified data"
+        Then I should not see an element with xpath "//th[contains(text(), 'Contains de-identified data')]/following-sibling::td[contains(text(), 'NO')]"
+
+        And I go to "/api/3/action/package_show?id=warandpeace"
+        Then I should not see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
+

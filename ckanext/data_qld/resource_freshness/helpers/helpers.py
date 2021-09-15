@@ -49,11 +49,11 @@ def resource_data_updated(flattened_data, update_frequency, next_update_due, ind
     flattened_data[('resources', index, 'last_modified')] = dt.datetime.utcnow()
 
 
-def check_resource_data(current_resource, updated_resource):
-    resource_data_updated = False
+def check_resource_data(current_resource, updated_resource, context):
+    data_updated = False
     # If there is a file upload object of ALLOWED_UPLOAD_TYPES a new file is being uploaded
-    resource_data_updated = isinstance(updated_resource.get(u'upload'), uploader.ALLOWED_UPLOAD_TYPES)
-    if not resource_data_updated:
+    data_updated = isinstance(updated_resource.get(u'upload'), uploader.ALLOWED_UPLOAD_TYPES)
+    if not data_updated:
         current_resource_url = ''
         if current_resource.get('url_type') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
@@ -61,9 +61,12 @@ def check_resource_data(current_resource, updated_resource):
         else:
             current_resource_url = current_resource.get('url', '')
         # Compare old resource url with current url to find out if the resource data has changed
-        resource_data_updated = current_resource_url != updated_resource.get('url', '')
-    # The resource_data_updated value will be used in the validator 'validate_nature_of_change_data'
-    updated_resource['resource_data_updated'] = resource_data_updated
+        data_updated = current_resource_url != updated_resource.get('url', '')
+    # The context['resource_data_updated'] value will be used in the validator 'validate_nature_of_change_data'
+    context['resource_data_updated'] = {
+        'id': updated_resource.get('id'),
+        'data_updated': data_updated
+    }
 
 
 def process_next_update_due(data_dict):
