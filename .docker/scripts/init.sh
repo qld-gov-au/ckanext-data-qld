@@ -29,6 +29,9 @@ PASTER_PLUGIN=ckanext-archiver ckan_cli archiver init
 # Initialise the reporting database tables
 PASTER_PLUGIN=ckanext-report ckan_cli report initdb
 
+# Initialise the QA database tables
+PASTER_PLUGIN=ckanext-qa ckan_cli qa init
+
 ckan_cli user add "${CKAN_USER_NAME}"\
  fullname="${CKAN_DISPLAY_NAME}"\
  email="${CKAN_USER_EMAIL}"\
