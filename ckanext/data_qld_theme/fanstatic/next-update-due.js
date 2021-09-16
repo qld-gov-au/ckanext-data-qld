@@ -9,7 +9,7 @@ jQuery(document).ready(function () {
 
     function update_frequency_changed(change_event) {
         let update_frequency = jQuery("#field-update_frequency :selected");
-        let control_label = jQuery('.control-label[for="field-next_update_due"').parent();
+        let control_label = jQuery('.control-label[for="field-next_update_due"]').parent();
         let next_update_due_field = jQuery("#field-next_update_due");
         if (update_frequency.val() in UPDATE_FREQUENCY_DAYS) {
             next_update_due_field.parent().parent().show();
