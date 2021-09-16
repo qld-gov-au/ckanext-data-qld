@@ -10,6 +10,7 @@ fi
 pip install -r "requirements-dev.txt"
 pip install -r "requirements.txt"
 pip install -r "$VENV_DIR/src/ckanext-archiver/requirements.txt"
+pip install -r "$VENV_DIR/src/ckanext-qa/requirements.txt"
 pip install -r "$VENV_DIR/src/ckanext-scheming/requirements.txt"
 pip install -r "$VENV_DIR/src/ckanext-validation/requirements.txt"
 pip install -r "$VENV_DIR/src/ckanext-ytp-comments/requirements.txt"
