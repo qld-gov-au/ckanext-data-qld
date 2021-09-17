@@ -1,4 +1,4 @@
-FROM amazeeio/python:2.7-ckan-21.6.0
+FROM amazeeio/python:2.7-ckan-21.7.0
 
 ARG SITE_URL
 ENV SITE_URL="${SITE_URL}"
@@ -15,11 +15,11 @@ RUN apk add --no-cache curl build-base \
     && rm dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz
 
 # Install CKAN.
-ENV CKAN_VERSION 2.8.8
+ENV CKAN_VERSION 2.8.8-qgov.4
 
 RUN . ${VENV_DIR}/bin/activate \
     && pip install setuptools==36.1 \
-    && pip install -e "git+https://github.com/ckan/ckan.git@ckan-${CKAN_VERSION}#egg=ckan" \
+    && pip install -e "git+https://github.com/qld-gov-au/ckan.git@ckan-${CKAN_VERSION}#egg=ckan" \
     && sed -i "s/psycopg2==2.4.5/psycopg2==2.7.7/g" "${VENV_DIR}/src/ckan/requirements.txt" \
     && pip install -r "${VENV_DIR}/src/ckan/requirements.txt" \
     && ln -s "${VENV_DIR}/src/ckan/who.ini" "${VENV_DIR}/who.ini" \
