@@ -49,5 +49,5 @@ def resource_visibility(key, data, errors, context):
 
         # Check if value is part of the options
         if value not in option_values:
-            errors[key].append(toolkit._('Value must be one of {}'.format(option_values)))
+            errors[key].append(_('Value must be one of {}'.format(option_values)))
             raise StopOnError

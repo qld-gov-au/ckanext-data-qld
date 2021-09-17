@@ -52,8 +52,8 @@ def resource_data_updated(flattened_data, update_frequency, next_update_due, ind
 def check_resource_data(current_resource, updated_resource, context):
     # If there are validation errors we cannot determine if the resource data was updated on the previous submit
     # Need to store this state in the form as a hidden field so we can retrieve the value here
-    data_updated = updated_resource.pop('resource_data_updated') == "true"  if 'resource_data_updated' in updated_resource else False
-    
+    data_updated = updated_resource.pop('resource_data_updated') == "true" if 'resource_data_updated' in updated_resource else False
+
     if not data_updated:
         # If the clear_upload field is set to true it means the user clicked on the clear button to update the url
         data_updated = updated_resource.get('clear_upload') == "true"
