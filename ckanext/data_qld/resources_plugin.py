@@ -63,8 +63,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'data_qld_get_package_dict': resource_visibility_helpers.get_package_dict,
                 'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
                 'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
-                'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
-                'data_qld_get_resource_file_url': resource_freshness_helpers.get_resource_file_url,
+                'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config
                 }
 
     # IValidators
