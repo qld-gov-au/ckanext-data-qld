@@ -69,6 +69,8 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     else:
         # Resource created
         h.resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context)
+        # Should not have a nature_of_change so remove it
+        flattened_data.pop(keys, None)
 
 
 def data_last_updated(key, flattened_data, errors, context):
@@ -92,5 +94,3 @@ def data_last_updated(key, flattened_data, errors, context):
             last_updated = last_modified
 
     flattened_data[('data_last_updated', )] = get_validator('convert_to_json_if_datetime')(last_updated, context)
-        # Should not have a nature_of_change so remove it
-        flattened_data.pop(keys, None)
