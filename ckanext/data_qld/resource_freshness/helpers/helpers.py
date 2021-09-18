@@ -3,7 +3,6 @@ import json
 import logging
 import ckan.plugins.toolkit as tk
 import ckan.lib.uploader as uploader
-import ckan.lib.helpers as core_helpers
 
 from ckan.lib.base import config
 from ckanext.data_qld import helpers as h
@@ -14,7 +13,7 @@ get_validator = tk.get_validator
 update_frequencies = {
     "monthly": 30,
     "quarterly": 91,
-    "semiannually": 182,
+    "half-yearly": 182,
     "annually": 365
 }
 
@@ -33,7 +32,7 @@ def update_frequencies_from_config():
 
 def recalculate_next_update_due_date(update_frequency, next_update_due=None):
     days = get_update_frequencies().get(update_frequency, 0)
-    # Recalcualte the next_update_due if its not none
+    # Recalculate the next_update_due if its not none
     if next_update_due is not None:
         next_update_due = get_validator('isodate')(next_update_due, {})
         due_date = next_update_due.date() + dt.timedelta(days=days)
@@ -51,48 +50,38 @@ def resource_data_updated(flattened_data, update_frequency, next_update_due, ind
 
 
 def check_resource_data(current_resource, updated_resource, context):
-    data_updated = False
-    # If there is a file upload object of ALLOWED_UPLOAD_TYPES a new file is being uploaded
-    data_updated = isinstance(updated_resource.get(u'upload'), uploader.ALLOWED_UPLOAD_TYPES)
+    # If there are validation errors we cannot determine if the resource data was updated on the previous submit
+    # Need to store this state in the form as a hidden field so we can retrieve the value here
+    data_updated = updated_resource.pop('resource_data_updated') == "true" if 'resource_data_updated' in updated_resource else False
+
     if not data_updated:
-        current_resource_url = ''
-        updated_resource_url = ''
-        if current_resource.get('url_type') == 'upload':
+        # If the clear_upload field is set to true it means the user clicked on the clear button to update the url
+        data_updated = updated_resource.get('clear_upload') == "true"
+
+    if not data_updated:
+        # If there is a file upload object of ALLOWED_UPLOAD_TYPES a new file is being uploaded
+        data_updated = isinstance(updated_resource.get('upload'), uploader.ALLOWED_UPLOAD_TYPES)
+
+    if not data_updated:
+        # Compare urls
+        updated_resource_url = updated_resource.get('url', '')
+        if current_resource.get('url_type', '') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
             current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
-            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
         else:
             current_resource_url = current_resource.get('url', '')
-            updated_resource_url = updated_resource.get('url', '')
         # Compare old resource url with current url to find out if the resource data has changed
         data_updated = current_resource_url != updated_resource_url
+
     # The context['resource_data_updated'] value will be used in the validator 'validate_nature_of_change_data'
     context['resource_data_updated'] = {
         'id': updated_resource.get('id'),
-        'data_updated': data_updated,
-        'url_type': current_resource.get('url_type')
+        'data_updated': data_updated
     }
 
-
-def get_resource_file_url(resource_dict):
-    """
-    Return resource file/url.
-    """
-    from ckan.model import Package
-
-    url = resource_dict.get('url', '')
-    if len(url.rsplit('/')) == 1:
-        pkg_id = resource_dict.get('package_id', '')
-        res_id = resource_dict.get('id', '')
-
-        return core_helpers.url_for(controller='package',
-                                    action='resource_download',
-                                    id=Package.get(pkg_id).id,
-                                    resource_id=res_id,
-                                    filename=url,
-                                    _external=True)
-
-    return url
+    # This will be used in the 'upload.html' to inject hidden fields if there are any validation errors
+    # We need to know if the data was updated to fix an issue with CKAN losing this state with validation errors
+    tk.g.resource_data_updated = data_updated
 
 
 def process_next_update_due(data_dict):
