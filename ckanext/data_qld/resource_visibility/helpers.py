@@ -72,10 +72,9 @@ def process_resources(data_dict, user_obj):
 
             for index, resource in enumerate(resources):
                 resource_visibility = resource.get('resource_visibility', '')
-
                 # Value of options[2] == Resource NOT visible/Pending acknowledgement.
-                if (resource_visibility in [option.get('value') for option in options]) \
-                        or (len(resource_visibility) == 0 and de_identified_data):
+                if resource_visibility == options[2].get('value') if len(options) >= 3 else False \
+                        or len(resource_visibility) == 0 and de_identified_data:
                     data_dict.get('resources').pop(index)
                     data_dict['num_resources'] -= 1
                 else:
