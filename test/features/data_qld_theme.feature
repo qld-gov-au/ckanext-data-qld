@@ -5,7 +5,7 @@ Feature: Data QLD Theme
               When I go to homepage
               Then I should see an element with xpath "//link[contains(@href,'https://fonts.googleapis.com/css?family=Lato')]"
 
-       Scenario: Organisation is in fact spelled Organisation (as opposed to Organization) 
+       Scenario: Organisation is in fact spelled Organisation (as opposed to Organization)
               When I go to organisation page
               Then I should not see "Organization"
 

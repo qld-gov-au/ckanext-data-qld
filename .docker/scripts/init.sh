@@ -14,6 +14,24 @@ if [ "$VENV_DIR" != "" ]; then
 fi
 ckan_cli db clean
 ckan_cli db init
+
+# Initialise validation tables
+PASTER_PLUGIN=ckanext-validation ckan_cli validation init-db
+
+# Initialise the Comments database tables
+PASTER_PLUGIN=ckanext-ytp-comments ckan_cli initdb
+PASTER_PLUGIN=ckanext-ytp-comments ckan_cli updatedb
+PASTER_PLUGIN=ckanext-ytp-comments ckan_cli init_notifications_db
+
+# Initialise the archiver database tables
+PASTER_PLUGIN=ckanext-archiver ckan_cli archiver init
+
+# Initialise the reporting database tables
+PASTER_PLUGIN=ckanext-report ckan_cli report initdb
+
+# Initialise the QA database tables
+PASTER_PLUGIN=ckanext-qa ckan_cli qa init
+
 ckan_cli user add "${CKAN_USER_NAME}"\
  fullname="${CKAN_DISPLAY_NAME}"\
  email="${CKAN_USER_EMAIL}"\
