@@ -13,7 +13,7 @@ get_validator = tk.get_validator
 update_frequencies = {
     "monthly": 30,
     "quarterly": 91,
-    "semiannually": 182,
+    "half-yearly": 182,
     "annually": 365
 }
 
