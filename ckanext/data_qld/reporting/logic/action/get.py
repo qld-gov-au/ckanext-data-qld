@@ -15,12 +15,13 @@ from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
-from ckan.plugins.toolkit import config
+from ckan.plugins.toolkit import config, NotAuthorized
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
 _session_ = model.Session
 check_org_access = helpers.check_user_org_access
+check_user_access = helpers.check_user_access
 log = logging.getLogger(__name__)
 
 #
@@ -329,12 +330,13 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     comment_reply = aliased(Comment, name='comment_reply')
 
     try:
-        return (
+        comments = (
             _session_.query(
                 Comment.id.label("comment_id"),
                 Comment.parent_id,
                 Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
+                Comment.user_id,
                 CommentThread.url,
                 Package.name.label("package_name"),
                 comment_reply.parent_id,
@@ -361,6 +363,16 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
             )
             .order_by(Comment.creation_date.desc())
         ).all()
+        for comment in comments:
+            try:
+                check_user_access('create_dataset', {"user": comment.user_id})
+                # User has editor, admin or sysadmin access to a organisation
+                # Remove user comment
+                comments.remove(comment)
+            except NotAuthorized:
+                # User is only a member of a organisation or has no organisation access
+                continue
+        return comments
 
     except Exception as e:
         log.error(str(e))
@@ -383,12 +395,13 @@ def datarequests_no_replies_after_x_days(context, data_dict):
 
     try:
         db.init_db(model)
-        return (
+        comments = (
             _session_.query(
                 Comment.id.label("comment_id"),
                 Comment.parent_id,
                 Comment.creation_date,
                 Comment.subject,
+                Comment.user_id,
                 CommentThread.url,
                 db.DataRequest.id.label("datarequest_id"),
                 db.DataRequest.title,
@@ -415,6 +428,16 @@ def datarequests_no_replies_after_x_days(context, data_dict):
             )
             .order_by(Comment.creation_date.desc())
         ).all()
+        for comment in comments:
+            try:
+                check_user_access('create_dataset', {"user": comment.user_id})
+                # User has editor, admin or sysadmin access to a organisation
+                # Remove user comment
+                comments.remove(comment)
+            except NotAuthorized:
+                # User is only a member of a organisation or has no organisation access
+                continue
+        return comments
 
     except Exception as e:
         log.error(str(e))
