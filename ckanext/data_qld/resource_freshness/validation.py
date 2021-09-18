@@ -52,10 +52,10 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
 
     if resource.get('id'):
         # Resource updated
-        # Only validate the current resource being updated unless its coming from the API
+        # Only validate the current resource being updated unless its coming from the API and is not a package_delete
         # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
         resource_data_updated = context.get('resource_data_updated', {})
-        api_request = True if hasattr(request, 'params') and get_endpoint()[1] == 'action' else False
+        api_request = True if hasattr(request, 'params') and get_endpoint()[1] == 'action' and 'package_delete' not in request.path else False
         if api_request or resource_data_updated and resource_data_updated.get('id') == resource.get('id'):
             if api_request or resource_data_updated.get('data_updated', False) is True:
                 # Resource data has been updated or the call is from the API so the nature_of_change validation is required
