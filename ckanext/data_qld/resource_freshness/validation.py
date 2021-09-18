@@ -12,6 +12,7 @@ get_validator = tk.get_validator
 _ = tk._
 request = tk.request
 get_endpoint = tk.get_endpoint
+get_action = tk.get_action
 
 
 def validate_next_update_due(keys, flattened_data, errors, context):
@@ -68,5 +69,28 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     else:
         # Resource created
         h.resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context)
+
+
+def data_last_updated(key, flattened_data, errors, context):
+    '''
+    Validate last data updated
+    '''
+    key, = key
+    data = unflatten(flattened_data)
+    # Get package with 'pakcage_sho' because the validator doesnt have the all data required
+    package = get_action('package_show')(context, data)
+    resources = package.get('resources')
+    last_updated = get_validator('isodate')(package.get('data_last_updated', ""), context)
+    # Cycle through the resources to compare data_last_updated field with last_modified
+    for resource in resources:
+        last_modified = get_validator('isodate')(resource.get('last_modified', ""), context)
+        if last_modified is None:
+            return
+        if last_updated is None:
+            last_updated = last_modified
+        if last_modified > last_updated:
+            last_updated = last_modified
+
+    flattened_data[('data_last_updated', )] = get_validator('convert_to_json_if_datetime')(last_updated, context)
         # Should not have a nature_of_change so remove it
         flattened_data.pop(keys, None)

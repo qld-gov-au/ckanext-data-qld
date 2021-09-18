@@ -41,6 +41,13 @@
       "label": "Organization",
       "preset": "dataset_organization"
     },
+      {
+      "field_name": "data_last_updated",
+      "label": "Data last updated",
+      "form_snippet": null,
+      "display_snippet": "date.html",
+      "validators": "data_qld_data_last_updated"
+    },
     {
       "field_name": "url",
       "label": "Source",

@@ -74,6 +74,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
             'data_qld_resource_visibility': resource_visibility_validators.resource_visibility,
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
+            'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
         }
 
     # IPackageController
