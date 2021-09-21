@@ -76,19 +76,23 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
         flattened_data.pop(keys, None)
 
 
-def data_last_updated(key, flattened_data, errors, context):
+def data_last_updated(keys, flattened_data, errors, context):
     '''
     Validate last data updated
     '''
-    key, = key
+    key, = keys
     data = unflatten(flattened_data)
+    if not data.get('id'):
+        # New dataset being created, there will be no resources so exit
+        flattened_data[keys] = None
+        return
     # Get package with 'package_show' because the validator doesn't have the resources when a dataset is updated
     package = get_action('package_show')(context, data)
-    data_last_updated = get_validator('isodate')(package.get('data_last_updated'), context) if package.get('data_last_updated') else None
+    data_last_updated = get_validator('isodate')(package.get(key), context) if package.get(key) else None
     # Cycle through the resources to compare data_last_updated field with last_modified
     for resource in package.get('resources', []):
         last_modified = get_validator('isodate')(resource.get('last_modified') or resource.get('created'), context)
         if data_last_updated is None or last_modified > data_last_updated:
             data_last_updated = last_modified
 
-    flattened_data[('data_last_updated', )] = data_last_updated.isoformat() if isinstance(data_last_updated, dt.datetime) else None
+    flattened_data[keys] = data_last_updated.isoformat() if isinstance(data_last_updated, dt.datetime) else None
