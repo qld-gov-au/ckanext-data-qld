@@ -17,6 +17,7 @@ from flask import Blueprint
 from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
 from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
 from ckanext.data_qld.resource_visibility import validators as resource_visibility_validators
+from ckanext.data_qld.dataset_deletion import helpers as dataset_deletion_helpers
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -93,6 +94,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
         resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
         resource_freshness_helpers.process_next_update_due(data_dict)
+
+    def delete(self, data_dict):
+        dataset_deletion_helpers.add_deletion_of_dataset_reason(data_dict)
 
     # IAuthFunctions
     def get_auth_functions(self):

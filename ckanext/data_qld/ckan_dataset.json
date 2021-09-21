@@ -204,7 +204,13 @@
           "label": "YES"
         }
       ]
-    }
+    },
+    {
+      "field_name": "deletion_reason",
+      "label": "Deletion reason",
+      "form_snippet": null,
+      "display_snippet": null
+     }
   ],
   "resource_fields": [
     {
