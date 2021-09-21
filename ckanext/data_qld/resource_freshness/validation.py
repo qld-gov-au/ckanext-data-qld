@@ -30,7 +30,7 @@ def validate_next_update_due(keys, flattened_data, errors, context):
             if next_update_due.date() <= dt.date.today():
                 errors[keys].append(_("Valid date in the future is required"))
         elif get_endpoint()[1] == 'action':
-            flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency)
+            flattened_data[keys] = h.recalculate_next_update_due_date(update_frequency, next_update_due, errors, context)
         else:
             errors[keys].append(_('Missing value'))
             raise StopOnError
@@ -63,12 +63,17 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
                     errors[keys].append(_('Missing value'))
                     raise StopOnError
 
+                h.update_last_modified(flattened_data, index, errors, context)
             # If nature_of_change is selected check value to see if the correct nature of change provided
             if nature_of_change == 'add-new-time-series' and update_frequency in h.get_update_frequencies():
-                h.resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context)
+                h.recalculate_next_update_due_date(flattened_data, update_frequency, next_update_due, errors, context)
     else:
         # Resource created
-        h.resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context)
+        if update_frequency in h.get_update_frequencies():
+            h.recalculate_next_update_due_date(flattened_data, update_frequency, next_update_due, errors, context)
+        h.update_last_modified(flattened_data, index, errors, context)
+        # Should not have a nature_of_change so remove it
+        flattened_data.pop(keys, None)
 
 
 def data_last_updated(key, flattened_data, errors, context):
@@ -77,21 +82,13 @@ def data_last_updated(key, flattened_data, errors, context):
     '''
     key, = key
     data = unflatten(flattened_data)
-    # Get package with 'pakcage_sho' because the validator doesnt have the all data required
+    # Get package with 'package_show' because the validator doesn't have the resources when a dataset is updated
     package = get_action('package_show')(context, data)
-    resources = package.get('resources')
-    last_updated = get_validator('isodate')(package.get('data_last_updated', ""), context)
+    data_last_updated = get_validator('isodate')(package.get('data_last_updated'), context) if package.get('data_last_updated') else None
     # Cycle through the resources to compare data_last_updated field with last_modified
-    for resource in resources:
-        last_modified = get_validator('isodate')(resource.get('last_modified', ""), context)
-        if last_modified is None:
-            return
-        if last_updated is None:
-            last_updated = last_modified
-        if last_modified > last_updated:
-            last_updated = last_modified
+    for resource in package.get('resources', []):
+        last_modified = get_validator('isodate')(resource.get('last_modified') or resource.get('created'), context)
+        if data_last_updated is None or last_modified > data_last_updated:
+            data_last_updated = last_modified
 
-    flattened_data[('data_last_updated', )] = get_validator('convert_to_json_if_datetime')(last_updated, context)
-    # Should not have a nature_of_change so remove it
-    flattened_data.pop(keys, None)
-
+    flattened_data[('data_last_updated', )] = data_last_updated.isoformat() if isinstance(data_last_updated, dt.datetime) else None
