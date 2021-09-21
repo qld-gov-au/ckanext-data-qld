@@ -35,4 +35,11 @@ def add_deletion_of_dataset_reason(data_dict):
             h.flash_error('Deletion reason must not less than 10 characters.')
             return h.redirect_to('/dataset/edit/' + data_dict.id)
 
+    if len(deletion_reason) > 250:
+        if get_endpoint()[1] == 'action':
+            raise ValidationError('Field deletion_reason must not more than 250 characters.')
+        else:
+            h.flash_error('Deletion reason must not more than 250 characters.')
+            return h.redirect_to('/dataset/edit/' + data_dict.id)
+
     get_action('package_patch')({}, {'id': data_dict.id, 'deletion_reason': deletion_reason})
