@@ -35,7 +35,7 @@ ckan.module('dataset-deletion-confirm-action', function (jQuery) {
                 '<div class="modal-body">',
                 '<br/><br/>',
                 '<div class="modal-reason">Briefly describe the reason for deleting this dataset:<br/>',
-                '<input id="reason" name="deletion_reason" type="text" class="form-control"/></div>',
+                '<input id="reason" name="deletion_reason" type="text" class="form-control" maxlength="250" /></div>',
                 '</div>',
                 '<div class="modal-footer">',
                 '<button class="btn btn-default btn-cancel"></button>',
