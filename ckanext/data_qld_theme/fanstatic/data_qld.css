@@ -542,3 +542,9 @@ div.page-wrapper div.account-masthead {
 .star-openness_score-entry {
   font-style: italic;
 }
+
+hr.double-thickness {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 2px solid #eeeeee; }
