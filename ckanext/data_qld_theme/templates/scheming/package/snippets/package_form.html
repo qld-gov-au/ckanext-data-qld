@@ -3,7 +3,7 @@
 {% block delete_button %}
   {% resource 'data_qld_theme/dataset-deletion-confirm-action.js' %}
 
-  {% if h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' %}
+  {% if c.action == 'edit' and h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' %}
     <button disabled="disabled" class="btn btn-danger pull-left"
        data-module-href="{% url_for controller='package', action='delete', id=data.id %}"
        data-module-with-data="true"
