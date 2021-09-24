@@ -5,7 +5,7 @@ import ckan.plugins.toolkit as tk
 import ckan.lib.uploader as uploader
 
 from ckan.lib.base import config
-from ckanext.data_qld import helpers as h
+from ckanext.data_qld import helpers as data_qld_helpers
 
 log = logging.getLogger(__name__)
 get_validator = tk.get_validator
@@ -87,7 +87,7 @@ def check_resource_data(current_resource, updated_resource, context):
 
 
 def process_next_update_due(data_dict):
-    if not h.user_has_admin_access(True):
+    if not data_qld_helpers.user_has_admin_access(True):
         if 'next_update_due' in data_dict:
             del data_dict['next_update_due']
         for res in data_dict.get('resources', []):
