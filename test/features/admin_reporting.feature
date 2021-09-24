@@ -3,7 +3,7 @@
 
 Feature: AdminReporting
 
-    Scenario: As an admin user of my organisation, I can view 'My Reports' tab in the dashboard and show the "Admin Report" with filters and table columns
+    Scenario: As an admin user of my organisation, I can view 'My Reports' tab in the dashboard and show the 'Admin Report' with filters and table columns
         Given "TestOrgAdmin" as the persona
         When I log in
         And I visit "dashboard"
@@ -16,7 +16,7 @@ Feature: AdminReporting
         Then I should see an element with xpath "//tr/th[string()='Figure' and position()=2]"
 
 
-    Scenario: As an editor user of my organisation, I can view 'My Reports' tab in the dashboard but I cannot view the "Admin Report" link
+    Scenario: As an editor user of my organisation, I can view 'My Reports' tab in the dashboard but I cannot view the 'Admin Report' link
         Given "TestOrgEditor" as the persona
         When I log in
         And I visit "dashboard"
