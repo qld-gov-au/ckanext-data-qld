@@ -24,7 +24,7 @@ Feature: AdminReporting
         Then I should not see an element with xpath "//a[contains(string(), 'Admin Report')]"
 
 
-    Scenario: As an admin user of my organisation, when I view my admin report, I can verify the de-indentified datasets row exists
+    Scenario: As an admin user of my organisation, when I view my admin report, I can verify the de-identified datasets row exists
         Given "TestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
@@ -33,7 +33,7 @@ Feature: AdminReporting
         Then I should see an element with xpath "//tr[@id='de-identified-datasets']/td[contains(@class, 'metric-title') and contains(string(), 'De-identified Datasets') and position()=1]"
         Then I should see an element with xpath "//tr[@id='de-identified-datasets']/td[contains(@class, 'metric-data') and position()=2]"
 
-    Scenario: As an admin user of my organisation, when I view my admin report, I can verify the over due datasets row exists correct
+    Scenario: As an admin user of my organisation, when I view my admin report, I can verify the overdue datasets row exists correct
         Given "TestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
