@@ -18,6 +18,9 @@ from ckanext.data_qld.de_identified_data import helpers as de_identified_data_he
 from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
 from ckanext.data_qld.resource_visibility import validators as resource_visibility_validators
 from ckanext.data_qld.dataset_deletion import helpers as dataset_deletion_helpers
+from ckanext.data_qld.user_creation import validators as user_creation_validators
+from ckanext.data_qld.user_creation.logic.actions import create as user_creation_create_actions
+from ckanext.data_qld.user_creation.logic.actions import update as user_creation_update_actions
 
 if sys.version_info[0] >= 3:
     unicode = str
@@ -37,6 +40,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IActions)
 
     # IConfigurer
     def update_config(self, config_):
@@ -45,7 +49,8 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     def update_config_schema(self, schema):
         ignore_missing = toolkit.get_validator('ignore_missing')
         schema.update({
-            'ckanext.data_qld.resource_formats': [ignore_missing, unicode]
+            'ckanext.data_qld.resource_formats': [ignore_missing, unicode],
+            'ckanext.data_qld.excluded_display_name_words': [ignore_missing, unicode]
         })
         return schema
 
@@ -76,6 +81,8 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
+            'data_qld_user_name_validator': user_creation_validators.data_qld_user_name_validator,
+            'data_qld_displayed_name_validator': user_creation_validators.data_qld_displayed_name_validator
         }
 
     # IPackageController
@@ -153,3 +160,10 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 u'offset': 0
             })
         return blueprint
+
+    # IActions
+    def get_actions(self):
+        return {
+            'user_create': user_creation_create_actions.user_create,
+            'user_update': user_creation_update_actions.user_update
+        }
