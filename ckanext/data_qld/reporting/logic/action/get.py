@@ -6,6 +6,7 @@ import pytz
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
 from ckan.model.package import Package
 from ckan.model.group import Group
+from ckan.model.user import User
 from ckan.model.package_extra import PackageExtra
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
@@ -328,7 +329,6 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     check_org_access(org_id)
 
     comment_reply = aliased(Comment, name='comment_reply')
-
     try:
         comments = (
             _session_.query(
@@ -336,7 +336,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 Comment.parent_id,
                 Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
-                Comment.user_id,
+                User.name.label('username'),
                 CommentThread.url,
                 Package.name.label("package_name"),
                 comment_reply.parent_id,
@@ -357,22 +357,25 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
+            .join(User, Comment.user_id == User.id)
             .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
             .outerjoin(
-                (comment_reply, Comment.id == comment_reply.parent_id)
+                (comment_reply, Comment.id == comment_reply.parent_id),
             )
             .order_by(Comment.creation_date.desc())
         ).all()
+
+        comments_to_show = []
         for comment in comments:
             try:
-                check_user_access('create_dataset', {"user": comment.user_id})
+                check_user_access('create_dataset', {"user": comment.username})
                 # User has editor, admin or sysadmin access to a organisation
-                # Remove user comment
-                comments.remove(comment)
             except NotAuthorized:
                 # User is only a member of a organisation or has no organisation access
+                # Add user comment
+                comments_to_show.append(comment)
                 continue
-        return comments
+        return comments_to_show
 
     except Exception as e:
         log.error(str(e))
@@ -401,7 +404,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 Comment.parent_id,
                 Comment.creation_date,
                 Comment.subject,
-                Comment.user_id,
+                User.name.label('username'),
                 CommentThread.url,
                 db.DataRequest.id.label("datarequest_id"),
                 db.DataRequest.title,
@@ -422,22 +425,25 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
+            .join(User, Comment.user_id == User.id)
             .join(db.DataRequest, db.DataRequest.id == _replace_(CommentThread.url, DATAREQUEST_PREFIX, ''))
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
             .order_by(Comment.creation_date.desc())
         ).all()
+
+        comments_to_show = []
         for comment in comments:
             try:
-                check_user_access('create_dataset', {"user": comment.user_id})
+                check_user_access('create_dataset', {"user": comment.username})
                 # User has editor, admin or sysadmin access to a organisation
-                # Remove user comment
-                comments.remove(comment)
             except NotAuthorized:
                 # User is only a member of a organisation or has no organisation access
+                # Add user comment
+                comments_to_show.append(comment)
                 continue
-        return comments
+        return comments_to_show
 
     except Exception as e:
         log.error(str(e))
