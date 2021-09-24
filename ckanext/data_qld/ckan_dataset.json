@@ -46,6 +46,7 @@
       "label": "Data last updated",
       "form_snippet": null,
       "display_snippet": "date.html",
+      "create_validators": "ignore",
       "validators": "data_qld_data_last_updated ignore_empty"
     },
     {
@@ -209,7 +210,8 @@
       "field_name": "deletion_reason",
       "label": "Deletion reason",
       "form_snippet": null,
-      "display_snippet": null
+      "display_snippet": null,
+      "validators": "ignore"
      }
   ],
   "resource_fields": [
@@ -297,6 +299,7 @@
       "display_snippet": null,
       "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
       "validators": "data_qld_validate_nature_of_change_data ignore_empty scheming_choices",
+      "create_validators": "ignore",
       "choices":[
         {
           "value": "add-new-time-series",
