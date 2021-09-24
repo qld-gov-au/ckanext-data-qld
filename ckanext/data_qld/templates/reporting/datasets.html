@@ -2,9 +2,17 @@
 
 {% block primary_content_inner %}
 
-    <p><a href="/dashboard/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}">&lt; Back to report</a></p>
+    <p><a href="/dashboard/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}&report_type={{ report_type }}">&lt; Back to report</a></p>
 
-    <h1>Report: Datasets: {{ org_title }}</h1>
+    <h1>
+        {% if metric == 'no-reply' %}
+            Engagement Report: Datasets: {{ org_title }}
+        {% elif metric == 'de-identified-datasets' %}
+            Admin Report: De-identified Datasets: {{ org_title }}
+        {% elif metric == 'overdue-datasets' %}
+            Admin Report: Overdue Datasets: {{ org_title }}
+        {% endif %}
+    </h1>
 
     <h2>
         {% if metric == 'no-reply' %}
@@ -14,8 +22,10 @@
 
     {% if datasets|length > 0 %}
         <h3>
-            Total number of un-replied comments: {{ total_comments }}
-            <br />
+            {% if metric == 'no-reply' %}
+                Total number of un-replied comments: {{ total_comments }}
+                <br />
+            {% endif %}
             Total number of datasets: {{ datasets|length }}
         </h3>
         <hr />
@@ -24,7 +34,11 @@
             <li class="dataset-item">
                 <div class="dataset-content">
                     <h3 class="dataset-heading">
-                        <a href="{{ h.url_for(controller='package', action='read', id=dataset.package_name) }}/comments?comment_ids={{ comment_ids[dataset.package_name]|join(',') }}#comment_{{ dataset.comment_id }}">{{ dataset.title }}</a>
+                        {% if metric == 'no-reply' %}
+                            <a href="{{ h.url_for(controller='package', action='read', id=dataset.package_name) }}/comments?comment_ids={{ comment_ids[dataset.package_name]|join(',') }}#comment_{{ dataset.comment_id }}">{{ dataset.title }}</a>
+                        {% else %}
+                            <a href="{{ h.url_for(controller='package', action='read', id=dataset.name) }}">{{ dataset.title }}</a>
+                        {% endif %}
                     </h3>
                 </div>
             </li>

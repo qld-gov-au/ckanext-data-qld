@@ -5,7 +5,7 @@
             controller='ckanext.data_qld.reporting.controller:ReportingController',
             action='datarequests',
             org_id=org_id,
-            metric='closed') + '?start_date=' + start_date + '&end_date=' + end_date + '&circumstance=' + row.circumstance
+            metric='closed') + '?start_date=' + start_date + '&end_date=' + end_date + '&circumstance=' + row.circumstance + '&report_type={{ report_type }}'
         %}
     {% else %}
         {% set url = None %}

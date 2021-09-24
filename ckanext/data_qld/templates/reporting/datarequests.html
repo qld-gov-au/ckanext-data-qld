@@ -2,9 +2,9 @@
 
 {% block primary_content_inner %}
 
-    <p><a href="/dashboard/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}">&lt; Back to report</a></p>
+    <p><a href="/dashboard/reporting?organisation={{ org_id }}&start_date={{ start_date }}&end_date={{ end_date }}&report_type={{ report_type }}">&lt; Back to report</a></p>
 
-    <h1>Report: Data requests: {{ org_title }}</h1>
+    <h1>Engagement Report: Data requests: {{ org_title }}</h1>
 
     <h2>
         {% if metric == 'no-reply' %}

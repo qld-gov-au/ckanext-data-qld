@@ -189,5 +189,6 @@ To run the command:
         # ckanext-data_qld_reporting
         ckan.reporting.datarequest_open_max_days = 60 # Defaults to 60
         ckan.reporting.comment_no_reply_max_days = 10 # Defaults to 10
-        ckan.reporting.json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json'
+        ckan.reporting.engagement_json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../engagement_report_csv.json'
+        ckan.reporting.admin_json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../admin_report_csv.json'
 

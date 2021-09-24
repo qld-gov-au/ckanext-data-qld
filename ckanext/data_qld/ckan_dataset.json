@@ -173,6 +173,30 @@
           "label": "Not updated"
         }
       ]
+    },
+    {
+      "field_name": "next_update_due",
+      "label": "Next update due",
+      "form_snippet": "next_update_due.html",
+      "validators": "data_qld_validate_next_update_due convert_to_json_if_date"
+     },
+     {
+      "field_name": "de_identified_data",
+      "label": "Contains de-identified data",
+      "required": true,
+      "form_include_blank_choice": true,
+      "validators": "scheming_required scheming_choices",
+      "form_snippet": "de_identified_data.html",
+      "choices": [
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ]
     }
   ],
   "resource_fields": [
@@ -229,6 +253,47 @@
       "field_name": "validation_timestamp",
       "label": "Validation timestamp",
       "preset": "hidden_in_form"
+    },
+    {
+      "field_name": "resource_visibility",
+      "label": "Re-identification risk governance acknowledgement/Resource visibility",
+      "form_include_blank_choice": true,
+      "validators": "data_qld_resource_visibility",
+      "form_snippet": "resource_visibility.html",
+      "help_text": "Datasets containing de-identified data will not be published and visible until a re-identification risk governance acknowledgement has been made.<br/><br/>This resource can be hidden pending an acknowledgement or otherwise hidden until suitable for publishing.",
+      "choices": [
+        {
+          "value": "Resource visible and re-identification risk governance acknowledgement not required",
+          "label": "Resource visible and re-identification risk governance acknowledgement not required"
+        },
+        {
+          "value": "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing",
+          "label": "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing"
+        },
+        {
+          "value": "Resource NOT visible/Pending acknowledgement",
+          "label": "Resource NOT visible/Pending acknowledgement"
+        }
+      ]
+    },
+    {
+      "field_name": "nature_of_change",
+      "label": "Nature of change to data",
+      "form_include_blank_choice": true,
+      "form_snippet": "select.html",
+      "display_snippet": null,
+      "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
+      "validators": "data_qld_validate_nature_of_change_data ignore_missing scheming_choices",
+      "choices":[
+        {
+          "value": "add-new-time-series",
+          "label": "Adding new time series data to the resource"
+        },
+        {
+          "value": "edit-resource-with-no-new-data",
+          "label": "Editing resource with no new time series data added"
+        }
+      ]
     }
   ]
 }

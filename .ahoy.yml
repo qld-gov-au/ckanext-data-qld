@@ -62,7 +62,7 @@ commands:
 
   logs:
     usage: Show Docker logs.
-    cmd: docker-compose logs "$@"
+    cmd: docker-compose logs -f --tail=100 "$@"
 
   pull:
     usage: Pull latest docker images.

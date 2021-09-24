@@ -1,10 +1,12 @@
 import ckan.model as model
 import logging
 import sqlalchemy
+import pytz
 
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
 from ckan.model.package import Package
 from ckan.model.group import Group
+from ckan.model.package_extra import PackageExtra
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
 from sqlalchemy import func, distinct, tuple_
@@ -13,11 +15,12 @@ from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
+from ckan.plugins.toolkit import config
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
 _session_ = model.Session
-check_org_access = helpers.check_org_access
+check_org_access = helpers.check_user_org_access
 log = logging.getLogger(__name__)
 
 #
@@ -532,9 +535,6 @@ def comments_no_replies_after_x_days(context, data_dict):
     :param data_dict:
     :return:
     """
-    import pytz
-    from ckan.plugins.toolkit import config
-
     thread_url = data_dict.get('thread_url', None)
 
     ckan_timezone = config.get('ckan.display_timezone', None)
@@ -576,5 +576,69 @@ def comments_no_replies_after_x_days(context, data_dict):
             .order_by(Comment.creation_date.desc())
         ).all()
 
+    except Exception as e:
+        log.error(str(e))
+
+
+def de_identified_datasets(context, data_dict):
+    """
+    Returns the datasets that have de-identified data for an organisation
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
+
+    try:
+        query = (
+            _session_.query(Package)
+            .join(model.PackageExtra)
+            .filter(Package.owner_org == org_id)
+            .filter(PackageExtra.key == 'de_identified_data')
+            .filter(PackageExtra.value == 'YES')
+        )
+
+        if return_count_only:
+            datasets = query.count()
+        else:
+            datasets = query.all()
+
+        return datasets
+    except Exception as e:
+        log.error(str(e))
+
+
+def overdue_datasets(context, data_dict):
+    """
+    Returns the datasets that are over due for an organisation
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
+
+    try:
+        # next_update_due is stored as UTC without timezone as isoformat
+        today_utc = datetime.utcnow().date().isoformat()
+        # We need to check for any datasets whose next_update_due is earlier than today
+        query = (
+            _session_.query(Package)
+            .join(model.PackageExtra)
+            .filter(Package.owner_org == org_id)
+            .filter(PackageExtra.key == 'next_update_due')
+            .filter(PackageExtra.value < today_utc)
+        )
+
+        if return_count_only:
+            datasets = query.count()
+        else:
+            datasets = query.all()
+        return datasets
     except Exception as e:
         log.error(str(e))
