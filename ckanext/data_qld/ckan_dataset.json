@@ -211,7 +211,7 @@
       "label": "Deletion reason",
       "form_snippet": null,
       "display_snippet": null,
-      "validators": "ignore"
+      "create_validators": "ignore"
      }
   ],
   "resource_fields": [
