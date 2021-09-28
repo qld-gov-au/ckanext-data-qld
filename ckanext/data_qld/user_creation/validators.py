@@ -18,6 +18,6 @@ def data_qld_displayed_name_validator(key, data, errors, context):
     if not is_sysadmin:
         excluded_names = config.get('ckanext.data_qld.excluded_display_name_words', '').split('\r\n')
         for name in excluded_names:
-            if name.lower() in data[key].lower():
+            if name and name.strip().lower() in data[key].lower():
                 raise toolkit.Invalid(
                     'The displayed name cannot contain certain words such as \'publisher\', \'QLD Government\' or similar. Please enter another display name.')
