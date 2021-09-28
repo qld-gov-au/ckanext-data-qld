@@ -12,7 +12,9 @@ git+https://github.com/ckan/ckanapi@ckanapi-4.3#egg=ckanapi
 git+https://github.com/ckan/ckantoolkit@release-0.0.4#egg=ckantoolkit
 -e git+https://github.com/qld-gov-au/ckanext-datarequests.git@develop#egg=ckanext-datarequests
 -e git+https://github.com/frictionlessdata/ckanext-validation.git#egg=ckanext-validation
--e git+https://github.com/qld-gov-au/ckanext-data-qld-theme.git@develop#egg=ckanext-data-qld-theme
+# -e git+https://github.com/qld-gov-au/ckanext-data-qld-theme.git@develop#egg=ckanext-data-qld-theme
+#TODO: Change back to qld-gov-au for PR back to qld-gov-au
+-e git+https://github.com/salsadigitalauorg/ckanext-data-qld-theme@develop#egg=ckanext-data_qld
 -e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
 -e git+https://github.com/qld-gov-au/ckanext-archiver.git@develop#egg=ckanext-archiver
 -e git+https://github.com/qld-gov-au/ckanext-report.git@develop#egg=ckanext-report
