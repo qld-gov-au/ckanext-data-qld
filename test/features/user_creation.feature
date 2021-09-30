@@ -1,7 +1,7 @@
 @user_creation
 Feature: User creation
 
-    Scenario:
+    Scenario: SysAdmin can create 'Excluded display name words' in ckan admin config
         Given "SysAdmin" as the persona
         When I log in
         Then I go to "/ckan-admin/config"
