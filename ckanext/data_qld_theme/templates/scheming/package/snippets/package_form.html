@@ -1,0 +1,15 @@
+{% ckan_extends %}
+
+{% block delete_button %}
+  {% resource 'data_qld_theme/dataset-deletion-confirm-action.js' %}
+
+  {% if c.action == 'edit' and h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' %}
+    <button disabled="disabled" class="btn btn-danger pull-left"
+       data-module-href="{% url_for controller='package', action='delete', id=data.id %}"
+       data-module-with-data="true"
+       data-module="dataset-deletion-confirm-action"
+       data-module-content="{{ _('Deleting this dataset will prevent future use of the dataset’s name. It is highly recommended that dataset issues are rectified rather than deleting and creating a new dataset with the same information.') }}">
+      {% block delete_button_text %}{{ _('Delete') }}{% endblock %}
+    </button>
+  {% endif %}
+{% endblock %}
