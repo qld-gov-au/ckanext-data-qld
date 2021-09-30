@@ -5,7 +5,7 @@ import ckan.plugins.toolkit as tk
 import ckan.lib.uploader as uploader
 
 from ckan.lib.base import config
-from ckanext.data_qld import helpers as h
+from ckanext.data_qld import helpers as data_qld_helpers
 
 log = logging.getLogger(__name__)
 get_validator = tk.get_validator
@@ -30,7 +30,7 @@ def update_frequencies_from_config():
     return config.get('ckanext.resource_freshness.update_frequencies', json.dumps(update_frequencies))
 
 
-def recalculate_next_update_due_date(update_frequency, next_update_due=None):
+def recalculate_next_update_due_date(flattened_data, update_frequency, next_update_due, errors, context):
     days = get_update_frequencies().get(update_frequency, 0)
     # Recalculate the next_update_due if its not none
     if next_update_due is not None:
@@ -40,13 +40,15 @@ def recalculate_next_update_due_date(update_frequency, next_update_due=None):
         # Recalculate the UpdateDue date if its None
         due_date = dt.datetime.utcnow().date() + dt.timedelta(days=days)
 
-    return get_validator('convert_to_json_if_date')(due_date, {})
-
-
-def resource_data_updated(flattened_data, update_frequency, next_update_due, index, errors, context):
-    flattened_data[('next_update_due',)] = recalculate_next_update_due_date(update_frequency, next_update_due)
+    flattened_data[('next_update_due',)] = due_date.isoformat()
     get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)
-    flattened_data[('resources', index, 'last_modified')] = dt.datetime.utcnow()
+
+
+def update_last_modified(flattened_data, index, errors, context):
+    now = dt.datetime.utcnow()
+    flattened_data[('resources', index, 'last_modified')] = now
+    flattened_data[('data_last_updated', )] = now.isoformat()
+    get_validator('convert_to_extras')(('data_last_updated',), flattened_data, errors, context)
 
 
 def check_resource_data(current_resource, updated_resource, context):
@@ -85,7 +87,7 @@ def check_resource_data(current_resource, updated_resource, context):
 
 
 def process_next_update_due(data_dict):
-    if not h.user_has_admin_access(True):
+    if not data_qld_helpers.user_has_admin_access(True):
         if 'next_update_due' in data_dict:
             del data_dict['next_update_due']
         for res in data_dict.get('resources', []):

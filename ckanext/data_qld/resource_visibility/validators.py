@@ -1,11 +1,11 @@
 import ckan.plugins.toolkit as tk
 
+from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
+from ckanext.data_qld import helpers as data_qld_helpers
+
 missing = tk.missing
-h = tk.h
 StopOnError = tk.StopOnError
 _ = tk._
-request = tk.request
-get_endpoint = tk.get_endpoint
 
 
 def resource_visibility(key, data, errors, context):
@@ -13,6 +13,9 @@ def resource_visibility(key, data, errors, context):
     Users must select one of the correct option
     based on the package.de_identified_data.
     """
+    if data_qld_helpers.is_delete_request():
+        return
+
     de_identified_data = data.get((u'de_identified_data',))
 
     res, index, field = key
@@ -22,10 +25,10 @@ def resource_visibility(key, data, errors, context):
     # None is a new resource.
     processed_res_id = resource_data_updated.get('id') if resource_data_updated else None
     value = str(data.get(key, '')) if data[key] is not missing else ''
-    api_request = True if hasattr(request, 'params') and get_endpoint()[1] == 'action' else False
+    api_request = data_qld_helpers.is_api_request()
     # Validate all resources if its coming from the package_show API otherwise just validate the resource that is being updated
     if api_request or res_id == processed_res_id:
-        options = h.data_qld_get_select_field_options('resource_visibility')
+        options = resource_visibility_helpers.get_select_field_options('resource_visibility')
         option_values = [option.get('value') for option in options]
         if de_identified_data == 'YES':
             # Field is required.

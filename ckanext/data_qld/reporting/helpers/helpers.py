@@ -9,13 +9,13 @@ check_access = toolkit.check_access
 log = logging.getLogger(__name__)
 
 
-def check_user_access(permission):
+def check_user_access(permission, context=None):
     data_dict = {
         'permission': permission
     }
     check_access(
         'has_user_permission_for_some_org',
-        get_context(),
+        context if context else get_context(),
         data_dict
     )
 

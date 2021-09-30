@@ -83,6 +83,7 @@ setup(
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras
         demote_publishers = ckanext.data_qld.commands:DemotePublishers
+        update_fullname = ckanext.data_qld.user_creation.commands:UpdateFullname
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan

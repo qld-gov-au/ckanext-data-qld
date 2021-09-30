@@ -1,12 +1,11 @@
 import ckan.plugins.toolkit as toolkit
 import logging
 
-from ckan import authz
 from ckan.model.package import Package
+from ckanext.data_qld import helpers as data_qld_helpers, auth_functions as auth_functions
 
-h = toolkit.h
+toolkit_helpers = toolkit.h
 get_action = toolkit.get_action
-request = toolkit.request
 log = logging.getLogger(__name__)
 
 
@@ -15,7 +14,7 @@ def get_package_dict(id, use_get_action=True):
     Return package dict.
     """
     if len(id) == 0:
-        id = request.path.split('/')[-1]
+        id = data_qld_helpers.get_request_path().split('/')[-1]
 
     try:
         if use_get_action:
@@ -34,24 +33,28 @@ def get_select_field_options(field_name, field_schema='resource_fields'):
     """
     Return a list of select options.
     """
-    schema = h.scheming_get_dataset_schema('dataset') \
+    schema = toolkit_helpers.scheming_get_dataset_schema('dataset') \
         if 'scheming_datasets' in toolkit.config.get('ckan.plugins', '') else {}
 
     for field in schema.get(field_schema, []):
         if field.get('field_name') == field_name and field.get('choices', None):
-            return h.scheming_field_choices(field)
+            return toolkit_helpers.scheming_field_choices(field)
 
     return []
 
 
-def user_has_org_role(org_id, user_obj):
+def has_user_permission_for_org(org_id, user_obj, permission):
     """
-    Return None if user doesn't role in the organization.
+    Return False if user doesn't have permission in the organization.
     """
     if user_obj is None:
         return False
 
-    return authz.users_role_for_group_or_org(org_id, user_obj.name) is not None
+    context = {'user': user_obj.name}
+    data_dict = {'org_id': org_id, 'permission': permission}
+    result = auth_functions.has_user_permission_for_org(context, data_dict)
+
+    return result and result.get('success')
 
 
 def process_resources(data_dict, user_obj):
@@ -65,7 +68,7 @@ def process_resources(data_dict, user_obj):
     is_sysadmin = user_obj is not None and user_obj.sysadmin
 
     if not is_sysadmin:
-        if not user_has_org_role(data_dict.get('owner_org', None), user_obj):
+        if not has_user_permission_for_org(data_dict.get('owner_org'), user_obj, 'read'):
             resources = data_dict.get('resources', [])
             options = get_select_field_options('resource_visibility')
             de_identified_data = data_dict.get('de_identified_data', 'NO') == 'YES'
@@ -106,9 +109,7 @@ def show_resource_visibility(resource_dict):
         # Load package to get the org of current resource.
         # Not able to use package_show as it will thrown max recursion depth exceeded.
         pkg_dict = get_package_dict(resource_dict.get('package_id'), False)
-
-        has_org_admin_editor_access = h.data_qld_user_has_admin_editor_org_access(pkg_dict.get('owner_org'), user_obj.name)
-        if has_org_admin_editor_access:
+        if has_user_permission_for_org(pkg_dict.get('owner_org'), user_obj, 'create_dataset'):
             return True
 
     return False

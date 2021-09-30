@@ -166,3 +166,25 @@ def profanity_checking_enabled():
     """
     return 'ytp_comments' in config.get('ckan.plugins', '') \
            and toolkit.asbool(config.get('ckan.comments.check_for_profanity', False))
+
+
+def get_request():
+    return toolkit.request if hasattr(toolkit.request, 'params') else None
+
+
+def get_request_action():
+    request = get_request()
+    return toolkit.get_endpoint()[1] if request else ''
+
+
+def get_request_path():
+    request = get_request()
+    return request.path if request else ''
+
+
+def is_delete_request():
+    return get_request_action() == 'delete' or 'package_delete' in get_request_path()
+
+
+def is_api_request():
+    return get_request_action() == 'action' or '/action/' in get_request_path()
