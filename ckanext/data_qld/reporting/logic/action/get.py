@@ -626,8 +626,10 @@ def de_identified_datasets(context, data_dict):
             _session_.query(Package)
             .join(model.PackageExtra)
             .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
             .filter(PackageExtra.key == 'de_identified_data')
             .filter(PackageExtra.value == 'YES')
+            .filter(PackageExtra.state == ACTIVE_STATE)
         )
 
         if return_count_only:
@@ -660,8 +662,10 @@ def overdue_datasets(context, data_dict):
             _session_.query(Package)
             .join(model.PackageExtra)
             .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
             .filter(PackageExtra.key == 'next_update_due')
-            .filter(PackageExtra.value < today_utc)
+            .filter(PackageExtra.value <= today_utc)
+            .filter(PackageExtra.state == ACTIVE_STATE)
         )
 
         if return_count_only:
