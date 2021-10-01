@@ -91,7 +91,7 @@ def process_resource_visibility(resource_dict):
     Remove resource_visibility value from dict
     if current user doesn't have access to it.
     """
-    if not show_resource_visibility(resource_dict) and 'resource_visibility' in resource_dict:
+    if 'resource_visibility' in resource_dict and not show_resource_visibility(resource_dict):
         del resource_dict['resource_visibility']
 
 

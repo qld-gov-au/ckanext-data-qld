@@ -103,6 +103,13 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
         resource_freshness_helpers.process_next_update_due(data_dict)
 
+    def after_search(self, search_results, search_params):
+        for data_dict in search_results.get('results', []):
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
+            resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
+            resource_freshness_helpers.process_next_update_due(data_dict)
+        return search_results
+
     def delete(self, data_dict):
         dataset_deletion_helpers.add_deletion_of_dataset_reason(data_dict)
 
