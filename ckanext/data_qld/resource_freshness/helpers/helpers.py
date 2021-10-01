@@ -34,15 +34,10 @@ def update_frequencies_from_config():
     return config.get('ckanext.resource_freshness.update_frequencies', json.dumps(update_frequencies))
 
 
-def recalculate_next_update_due_date(flattened_data, update_frequency, next_update_due, errors, context):
+def recalculate_next_update_due_date(flattened_data, update_frequency, errors, context):
     days = get_update_frequencies().get(update_frequency, 0)
-    # Recalculate the next_update_due if its not none
-    if next_update_due is not None:
-        next_update_due = get_validator('isodate')(next_update_due, {})
-        due_date = next_update_due.date() + dt.timedelta(days=days)
-    else:
-        # Recalculate the UpdateDue date if its None
-        due_date = dt.datetime.utcnow().date() + dt.timedelta(days=days)
+    # Recalculate the next_update_due always against todays date
+    due_date = dt.datetime.utcnow().date() + dt.timedelta(days=days)
 
     flattened_data[('next_update_due',)] = due_date.isoformat()
     get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)

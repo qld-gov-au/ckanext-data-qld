@@ -222,6 +222,26 @@
       "required": true
     },
     {
+      "field_name": "nature_of_change",
+      "label": "Nature of change to data",
+      "form_include_blank_choice": true,
+      "form_snippet": "select.html",
+      "display_snippet": null,
+      "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
+      "validators": "data_qld_validate_nature_of_change_data ignore_empty scheming_choices",
+      "create_validators": "ignore",
+      "choices":[
+        {
+          "value": "add-new-time-series",
+          "label": "Adding new time series data to the resource"
+        },
+        {
+          "value": "edit-resource-with-no-new-data",
+          "label": "Editing resource with no new time series data added"
+        }
+      ]
+    },
+    {
       "field_name": "name",
       "label": "Name",
       "form_placeholder": "eg. January 2011 Gold Prices",
@@ -288,26 +308,6 @@
         {
           "value": "Resource NOT visible/Pending acknowledgement",
           "label": "Resource NOT visible/Pending acknowledgement"
-        }
-      ]
-    },
-    {
-      "field_name": "nature_of_change",
-      "label": "Nature of change to data",
-      "form_include_blank_choice": true,
-      "form_snippet": "select.html",
-      "display_snippet": null,
-      "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
-      "validators": "data_qld_validate_nature_of_change_data ignore_empty scheming_choices",
-      "create_validators": "ignore",
-      "choices":[
-        {
-          "value": "add-new-time-series",
-          "label": "Adding new time series data to the resource"
-        },
-        {
-          "value": "edit-resource-with-no-new-data",
-          "label": "Editing resource with no new time series data added"
         }
       ]
     }

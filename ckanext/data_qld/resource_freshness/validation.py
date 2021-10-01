@@ -26,13 +26,32 @@ def validate_next_update_due(keys, flattened_data, errors, context):
     next_update_due = data.get(key)
     update_frequency = data.get('update_frequency')
 
+    current_next_update_due = None
+    current_update_frequency = None
+    if data.get('id'):
+        # # Dataset already exists, check current values to see if there are any updates to validate
+        if context.get('package'):
+            # Package model object should be set in 'package_update' action
+            extras = context.get('package').as_dict().get('extras', {})
+            current_next_update_due = extras.get('next_update_due')
+            current_update_frequency = extras.get('update_frequency')
+        else:
+            # If for some reason it is not use package_show
+            data_dict = get_action('package_show')(context, {"id": data.get('id')})
+            current_next_update_due = data_dict.get('next_update_due')
+            current_update_frequency = data_dict.get('update_frequency')
+
+        if (next_update_due == current_next_update_due) and (update_frequency == current_update_frequency):
+            # No updates to validate
+            return
+
     if update_frequency in resource_freshness_helpers.get_update_frequencies():
         if next_update_due:
             next_update_due = get_validator('isodate')(next_update_due, {})
             if next_update_due.date() <= dt.date.today():
                 errors[keys].append(_("Valid date in the future is required"))
         elif data_qld_helpers.is_api_request():
-            flattened_data[keys] = resource_freshness_helpers.recalculate_next_update_due_date(update_frequency, next_update_due, errors, context)
+            flattened_data[keys] = resource_freshness_helpers.recalculate_next_update_due_date(update_frequency, errors, context)
         else:
             errors[keys].append(_('Missing value'))
             raise StopOnError
@@ -71,11 +90,11 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
                 resource_freshness_helpers.update_last_modified(flattened_data, index, errors, context)
             # If nature_of_change is selected check value to see if the correct nature of change provided
             if nature_of_change == 'add-new-time-series' and update_frequency in resource_freshness_helpers.get_update_frequencies():
-                resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, next_update_due, errors, context)
+                resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
     else:
         # Resource created
-        if update_frequency in resource_freshness_helpers.get_update_frequencies():
-            resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, next_update_due, errors, context)
+        if (update_frequency in resource_freshness_helpers.get_update_frequencies() and data.get('state') == 'active'):
+            resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
         resource_freshness_helpers.update_last_modified(flattened_data, index, errors, context)
         # Should not have a nature_of_change so remove it
         flattened_data.pop(keys, None)
@@ -94,11 +113,20 @@ def data_last_updated(keys, flattened_data, errors, context):
         # New dataset being created, there will be no resources so exit
         flattened_data[keys] = None
         return
-    # Get package with 'package_show' because the validator doesn't have the resources when a dataset is updated
-    package = get_action('package_show')(context, data)
-    data_last_updated = get_validator('isodate')(package.get(key), context) if package.get(key) else None
+    # Get package from context if it exists because the validator doesn't have the resources when a dataset is updated
+    if context.get('package'):
+        # Package model object should be set in 'package_update' action
+        data_dict = context.get('package').as_dict()
+        current_data_last_updated = data_dict.get('extras', {}).get(key)
+        resources = data_dict.get('resources', [])
+    else:
+        # If for some reason it is not use package_show
+        data_dict = get_action('package_show')(context, {"id": data.get('id')})
+        current_data_last_updated = data_dict.get(key)
+        resources = data_dict.get('resources', [])
+    data_last_updated = get_validator('isodate')(current_data_last_updated, context) if current_data_last_updated else None
     # Cycle through the resources to compare data_last_updated field with last_modified
-    for resource in package.get('resources', []):
+    for resource in resources:
         last_modified = get_validator('isodate')(resource.get('last_modified') or resource.get('created'), context)
         if data_last_updated is None or last_modified > data_last_updated:
             data_last_updated = last_modified
