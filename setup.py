@@ -84,6 +84,8 @@ setup(
         migrate_extras = ckanext.data_qld.commands:MigrateExtras
         demote_publishers = ckanext.data_qld.commands:DemotePublishers
         update_fullname = ckanext.data_qld.user_creation.commands:UpdateFullname
+        send_email_dataset_due_to_publishing_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetDueToPublishingNotification
+        send_email_dataset_overdue_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetOverdueNotification
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan

@@ -12,6 +12,7 @@ import logging
 
 import ckanext.data_qld.resource_freshness.helpers.helpers as resource_freshness_helpers
 import ckanext.data_qld.resource_freshness.validation as resource_freshness_validator
+import ckanext.data_qld.resource_freshness.logic.actions.get as resource_freshness_get_actions
 
 from flask import Blueprint
 from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
@@ -165,5 +166,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             'user_create': user_creation_create_actions.user_create,
-            'user_update': user_creation_update_actions.user_update
+            'user_update': user_creation_update_actions.user_update,
+            'data_qld_get_dataset_due_to_publishing': resource_freshness_get_actions.dataset_due_to_publishing,
+            'data_qld_get_dataset_overdue': resource_freshness_get_actions.dataset_overdue,
+            'data_qld_process_dataset_due_to_publishing': resource_freshness_get_actions.process_dataset_due_to_publishing,
+            'data_qld_process_dataset_overdue': resource_freshness_get_actions.process_dataset_overdue
         }

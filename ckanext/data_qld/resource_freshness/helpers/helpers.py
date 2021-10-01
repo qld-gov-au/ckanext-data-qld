@@ -2,13 +2,17 @@ import datetime as dt
 import json
 import logging
 import ckan.plugins.toolkit as tk
+import ckan.lib.base as base
+import ckan.lib.mailer as mailer
 import ckan.lib.uploader as uploader
 
-from ckan.lib.base import config
 from ckanext.data_qld import helpers as data_qld_helpers
+from datetime import datetime
+from itertools import groupby
 
 log = logging.getLogger(__name__)
 get_validator = tk.get_validator
+config = tk.config
 
 update_frequencies = {
     "monthly": 30,
@@ -98,3 +102,51 @@ def process_next_update_due(data_dict):
 def process_nature_of_change(resource_dict):
     if 'nature_of_change' in resource_dict:
         del resource_dict['nature_of_change']
+
+
+def group_dataset_by_contact_email(datasets):
+    def key_func(dt):
+        return dt['author_email']
+
+    datasets_by_contact = []
+    for key, value in groupby(datasets, key_func):
+        datasets_by_contact.append({'email': key, 'datasets': list(value)})
+
+    return datasets_by_contact
+
+
+def send_email_dataset_notification(datasets_by_contacts, action_type):
+    for contact in datasets_by_contacts:
+        try:
+            datasets = []
+            for contact_dataset in contact.get('datasets', {}):
+                date = datetime.strptime(contact_dataset.get('next_update_due'), '%Y-%m-%d')
+
+                datasets.append({
+                    'url': tk.h.url_for('dataset_read', id=contact_dataset.get('name'), _external=True),
+                    'next_due_date': date.strftime('%d/%m/%Y')
+                })
+
+            extra_vars = {'datasets': datasets}
+            subject = base.render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
+            body = base.render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
+
+            site_title = 'Data | Queensland Government'
+            site_url = config.get('ckan.site_url')
+            tk.enqueue_job(mailer._mail_recipient, [contact.get('email'), contact.get('email'), site_title, site_url, subject, body], title=action_type)
+        except Exception:
+            log.error("Error sending {0} notification to {1}".format(action_type, contact.get('email')))
+
+
+def process_email_notification_for_dataset_due_to_publishing():
+    results = tk.get_action('data_qld_get_dataset_due_to_publishing')({}, {}).get('results', [])
+    if results:
+        datasets_by_contacts = group_dataset_by_contact_email(results)
+        send_email_dataset_notification(datasets_by_contacts, 'send_email_dataset_due_to_publishing_notification')
+
+
+def process_email_notification_for_dataset_overdue():
+    results = tk.get_action('data_qld_get_dataset_overdue')({}, {}).get('results', [])
+    if results:
+        datasets_by_contacts = group_dataset_by_contact_email(results)
+        send_email_dataset_notification(datasets_by_contacts, 'send_email_dataset_overdue_notification')
