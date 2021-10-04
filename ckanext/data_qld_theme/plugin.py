@@ -159,7 +159,7 @@ def members_sorted(members):
         member_dict['display_name'] = get_display_name(user_id)
         members_list.append(member_dict)
 
-    return sorted(members_list, key=lambda m: m['display_name'])
+    return sorted(members_list, key=lambda m: m['display_name'].lower())
 
 
 class DataQldThemePlugin(plugins.SingletonPlugin):
