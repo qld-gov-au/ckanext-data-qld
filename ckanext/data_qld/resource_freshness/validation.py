@@ -70,7 +70,6 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     res, index, key = keys
     resource = data.get(res, [])[index]
 
-    next_update_due = data.get('next_update_due')
     update_frequency = data.get('update_frequency')
     nature_of_change = resource.get(key)
 
