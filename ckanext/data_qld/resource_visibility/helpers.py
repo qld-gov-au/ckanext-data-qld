@@ -73,12 +73,12 @@ def process_resources(data_dict, user_obj):
             options = get_select_field_options('resource_visibility')
             de_identified_data = data_dict.get('de_identified_data', 'NO') == 'YES'
 
-            for index, resource in enumerate(resources):
+            for resource in list(resources):
                 resource_visibility = resource.get('resource_visibility', '')
                 # Value of options[2] == Resource NOT visible/Pending acknowledgement.
                 if resource_visibility == options[2].get('value') if len(options) >= 3 else False \
                         or len(resource_visibility) == 0 and de_identified_data:
-                    data_dict.get('resources').pop(index)
+                    resources.remove(resource)
                     data_dict['num_resources'] -= 1
                 else:
                     # Need to remove the resource visibility field from display
@@ -91,7 +91,7 @@ def process_resource_visibility(resource_dict):
     Remove resource_visibility value from dict
     if current user doesn't have access to it.
     """
-    if not show_resource_visibility(resource_dict) and 'resource_visibility' in resource_dict:
+    if 'resource_visibility' in resource_dict and not show_resource_visibility(resource_dict):
         del resource_dict['resource_visibility']
 
 

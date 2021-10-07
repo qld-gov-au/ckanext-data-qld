@@ -12,6 +12,7 @@ import logging
 
 import ckanext.data_qld.resource_freshness.helpers.helpers as resource_freshness_helpers
 import ckanext.data_qld.resource_freshness.validation as resource_freshness_validator
+import ckanext.data_qld.resource_freshness.logic.actions.get as resource_freshness_get_actions
 
 from flask import Blueprint
 from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
@@ -102,6 +103,13 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
         resource_freshness_helpers.process_next_update_due(data_dict)
 
+    def after_search(self, search_results, search_params):
+        for data_dict in search_results.get('results', []):
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
+            resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
+            resource_freshness_helpers.process_next_update_due(data_dict)
+        return search_results
+
     def delete(self, data_dict):
         dataset_deletion_helpers.add_deletion_of_dataset_reason(data_dict)
 
@@ -165,5 +173,9 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             'user_create': user_creation_create_actions.user_create,
-            'user_update': user_creation_update_actions.user_update
+            'user_update': user_creation_update_actions.user_update,
+            'data_qld_get_dataset_due_to_publishing': resource_freshness_get_actions.dataset_due_to_publishing,
+            'data_qld_get_dataset_overdue': resource_freshness_get_actions.dataset_overdue,
+            'data_qld_process_dataset_due_to_publishing': resource_freshness_get_actions.process_dataset_due_to_publishing,
+            'data_qld_process_dataset_overdue': resource_freshness_get_actions.process_dataset_overdue
         }
