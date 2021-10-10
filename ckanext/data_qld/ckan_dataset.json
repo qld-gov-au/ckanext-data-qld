@@ -186,6 +186,7 @@
       "field_name": "next_update_due",
       "label": "Next update due",
       "form_snippet": "next_update_due.html",
+      "display_snippet": "date.html",
       "validators": "data_qld_validate_next_update_due ignore_empty convert_to_json_if_date"
      },
      {

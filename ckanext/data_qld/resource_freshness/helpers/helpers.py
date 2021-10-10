@@ -13,6 +13,7 @@ from itertools import groupby
 log = logging.getLogger(__name__)
 get_validator = tk.get_validator
 config = tk.config
+h = tk.h
 
 update_frequencies = {
     "monthly": 30,
@@ -36,8 +37,9 @@ def update_frequencies_from_config():
 
 def recalculate_next_update_due_date(flattened_data, update_frequency, errors, context):
     days = get_update_frequencies().get(update_frequency, 0)
-    # Recalculate the next_update_due always against todays date
-    due_date = dt.datetime.utcnow().date() + dt.timedelta(days=days)
+    # Recalculate the next_update_due always against today's date
+    today = dt.datetime.now(h.get_display_timezone())
+    due_date = today + dt.timedelta(days=days)
 
     flattened_data[('next_update_due',)] = due_date.isoformat()
     get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)

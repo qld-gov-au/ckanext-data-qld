@@ -12,6 +12,7 @@ StopOnError = tk.StopOnError
 get_validator = tk.get_validator
 _ = tk._
 get_action = tk.get_action
+h = tk.h
 
 
 def validate_next_update_due(keys, flattened_data, errors, context):
@@ -48,7 +49,8 @@ def validate_next_update_due(keys, flattened_data, errors, context):
     if update_frequency in resource_freshness_helpers.get_update_frequencies():
         if next_update_due:
             next_update_due = get_validator('isodate')(next_update_due, {})
-            if next_update_due.date() <= dt.date.today():
+            today = dt.datetime.now(h.get_display_timezone())
+            if next_update_due.date() <= today.date():
                 errors[keys].append(_("Valid date in the future is required"))
         elif data_qld_helpers.is_api_request():
             flattened_data[keys] = resource_freshness_helpers.recalculate_next_update_due_date(update_frequency, errors, context)
