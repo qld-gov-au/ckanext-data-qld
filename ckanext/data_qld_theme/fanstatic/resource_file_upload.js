@@ -1,4 +1,7 @@
 jQuery(document).ready(function () {
+  UPDATE_FREQUENCY_DAYS = JSON.parse(jQuery('input[name="update_frequency_days"]').val())
+  UPDATE_FREQUENCY = jQuery('input[name="update_frequency"]').val()
+
   // if there is a validation error block on updating a resource, show the field nature_of_change, otherwise hide it by default
   if (jQuery('input[name="id"]').val().length > 0 && jQuery('#field-nature_of_change').parent().children('.error-block').length > 0) {
     jQuery('#field-nature_of_change').parent().parent().show();
@@ -36,7 +39,8 @@ jQuery(document).ready(function () {
   function show_nature_of_change() {
     // Only show nature of change when editing a resource 
     // id value will be null for new resource 
-    if (jQuery('input[name="id"]').val().length > 0) {
+    // Dont show the field if the update_frequency for dataset is not in defined values
+    if (jQuery('input[name="id"]').val().length > 0 && UPDATE_FREQUENCY in UPDATE_FREQUENCY_DAYS) {
       jQuery('#field-nature_of_change').val("");
       jQuery('#field-nature_of_change').parent().parent().show();
     }
