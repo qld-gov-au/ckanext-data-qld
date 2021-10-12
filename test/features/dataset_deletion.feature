@@ -27,8 +27,8 @@ Feature: Dataset deletion
         Given "SysAdmin" as the persona
         When I log in
         And I go to "/dataset/edit/dataset-deletion"
-        Then I should see an element with xpath "//button[@data-module='dataset-deletion-confirm-action']"
-        Then I press the element with xpath "//button[@data-module='dataset-deletion-confirm-action']"
+        Then I should see an element with xpath "//button[@data-module='confirm-action']"
+        Then I press the element with xpath "//button[@data-module='confirm-action']"
         And I wait for 5 seconds
         Then I should see "Briefly describe the reason for deleting this dataset"
         Then I should see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"

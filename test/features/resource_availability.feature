@@ -203,14 +203,14 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "SysAdmin" as the persona
         When I log in
         And I go to "/dataset/edit/contains-de-identified-data-yes"
-        Then I press the element with xpath "//button[@data-module='dataset-deletion-confirm-action']"
+        Then I press the element with xpath "//button[@data-module='confirm-action']"
         And I wait for 5 seconds
         When I type "it should be longer than 10 character" to "deletion_reason"
         Then I press the element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary']"
         And I wait for 10 seconds
 
         And I go to "/dataset/edit/contains-de-identified-data-no"
-        Then I press the element with xpath "//button[@data-module='dataset-deletion-confirm-action']"
+        Then I press the element with xpath "//button[@data-module='confirm-action']"
         And I wait for 5 seconds
         When I type "it should be longer than 10 character" to "deletion_reason"
         Then I press the element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary']"
