@@ -76,6 +76,9 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
     nature_of_change = resource.get(key)
 
     if resource.get('id'):
+        if update_frequency not in resource_freshness_helpers.get_update_frequencies():
+            return
+
         # Resource updated
         # Only validate the current resource being updated unless its coming from the API
         # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
@@ -88,7 +91,6 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
                     errors[keys].append(_('Missing value'))
                     raise StopOnError
 
-                resource_freshness_helpers.update_last_modified(flattened_data, index, errors, context)
             # If nature_of_change is selected check value to see if the correct nature of change provided
             if nature_of_change == 'add-new-time-series' and update_frequency in resource_freshness_helpers.get_update_frequencies():
                 resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
@@ -96,7 +98,6 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
         # Resource created
         if (update_frequency in resource_freshness_helpers.get_update_frequencies() and data.get('state') == 'active'):
             resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
-        resource_freshness_helpers.update_last_modified(flattened_data, index, errors, context)
         # Should not have a nature_of_change so remove it
         flattened_data.pop(keys, None)
 
@@ -133,3 +134,26 @@ def data_last_updated(keys, flattened_data, errors, context):
             data_last_updated = last_modified
 
     flattened_data[keys] = data_last_updated.isoformat() if isinstance(data_last_updated, dt.datetime) else None
+
+
+def last_modified(keys, flattened_data, errors, context):
+    '''
+    Validate and recalculate the last_modified value of the resource
+    '''
+    if data_qld_helpers.is_delete_request():
+        return
+    data = unflatten(flattened_data)
+    res, index, key = keys
+    resource = data.get(res, [])[index]
+
+    if resource.get('id'):
+        # If existing resource, we need to check if the resource is updated before
+        resource_data_updated = context.get('resource_data_updated', {})
+        api_request = data_qld_helpers.is_api_request()
+        if api_request or resource_data_updated and resource_data_updated.get('id') == resource.get('id'):
+            if api_request or resource_data_updated.get('data_updated', False) is True:
+                # Resource data has been updated or the call is from the API so the nature_of_change validation is required
+                resource_freshness_helpers.update_last_modified(flattened_data, index, errors, context)
+    else:
+        # For new resource we update the last modified
+        resource_freshness_helpers.update_last_modified(flattened_data, index, errors, context)

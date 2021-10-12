@@ -83,7 +83,8 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
             'data_qld_user_name_validator': user_creation_validators.data_qld_user_name_validator,
-            'data_qld_displayed_name_validator': user_creation_validators.data_qld_displayed_name_validator
+            'data_qld_displayed_name_validator': user_creation_validators.data_qld_displayed_name_validator,
+            'data_qld_last_modified': resource_freshness_validator.last_modified,
         }
 
     # IPackageController

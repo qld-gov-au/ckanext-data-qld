@@ -225,7 +225,7 @@
       "field_name": "nature_of_change",
       "label": "Nature of change to data",
       "form_include_blank_choice": true,
-      "form_snippet": "select.html",
+      "form_snippet": "nature_of_change.html",
       "display_snippet": null,
       "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
       "validators": "data_qld_validate_nature_of_change_data ignore_empty scheming_choices",
@@ -310,6 +310,12 @@
           "label": "Resource NOT visible/Pending acknowledgement"
         }
       ]
+    },
+    {
+      "field_name": "last_modified",
+      "display_snippet": null,
+      "form_snippet": null,
+      "validators": "data_qld_last_modified ignore_empty"
     }
   ]
 }
