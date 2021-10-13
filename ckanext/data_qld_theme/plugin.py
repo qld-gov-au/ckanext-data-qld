@@ -162,6 +162,10 @@ def members_sorted(members):
     return sorted(members_list, key=lambda m: m['display_name'].lower())
 
 
+def get_deletion_reason_template():
+    return toolkit.render('package/snippets/deletion_reason.html')
+
+
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -191,4 +195,5 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
             'unreplied_comments_x_days': unreplied_comments_x_days,
             'is_reporting_enabled': is_reporting_enabled,
             'members_sorted': members_sorted,
+            'get_deletion_reason_template': get_deletion_reason_template
         }
