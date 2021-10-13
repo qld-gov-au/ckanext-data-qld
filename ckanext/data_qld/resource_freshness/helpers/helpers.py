@@ -41,7 +41,7 @@ def recalculate_next_update_due_date(flattened_data, update_frequency, errors, c
     today = dt.datetime.now(h.get_display_timezone())
     due_date = today + dt.timedelta(days=days)
 
-    flattened_data[('next_update_due',)] = due_date.isoformat()
+    flattened_data[('next_update_due',)] = due_date.date().isoformat()
     get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)
 
 
