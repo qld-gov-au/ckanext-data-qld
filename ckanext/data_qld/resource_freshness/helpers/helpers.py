@@ -13,6 +13,7 @@ from itertools import groupby
 log = logging.getLogger(__name__)
 get_validator = tk.get_validator
 config = tk.config
+h = tk.h
 
 update_frequencies = {
     "monthly": 30,
@@ -36,10 +37,11 @@ def update_frequencies_from_config():
 
 def recalculate_next_update_due_date(flattened_data, update_frequency, errors, context):
     days = get_update_frequencies().get(update_frequency, 0)
-    # Recalculate the next_update_due always against todays date
-    due_date = dt.datetime.utcnow().date() + dt.timedelta(days=days)
+    # Recalculate the next_update_due always against today's date
+    today = dt.datetime.now(h.get_display_timezone())
+    due_date = today + dt.timedelta(days=days)
 
-    flattened_data[('next_update_due',)] = due_date.isoformat()
+    flattened_data[('next_update_due',)] = due_date.date().isoformat()
     get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)
 
 
@@ -53,7 +55,12 @@ def update_last_modified(flattened_data, index, errors, context):
 def check_resource_data(current_resource, updated_resource, context):
     # If there are validation errors we cannot determine if the resource data was updated on the previous submit
     # Need to store this state in the form as a hidden field so we can retrieve the value here
-    data_updated = updated_resource.pop('resource_data_updated') == "true" if 'resource_data_updated' in updated_resource else False
+    data_updated = updated_resource.get('resource_data_updated') == "true"
+
+    # Remove hidden field values from form so they do not get saved as extras
+    updated_resource.pop('resource_data_updated', None)
+    updated_resource.pop('update_frequency_days', None)
+    updated_resource.pop('update_frequency', None)
 
     if not data_updated:
         # If the clear_upload field is set to true it means the user clicked on the clear button to update the url

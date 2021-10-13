@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 @toolkit.side_effect_free
 def dataset_due_to_publishing(context, data_dict):
-    today = datetime.utcnow().today()
+    today = datetime.now(toolkit.h.get_display_timezone()).date()
     start_date = data_dict.get('start_date') if data_dict.get('start_date') else (today + timedelta(15)).strftime('%Y-%m-%d')
     end_date = data_dict.get('end_date') if data_dict.get('end_date') else (today + timedelta(21)).strftime('%Y-%m-%d')
 
@@ -19,7 +19,7 @@ def dataset_due_to_publishing(context, data_dict):
 
 @toolkit.side_effect_free
 def dataset_overdue(context, data_dict):
-    today = datetime.utcnow().today()
+    today = datetime.now(toolkit.h.get_display_timezone()).date()
     start_date = data_dict.get('start_date') if data_dict.get('start_date') else (today - timedelta(6)).strftime('%Y-%m-%d')
     end_date = data_dict.get('end_date') if data_dict.get('end_date') else (today - timedelta(0)).strftime('%Y-%m-%d')
 

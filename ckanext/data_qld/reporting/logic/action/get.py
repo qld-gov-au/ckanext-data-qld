@@ -16,7 +16,7 @@ from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
-from ckan.plugins.toolkit import config, NotAuthorized
+from ckan.plugins.toolkit import config, NotAuthorized, h
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
@@ -655,8 +655,8 @@ def overdue_datasets(context, data_dict):
     check_org_access(org_id, permission)
 
     try:
-        # next_update_due is stored as UTC without timezone as isoformat
-        today_utc = datetime.utcnow().date().isoformat()
+        # next_update_due is stored as display timezone without timezone as isoformat
+        today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
         query = (
             _session_.query(Package)
@@ -664,7 +664,7 @@ def overdue_datasets(context, data_dict):
             .filter(Package.owner_org == org_id)
             .filter(Package.state == ACTIVE_STATE)
             .filter(PackageExtra.key == 'next_update_due')
-            .filter(PackageExtra.value <= today_utc)
+            .filter(PackageExtra.value <= today)
             .filter(PackageExtra.state == ACTIVE_STATE)
         )
 

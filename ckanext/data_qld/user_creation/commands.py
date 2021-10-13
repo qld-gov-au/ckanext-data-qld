@@ -22,7 +22,7 @@ class UpdateFullname(CkanCommand):
         date_threshold = datetime(2021, 5, 18, 00, 42)
 
         model.Session.query(model.User) \
-            .filter(sa.not_(sa.func.lower(model.User.fullname).like('data.qld%'))) \
+            .filter(sa.not_(sa.func.lower(sa.func.coalesce(model.User.fullname, '')).like('data.qld%'))) \
             .filter(model.User.created < date_threshold) \
             .update({'fullname': 'Displayed name required'}, synchronize_session='fetch')
         model.Session.commit()
