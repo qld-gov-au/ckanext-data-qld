@@ -24,7 +24,7 @@ jobs:
 
       - name: Test
         run: .circleci/test.sh
-        timeout-minutes: 25
+        timeout-minutes: 20
 
       - name: Retrieve screenshots
         if: failure()
