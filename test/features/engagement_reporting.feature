@@ -78,7 +78,7 @@ Feature: Engagement Reporting
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-title') and string()='Data request comments' and position()=1]"
         Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
-        When I go to datarequest page
+        When I go to the data requests page
         And I click the link with text that contains "Test Request"
         And I click the link with text that contains "Comments"
         And I submit a comment with subject "Test subject" and comment "This is a test comment"

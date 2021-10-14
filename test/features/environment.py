@@ -4,7 +4,9 @@ from behaving import environment as benv
 from behaving.web.steps.browser import named_browser
 
 # Path to the root of the project.
-ROOT_PATH = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
+ROOT_PATH = os.path.realpath(os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    '../../'))
 
 # Base URL for relative paths resolution.
 BASE_URL = 'http://ckan:3000/'
@@ -68,6 +70,8 @@ def before_all(context):
     context.screenshots_dir = os.path.join(ROOT_PATH, 'test/screenshots')
     # The path where file attachments can be found.
     context.attachment_dir = os.path.join(ROOT_PATH, 'test/fixtures')
+    # The path where emails can be found.
+    context.mail_path = os.path.join(ROOT_PATH, 'test/emails')
 
     # Set base url for all relative links.
     context.base_url = BASE_URL
