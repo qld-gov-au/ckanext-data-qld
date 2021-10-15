@@ -211,4 +211,5 @@ def should_receive_base64_email_containing_text(context, address, text):
         print('decoded_payload: ', decoded_payload)
         return text in decoded_payload
 
+    print("[DEBUG] Email(s) received: {}".format(context.mail.user_messages))
     assert context.mail.user_messages(address, filter_contents)
