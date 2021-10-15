@@ -147,7 +147,7 @@ REPORT_ORG=$( \
     ${CKAN_ACTION_URL}/organization_create
 )
 
-REPORT_ORG_ID=$(echo $REPORT_ORG_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
+REPORT_ORG_ID=$(echo $REPORT_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
 
 echo "Assigning test users to ${REPORT_ORG_TITLE} Organisation:"
 
