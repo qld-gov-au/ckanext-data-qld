@@ -20,7 +20,6 @@ Feature: Engagement Reporting
             | User          |
             | TestOrgAdmin  |
             | TestOrgEditor |
-            | ReportingOrgAdmin |
 
 
     Scenario: As a data request organisation admin, when I view my engagement report, I can verify the number of data requests is correct and increments
