@@ -2,7 +2,6 @@ import datetime as dt
 import json
 import logging
 import ckan.plugins.toolkit as tk
-import ckan.lib.base as base
 import ckan.lib.mailer as mailer
 import ckan.lib.uploader as uploader
 
@@ -111,8 +110,12 @@ def group_dataset_by_contact_email(datasets):
         return dt['author_email']
 
     datasets_by_contact = []
-    for key, value in groupby(datasets, key_func):
-        datasets_by_contact.append({'email': key, 'datasets': list(value)})
+    try:
+        for key, value in groupby(datasets, key_func):
+            datasets_by_contact.append({'email': key, 'datasets': list(value)})
+    except Exception as e:
+        log.error("Error grouping dataset by contact email")
+        log.error(str(e))
 
     return datasets_by_contact
 
@@ -120,35 +123,52 @@ def group_dataset_by_contact_email(datasets):
 def send_email_dataset_notification(datasets_by_contacts, action_type):
     for contact in datasets_by_contacts:
         try:
+            log.info("Preparing email data for {0} notification to {1}".format(action_type, contact.get('email')))
             datasets = []
             for contact_dataset in contact.get('datasets', {}):
                 date = datetime.strptime(contact_dataset.get('next_update_due'), '%Y-%m-%d')
 
                 datasets.append({
-                    'url': tk.h.url_for('dataset_read', id=contact_dataset.get('name'), _external=True),
+                    'url': h.url_for('dataset_read', id=contact_dataset.get('name'), _external=True),
                     'next_due_date': date.strftime('%d/%m/%Y')
                 })
 
             extra_vars = {'datasets': datasets}
-            subject = base.render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = base.render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
+            subject = render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
+            body = render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
 
             site_title = 'Data | Queensland Government'
             site_url = config.get('ckan.site_url')
-            tk.enqueue_job(mailer._mail_recipient, [contact.get('email'), contact.get('email'), site_title, site_url, subject, body], title=action_type)
-        except Exception:
+            tk.enqueue_job(mailer._mail_recipient,
+                           [contact.get('email'), contact.get('email'), site_title, site_url, subject, body],
+                           title=action_type)
+            log.info("Added email to job worker default queue for {0} notification to {1}".format(action_type, contact.get('email')))
+        except Exception as e:
             log.error("Error sending {0} notification to {1}".format(action_type, contact.get('email')))
+            log.error(str(e))
 
 
 def process_email_notification_for_dataset_due_to_publishing():
+    action_type = 'send_email_dataset_due_to_publishing_notification'
+    log.info('Started {0}'.format(action_type))
     results = tk.get_action('data_qld_get_dataset_due_to_publishing')({}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
-        send_email_dataset_notification(datasets_by_contacts, 'send_email_dataset_due_to_publishing_notification')
+        send_email_dataset_notification(datasets_by_contacts, action_type)
+    log.info('Finished process_email_notification_for_dataset_overdue')
 
 
 def process_email_notification_for_dataset_overdue():
+    action_type = 'send_email_dataset_overdue_notification'
+    log.info('Started {0}'.format(action_type))
     results = tk.get_action('data_qld_get_dataset_overdue')({}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
-        send_email_dataset_notification(datasets_by_contacts, 'send_email_dataset_overdue_notification')
+        send_email_dataset_notification(datasets_by_contacts, action_type)
+    log.info('Finished {0}'.format(action_type))
+
+
+def render_jinja2(template_name, extra_vars):
+    env = tk.config['pylons.app_globals'].jinja_env
+    template = env.get_template(template_name)
+    return template.render(**extra_vars)
