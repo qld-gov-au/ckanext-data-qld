@@ -23,19 +23,19 @@ Feature: Engagement Reporting
 
 
     Scenario: As a data request organisation admin, when I view my engagement report, I can verify the number of data requests is correct and increments
-        Given "ReportingOrgAdmin" as the persona
+        Given "DataRequestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
-        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
         When I create a datarequest
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
-        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='2' and position()=2]"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
 
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of dataset followers is correct and increments
