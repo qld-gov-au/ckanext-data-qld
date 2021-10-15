@@ -23,30 +23,30 @@ Feature: Engagement Reporting
 
 
     Scenario: As a data request organisation admin, when I view my engagement report, I can verify the number of data requests is correct and increments
-        Given "DataRequestOrgAdmin" as the persona
+        Given "ReportingOrgAdmin" as the persona
         When I log in
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
-        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
         When I create a datarequest
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
-        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
+        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='2' and position()=2]"
 
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of dataset followers is correct and increments
-        Given "TestOrgAdmin" as the persona
+        Given "ReportingOrgAdmin" as the persona
         When I log in
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
-        When I visit "/dataset/warandpeace"
+        When I go to dataset "reporting"
         And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
@@ -55,14 +55,14 @@ Feature: Engagement Reporting
 
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of dataset comments is correct and increments
-        Given "TestOrgAdmin" as the persona
+        Given "ReportingOrgAdmin" as the persona
         When I log in
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-title') and string()='Dataset comments' and position()=1]"
         Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
-        When I go to dataset "warandpeace" comments
+        When I go to dataset "reporting" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
@@ -71,16 +71,14 @@ Feature: Engagement Reporting
 
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of data request comments is correct and increments
-        Given "TestOrgAdmin" as the persona
+        Given "ReportingOrgAdmin" as the persona
         When I log in
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-title') and string()='Data request comments' and position()=1]"
         Then I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
-        When I go to the data requests page
-        And I click the link with text that contains "Test Request"
-        And I click the link with text that contains "Comments"
+        When I go to data request "Reporting Request" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
