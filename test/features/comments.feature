@@ -40,8 +40,8 @@ Feature: Comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
         Then I submit a comment with subject "Test Request" and comment "This is a test data request comment"
         When I wait for 5 seconds
-        Then I should receive a base64 email at "dr_admin@localhost" containing "Data request subject: Test Request"
-        And I should receive a base64 email at "dr_admin@localhost" containing "Comment: This is a test data request comment"
+        Then I should receive a base64 email at "test_org_admin@localhost" containing "Data request subject: Test Request"
+        And I should receive a base64 email at "test_org_admin@localhost" containing "Comment: This is a test data request comment"
 
     @comment-add @comment-profane
     Scenario: When a logged-in user submits a comment containing whitelisted profanity on a Dataset the comment should display within 10 seconds
@@ -79,7 +79,7 @@ Feature: Comments
         And I press the element with xpath "//a[contains(string(), 'Report')]"
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
-        Then I should receive an email at "dr_admin@localhost" with subject "Queensland Government Open Data - Comments"
+        Then I should receive an email at "test_org_admin@localhost" with subject "Queensland Government Open Data - Comments"
 
     @comment-reply
     Scenario: When a logged-in user submits a reply comment on a Dataset, the comment should display within 10 seconds
