@@ -142,18 +142,26 @@ commands:
     usage: Starts CKAN background job workers
     cmd: |
       ahoy title 'Starting CKAN background job workers'
+      ahoy start-ckan-job-worker-default &
       ahoy start-ckan-job-worker-priority &
       ahoy start-ckan-job-worker-bulk &
 
+  start-ckan-job-worker-default:
+    usage: Starts default CKAN background job worker
+    cmd: |
+      ahoy title 'Starting default CKAN background job worker'
+      ahoy cli "ckan_cli jobs clear && \
+                ckan_cli jobs worker"
+
   start-ckan-job-worker-priority:
-    usage: Starts CKAN background job worker
+    usage: Starts CKAN background job worker for priority tasks
     cmd: |
       ahoy title 'Starting CKAN background job worker priority'
       ahoy cli "ckan_cli jobs clear priority && \
                 ckan_cli jobs worker priority"
 
   start-ckan-job-worker-bulk:
-    usage: Starts CKAN background job worker bulk
+    usage: Starts CKAN background job worker for low-priority tasks
     cmd: |
       ahoy title 'Starting CKAN background job worker bulk'
       ahoy cli "ckan_cli jobs clear bulk && \
