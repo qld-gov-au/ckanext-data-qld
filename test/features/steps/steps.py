@@ -2,8 +2,10 @@ from behave import step
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
+from behaving.mail.steps import *
 import email
 import quopri
+import random
 
 
 @step(u'I get the current URL')
@@ -43,12 +45,58 @@ def log_in_directly(context):
     """)
 
 
+@step('I fill in title with random text')
+def title_random_text(context):
+
+    assert context.persona
+    context.execute_steps(u"""
+        When I fill in "title" with "Test Title {0}"
+    """.format(random.randrange(1000)))
+
+
+@step('I log in and go to the data requests page')
+def log_in_go_to_datarequest_page(context):
+    assert context.persona
+    context.execute_steps(u"""
+        When I log in
+        And I go to the data requests page
+    """)
+
+
+@step('I log in and create a datarequest')
+def log_in_create_a_datarequest(context):
+
+    assert context.persona
+    context.execute_steps(u"""
+        When I log in and go to the data requests page
+        And I create a datarequest
+    """)
+
+
+@step('I create a datarequest')
+def create_datarequest(context):
+
+    assert context.persona
+    context.execute_steps(u"""
+        When I go to the data requests page
+        And I click the link with text that contains "Add data request"
+        And I fill in title with random text
+        And I fill in "description" with "Test description"
+        And I press the element with xpath "//button[contains(string(), 'Create data request')]"
+    """)
+
+
+@step('I go to my reports page')
+def go_to_reporting_page(context):
+    when_i_visit_url(context, '/dashboard/reporting')
+
+
 @step('I go to dataset page')
 def go_to_dataset_page(context):
     when_i_visit_url(context, '/dataset')
 
 
-@step('I go to dataset "{name}"')
+@step(u'I go to dataset "{name}"')
 def go_to_dataset(context, name):
     when_i_visit_url(context, '/dataset/' + name)
 
@@ -131,6 +179,26 @@ def submit_reply_with_comment(context, comment):
         "document.querySelector('.comment-wrapper form .form-actions input[type=\"submit\"]').click();")
 
 
+@step('I create a dataset with license {license} and resource file {file}')
+def create_dataset(context, license, file):
+    assert context.persona
+    context.execute_steps(u"""
+        When I visit "dataset/new"
+        And I fill in title with random text
+        And I fill in "notes" with "Description"
+        And I fill in "version" with "1.0"
+        And I fill in "author_email" with "test@me.com"
+        And I execute the script "document.getElementById('field-license_id').value={license}"
+        Then I select "NO" from "de_identified_data"
+        And I press "Add Data"
+        And I attach the file {file} to "upload"
+        And I fill in "name" with "Test Resource"
+        And I execute the script "document.getElementById('field-format').value='JSON'"
+        And I fill in "description" with "Test Resource Description"
+        And I press "Finish"
+    """.format(license=license, file=file))
+
+
 # The default behaving step does not convert base64 emails
 # Modifed the default step to decode the payload from base64
 @step(u'I should receive a base64 email at "{address}" containing "{text}"')
@@ -139,7 +207,10 @@ def should_receive_base64_email_containing_text(context, address, text):
         mail = email.message_from_string(mail)
         payload = mail.get_payload()
         payload += "=" * ((4 - len(payload) % 4) % 4)  # do fix the padding error issue
-        decoded_payload = quopri.decodestring(payload).decode('base64')
+        payload_bytes = quopri.decodestring(payload)
+        if len(payload_bytes) > 0:
+            payload_bytes += b'='  # do fix the padding error issue
+        decoded_payload = payload_bytes.decode('base64')
         print('decoded_payload: ', decoded_payload)
         return text in decoded_payload
 
