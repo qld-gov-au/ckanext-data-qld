@@ -1,10 +1,10 @@
 @data_usability_rating
 Feature: Data usability rating
 
-    Scenario: As an admin user of my organisation, when I create a dataset with a license that is not open, I can verify the score is 0
+    Scenario: As an admin user of my organisation, when I create a dataset with a HTML resource, I can verify the score is 0
         Given "TestOrgAdmin" as the persona
         When I log in
-        And I create a dataset with license "other-closed" and resource file "txt_resource.txt"
+        And I create a dataset with license "other-open" and resource file "html_resource.html"
         Then I wait for 10 seconds
         When I reload
         Then I should see "Data usability rating"
