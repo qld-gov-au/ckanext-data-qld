@@ -69,7 +69,7 @@ Feature: Comments
         And I press the element with xpath "//a[contains(string(), 'Report')]"
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
-        Then I should receive an email at "test_org_admin@localhost" with subject "Queensland Government Open Data - Comments"
+        Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-report @datarequest
     Scenario: When a logged-in user reports a comment on a Data Request the comment should be marked as reported and an email notification sent to the organisation admins
@@ -79,7 +79,7 @@ Feature: Comments
         And I press the element with xpath "//a[contains(string(), 'Report')]"
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
-        Then I should receive an email at "test_org_admin@localhost" with subject "Queensland Government Open Data - Comments"
+        Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-reply
     Scenario: When a logged-in user submits a reply comment on a Dataset, the comment should display within 10 seconds
