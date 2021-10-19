@@ -181,7 +181,7 @@ curl -LsH "Authorization: ${API_KEY}" \
 CSV
 RDF
 HTML
-XLS"
+XLS" \
     ${CKAN_ACTION_URL}/config_option_update
 
 if [ "$VENV_DIR" != "" ]; then
