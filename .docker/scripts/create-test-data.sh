@@ -177,7 +177,11 @@ curl -LsH "Authorization: ${API_KEY}" \
 echo "Creating config value for resource formats:"
 
 curl -LsH "Authorization: ${API_KEY}" \
-    --data "ckanext.data_qld.resource_formats=JSON" \
+    --data "ckanext.data_qld.resource_formats=JSON
+CSV
+RDF
+HTML
+XLS"
     ${CKAN_ACTION_URL}/config_option_update
 
 if [ "$VENV_DIR" != "" ]; then
