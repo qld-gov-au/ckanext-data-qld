@@ -193,10 +193,10 @@ def create_dataset(context, license, file):
         And I press "Add Data"
         And I attach the file {file} to "upload"
         And I fill in "name" with "Test Resource"
-        And I execute the script "document.getElementById('field-format').value='JSON'"
+        And I execute the script "document.getElementById('field-format').value='{file_format}'"
         And I fill in "description" with "Test Resource Description"
         And I press "Finish"
-    """.format(license=license, file=file))
+    """.format(license=license, file=file, file_format=file.split('.')[-1]))
 
 
 # The default behaving step does not convert base64 emails
