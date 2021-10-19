@@ -54,6 +54,16 @@ def title_random_text(context):
     """.format(random.randrange(1000)))
 
 
+@step('I go to organisation page')
+def go_to_organisation_page(context):
+    when_i_visit_url(context, '/organization')
+
+
+@step('I go to register page')
+def go_to_register_page(context):
+    when_i_visit_url(context, '/user/register')
+
+
 @step('I log in and go to the data requests page')
 def log_in_go_to_datarequest_page(context):
     assert context.persona
@@ -61,6 +71,11 @@ def log_in_go_to_datarequest_page(context):
         When I log in
         And I go to the data requests page
     """)
+
+
+@step('I go to the data requests page')
+def go_to_datarequest_page(context):
+    when_i_visit_url(context, '/datarequest')
 
 
 @step('I log in and create a datarequest')
@@ -107,21 +122,6 @@ def go_to_dataset_comments(context, name):
         When I go to dataset "%s"
         And I click the link with text that contains "Comments"
     """ % (name))
-
-
-@step('I go to organisation page')
-def go_to_organisation_page(context):
-    when_i_visit_url(context, '/organization')
-
-
-@step('I go to register page')
-def go_to_register_page(context):
-    when_i_visit_url(context, '/user/register')
-
-
-@step('I go to the data requests page')
-def go_to_data_requests_page(context):
-    when_i_visit_url(context, '/datarequest')
 
 
 @step(u'I go to data request "{subject}"')
