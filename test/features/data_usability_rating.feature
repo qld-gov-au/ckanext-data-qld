@@ -4,7 +4,7 @@ Feature: Data usability rating
     Scenario: As an admin user of my organisation, when I create a dataset with a HTML resource, I can verify the score is 0
         Given "TestOrgAdmin" as the persona
         When I log in
-        And I create a dataset with license "other-open" and resource file "html_resource.html"
+        And I create a dataset with license "other-open" and "HTML" resource file "html_resource.html"
         Then I wait for 10 seconds
         When I reload
         Then I should see "Data usability rating"

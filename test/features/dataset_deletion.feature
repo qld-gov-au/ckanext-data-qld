@@ -16,7 +16,6 @@ Feature: Dataset deletion
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
         Then I fill in "name" with "res1"
-        And I execute the script "document.getElementById('field-format').value='JSON'"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
         Then I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"

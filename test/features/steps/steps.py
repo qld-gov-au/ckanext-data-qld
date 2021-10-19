@@ -180,7 +180,12 @@ def submit_reply_with_comment(context, comment):
 
 
 @step('I create a dataset with license {license} and resource file {file}')
-def create_dataset(context, license, file):
+def create_dataset_json(context, license, file):
+    create_dataset(context, license, file, 'JSON')
+
+
+@step('I create a dataset with license {license} and {file_format} resource file {file}')
+def create_dataset(context, license, file, file_format):
     assert context.persona
     context.execute_steps(u"""
         When I visit "dataset/new"
@@ -193,10 +198,10 @@ def create_dataset(context, license, file):
         And I press "Add Data"
         And I attach the file {file} to "upload"
         And I fill in "name" with "Test Resource"
-        And I execute the script "document.getElementById('field-format').value='{file_format}'"
+        And I execute the script "document.getElementById('field-format').value={file_format}"
         And I fill in "description" with "Test Resource Description"
         And I press "Finish"
-    """.format(license=license, file=file, file_format=file.split('.')[-1].upper()))
+    """.format(license=license, file=file, file_format=file_format))
 
 
 # The default behaving step does not convert base64 emails
