@@ -10,8 +10,8 @@ messytables==0.15.2
 progressbar==2.5
 git+https://github.com/ckan/ckanapi@ckanapi-4.3#egg=ckanapi
 git+https://github.com/ckan/ckantoolkit@release-0.0.4#egg=ckantoolkit
--e git+https://github.com/ckan/ckanext-scheming.git@release-1.2.0#egg=ckanext-scheming
 -e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
+-e git+https://github.com/ckan/ckanext-scheming.git@release-1.2.0#egg=ckanext-scheming
 -e git+https://github.com/frictionlessdata/ckanext-validation.git#egg=ckanext-validation
 -e git+https://github.com/qld-gov-au/ckan-ex-qgov.git@develop#egg=ckanext-qgov
 -e git+https://github.com/qld-gov-au/ckanext-archiver.git@develop#egg=ckanext-archiver
