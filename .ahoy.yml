@@ -141,7 +141,7 @@ commands:
   start-ckan-job-worker:
     usage: Starts CKAN background job worker
     cmd: |
-      ahoy title 'Starting CKAN background job worker'
+      ahoy title 'Starting default CKAN background job worker'
       ahoy cli "ckan_cli jobs clear && \
                 ckan_cli jobs worker"
 
