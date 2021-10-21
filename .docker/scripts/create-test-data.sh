@@ -128,8 +128,51 @@ curl -LsH "Authorization: ${API_KEY}" \
 echo "Creating test Data Request:"
 
 curl -LsH "Authorization: ${API_KEY}" \
-    --data "title=Test Request&description=This is an example&organization_id=${DR_ORG_ID}" \
+    --data "title=Test Request&description=This is an example&organization_id=${TEST_ORG_ID}" \
     ${CKAN_ACTION_URL}/create_datarequest
+
+REPORT_ORG_NAME=reporting
+REPORT_ORG_TITLE=Reporting
+
+echo "Creating test users for ${REPORT_ORG_TITLE} Organisation:"
+
+add_user_if_needed report_admin "Reporting Admin" report_admin@localhost
+add_user_if_needed report_editor "Reporting Editor" report_editor@localhost
+
+echo "Creating ${REPORT_ORG_TITLE} Organisation:"
+
+REPORT_ORG=$( \
+    curl -LsH "Authorization: ${API_KEY}" \
+    --data "name=${REPORT_ORG_NAME}&title=${REPORT_ORG_TITLE}" \
+    ${CKAN_ACTION_URL}/organization_create
+)
+
+REPORT_ORG_ID=$(echo $REPORT_ORG | sed -r 's/^(.*)"id": "(.*)",(.*)/\2/')
+
+echo "Assigning test users to ${REPORT_ORG_TITLE} Organisation:"
+
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${REPORT_ORG_ID}&object=report_admin&object_type=user&capacity=admin" \
+    ${CKAN_ACTION_URL}/member_create
+
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "id=${REPORT_ORG_ID}&object=report_editor&object_type=user&capacity=editor" \
+    ${CKAN_ACTION_URL}/member_create
+
+echo "Creating test dataset for reporting:"
+
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "name=reporting&description=Dataset for reporting&owner_org=${REPORT_ORG_ID}&\
+update_frequency=near-realtime&author_email=report_admin@localhost&version=1.0&license_id=cc-by-4\
+&data_driven_application=NO&security_classification=PUBLIC&notes=test&de_identified_data=NO"\
+    ${CKAN_ACTION_URL}/package_create
+
+echo "Creating test Data Request for reporting:"
+
+curl -LsH "Authorization: ${API_KEY}" \
+    --data "title=Reporting Request&description=Data Request for reporting&organization_id=${REPORT_ORG_ID}" \
+    ${CKAN_ACTION_URL}/create_datarequest
+
 
 if [ "$VENV_DIR" != "" ]; then
   deactivate
