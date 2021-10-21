@@ -1,0 +1,56 @@
+{% resource 'data_qld_theme/resource_visibility.js' %}
+
+{% import 'macros/form.html' as form %}
+{% import 'macros/data_qld_form.html' as data_qld_form %}
+
+
+{%- set field_options = h.data_qld_get_select_field_options(field.field_name) -%}
+{%- set pkg_dict = h.data_qld_get_package_dict(data['package_id']) -%}
+{%- set required = pkg_dict.de_identified_data == 'YES' -%}
+
+{%- set options=[] -%}
+{%- set form_restrict_choices_to=field.get('form_restrict_choices_to') -%}
+{%- if not h.scheming_field_required(field) or
+    field.get('form_include_blank_choice', false) -%}
+  {%- do options.append({'value': '', 'text': '', 'attrs': {}}) -%}
+{%- endif -%}
+{%- for choice in h.scheming_field_choices(field) -%}
+  {%- if not form_restrict_choices_to or choice.value in form_restrict_choices_to -%}
+    {%- set disabled = {} -%}
+    {%- if pkg_dict.de_identified_data == 'YES' and choice.value == field_options[0].value -%}
+      {%- set disabled = {'disabled': 'disabled'} -%}
+    {%- endif -%}
+
+    {%- if pkg_dict.de_identified_data == 'NO' and choice.value == field_options[1].value -%}
+      {%- set disabled = {'disabled': 'disabled'} -%}
+    {%- endif -%}
+
+    {%- do options.append({
+      'value': choice.value,
+      'text': h.scheming_language_text(choice.label),
+      'attrs': disabled
+      }) -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if field.get('sorted_choices') -%}
+  {%- set options = options|sort(case_sensitive=false, attribute='text') -%}
+{%- endif -%}
+
+{% call data_qld_form.select_with_disabled(
+    field.field_name,
+    id='field-' + field.field_name,
+    label=h.scheming_language_text(field.label),
+    options=options,
+    selected='' if required else data[field.field_name],
+    error=errors[field.field_name],
+    classes=['control-medium'],
+    attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+    is_required=required
+    )
+%}
+
+{{- form.info(
+    text=field.help_text|safe,
+    inline=field.get('help_inline', false)
+    ) -}}
+{% endcall %}

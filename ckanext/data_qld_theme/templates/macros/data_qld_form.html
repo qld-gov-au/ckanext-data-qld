@@ -1,0 +1,15 @@
+{% import 'macros/form.html' as form %}
+
+{% macro select_with_disabled(name, id='', label='', options='', selected='', error='', classes=[], attrs={'class': 'form-control'}, is_required=false) %}
+  {% set classes = (classes|list) %}
+  {% do classes.append('control-select') %}
+
+  {%- set extra_html = caller() if caller -%}
+  {% call form.input_block(id or name, label or name, error, classes, extra_html=extra_html, is_required=is_required) %}
+      <select id="{{ id or name }}" name="{{ name }}" {{ form.attributes(attrs) }}>
+        {% for option in options %}
+          <option value="{{ option.value }}"{% if option.value == selected %} selected{% endif %} {{ form.attributes(option.attrs) }}>{{ option.text or option.value }}</option>
+        {% endfor %}
+    </select>
+  {% endcall %}
+{% endmacro %}

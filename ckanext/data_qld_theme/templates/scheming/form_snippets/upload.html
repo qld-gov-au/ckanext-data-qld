@@ -1,6 +1,16 @@
+{% import 'macros/form.html' as form %}
 {% resource 'data_qld_theme/resource_file_upload.js' %}
 
-{% import 'macros/form.html' as form %}
+{% if c.resource_data_updated %}
+    {{ form.hidden('resource_data_updated', "true") }}
+    {% if (data.url_type == 'upload')  %}
+        {%- do data.update({'url': ''}) -%}
+        {%- do data.update({'url_type': ''}) -%}
+        {%- do data.update({'previous_upload': True}) -%}
+    {% endif %}
+{% endif %}
+
+{{ form.hidden('url_type', data.url_type) }}
 
 {%- set is_upload = (data.url_type == 'upload') -%}
 {{ form.image_upload(

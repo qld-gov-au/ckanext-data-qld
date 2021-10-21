@@ -6,6 +6,8 @@ from ckan.common import c, config, request
 import ckan.model as model
 import re
 
+from six import text_type
+
 
 def get_gtm_code():
     # To get Google Tag Manager Code
@@ -134,6 +136,36 @@ def unreplied_comments_x_days(thread_url):
     return comment_ids
 
 
+def get_display_name(user):
+    if not isinstance(user, model.User):
+        user_name = text_type(user)
+        user = model.User.get(user_name)
+        if not user:
+            return user_name
+    return user.display_name
+
+
+def members_sorted(members):
+    '''
+    Sorting helper for the members tables
+    '''
+    members_list = []
+    for user_id, user, role in members:
+        member_dict = {}
+        tag = toolkit.h.linked_user(user_id)
+        member_dict['user_id'] = user_id
+        member_dict['tag'] = tag
+        member_dict['role'] = role
+        member_dict['display_name'] = get_display_name(user_id)
+        members_list.append(member_dict)
+
+    return sorted(members_list, key=lambda m: m['display_name'].lower())
+
+
+def get_deletion_reason_template():
+    return toolkit.render('package/snippets/deletion_reason.html')
+
+
 class DataQldThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
@@ -161,5 +193,7 @@ class DataQldThemePlugin(plugins.SingletonPlugin):
                 get_comment_notification_recipients_enabled,
             'populate_revision': populate_revision,
             'unreplied_comments_x_days': unreplied_comments_x_days,
-            'is_reporting_enabled': is_reporting_enabled
+            'is_reporting_enabled': is_reporting_enabled,
+            'members_sorted': members_sorted,
+            'get_deletion_reason_template': get_deletion_reason_template
         }
