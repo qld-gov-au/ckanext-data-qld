@@ -1,10 +1,13 @@
 import ckan.model as model
 import logging
 import sqlalchemy
+import pytz
 
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
 from ckan.model.package import Package
 from ckan.model.group import Group
+from ckan.model.user import User
+from ckan.model.package_extra import PackageExtra
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
 from sqlalchemy import func, distinct, tuple_
@@ -13,11 +16,13 @@ from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
+from ckan.plugins.toolkit import config, NotAuthorized, h
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
 _session_ = model.Session
-check_org_access = helpers.check_org_access
+check_org_access = helpers.check_user_org_access
+check_user_access = helpers.check_user_access
 log = logging.getLogger(__name__)
 
 #
@@ -324,14 +329,14 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     check_org_access(org_id)
 
     comment_reply = aliased(Comment, name='comment_reply')
-
     try:
-        return (
+        comments = (
             _session_.query(
                 Comment.id.label("comment_id"),
                 Comment.parent_id,
                 Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
+                User.name.label('username'),
                 CommentThread.url,
                 Package.name.label("package_name"),
                 comment_reply.parent_id,
@@ -352,12 +357,25 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
+            .join(User, Comment.user_id == User.id)
             .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
             .outerjoin(
-                (comment_reply, Comment.id == comment_reply.parent_id)
+                (comment_reply, Comment.id == comment_reply.parent_id),
             )
             .order_by(Comment.creation_date.desc())
         ).all()
+
+        comments_to_show = []
+        for comment in comments:
+            try:
+                check_user_access('create_dataset', {"user": comment.username})
+                # User has editor, admin or sysadmin access to a organisation
+            except NotAuthorized:
+                # User is only a member of a organisation or has no organisation access
+                # Add user comment
+                comments_to_show.append(comment)
+                continue
+        return comments_to_show
 
     except Exception as e:
         log.error(str(e))
@@ -380,12 +398,13 @@ def datarequests_no_replies_after_x_days(context, data_dict):
 
     try:
         db.init_db(model)
-        return (
+        comments = (
             _session_.query(
                 Comment.id.label("comment_id"),
                 Comment.parent_id,
                 Comment.creation_date,
                 Comment.subject,
+                User.name.label('username'),
                 CommentThread.url,
                 db.DataRequest.id.label("datarequest_id"),
                 db.DataRequest.title,
@@ -406,12 +425,25 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
+            .join(User, Comment.user_id == User.id)
             .join(db.DataRequest, db.DataRequest.id == _replace_(CommentThread.url, DATAREQUEST_PREFIX, ''))
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
             )
             .order_by(Comment.creation_date.desc())
         ).all()
+
+        comments_to_show = []
+        for comment in comments:
+            try:
+                check_user_access('create_dataset', {"user": comment.username})
+                # User has editor, admin or sysadmin access to a organisation
+            except NotAuthorized:
+                # User is only a member of a organisation or has no organisation access
+                # Add user comment
+                comments_to_show.append(comment)
+                continue
+        return comments_to_show
 
     except Exception as e:
         log.error(str(e))
@@ -532,9 +564,6 @@ def comments_no_replies_after_x_days(context, data_dict):
     :param data_dict:
     :return:
     """
-    import pytz
-    from ckan.plugins.toolkit import config
-
     thread_url = data_dict.get('thread_url', None)
 
     ckan_timezone = config.get('ckan.display_timezone', None)
@@ -576,5 +605,73 @@ def comments_no_replies_after_x_days(context, data_dict):
             .order_by(Comment.creation_date.desc())
         ).all()
 
+    except Exception as e:
+        log.error(str(e))
+
+
+def de_identified_datasets(context, data_dict):
+    """
+    Returns the datasets that have de-identified data for an organisation
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
+
+    try:
+        query = (
+            _session_.query(Package)
+            .join(model.PackageExtra)
+            .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
+            .filter(PackageExtra.key == 'de_identified_data')
+            .filter(PackageExtra.value == 'YES')
+            .filter(PackageExtra.state == ACTIVE_STATE)
+        )
+
+        if return_count_only:
+            datasets = query.count()
+        else:
+            datasets = query.all()
+
+        return datasets
+    except Exception as e:
+        log.error(str(e))
+
+
+def overdue_datasets(context, data_dict):
+    """
+    Returns the datasets that are over due for an organisation
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
+
+    try:
+        # next_update_due is stored as display timezone without timezone as isoformat
+        today = datetime.now(h.get_display_timezone()).date().isoformat()
+        # We need to check for any datasets whose next_update_due is earlier than today
+        query = (
+            _session_.query(Package)
+            .join(model.PackageExtra)
+            .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
+            .filter(PackageExtra.key == 'next_update_due')
+            .filter(PackageExtra.value <= today)
+            .filter(PackageExtra.state == ACTIVE_STATE)
+        )
+
+        if return_count_only:
+            datasets = query.count()
+        else:
+            datasets = query.all()
+        return datasets
     except Exception as e:
         log.error(str(e))

@@ -36,6 +36,8 @@
 
 {{ form.markdown('ckanext.data_qld.datarequest_suggested_description', id='field-ckanext.data_qld.datarequest_suggested_description', label=_('Data request suggested description'), placeholder=_('eg. Data Request suggested description'), value=data['ckanext.data_qld.datarequest_suggested_description'], error=errors['ckanext.data_qld.datarequest_suggested_description']) }}
 
+{{ form.textarea('ckanext.data_qld.excluded_display_name_words', id='field-ckanext.data_qld.excluded_display_name_words', label=_('Excluded display name words'), placeholder=_('eg.\nAdmin\nEditor'), value=data['ckanext.data_qld.excluded_display_name_words'], error=errors['ckanext.data_qld.excluded_display_name_words']) }}
+
 {% endblock %}
 
 

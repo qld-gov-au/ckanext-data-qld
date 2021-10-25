@@ -27,7 +27,7 @@ Feature: Login Redirection
         When I log in
         Then I visit "/dataset/edit/annakarenina"
         When I select "True" from "private"
-        And I fill in "author_email" with "admin@localhost"
+        And I fill in "author_email" with "test@example.com"
         And I press "Update Dataset"
         Then I should see an element with xpath "//span[contains(string(), 'Private')]"
 
