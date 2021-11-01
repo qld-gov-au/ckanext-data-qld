@@ -1,5 +1,9 @@
-# ckanext-data-qld
+ckanext-data-qld
+================
+
 A custom CKAN extension for Data.Qld
+
+[![Tests](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml/badge.svg)](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml)
 
 [![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop.svg?style=shield)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop)
 
@@ -12,6 +16,42 @@ A custom CKAN extension for Data.Qld
 - Checkout project repository (in one of the [supported Docker directories](https://docs.docker.com/docker-for-mac/osxfs/#access-control)).  
 - `pygmy up`
 - `ahoy build`
+- You may need to use sudo on linux
+
+Building on Ubuntu (optional: behind proxy)
+- composer from compose
+  - sudo pip install docker-compose
+- sudo apt-get install composer
+- ensure /etc/gemrc has the following
+  ``http_proxy: http://localhost:3128
+    https_proxy: http://localhost:3128``
+- if squid proxy is in use on your machine ensure that ``acl localnet src 172.17.0.0/16``  #  allows your public ip for loopback
+- https://docs.docker.com/network/proxy/
+  ~/.docker/config.json
+  ``
+{
+ "proxies":
+  {
+  "default":
+   {
+     "httpProxy": "http://hostexternalip:3128",
+     "httpsProxy": "http://hostexternalip:3128",
+     "noProxy": ""
+   }
+  }
+}
+``
+  - https://docs.docker.com/config/daemon/systemd/
+    sudo mkdir -p /etc/systemd/system/docker.service.d
+    sudo vi /etc/systemd/system/docker.service.d/http-proxy.conf
+    ``[Service]
+      Environment="HTTP_PROXY=http://localhost:3128/"``
+    sudo vi /etc/systemd/system/docker.service.d/https-proxy.conf
+    ``[Service]
+      Environment="HTTPS_PROXY=http://localhost:3128/"``
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
 
 Use `admin`/`password` to login to CKAN.
 
@@ -73,12 +113,7 @@ For a list of supported step-definitions, see https://github.com/ggozad/behaving
 In software engineering, continuous integration (CI) is the practice of merging all developer working copies to a shared mainline several times a day. 
 Before feature changes can be merged into a shared mainline, a complete build must run and pass all tests on CI server.
 
-This project uses [Circle CI](https://circleci.com/) as a CI server: it imports production backups into fully built codebase and runs code linting and tests. When tests pass, a deployment process is triggered for nominated branches (usually, `master` and `develop`).
-
-Add `[skip ci]` to the commit subject to skip CI build. Useful for documentation changes.
-
-### SSH
-Circle CI supports shell access to the build for 120 minutes after the build is finished when the build is started with SSH support. Use "Rerun job with SSH" button in Circle CI UI to start build with SSH support.
+This project uses [GitHub Actions](https://github.com/features/actions) as a CI server: it imports production backups into fully built codebase and runs code linting and tests. When tests pass, a deployment process is triggered for nominated branches (usually, `master` and `develop`).
 
 ## Installation
 
@@ -185,5 +220,6 @@ To run the command:
         # ckanext-data_qld_reporting
         ckan.reporting.datarequest_open_max_days = 60 # Defaults to 60
         ckan.reporting.comment_no_reply_max_days = 10 # Defaults to 10
-        ckan.reporting.json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json'
+        ckan.reporting.engagement_json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../engagement_report_csv.json'
+        ckan.reporting.admin_json_config = PATH_TO_FILE # Defaults to os.path.dirname(os.path.realpath(__file__)) + '/../admin_report_csv.json'
 

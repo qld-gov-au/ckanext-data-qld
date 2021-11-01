@@ -51,8 +51,7 @@ class DataQldUI(base.BaseController):
 
                 tk.get_action(constants.OPEN_DATAREQUEST)(context, data_dict)
                 tk.redirect_to(
-                    helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                                    action='show', id=data_dict['id']))
+                    helpers.url_for('datarequest.show', id=data_dict['id']))
         except tk.ValidationError as e:
             log.warn(e)
             errors_summary = _get_errors_summary(e.error_dict)

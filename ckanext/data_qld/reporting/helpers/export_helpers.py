@@ -12,10 +12,10 @@ from pylons import response
 log = logging.getLogger(__name__)
 
 
-def csv_report_config():
+def csv_report_config(report_type):
     """Load a CSV report config file specified in the ini file, or
     fall back to predefined file in the extension"""
-    path = config.get('ckan.reporting.json_config', os.path.dirname(os.path.realpath(__file__)) + '/../report_csv.json')
+    path = config.get('ckan.reporting.json_config', os.path.dirname(os.path.realpath(__file__)) + '/../{0}_report_csv.json'.format(report_type))
 
     with open(path) as json_data:
         return json.load(json_data)
@@ -39,10 +39,10 @@ def csv_row_order_and_properties(report_config):
     return row_order, row_properties
 
 
-def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances,
-                        comment_no_reply_max_days, datarequest_open_max_days):
+def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_properties, dict_csv_rows, closing_circumstances,
+                                   comment_no_reply_max_days, datarequest_open_max_days):
     """
-    Add reporting metrics for a specific organisation to the CSV data
+    Add engagement reporting metrics for a specific organisation to the CSV data
     :param org:
     :param start_date:
     :param end_date:
@@ -54,8 +54,8 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
     :param datarequest_open_max_days:
     :return:
     """
-    metrics = helpers.gather_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days,
-                                     datarequest_open_max_days)
+    metrics = helpers.gather_engagement_metrics(org.get('id', ''), start_date, end_date, comment_no_reply_max_days,
+                                                datarequest_open_max_days)
 
     csv_header_row.append(org.get('title', ''))
 
@@ -97,8 +97,33 @@ def csv_add_org_metrics(org, start_date, end_date, csv_header_row, row_propertie
     dict_csv_rows['Average days closed data requests - overall'].append(str(int(datarequest_metrics.get('average_overall', 0))))
 
 
-def output_report_csv(csv_header_row, row_order, dict_csv_rows):
-    filename = '%s-report.csv' % datetime.now().isoformat("-")
+def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows, permission):
+    """
+    Add admin eporting metrics for a specific organisation to the CSV data
+    :param org:
+    :param csv_header_row:
+    :param row_properties:
+    :param dict_csv_rows:
+    :return:
+    """
+    metrics = helpers.gather_admin_metrics(org.get('id', ''), permission)
+
+    csv_header_row.append(org.get('title', ''))
+
+    for key, settings in row_properties.items():
+        if settings['type'] not in ['complex', 'length']:
+            metric_value = metrics.get(settings['property'], '-')
+            dict_csv_rows[key].append(str(int(metric_value)))
+        elif settings['type'] == 'length':
+            metric_value = len(metrics.get(settings['property'], {}))
+            dict_csv_rows[key].append(str(int(metric_value)))
+        elif settings['type'] == 'complex':
+            metric_value = metrics.get(settings['property'], {})[settings['element']]
+            dict_csv_rows[key].append(str(int(metric_value)))
+
+
+def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
+    filename = '{0}-{1}-report.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M"), report_type)
     filepath = gettempdir() + '/' + filename
 
     try:
@@ -116,5 +141,5 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows):
 
         return fh.read()
     except Exception as e:
-        log.error('Error creating reporting CSV export file: %s' % filepath)
+        log.error('Error creating {0} report CSV export file: {1}'.format(report_type, filepath))
         log.error(str(e))

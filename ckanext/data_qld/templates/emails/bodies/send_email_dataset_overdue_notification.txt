@@ -1,0 +1,11 @@
+The 'Next update due' date has elapsed for a dataset or datasets that may be relevant to you. This indicates publishing of the next volume of data in the series is due.
+
+Dataset/s:
+{% for dataset in datasets %}
+{{ dataset.url }}
+Next update due: {{ dataset.next_due_date }}
+{% endfor %}
+
+Refer to 'https://www.data.qld.gov.au/article/standards-and-guidance/publishing-guides-standards/open-data-portal-publishing-guide' for assistance or contact opendata@qld.gov.au.
+
+Do not reply to this email.

@@ -2,6 +2,7 @@
 ahoyapi: v2
 
 commands:
+
   # Docker commands.
   build:
     usage: Build or rebuild project.
@@ -9,13 +10,18 @@ commands:
       ahoy title "Building project"
       ahoy pre-flight
       ahoy clean
-      (docker network prune -f > /dev/null && docker network inspect amazeeio-network > /dev/null || docker network create amazeeio-network)
+      ahoy build-network
       ahoy up -- --build --force-recreate
-      ahoy install-dev
       ahoy install-site
-      # ahoy title "Build complete"
+      ahoy title "Build complete"
       ahoy doctor
       ahoy info 1
+
+  build-network:
+    usage: Ensure that the amazeeio network exists.
+    cmd: |
+      docker network prune -f > /dev/null
+      docker network inspect amazeeio-network > /dev/null || docker network create amazeeio-network
 
   info:
     usage: Print information about this project.
@@ -30,6 +36,8 @@ commands:
     usage: Build and start Docker containers.
     cmd: |
       docker-compose up -d "$@"
+      sleep 10
+      docker-compose logs
       ahoy cli "dockerize -wait tcp://ckan:3000 -timeout 1m"
       if docker-compose logs | grep -q "\[Error\]"; then docker-compose logs; exit 1; fi
       if docker-compose logs | grep -q "Exception"; then docker-compose logs; exit 1; fi
@@ -50,11 +58,11 @@ commands:
 
   restart:
     usage: Restart all stopped and running Docker containers.
-    cmd: docker-compose restart
+    cmd: docker-compose restart "$@"
 
   logs:
     usage: Show Docker logs.
-    cmd: docker-compose logs "$@"
+    cmd: docker-compose logs -f --tail=100 "$@"
 
   pull:
     usage: Pull latest docker images.
@@ -62,7 +70,7 @@ commands:
 
   cli:
     usage: Start a shell inside CLI container or run a command.
-    cmd: if \[ "${#}" -ne 0 \]; then docker exec -i $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate; $*"; else docker exec -it $(docker-compose ps -q ckan) sh -c ". /app/ckan/default/bin/activate && sh"; fi
+    cmd: if \[ "${#}" -ne 0 \]; then docker exec $(docker-compose ps -q ckan) sh -c '. ${VENV_DIR}/bin/activate; cd $APP_DIR;'" $*"; else docker exec $(docker-compose ps -q ckan) sh -c '. ${VENV_DIR}/bin/activate && cd $APP_DIR && sh'; fi
 
   doctor:
     usage: Find problems with current project setup.
@@ -72,7 +80,7 @@ commands:
     usage: Install a site.
     cmd: |
       ahoy title "Installing a fresh site"
-      ahoy cli "/app/scripts/init.sh"
+      ahoy cli "./scripts/init.sh"
 
   clean:
     usage: Remove containers and all build files.
@@ -91,15 +99,6 @@ commands:
       git ls-files --others -i --exclude-from=.git/info/exclude | xargs rm -Rf
       find . -type d -not -path "./.git/*" -empty -delete
 
-  install-dev:
-    usage: Install dependencies.
-    cmd: |
-      docker cp -L requirements-dev.txt $(docker-compose ps -q ckan):/app/.
-      docker cp -L .flake8 $(docker-compose ps -q ckan):/app/.
-      docker cp -L test $(docker-compose ps -q ckan):/app/.
-      ahoy cli "pip install -r /app/requirements-dev.txt"
-    hide: true
-
   flush-redis:
     usage: Flush Redis cache.
     cmd: docker exec -i $(docker-compose ps -q redis) redis-cli flushall > /dev/null
@@ -107,46 +106,66 @@ commands:
   lint:
     usage: Lint code.
     cmd: |
-      ahoy cli "flake8 ${@:-/app/ckanext}" || \
+      ahoy cli "flake8 ${@:-ckanext}" || \
       [ "${ALLOW_LINT_FAIL:-0}" -eq 1 ]
 
   test-unit:
     usage: Run unit tests.
     cmd: |
-      ahoy cli "nosetests" || \
+      ahoy cli 'nosetests --with-pylons=${CKAN_INI}' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:
     usage: Run BDD tests.
     cmd: |
       ahoy start-ckan-job-workers
-      sleep 5
-      ahoy cli "behave ${*:-/app/test/features}" || \
+      ahoy start-mailmock &
+      sleep 5 &&
+      ahoy cli "behave ${*:-test/features}" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+      ahoy stop-mailmock
       ahoy stop-ckan-job-workers
+
+  start-mailmock:
+    usage: Starts email mock server used for email BDD tests
+    cmd: |
+      ahoy title 'Starting mailmock'
+      ahoy cli 'mailmock -p 8025 -o ${APP_DIR}/test/emails --no-stdout' # for debugging mailmock email output remove --no-stdout
+
+  stop-mailmock:
+    usage: Stops email mock server used for email BDD tests
+    cmd: |
+      ahoy title 'Stopping mailmock'
+      ahoy cli "killall -2 mailmock"
 
   start-ckan-job-workers:
     usage: Starts CKAN background job workers
     cmd: |
       ahoy title 'Starting CKAN background job workers'
+      ahoy start-ckan-job-worker-default &
       ahoy start-ckan-job-worker-priority &
       ahoy start-ckan-job-worker-bulk &
 
+  start-ckan-job-worker-default:
+    usage: Starts default CKAN background job worker
+    cmd: |
+      ahoy title 'Starting default CKAN background job worker'
+      ahoy cli "ckan_cli jobs clear && \
+                ckan_cli jobs worker"
+
   start-ckan-job-worker-priority:
-    usage: Starts CKAN background job worker
+    usage: Starts CKAN background job worker for priority tasks
     cmd: |
       ahoy title 'Starting CKAN background job worker priority'
-      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
-                paster jobs clear priority --config=/app/ckan/default/production.ini && \
-                paster jobs worker priority --config=/app/ckan/default/production.ini"
+      ahoy cli "ckan_cli jobs clear priority && \
+                ckan_cli jobs worker priority"
 
   start-ckan-job-worker-bulk:
-    usage: Starts CKAN background job worker bulk
+    usage: Starts CKAN background job worker for low-priority tasks
     cmd: |
       ahoy title 'Starting CKAN background job worker bulk'
-      ahoy cli "cd /usr/lib/ckan/default/src/ckan && \
-                paster jobs clear bulk --config=/app/ckan/default/production.ini && \
-                paster jobs worker bulk --config=/app/ckan/default/production.ini"
+      ahoy cli "ckan_cli jobs clear bulk && \
+                ckan_cli jobs worker bulk"
 
   stop-ckan-job-workers:
     usage: Stops CKAN background job worker
@@ -185,7 +204,7 @@ entrypoint:
   - "-c"
   - "-e"
   - |
-    export LAGOON_LOCALDEV_URL=http://ckanext-data-qld.docker.amazee.io
+    export LAGOON_LOCALDEV_URL=http://$PROJECT.docker.amazee.io
     [ -f .env ] && [ -s .env ] && export $(grep -v '^#' .env | xargs) && if [ -f .env.local ] && [ -s .env.local ]; then export $(grep -v '^#' .env.local | xargs); fi
     bash -e -c "$0" "$@"
   - "{{cmd}}"

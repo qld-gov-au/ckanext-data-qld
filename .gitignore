@@ -19,6 +19,7 @@ sdist/
 *.egg-info/
 .installed.cfg
 *.egg
+*.eggs
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -38,10 +39,16 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
 # Sphinx documentation
 docs/_build/
 .env.local
-/test/screenshots
+screenshots
 !/test/screenshots/.gitkeep
-
-.idea/
+.idea

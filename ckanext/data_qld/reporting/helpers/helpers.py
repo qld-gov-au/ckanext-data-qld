@@ -5,32 +5,48 @@ import pytz
 from datetime import datetime, timedelta
 
 get_action = toolkit.get_action
+check_access = toolkit.check_access
 log = logging.getLogger(__name__)
 
 
-def check_org_access(org_id):
-    context = get_context()
-    data_dict = {'org_id': org_id, 'permission': 'create_dataset'}
-    if not toolkit.check_access('has_user_permission_for_org', context, data_dict):
-        toolkit.abort(403, toolkit._(
-            'User {0} is not authorized to create datasets for organisation {1} test'.format(get_username(), org_id)))
+def check_user_access(permission, context=None):
+    data_dict = {
+        'permission': permission
+    }
+    check_access(
+        'has_user_permission_for_some_org',
+        context if context else get_context(),
+        data_dict
+    )
+
+
+def check_user_org_access(org_id, permission='create_dataset'):
+    data_dict = {
+        'org_id': org_id,
+        'permission': permission
+    }
+    check_access(
+        'has_user_permission_for_org',
+        get_context(),
+        data_dict
+    )
 
 
 def get_context():
     return {
         'model': model,
         'session': model.Session,
-        'user': toolkit.c.user,
-        'auth_user_obj': toolkit.c.userobj
+        'user': toolkit.g.user,
+        'auth_user_obj': toolkit.g.userobj
     }
 
 
 def get_user():
-    return toolkit.c.userobj
+    return toolkit.g.userobj
 
 
 def get_username():
-    return get_user().name
+    return toolkit.g.user
 
 
 def get_report_date_range(request):
@@ -45,8 +61,9 @@ def get_report_date_range(request):
     if end_date:
         end_date = toolkit.h.date_str_to_datetime(end_date)
     else:
-        # internal ckan datetimes is utc, presentation is ckan_timezone
-        end_date = datetime.utcnow()
+        # This end_date will get passed into the method `get_utc_dates` which is expecting a ckan_timezone date to be converted into utc
+        ckan_timezone = toolkit.config.get('ckan.display_timezone', None)
+        end_date = datetime.now(pytz.timezone(ckan_timezone))
 
     return start_date.date().isoformat(), end_date.date().isoformat()
 
@@ -188,8 +205,8 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
             utc_end_datetime
 
 
-def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
-    """Collect statistics for all metrics for the provided organisation"""
+def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max_days, datarequest_open_max_days):
+    """Collect engagement statistics metrics for the provided organisation"""
     utc_start_date, \
         utc_end_date, \
         utc_reply_expected_by_date, \
@@ -228,9 +245,24 @@ def gather_metrics(org_id, start_date, end_date, comment_no_reply_max_days, data
     }
 
 
-def get_organisation_list():
+def gather_admin_metrics(org_id, permission):
+    """Collect admin statistics metrics for the provided organisation"""
+
+    data_dict = {
+        'org_id': org_id,
+        'return_count_only': True,
+        'permission': permission
+    }
+
+    return {
+        'de_identified_datasets': get_action('de_identified_datasets')({}, data_dict),
+        'overdue_datasets': get_action('overdue_datasets')({}, data_dict)
+    }
+
+
+def get_organisation_list(permission):
     organisations = []
-    for user_organisation in get_organisation_list_for_user('create_dataset'):
+    for user_organisation in get_organisation_list_for_user(permission):
         organisations.append({'value': user_organisation.get('id'), 'text': user_organisation.get('display_name')})
 
     return organisations

@@ -16,7 +16,7 @@ setup(
     long_description='''''',
 
     # The project's main homepage.
-    url='''https://servicesmadesimpler.govnet.qld.gov.au/bitbucket/scm/ckan/ckanext-data-qld-theme.git''',
+    url='https://github.com/qld-gov-au/ckanext-data-qld',
 
     # Author details
     author='''Salsa Digital''',
@@ -83,6 +83,9 @@ setup(
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras
         demote_publishers = ckanext.data_qld.commands:DemotePublishers
+        update_fullname = ckanext.data_qld.user_creation.commands:UpdateFullname
+        send_email_dataset_due_to_publishing_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetDueToPublishingNotification
+        send_email_dataset_overdue_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetOverdueNotification
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
