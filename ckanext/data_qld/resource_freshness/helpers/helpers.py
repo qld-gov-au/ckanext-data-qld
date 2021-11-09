@@ -101,7 +101,7 @@ def process_next_update_due(data_dict):
 
 
 def process_nature_of_change(resource_dict):
-    if 'nature_of_change' in resource_dict:
+    if 'nature_of_change' in resource_dict and not data_qld_helpers.user_has_admin_access(True):
         del resource_dict['nature_of_change']
 
 
