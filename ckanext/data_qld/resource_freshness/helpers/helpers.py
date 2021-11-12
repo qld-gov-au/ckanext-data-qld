@@ -71,7 +71,11 @@ def check_resource_data(current_resource, updated_resource, context):
 
     if not data_updated:
         # Compare urls
-        updated_resource_url = updated_resource.get('url', '')
+        if updated_resource.get('url_type', '') == 'upload':
+            # Strip the full url for resources of type 'upload' to get filename for compare
+            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
+        else:
+            updated_resource_url = updated_resource.get('url', '')
         if current_resource.get('url_type', '') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
             current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
