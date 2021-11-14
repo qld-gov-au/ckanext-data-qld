@@ -71,7 +71,11 @@ def check_resource_data(current_resource, updated_resource, context):
 
     if not data_updated:
         # Compare urls
-        updated_resource_url = updated_resource.get('url', '')
+        if updated_resource.get('url_type', '') == 'upload':
+            # Strip the full url for resources of type 'upload' to get filename for compare
+            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
+        else:
+            updated_resource_url = updated_resource.get('url', '')
         if current_resource.get('url_type', '') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
             current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
@@ -101,7 +105,7 @@ def process_next_update_due(data_dict):
 
 
 def process_nature_of_change(resource_dict):
-    if 'nature_of_change' in resource_dict:
+    if 'nature_of_change' in resource_dict and not data_qld_helpers.user_has_admin_access(True):
         del resource_dict['nature_of_change']
 
 

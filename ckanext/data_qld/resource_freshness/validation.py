@@ -52,7 +52,7 @@ def validate_next_update_due(keys, flattened_data, errors, context):
             today = dt.datetime.now(h.get_display_timezone())
             if next_update_due.date() <= today.date():
                 errors[keys].append(_("Valid date in the future is required"))
-        elif data_qld_helpers.is_api_request():
+        elif data_qld_helpers.is_api_request() or not current_next_update_due:
             flattened_data[keys] = resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
         else:
             errors[keys].append(_('Missing value'))
