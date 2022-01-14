@@ -37,11 +37,13 @@
 			<ul>
 				{% block resource_actions_inner %}
 				{% if h.check_access('package_update', {'id':pkg.id }) %}
+					<li>
 					{% if h.ckan_version() > '2.9' %}
-						<li>{% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}</li>
+						{% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}
 					{% else %}
-						<li>{% link_for _('Manage'), controller='package', action='resource_edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}</li>
+						{% link_for _('Manage'), controller='package', action='resource_edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}
 					{% endif %}
+					</li>
 				{% endif %}
 				{% if res.url and h.is_url(res.url) %}
 				<li>
