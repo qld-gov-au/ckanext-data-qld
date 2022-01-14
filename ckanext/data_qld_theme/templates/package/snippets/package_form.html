@@ -4,7 +4,7 @@
   {% if h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' and not h.data_qld_data_driven_application(data.data_driven_application)  %}
     <a id='dataset-delete-button' disabled="disabled"
        class="btn btn-danger pull-left"
-       href="{{ h.url_for(controller='package', action='delete', id=data.id) }}"
+       href="{{ h.url_for('package.delete', id=data.id) }}"
        data-module="confirm-action"
        data-module-content="{{ _('Deleting this dataset will prevent future use of the dataset’s name. It is highly recommended that dataset issues are rectified rather than deleting and creating a new dataset with the same information.') }}"
        data-module-template="{{ h.get_deletion_reason_template() }}">
