@@ -61,6 +61,16 @@ PERSONAS = {
         'name': u'dr_member',
         'email': u'dr_member@localhost',
         'password': u'Password123!'
+    },
+    'ReportingOrgAdmin': {
+        'name': u'report_admin',
+        'email': u'report_admin@localhost',
+        'password': u'Password123!'
+    },
+    'ReportingOrgEditor': {
+        'name': u'report_editor',
+        'email': u'report_editor@localhost',
+        'password': u'Password123!'
     }
 }
 

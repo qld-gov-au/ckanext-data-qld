@@ -97,7 +97,6 @@ Feature: Comments
         And I press the element with xpath "//a[@title='Delete comment']"
         Then I should see "Are you sure you want to delete this comment?" within 1 seconds
         Then I press the element with xpath "//button[contains(string(), 'Confirm')]"
-        Then I take a screenshot
         Then I should not see "This comment was deleted." within 2 seconds
         And I should see "Comment deleted by Test Admin." within 2 seconds
 
