@@ -14,4 +14,4 @@ Feature: GoogleAnalytics
         When I go to Dataset page
         And I click the link with text that contains "A Novel By Tolstoy"
         And I click the link with text that contains "Full text"
-        Then I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Department of Health' and @scheme='AGLSTERMS.GOLD']"
+        Then I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
