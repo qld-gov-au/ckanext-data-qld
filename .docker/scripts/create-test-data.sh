@@ -71,10 +71,10 @@ ckan_cli create-test-data
 
 echo "Assigning test Datasets to Organisation..."
 
-echo "Updating annakarenina to use 'Department of Health' organisation:"
+echo "Updating annakarenina to use ${TEST_ORG_TITLE} organisation:"
 package_owner_org_update=$( \
     curl -LsH "Authorization: ${API_KEY}" \
-    --data "id=annakarenina&organization_id=department-of-health" \
+    --data "id=annakarenina&organization_id=${TEST_ORG_NAME}" \
     ${CKAN_ACTION_URL}/package_owner_org_update
 )
 echo ${package_owner_org_update}
@@ -173,6 +173,12 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data "title=Reporting Request&description=Data Request for reporting&organization_id=${REPORT_ORG_ID}" \
     ${CKAN_ACTION_URL}/create_datarequest
 
+
+echo "Creating config value for resource formats:"
+
+curl -LsH "Authorization: ${API_KEY}" \
+    --data '{"ckanext.data_qld.resource_formats": "CSV\r\nHTML\r\nJSON\r\nRDF\r\nTXT\r\nXLS"}' \
+    ${CKAN_ACTION_URL}/config_option_update
 
 if [ "$VENV_DIR" != "" ]; then
   deactivate
