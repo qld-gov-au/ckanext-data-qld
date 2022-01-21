@@ -1,5 +1,4 @@
-ckanext-data-qld
-================
+# ckanext-data-qld
 
 A custom CKAN extension for Data.Qld
 

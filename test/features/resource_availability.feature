@@ -15,7 +15,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I select "YES" from "de_identified_data"
         Then I press "save"
         And I wait for 10 seconds
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "res1"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -38,7 +38,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I select "NO" from "de_identified_data"
         Then I press "save"
         And I wait for 10 seconds
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "res1"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -62,7 +62,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I should see an element with xpath "//select[@id='field-resource_visibility']/option[2][@disabled]"
 
         # Create the resource, with error.
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "resource created by <User> and is available"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -81,7 +81,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         ###
         And I go to "/dataset/new_resource/contains-de-identified-data-yes"
 
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "resource created by <User> and is NOT available"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -117,7 +117,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I should see an element with xpath "//select[@id='field-resource_visibility']/option[3][@disabled]"
 
         # Create the resource, with success.
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "resource created by <User> and is available"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -132,7 +132,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to "/dataset/new_resource/contains-de-identified-data-no"
 
         # Create the resource, with success.
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "resource created by <User> and is available with blank resource_visibility"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -145,7 +145,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         ###
         And I go to "/dataset/new_resource/contains-de-identified-data-no"
 
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "resource created by <User> and is NOT available"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"

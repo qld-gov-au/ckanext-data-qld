@@ -13,5 +13,5 @@ fi
 if (which ckan > /dev/null); then
     ckan -c ${CKAN_INI} run
 else
-    paster serve --reload ${CKAN_INI}
+    paster serve ${CKAN_INI}
 fi
