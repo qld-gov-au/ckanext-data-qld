@@ -174,6 +174,12 @@ curl -LsH "Authorization: ${API_KEY}" \
     ${CKAN_ACTION_URL}/create_datarequest
 
 
+echo "Creating config value for resource formats:"
+
+curl -LsH "Authorization: ${API_KEY}" \
+    --data '{"ckanext.data_qld.resource_formats": "CSV\r\nHTML\r\nJSON\r\nRDF\r\nTXT\r\nXLS"}' \
+    ${CKAN_ACTION_URL}/config_option_update
+
 if [ "$VENV_DIR" != "" ]; then
   deactivate
 fi
