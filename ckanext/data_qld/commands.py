@@ -182,3 +182,53 @@ class DemotePublishers(CkanCommand):
         print('- - - - - - - - - - - - - - - - - - - - - - - - -')
 
         return "COMPLETED. Total updates %s\n" % updates
+
+class UpdateDatasets(CkanCommand):
+    '''
+    Update datasets to trigger data_last_updated field
+    '''
+    
+    summary = __doc__.split('\n')[0]
+
+    def __init__(self, name):
+
+        super(UpdateDatasets, self).__init__(name)
+
+    def get_packages(self):
+
+        return toolkit.get_action('package_list')(
+            data_dict={
+                'all_fields': True,
+                'include_private': True,
+                'include_drafts': True
+            }
+        )
+
+    def update_package(self, pkg_dict):
+        # Set some defaults
+        for package in self.get_packages():
+            toolkit.get_action('package_patch')({},{'id': package['id']})
+
+    def command(self):
+        """
+
+        :return:
+        """
+        self._load_config()
+
+        updates = 0
+
+        for package in self.get_packages():
+            updates_required = False
+            print('Processing package ID: %s | Name: %s' % (package['id'], package['name']))
+            if package['data_last_updated'] is None:
+                print('- Setting data_last_updated for package %s' % package['id'])
+                updates_required = True
+                updates += 1
+            else:
+                print('- Nothing to update for package %s' % package['id'])
+            if updates_required:
+                self.update_package(package)
+
+
+        return "COMPLETED. Total updates %s\n" % updates
