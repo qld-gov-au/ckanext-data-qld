@@ -48,6 +48,8 @@ class DataQld(CkanCommand):
             self.demote_publishers()
         elif cmd == 'update_datasets':
             self.update_datasets()
+        elif cmd == 'update_missing_nature_of_change':
+            self.update_missing()
         else:
             self.parser.print_usage()
 
@@ -231,5 +233,39 @@ class DataQld(CkanCommand):
             if updates_required:
                 _update_package(package)
 
+
+        return "COMPLETED. Total updates %s\n" % updates
+
+    def update_missing_nature_of_change(self):
+        '''
+        Update datasets to trigger data_last_updated field
+        '''
+        context = {'session': model.Session}
+        def _get_packages():
+
+            return toolkit.get_action('package_list')(
+                data_dict={
+                    'all_fields': True,
+                    'include_private': True,
+                    'include_drafts': True
+                }
+            )
+
+        def _update_resource(res_dict):
+            # Set some defaults
+            toolkit.get_action('resource_patch')(context ,{'id': res_dict['id']})
+
+        self._load_config()
+
+        updates = 0
+
+        for package in _get_packages():
+            pkg_dict = toolkit.get_action('package_show')(context, {'id': package['id']})
+
+            for res in pkg_dict.get('resources', []):
+                if res.get('nature_of_change') is None:
+                    print('- Setting nature_of_change for resource %s' % res['id'])
+                    res['nature_of_change'] = 'Editing resource with no new time series data added'
+                    _update_resource(res)
 
         return "COMPLETED. Total updates %s\n" % updates
