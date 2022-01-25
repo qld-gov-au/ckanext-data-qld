@@ -28,20 +28,19 @@ class DataQld(CkanCommand):
 
     def __init__(self, name):
         super(DataQld, self).__init__(name)
-        self.parser.add_option('-u', '--username_prefix', 
+        self.parser.add_option('-u', '--username_prefix',
                                 dest='username_prefix',
                                 help='Only demote usernames starting with this prefix',
                                 type=str,
                                 default='publisher-')
 
-        
     def command(self):
         self._load_config()
 
         if len(self.args != 1):
             print(self.usage)
             sys.exit(1)
-        
+
         cmd = self.args[0]
         if cmd == 'migrate_extras':
             self.migrate_extras()
@@ -56,7 +55,7 @@ class DataQld(CkanCommand):
         """Migrates legacy field values that were added as free extras to datasets to their schema counterparts.
         """
 
-        def _get_package_ids(self):
+        def _get_package_ids():
             session = model.Session
             packages = (
                 session.query(
@@ -66,7 +65,9 @@ class DataQld(CkanCommand):
 
             return [pkg.id for pkg in packages]
 
-        def _update_package(self, package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources):
+        def _update_package(package_id, security_classification,
+                            data_driven_application,version, author_email,
+                            notes, update_frequency, resources):
             # https://github.com/ckan/ckanext-scheming/issues/158
             destination = LocalCKAN()
             destination.action.package_patch(id=package_id,
@@ -158,7 +159,6 @@ class DataQld(CkanCommand):
 
         return 'SUCCESS'
 
-
     def demote_publishers(self):
         """Demotes any existing 'publisher-*' users from admin to editor in their respective organisations
         """
@@ -169,7 +169,6 @@ class DataQld(CkanCommand):
 
         def _patch_organisation_users(org_id, users):
             toolkit.get_action('organization_patch')(data_dict={'id': org_id, 'users': users})
-
 
         username_prefix = self.options.username_prefix
 
@@ -201,7 +200,7 @@ class DataQld(CkanCommand):
         '''
         Update datasets to trigger data_last_updated field
         '''
-        def _get_packages(self):
+        def _get_packages():
 
             return toolkit.get_action('package_list')(
                 data_dict={
@@ -211,7 +210,7 @@ class DataQld(CkanCommand):
                 }
             )
 
-        def _update_package(self, pkg_dict):
+        def _update_package(pkg_dict):
             context = {'session': model.Session}
             # Set some defaults
             toolkit.get_action('package_patch')(context ,{'id': pkg_dict['id']})
