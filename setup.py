@@ -81,10 +81,8 @@ setup(
         data_qld_reporting=ckanext.data_qld.reporting_plugin:ReportingPlugin
 
         [paste.paster_command]
-        migrate_extras = ckanext.data_qld.commands:MigrateExtras
-        demote_publishers = ckanext.data_qld.commands:DemotePublishers
+        data_qld = clamext.data_qld.commands:DataQldCommand
         update_fullname = ckanext.data_qld.user_creation.commands:UpdateFullname
-        update_datasets = ckanext.data_qld.commands:UpdateDatasets
         send_email_dataset_due_to_publishing_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetDueToPublishingNotification
         send_email_dataset_overdue_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetOverdueNotification
 

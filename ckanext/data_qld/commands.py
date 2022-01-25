@@ -1,3 +1,5 @@
+import sys
+
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
 import sqlalchemy
@@ -10,54 +12,78 @@ ValidationError = logic.ValidationError
 _and_ = sqlalchemy.and_
 
 
-class MigrateExtras(CkanCommand):
-    """Migrates legacy field values that were added as free extras to datasets to their schema counterparts.
+class DataQld(CkanCommand):
+    """
+    Data Qld custom commands
+
+    Usage:
+        paster data_qld
+
     """
 
     summary = __doc__.split('\n')[0]
+    usage = __doc__
+    max_args = 9
+    min_args = 0
 
     def __init__(self, name):
+        super(DataQld, self).__init__(name)
+        self.parser.add_option('-u', '--username_prefix', 
+                                dest='username_prefix',
+                                help='Only demote usernames starting with this prefix',
+                                type=str,
+                                default='publisher-')
 
-        super(MigrateExtras, self).__init__(name)
-
-    def get_package_ids(self):
-        session = model.Session
-        package_ids = []
-
-        packages = (
-            session.query(
-                Package
-            )
-        )
-
-        for pkg in packages:
-            package_ids.append(pkg.id)
-
-        return package_ids
-
-    def update_package(self, package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources):
-        # https://github.com/ckan/ckanext-scheming/issues/158
-        destination = LocalCKAN()
-        destination.action.package_patch(id=package_id,
-                                         security_classification=security_classification,
-                                         data_driven_application=data_driven_application,
-                                         version=version,
-                                         author_email=author_email,
-                                         notes=notes,
-                                         update_frequency=update_frequency,
-                                         resources=resources)
-
+        
     def command(self):
+        self._load_config()
+
+        if len(self.args != 1):
+            print(self.usage)
+            sys.exit(1)
+        
+        cmd = self.args[0]
+        if cmd == 'migrate_extras':
+            self.migrate_extras()
+        elif cmd == 'demote_publishers':
+            self.demote_publishers()
+        elif cmd == 'update_datasets':
+            self.update_datasets()
+        else:
+            self.parser.print_usage()
+
+    def migrate_extras(self):
+        """Migrates legacy field values that were added as free extras to datasets to their schema counterparts.
         """
 
-        :return:
-        """
+        def _get_package_ids(self):
+            session = model.Session
+            packages = (
+                session.query(
+                    Package
+                )
+            )
+
+            return [pkg.id for pkg in packages]
+
+        def _update_package(self, package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources):
+            # https://github.com/ckan/ckanext-scheming/issues/158
+            destination = LocalCKAN()
+            destination.action.package_patch(id=package_id,
+                                            security_classification=security_classification,
+                                            data_driven_application=data_driven_application,
+                                            version=version,
+                                            author_email=author_email,
+                                            notes=notes,
+                                            update_frequency=update_frequency,
+                                            resources=resources)
+
         self._load_config()
 
         context = {'session': model.Session}
 
         # Step 1: Get all the package IDs.
-        package_ids = self.get_package_ids()
+        package_ids = _get_package_ids()
 
         for package_id in package_ids:
             # Set some defaults
@@ -125,7 +151,7 @@ class MigrateExtras(CkanCommand):
                 update_frequency = pkg['update_frequency'] or default_update_frequency
 
             try:
-                self.update_package(package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
+                _update_package(package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
             except ValidationError as e:
                 print('Package Failed: ', package_id, '\n', e.error_dict, )
                 print('Package Payload: ', package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
@@ -133,35 +159,23 @@ class MigrateExtras(CkanCommand):
         return 'SUCCESS'
 
 
-class DemotePublishers(CkanCommand):
-    """Demotes any existing 'publisher-*' users from admin to editor in their respective organisations
-    """
-
-    summary = __doc__.split('\n')[0]
-
-    def __init__(self, name):
-
-        super(DemotePublishers, self).__init__(name)
-        self.parser.add_option('-u', '--username_prefix', dest='username_prefix', help='Only demote usernames starting with this prefix', type=str, default='publisher-')
-
-    def get_organizations(self):
-        return toolkit.get_action('organization_list')(data_dict={'all_fields': True, 'include_users': True})
-
-    def patch_organisation_users(self, org_id, users):
-        toolkit.get_action('organization_patch')(data_dict={'id': org_id, 'users': users})
-
-    def command(self):
-        """
-
-        :return:
+    def demote_publishers(self):
+        """Demotes any existing 'publisher-*' users from admin to editor in their respective organisations
         """
         self._load_config()
+
+        def _get_organizations():
+            return toolkit.get_action('organization_list')(data_dict={'all_fields': True, 'include_users': True})
+
+        def _patch_organisation_users(org_id, users):
+            toolkit.get_action('organization_patch')(data_dict={'id': org_id, 'users': users})
+
 
         username_prefix = self.options.username_prefix
 
         updates = 0
 
-        for org in self.get_organizations():
+        for org in _get_organizations():
             print('- - - - - - - - - - - - - - - - - - - - - - - - -')
             updates_required = False
             users = org.get('users', [])
@@ -175,7 +189,7 @@ class DemotePublishers(CkanCommand):
                         updates += 1
                 if updates_required:
                     print('- Updating user capacities for organisation %s' % org['name'])
-                    self.patch_organisation_users(org['id'], users)
+                    _patch_organisation_users(org['id'], users)
                 else:
                     print('- Nothing to update for organisation %s' % org['name'])
 
@@ -183,42 +197,30 @@ class DemotePublishers(CkanCommand):
 
         return "COMPLETED. Total updates %s\n" % updates
 
-class UpdateDatasets(CkanCommand):
-    '''
-    Update datasets to trigger data_last_updated field
-    '''
-    
-    summary = __doc__.split('\n')[0]
+    def update_datasets(self):
+        '''
+        Update datasets to trigger data_last_updated field
+        '''
+        def _get_packages(self):
 
-    def __init__(self, name):
+            return toolkit.get_action('package_list')(
+                data_dict={
+                    'all_fields': True,
+                    'include_private': True,
+                    'include_drafts': True
+                }
+            )
 
-        super(UpdateDatasets, self).__init__(name)
+        def _update_package(self, pkg_dict):
+            context = {'session': model.Session}
+            # Set some defaults
+            toolkit.get_action('package_patch')(context ,{'id': pkg_dict['id']})
 
-    def get_packages(self):
-
-        return toolkit.get_action('package_list')(
-            data_dict={
-                'all_fields': True,
-                'include_private': True,
-                'include_drafts': True
-            }
-        )
-
-    def update_package(self, pkg_dict):
-        # Set some defaults
-        for package in self.get_packages():
-            toolkit.get_action('package_patch')({},{'id': package['id']})
-
-    def command(self):
-        """
-
-        :return:
-        """
         self._load_config()
 
         updates = 0
 
-        for package in self.get_packages():
+        for package in _get_packages():
             updates_required = False
             print('Processing package ID: %s | Name: %s' % (package['id'], package['name']))
             if package['data_last_updated'] is None:
@@ -228,7 +230,7 @@ class UpdateDatasets(CkanCommand):
             else:
                 print('- Nothing to update for package %s' % package['id'])
             if updates_required:
-                self.update_package(package)
+                _update_package(package)
 
 
         return "COMPLETED. Total updates %s\n" % updates
