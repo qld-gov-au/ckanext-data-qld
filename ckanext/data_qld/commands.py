@@ -37,8 +37,8 @@ class DataQld(CkanCommand):
     def command(self):
         self._load_config()
 
-        if len(self.args != 1):
-            print(self.usage)
+        if len(self.args) != 1:
+            self.parser.print_usage()
             sys.exit(1)
 
         cmd = self.args[0]
@@ -201,6 +201,8 @@ class DataQld(CkanCommand):
         '''
         Update datasets to trigger data_last_updated field
         '''
+        context = {'session': model.Session}
+
         def _get_packages():
 
             return toolkit.get_action('package_list')(
@@ -212,7 +214,6 @@ class DataQld(CkanCommand):
             )
 
         def _update_package(pkg_dict):
-            context = {'session': model.Session}
             # Set some defaults
             toolkit.get_action('package_patch')(context, {'id': pkg_dict['id']})
 
@@ -221,9 +222,14 @@ class DataQld(CkanCommand):
         updates = 0
 
         for package in _get_packages():
+            try:
+                package = toolkit.get_action('package_show')(context, {'id': package})
+            except toolkit.ObjectNotFound:
+                print('Package not found: %s' % package['id'])
+                continue
             updates_required = False
             print('Processing package ID: %s | Name: %s' % (package['id'], package['name']))
-            if package['data_last_updated'] is None:
+            if package.get('data_last_updated', None) is None:
                 print('- Setting data_last_updated for package %s' % package['id'])
                 updates_required = True
                 updates += 1
