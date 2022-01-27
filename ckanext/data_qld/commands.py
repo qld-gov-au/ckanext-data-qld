@@ -232,7 +232,6 @@ class DataQld(CkanCommand):
             if updates_required:
                 _update_package(package)
 
-
         return "COMPLETED. Total updates %s\n" % updates
 
     def update_missing_nature_of_change(self):
@@ -240,8 +239,8 @@ class DataQld(CkanCommand):
         Update datasets to trigger data_last_updated field
         '''
         context = {'session': model.Session}
-        def _get_packages():
 
+        def _get_packages():
             return toolkit.get_action('package_list')(
                 data_dict={
                     'all_fields': True,
@@ -252,7 +251,7 @@ class DataQld(CkanCommand):
 
         def _update_resource(res_dict):
             # Set some defaults
-            toolkit.get_action('resource_patch')(context ,{'id': res_dict['id']})
+            toolkit.get_action('resource_patch')(context, {'id': res_dict['id']})
 
         self._load_config()
 
