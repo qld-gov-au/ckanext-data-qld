@@ -81,7 +81,7 @@ setup(
         data_qld_reporting=ckanext.data_qld.reporting_plugin:ReportingPlugin
 
         [paste.paster_command]
-        data_qld = ckanext.data_qld.commands:DataQldCommand
+        data_qld = ckanext.data_qld.commands:DataQld
         update_fullname = ckanext.data_qld.user_creation.commands:UpdateFullname
         send_email_dataset_due_to_publishing_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetDueToPublishingNotification
         send_email_dataset_overdue_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetOverdueNotification
