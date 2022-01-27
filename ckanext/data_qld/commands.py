@@ -29,10 +29,10 @@ class DataQld(CkanCommand):
     def __init__(self, name):
         super(DataQld, self).__init__(name)
         self.parser.add_option('-u', '--username_prefix',
-                        dest='username_prefix',
-                        help='Only demote usernames starting with this prefix',
-                        type=str,
-                        default='publisher-')
+                               dest='username_prefix',
+                               help='Only demote usernames starting with this prefix',
+                               type=str,
+                               default='publisher-')
 
     def command(self):
         self._load_config()
@@ -70,14 +70,13 @@ class DataQld(CkanCommand):
                             notes, update_frequency, resources):
             # https://github.com/ckan/ckanext-scheming/issues/158
             destination = LocalCKAN()
-            destination.action.package_patch(id=package_id,
-                                security_classification=security_classification,
-                                data_driven_application=data_driven_application,
-                                version=version,
-                                author_email=author_email,
-                                notes=notes,
-                                update_frequency=update_frequency,
-                                resources=resources)
+            destination.action.package_patch(id=package_id, security_classification=security_classification,
+                                             data_driven_application=data_driven_application,
+                                             version=version,
+                                             author_email=author_email,
+                                             notes=notes,
+                                             update_frequency=update_frequency,
+                                             resources=resources)
 
         self._load_config()
 
