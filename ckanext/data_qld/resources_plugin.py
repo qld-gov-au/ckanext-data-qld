@@ -121,6 +121,7 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
     # IResourceController
     def before_create(self, context, data_dict):
         self.check_file_upload(data_dict)
+        self.set_nature_of_change(data_dict)
 
     def before_update(self, context, current_resource, updated_resource):
         self.check_file_upload(updated_resource)
@@ -142,6 +143,10 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
         file_upload = data_dict.get(u'upload', None)
         if isinstance(file_upload, uploader.ALLOWED_UPLOAD_TYPES):
             data_dict.pop(u'size', None)
+    
+    def set_nature_of_change(self, data_dict):
+        if data_dict.get('nature_of_change') == u'':
+            data_dict['nature_of_change'] = u'edit-resource-with-no-new-data'
 
     def after_create(self, context, data_dict):
         # Set the resource position order for this (latest) resource to first

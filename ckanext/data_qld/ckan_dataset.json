@@ -195,6 +195,7 @@
       "preset": "select",
       "required": true,
       "form_include_blank_choice": true,
+      "help_text": "WARNING - When this field value is changed, all visible resources within this dataset should have their re-identification risk governance acknowledgement updated to the correct value.",
       "choices": [
         {
           "value": "NO",
