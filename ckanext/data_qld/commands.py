@@ -48,8 +48,8 @@ class DataQld(CkanCommand):
             self.demote_publishers()
         elif cmd == 'update_datasets':
             self.update_datasets()
-        elif cmd == 'update_missing_nature_of_change':
-            self.update_missing()
+        elif cmd == 'update_missing':
+            self.update_missing_nature_of_change()
         else:
             self.parser.print_usage()
 
@@ -215,7 +215,7 @@ class DataQld(CkanCommand):
 
         def _update_package(pkg_dict):
             # Set some defaults
-            toolkit.get_action('package_patch')(context, {'id': pkg_dict['id']})
+            toolkit.get_action('package_patch')(context, pkg_dict)
 
         self._load_config()
 
@@ -257,19 +257,24 @@ class DataQld(CkanCommand):
 
         def _update_resource(res_dict):
             # Set some defaults
-            toolkit.get_action('resource_patch')(context, {'id': res_dict['id']})
+            toolkit.get_action('resource_patch')(context, res_dict)
+
+        def _check_for_null_values(res, pkg_dict):
+            print('- Setting nature_of_change for resource %s' % res['id'])
+            res['nature_of_change'] = 'edit-resource-with-no-new-data'
+            if res.get('resource_visibility', None):
+                res['resource_visibility'] = 'Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing'
+            return res
 
         self._load_config()
 
         updates = 0
 
         for package in _get_packages():
-            pkg_dict = toolkit.get_action('package_show')(context, {'id': package['id']})
-
+            pkg_dict = toolkit.get_action('package_show')(context, {'id': package })
             for res in pkg_dict.get('resources', []):
                 if res.get('nature_of_change') is None:
-                    print('- Setting nature_of_change for resource %s' % res['id'])
-                    res['nature_of_change'] = 'Editing resource with no new time series data added'
+                    res = _check_for_null_values(res, pkg_dict)
                     _update_resource(res)
 
         return "COMPLETED. Total updates %s\n" % updates
