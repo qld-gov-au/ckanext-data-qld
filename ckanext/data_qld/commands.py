@@ -257,7 +257,10 @@ class DataQld(CkanCommand):
 
         def _update_resource(res_dict):
             # Set some defaults
-            toolkit.get_action('resource_patch')(context, res_dict)
+            try:
+                toolkit.get_action('resource_patch')(context, res_dict)
+            except Exception as ex:
+                print('Resource exception: %s' % ex)
 
         def _check_for_null_values(res, pkg_dict):
             print('- Setting nature_of_change for resource %s' % res['id'])
