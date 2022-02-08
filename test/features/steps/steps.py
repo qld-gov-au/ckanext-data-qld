@@ -52,7 +52,7 @@ def log_in_directly(context):
 @step(u'I should see a login link')
 def login_link_visible(context):
     context.execute_steps(u"""
-        I should see an element with xpath "//h1[contains(string(), 'Login')]"
+        Then I should see an element with xpath "//h1[contains(string(), 'Login')]"
     """)
 
 
