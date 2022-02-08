@@ -3,7 +3,7 @@ Feature: Login Redirection
 
     @dashboard_login
     Scenario Outline: As an unauthenticated user, when I visit the dashboard URL I see the login page
-        Given "Unauthenticated" as the persona
+        Given "TestOrgMember" as the persona
         When I visit "<URL>"
         Then I should see an element with xpath "//h1[contains(string(), 'Login')]"
         When I log in directly
