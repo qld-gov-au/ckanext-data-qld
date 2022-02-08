@@ -49,6 +49,13 @@ def log_in_directly(context):
     """)
 
 
+@step(u'I should see a login link')
+def login_link_visible(context):
+    context.execute_steps(u"""
+        I should see an element with xpath "//h1[contains(string(), 'Login')]"
+    """)
+
+
 @step('I fill in title with random text')
 def title_random_text(context):
 
