@@ -39,7 +39,7 @@ def user_has_datarequest_admin_access(datarequest_id, include_editor_access, con
     # If user is 'None' - they are not logged in.
     if user is None:
         return False
-    if helpers.is_user_sysadmin(user):
+    if user.sysadmin:
         return True
 
     groups_admin = user.get_groups('organization', 'admin')
