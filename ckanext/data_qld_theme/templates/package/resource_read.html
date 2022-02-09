@@ -1,5 +1,12 @@
 {% ckan_extends %}
 
+{% block meta %}
+{{ super() }}
+{% if c.pkg_dict['organization'] and c.pkg_dict['organization']['title'] %}
+  <meta name="DCTERMS.creator" content="c=AU; o=The State of Queensland; ou={{ c.pkg_dict['organization']['title'] }}" scheme="AGLSTERMS.GOLD" />
+{% endif %}
+{% endblock %}
+
 {% block subtitle %}{{ h.resource_display_name(res) }} - {{ h.dataset_display_name(c.package) }}{% endblock %}
 
 {% block breadcrumb_content %}
