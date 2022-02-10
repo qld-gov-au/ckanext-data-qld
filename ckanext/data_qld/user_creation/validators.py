@@ -1,5 +1,6 @@
 from ckan.plugins import toolkit
 
+
 def _get_user():
     """ Retrieve the current user object.
     """
