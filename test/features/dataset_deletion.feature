@@ -34,7 +34,6 @@ Feature: Dataset deletion
         Then I should see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"
         When I type "it should be longer than 10 character" to "deletion_reason"
         Then I should not see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"
-        Then I take a screenshot
         Then I press the element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary']"
         And I wait for 10 seconds
         Then I should see "Dataset has been deleted"
