@@ -132,7 +132,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to "/dataset/new_resource/contains-de-identified-data-no"
 
         # Create the resource, with success.
-        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
+        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
         Then I fill in "name" with "resource created by <User> and is available with blank resource_visibility"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
@@ -197,24 +197,3 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to "/dataset/contains-de-identified-data-yes"
         Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
         Then I should not see "Re-identification risk governance acknowledgement/Resource visibility"
-
-
-    Scenario: Clean up
-        Given "SysAdmin" as the persona
-        When I log in
-        And I go to "/dataset/edit/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@data-module='confirm-action']"
-        And I wait for 5 seconds
-        When I type "it should be longer than 10 character" to "deletion_reason"
-        Then I press the element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary']"
-        And I wait for 10 seconds
-
-        And I go to "/dataset/edit/contains-de-identified-data-no"
-        Then I press the element with xpath "//a[@data-module='confirm-action']"
-        And I wait for 5 seconds
-        When I type "it should be longer than 10 character" to "deletion_reason"
-        Then I press the element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary']"
-        And I wait for 10 seconds
-
-        When I go to "/ckan-admin/trash"
-        Then I press the element with xpath "//button[@name='purge-packages']"

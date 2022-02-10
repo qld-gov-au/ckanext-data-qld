@@ -47,7 +47,7 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    # namespace_packages=['ckanext'],
+    namespace_packages=['ckanext'],
 
     install_requires=[
         # CKAN extensions should not list dependencies here, but in a separate
@@ -74,9 +74,6 @@ setup(
     entry_points='''
         [ckan.plugins]
         data_qld_theme=ckanext.data_qld_theme.plugin:DataQldThemePlugin
-
-        [paste.paster_command]
-        migrate_extras = ckanext.data_qld.commands:MigrateExtras
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
