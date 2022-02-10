@@ -5,7 +5,7 @@ import ckan.plugins.toolkit as tk
 import ckan.lib.mailer as mailer
 import ckan.lib.uploader as uploader
 
-from ckanext.data_qld import helpers as data_qld_helpers
+from ckanext.data_qld.helpers import user_has_admin_access
 from datetime import datetime
 from itertools import groupby
 
@@ -71,7 +71,11 @@ def check_resource_data(current_resource, updated_resource, context):
 
     if not data_updated:
         # Compare urls
-        updated_resource_url = updated_resource.get('url', '')
+        if updated_resource.get('url_type', '') == 'upload':
+            # Strip the full url for resources of type 'upload' to get filename for compare
+            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
+        else:
+            updated_resource_url = updated_resource.get('url', '')
         if current_resource.get('url_type', '') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
             current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
@@ -92,7 +96,7 @@ def check_resource_data(current_resource, updated_resource, context):
 
 
 def process_next_update_due(data_dict):
-    if not data_qld_helpers.user_has_admin_access(True):
+    if not user_has_admin_access(True):
         if 'next_update_due' in data_dict:
             del data_dict['next_update_due']
         for res in data_dict.get('resources', []):
@@ -101,7 +105,7 @@ def process_next_update_due(data_dict):
 
 
 def process_nature_of_change(resource_dict):
-    if 'nature_of_change' in resource_dict:
+    if 'nature_of_change' in resource_dict and not user_has_admin_access(True):
         del resource_dict['nature_of_change']
 
 

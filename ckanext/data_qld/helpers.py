@@ -1,18 +1,7 @@
-import ckan.plugins.toolkit as toolkit
-from bs4 import BeautifulSoup
-from ckan.common import _
-from pylons import config
+# encoding: utf-8
 
-
-def is_user_sysadmin(user=None):
-    """Returns True if authenticated user is sysadmim
-
-    :rtype: boolean
-
-    """
-    if user is None:
-        user = toolkit.c.userobj
-    return user is not None and user.sysadmin
+from ckan.plugins import toolkit
+from ckan.plugins.toolkit import config
 
 
 def user_has_admin_access(include_editor_access):
@@ -20,7 +9,7 @@ def user_has_admin_access(include_editor_access):
     # If user is "None" - they are not logged in.
     if user is None:
         return False
-    if is_user_sysadmin(user):
+    if user.sysadmin:
         return True
 
     groups_admin = user.get_groups('organization', 'admin')
@@ -97,15 +86,6 @@ def datarequest_default_organisation_id():
     return organisation_id
 
 
-def organisation_list():
-    """Returns a list of organisations with all the organisation fields
-
-    :rtype: Array of organisations
-
-    """
-    return toolkit.get_action('organization_list')(data_dict={'all_fields': True})
-
-
 def datarequest_suggested_description():
     """Returns a datarequest suggested description from admin config
 
@@ -113,25 +93,6 @@ def datarequest_suggested_description():
 
     """
     return config.get('ckanext.data_qld.datarequest_suggested_description', '')
-
-
-def format_activity_data(data):
-    """Returns the activity data with actors username replaced with Publisher for non-editor/admin/sysadmin users
-
-    :rtype: string
-
-    """
-    if (user_has_admin_access(True)):
-        return data
-
-    soup = BeautifulSoup(data, 'html.parser')
-
-    for actor in soup.select(".actor"):
-        actor.string = 'Publisher'
-        # the img element is removed from actor span so need to move actor span to the left to fill up blank space
-        actor['style'] = 'margin-left:-40px'
-
-    return soup.prettify(formatter="html5")
 
 
 # Data.Qld specific comments helper functions
@@ -145,17 +106,6 @@ def resource_formats(field):
     resource_formats = config.get('ckanext.data_qld.resource_formats', '').split('\r\n')
     return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
             for resource_format in resource_formats]
-
-
-def activity_type_nice(activity_type):
-    """Performs some replacement and rearrangement of the activity type for display in the activity notification email
-    :rtype: string
-    """
-    activity_type = activity_type.replace('organization', _('organization'))
-    activity_type = activity_type.replace('package', 'dataset')
-    activity_type = activity_type.split()
-    activity_type.reverse()
-    return ' '.join(activity_type)
 
 
 def profanity_checking_enabled():
