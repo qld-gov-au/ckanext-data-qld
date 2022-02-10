@@ -114,7 +114,11 @@ class DataQldIntegrationPlugin(plugins.SingletonPlugin):
 
     def get_blueprint(self):
         import datarequest_view
-        return datarequest_view.get_blueprints()
+        blueprints = datarequest_view.get_blueprints()
+        if toolkit.check_ckan_version(min_version='2.9.0'):
+            import dataset_view
+            blueprints.extend(dataset_view.get_blueprints())
+        return blueprints
 
     # IQA
     def custom_resource_score(self, resource, resource_score):
