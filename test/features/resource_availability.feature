@@ -132,7 +132,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to "/dataset/new_resource/contains-de-identified-data-no"
 
         # Create the resource, with success.
-        Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
+        Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "resource created by <User> and is available with blank resource_visibility"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
