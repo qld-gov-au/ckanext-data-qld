@@ -1,10 +1,8 @@
 # encoding: utf-8
 
 import logging
-import re
 import sys
 
-from ckan import model
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
