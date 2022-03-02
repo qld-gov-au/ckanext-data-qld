@@ -14,8 +14,8 @@ python-magic==0.4.18
 messytables==0.15.2
 progressbar==2.5
 
-git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
-git+https://github.com/ckan/ckanext-scheming.git@release-1.2.0#egg=ckanext-scheming
+-e git+https://github.com/ckan/ckanext-dcat.git#egg=ckanext-dcat
+-e git+https://github.com/ckan/ckanext-scheming.git@release-1.2.0#egg=ckanext-scheming
 -e git+https://github.com/qld-gov-au/ckanext-validation.git@develop#egg=ckanext-validation
 -e git+https://github.com/qld-gov-au/ckan-ex-qgov.git@develop#egg=ckanext-qgov
 -e git+https://github.com/qld-gov-au/ckanext-archiver.git@develop#egg=ckanext-archiver
