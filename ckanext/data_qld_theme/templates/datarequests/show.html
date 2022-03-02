@@ -24,9 +24,9 @@
 {% endblock %}
 
 {% block content_primary_nav %}
-  {{ h.build_nav_icon('show_datarequest', _('Data request'), id=datarequest_id) }}
+  {{ h.build_nav_icon('datarequest.show', _('Data request'), id=datarequest_id) }}
 
   {% if h.show_comments_tab() and h.ytp_comments_enabled() %}
-    {{ h.build_nav_icon('comment_datarequest', _('Comments') + ' ' + h.get_content_type_comments_badge(datarequest_id, 'datarequest'), id=datarequest_id) }}
+    {{ h.build_nav_icon('datarequest.comment', _('Comments') + ' ' + h.get_content_type_comments_badge(datarequest_id, 'datarequest'), id=datarequest_id) }}
   {% endif %}
 {% endblock %}
