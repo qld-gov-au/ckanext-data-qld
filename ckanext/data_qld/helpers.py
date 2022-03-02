@@ -4,8 +4,18 @@ from ckan.plugins import toolkit
 from ckan.plugins.toolkit import config
 
 
+def get_user():
+    """ Retrieve the current user object.
+    """
+    # 'g' is not a regular data structure so we can't use 'hasattr'
+    if 'userobj' in dir(toolkit.g):
+        return toolkit.g.userobj
+    else:
+        return None
+
+
 def user_has_admin_access(include_editor_access):
-    user = toolkit.c.userobj
+    user = get_user()
     # If user is "None" - they are not logged in.
     if user is None:
         return False

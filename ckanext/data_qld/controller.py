@@ -8,6 +8,7 @@ from ckan.plugins import toolkit as tk
 from ckan.plugins.toolkit import _, c, g
 
 import constants
+import helpers
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ class DataQldUI(tk.BaseController):
 
     def _get_context(self):
         return {'model': model, 'session': model.Session,
-                'user': g.user, 'auth_user_obj': g.userobj}
+                'user': g.user, 'auth_user_obj': helpers.get_user()}
 
     def open_datarequest(self, id):
         data_dict = {'id': id}

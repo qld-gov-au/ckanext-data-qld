@@ -1,11 +1,15 @@
-import ckan.model as model
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import logging
 import pytz
 from datetime import datetime, timedelta
 
-get_action = toolkit.get_action
-check_access = toolkit.check_access
+import ckan.model as model
+import ckan.plugins.toolkit as toolkit
+from ckan.plugins.toolkit import check_access, get_action
+
+from ckanext.data_qld import helpers
+
 log = logging.getLogger(__name__)
 
 
@@ -36,17 +40,17 @@ def get_context():
     return {
         'model': model,
         'session': model.Session,
-        'user': toolkit.g.user,
-        'auth_user_obj': toolkit.g.userobj
+        'user': get_username(),
+        'auth_user_obj': helpers.get_user()
     }
 
 
-def get_user():
-    return toolkit.g.userobj
-
-
 def get_username():
-    return toolkit.g.user
+    # 'g' is not a regular data structure so we can't use 'hasattr'
+    if 'user' in dir(toolkit.g):
+        return toolkit.g.user
+    else:
+        return None
 
 
 def get_report_date_range(request):

@@ -10,6 +10,7 @@ from ckan.plugins.toolkit import _, abort, c, check_access, g, get_action,\
     NotAuthorized, ObjectNotFound, render
 
 import constants
+import helpers
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ _dataset = Blueprint(
 def _get_context():
     return {'model': model, 'session': model.Session,
             'user': g.user, 'for_view': True,
-            'auth_user_obj': g.userobj}
+            'auth_user_obj': helpers.get_user()}
 
 
 def show_schema(package_type, id, resource_id):

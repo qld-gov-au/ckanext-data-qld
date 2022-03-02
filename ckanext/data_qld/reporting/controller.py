@@ -2,8 +2,9 @@ import logging
 
 from ckan.lib.base import BaseController
 from ckan.plugins.toolkit import \
-    _, abort, g, get_action, get_validator, request, render, \
+    _, abort, get_action, get_validator, request, render, \
     Invalid, NotAuthorized, ObjectNotFound
+from ckanext.data_qld import helpers as data_qld_helpers
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import export_helpers, helpers
 
@@ -33,7 +34,7 @@ class ReportingController(BaseController):
             helpers.check_user_access(report_permission)
 
             extra_vars = {
-                'user_dict': g.userobj.as_dict(),
+                'user_dict': data_qld_helpers.get_user().as_dict(),
             }
 
             if report_type:
@@ -203,7 +204,7 @@ class ReportingController(BaseController):
                 'org_id': org_id,
                 'org_title': org['title'],
                 'metric': metric,
-                'user_dict': g.userobj.as_dict(),
+                'user_dict': data_qld_helpers.get_user().as_dict(),
                 'report_type': report_type
             }
 
@@ -313,7 +314,7 @@ class ReportingController(BaseController):
                 'circumstance': circumstance,
                 'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                 'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS,
-                'user_dict': g.userobj.as_dict(),
+                'user_dict': data_qld_helpers.get_user().as_dict(),
                 'utc_start_date': utc_start_date,
                 'utc_end_date': utc_end_date,
                 'utc_reply_expected_by_date': utc_reply_expected_by_date,

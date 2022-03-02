@@ -35,7 +35,7 @@ def open_datarequest(context, data_dict):
 
 
 def user_has_datarequest_admin_access(datarequest_id, include_editor_access, context):
-    user = toolkit.c.userobj
+    user = helpers.get_user()
     # If user is 'None' - they are not logged in.
     if user is None:
         return False

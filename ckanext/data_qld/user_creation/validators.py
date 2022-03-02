@@ -1,18 +1,12 @@
+# encoding: utf-8
+
 from ckan.plugins import toolkit
 
-
-def _get_user():
-    """ Retrieve the current user object.
-    """
-    # 'g' is not a regular data structure so we can't use 'hasattr'
-    if 'userobj' in dir(toolkit.g):
-        return toolkit.g.userobj
-    else:
-        return None
+from ckanext.data_qld import helpers
 
 
 def data_qld_user_name_validator(key, data, errors, context):
-    user = _get_user()
+    user = helpers.get_user()
     is_sysadmin = user is not None and user.sysadmin
 
     if not is_sysadmin and 'publisher' in data[key].lower():
@@ -20,7 +14,7 @@ def data_qld_user_name_validator(key, data, errors, context):
 
 
 def data_qld_displayed_name_validator(key, data, errors, context):
-    user = _get_user()
+    user = helpers.get_user()
     is_sysadmin = user is not None and user.sysadmin
 
     if not is_sysadmin:

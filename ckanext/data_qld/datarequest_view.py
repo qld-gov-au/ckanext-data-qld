@@ -8,6 +8,7 @@ import ckan.model as model
 from ckan.plugins import toolkit as tk
 
 import constants
+import helpers
 
 log = logging.getLogger(__name__)
 c = tk.c
@@ -22,7 +23,7 @@ _datarequest = Blueprint(
 
 def _get_context():
     return {'model': model, 'session': model.Session,
-            'user': c.user, 'auth_user_obj': c.userobj}
+            'user': c.user, 'auth_user_obj': helpers.get_user()}
 
 
 def _get_errors_summary(errors):
