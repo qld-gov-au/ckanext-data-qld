@@ -56,7 +56,23 @@ class DataQldResourcesPlugin(plugins.SingletonPlugin):
                 'data_qld_get_package_dict': resource_visibility_helpers.get_package_dict,
                 'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
                 'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
-                'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config
+                'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
+                'get_gtm_container_id': helpers.get_gtm_code,
+                'get_year': helpers.get_year,
+                'ytp_comments_enabled': helpers.ytp_comments_enabled,
+                'is_datarequests_enabled': helpers.is_datarequests_enabled,
+                'get_all_groups': helpers.get_all_groups,
+                'is_request_for_resource': helpers.is_request_for_resource,
+                'set_background_image_class': helpers.set_background_image_class,
+                'set_external_resources': helpers.set_external_resources,
+                'is_prod': helpers.is_prod,
+                'comment_notification_recipients_enabled':
+                    helpers.get_comment_notification_recipients_enabled,
+                'populate_revision': helpers.populate_revision,
+                'unreplied_comments_x_days': helpers.unreplied_comments_x_days,
+                'is_reporting_enabled': helpers.is_reporting_enabled,
+                'members_sorted': helpers.members_sorted,
+                'get_deletion_reason_template': helpers.get_deletion_reason_template
                 }
 
     # IValidators

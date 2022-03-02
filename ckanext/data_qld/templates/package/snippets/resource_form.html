@@ -1,0 +1,16 @@
+{% ckan_extends %}
+
+{% block delete_button %}
+  {% if data.id %}
+    {% if h.check_access('resource_delete', {'id': data.id}) and not h.data_qld_dataset_data_driven_application(data.package_id)  %}
+      <a class="btn btn-danger pull-left"
+      {% if h.ckan_version() > '2.9' %}
+        href="{% url_for dataset_type ~ '_resource.delete', resource_id=data.id, id=pkg_name %}"
+      {% else %}
+        href="{{ h.url_for(controller='package', action='resource_delete', resource_id=data.id, id=pkg_name) }}"
+      {% endif %}
+        data-module="confirm-action" data-module-content="{{ _('Are you sure you want to delete this resource?') }}"
+          >{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
+    {% endif %}
+  {% endif %}
+{% endblock %}

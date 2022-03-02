@@ -1,0 +1,556 @@
+body {
+  font-family: "Lato", sans-serif;
+}
+
+a,
+a:focus,
+a:hover,
+a:link,
+a:visited {
+  text-decoration: underline;
+}
+
+.table thead > tr > td,
+.table thead > tr > th {
+  background: #13578b;
+  color: #fff;
+}
+
+/* Resource Icon for API */
+.resource-api-available {
+  background-color: #ea6f00;
+  border-radius: 3px 3px 3px 3px;
+  color: #eeeeee;
+  padding: 0.1em 0.5em;
+  text-decoration: none;
+  font-size: 0.6em;
+  font-weight: bold;
+  position: absolute;
+  z-index: 10;
+  top: 35px;
+  left: 15px;
+}
+
+/* Hide the JSON button for Resource Data Schema */
+#resource-schema-buttons
+  > div
+  > .btn.btn-default[title="Enter manually a Table Schema JSON object"] {
+  visibility: hidden;
+}
+
+a.btn {
+  text-decoration: none;
+}
+
+.btn:active,
+.btn.active {
+  box-shadow: none;
+}
+
+/* Blue buttons */
+.btn-primary {
+  color: #fff;
+  background-color: #007eb1;
+  border-color: #007eb1;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0090cb;
+  border-color: #0090cb;
+}
+
+.btn-primary:active,
+.btn-primary:active:hover,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary,
+.btn-primary:focus,
+.btn-primary:active:focus,
+.btn-primary.focus {
+  color: #ffffff;
+  background-color: #545b62;
+  border-color: #4e555b;
+}
+
+/* Green buttons */
+.btn-success {
+  color: #000;
+  background-color: #78ba00;
+  border-color: #78ba00;
+}
+
+.btn-success:hover,
+.form input[type="submit"]:hover {
+  color: #000;
+  background-color: #88d400;
+  border-color: #88d400;
+}
+
+.btn-success:active,
+.btn-success:active:focus,
+form.form input[type="submit"]:active,
+form.form input[type="submit"]:active:focus {
+  color: #fff;
+  background-color: #0062cc;
+  border-color: #005cbf;
+}
+
+/* Orange buttons */
+.btn-warning {
+  background-color: #ad6500;
+  border-color: #ad6500;
+}
+
+.btn-warning:hover {
+  background-color: #945600;
+  border-color: #945600;
+}
+
+.btn-warning:active,
+.btn-warning:active:hover,
+.btn-warning.active,
+.open > .dropdown-toggle.btn-warning,
+.btn-warning:focus,
+.btn-warning:active:focus,
+.btn-warning.focus {
+  color: #ffffff;
+  background-color: #545b62;
+  border-color: #4e555b;
+}
+
+/* Fixes a issue with dataset & resource select or multi-select elements not displaying correctly when using the scheming extension */
+.select2-container.form-control {
+  height: 100%;
+  padding: 0px;
+}
+
+/* Comments */
+
+.comment-container .comment-wrapper {
+  position: relative;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 0;
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.comment-container .form input[type="text"],
+.comment-container .form textarea,
+.form textarea,
+form#comment_form input[type="text"],
+form#comment_form textarea {
+  max-width: 100%;
+}
+
+.comment {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.comment.comment-deleted {
+  border: 1px solid #ebccd1;
+}
+
+.comment h3 {
+  margin-top: 0;
+}
+
+.comment-header {
+  padding-left: 15px;
+  padding-right: 10px;
+  color: #777;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #eee;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.comment-deleted .comment-header {
+  background-color: #f2dede;
+}
+
+.comment-content {
+  padding: 15px;
+  font-size: 14px;
+}
+
+.comment-deleted .comment-content {
+  background-color: #f7f7f7;
+}
+
+.comment-deleted .comment-content {
+  font-style: italic;
+}
+
+.comment-header .comment-actions .comment-action {
+  float: right;
+}
+
+.comment-action {
+  margin-top: 10px;
+  padding-left: 0;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.comment-action .unflag-comment {
+  margin-left: 10px;
+}
+
+.comment-header-text {
+  max-width: 78%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.comment-header {
+  color: #777;
+}
+
+.comment-container .comment-header .subtle-btn {
+  color: #999;
+  border: 0px;
+  background: transparent;
+}
+
+.comment-container .comment-header .subtle-btn:hover {
+  color: #206b82;
+}
+
+#comment_form label:after,
+.comment-container form label:after {
+  content: "";
+}
+
+#comment_form .form-group,
+.comment-container .form-group {
+  margin-bottom: 10px;
+}
+
+.comment-flagged {
+  color: #c00;
+}
+
+.comment-container .comment-wrapper .comment-wrapper {
+  margin-left: 4em;
+  margin-bottom: 0;
+}
+
+.comment-content ul.links li a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.comment-container .highlight > .comment {
+  border: 1px solid #faebcc;
+}
+
+.comment-container .highlight > .comment > .comment-header {
+  background-color: #fcf8e3;
+}
+
+.comment-container .highlight > .comment.comment-deleted {
+  border: 1px solid #ebccd1;
+}
+
+.comment-container .highlight > .comment.comment-deleted > .comment-header {
+  background-color: #f2dede;
+}
+
+.comment-container .form input[type="submit"],
+form#comment_form input[type="submit"] {
+  border: 1px solid transparent;
+  font-size: 14px;
+  line-height: 1.42857143;
+  margin-top: 0;
+  padding: 6px 12px;
+}
+
+@media screen and (max-width: 991px) {
+  .comment-container .form input[type="submit"],
+  form#comment_form input[type="submit"] {
+    margin-top: 5px;
+  }
+}
+
+/*
+    Data Requests
+ */
+span.label-open {
+  background-color: #78ba00;
+}
+
+/**
+    Additions to the Squiz standard CSS library
+ */
+div.account-masthead .account ul.unstyled {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin: 0 -0.9375rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -ms-flex-line-pack: center;
+  align-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+div.account-masthead .account ul.unstyled li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: none;
+}
+
+div.account-masthead .account ul.unstyled li a {
+  color: #ffffff;
+  text-decoration: none;
+  line-height: 1rem;
+  -webkit-transition: background-color 0.4s ease;
+  transition: background-color 0.4s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 600;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+  padding: 0 0.9375rem;
+}
+
+div.account-masthead .account ul.unstyled li a:hover,
+div.account-masthead .account ul.unstyled li a:focus {
+  color: #ffffff;
+  background-color: #007eb1;
+}
+
+@media screen and (min-width: 1200px) {
+  footer .site-footer__signoff {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .secondary .module-narrow .nav-item.active > a:before,
+  .secondary .module-narrow .nav-aside li.active > a:before {
+    border: none;
+  }
+}
+
+.add-to-group .form-group {
+  margin-bottom: 10px;
+}
+
+.global-alert {
+  background: #b90824;
+  background-color: rgb(185, 8, 36);
+  background-repeat: repeat;
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color: #fff;
+  overflow: hidden;
+  clear: both;
+  padding: 1em 2em;
+  margin: 0 -3.125em;
+}
+
+.home .global-alert {
+  margin: 0 -1.3em;
+}
+
+.home .global-alert {
+  margin: 0;
+}
+
+.global-alert .header,
+.global-alert .summary,
+.global-alert p {
+  margin: 0;
+  padding: 0;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.global-alert .header {
+  padding-left: 4em;
+}
+
+.global-alert .header,
+.global-alert .summary {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.global-alert .header:before {
+  text-decoration: inherit;
+}
+
+.global-alert .header:before,
+.global-alert .header:hover:before {
+  display: inline-block;
+  font-family: FontAwesome;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  font-size: 2.5rem;
+  line-height: 1;
+  padding-right: 16px;
+  padding-right: 1rem;
+  content: "\f071";
+  background: inherit;
+  color: #fff;
+}
+
+.global-alert .header:before {
+  display: block;
+  position: absolute;
+  margin-top: -0.3em;
+  margin-left: -1.7em;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  padding: 0.4em;
+}
+
+.global-alert h2 {
+  color: #000;
+  font-weight: 700;
+  margin: 0;
+  font-size: 17px;
+}
+
+.global-alert .header,
+.global-alert .summary,
+.global-alert p {
+  margin: 0;
+  padding: 0;
+}
+
+.global-alert .summary {
+  padding: 0 1.25em;
+  padding-left: 1.25em;
+}
+
+.global-alert .header,
+.global-alert .summary {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.global-alert .summary {
+  padding-left: 1em;
+  border-left: 1px solid hsla(0, 0%, 100%, 0.67);
+}
+
+.global-alert .header {
+  padding-left: 4em;
+  padding-right: 1em;
+  white-space: nowrap;
+}
+
+/* Override of main.css to fix white-space: nowrap issue with resource title on left hand side */
+.nav-item.active > a span,
+.nav-aside li.active a span {
+  white-space: normal;
+  overflow: hidden;
+}
+
+li.nav-item a span.badge {
+  float: right;
+  margin-right: 10px;
+}
+
+/* The background watermark image for each environment */
+body > div.qg-training {
+  background: url("/bg_training.png") left top repeat;
+}
+
+body > div.qg-dev {
+  background: url("/bg_dev.png") left top repeat;
+}
+
+body > div.qg-staging {
+  background: url("/bg_staging.png") left top repeat;
+}
+
+/* Overriding main.css to fix column not wrapping text in responsive tables */
+.table-responsive > .table > tbody > tr > td {
+  white-space: normal;
+}
+
+/* Overriding main.css nav tabs displaying outside parent container */
+@media (max-width: 991px) {
+  .page-header .nav-tabs {
+    margin-left: 0px;
+  }
+}
+
+/* DC-12485 - Override broken border right inherited from out of the box (desktops)  */
+@media (min-width: 768px) {
+  .wrapper:before {
+    border-right: 0px !important;
+  }
+}
+
+/* QOL-5852 - Override popular icon as its no longer needed */
+.popular {
+  visibility: hidden;
+}
+
+/* QOL-5853/QOL-5847 - Edge/IE wordbreaks */
+.context-info h1.heading,
+.break-word {
+  -ms-word-break: break-word !important;
+  word-break: break-word !important;
+}
+
+/** @DC-13484 - Unclickable home tiles **/
+/** Too risky to change position value, TODO fix greater positions **/
+.wrapper:before {
+  z-index: -999 !important;
+}
+
+/** @DC-13148 - CSS height diff on utils bar (caused by squiz overlay on pages > ckan) **/
+/** Setting standard height value to 44px, as rendered on mobile/ipad/desktop etc. **/
+div.page-wrapper div.account-masthead {
+  height: 44px;
+}
+
+.comment.unreplied {
+  background-color: #eea236;
+}
+
+/* [DQL2-9] - Style for star openness explained */
+.star-openness_score-entry {
+  font-style: italic;
+}
+
+hr.double-thickness {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 2px solid #eeeeee;
+}
+
+.modal-reason {
+  position: relative;
+  padding: 15px;
+}

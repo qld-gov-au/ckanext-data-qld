@@ -1,0 +1,8 @@
+{% ckan_extends %}
+
+{% block meta %}
+{{ super() }}
+{% if pkg['organization'] and pkg['organization']['title'] %}
+  <meta name="DCTERMS.creator" content="c=AU; o=The State of Queensland; ou={{ pkg['organization']['title'] }}" scheme="AGLSTERMS.GOLD" />
+{% endif %}
+{% endblock %}
