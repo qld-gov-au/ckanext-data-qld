@@ -1,7 +1,7 @@
 @config
 Feature: Config
 
-    Scenario: Assert that configuration values are available
+    Scenario: Assert that CSS configuration values are removed
         Given "SysAdmin" as the persona
         When I log in
         And I visit "ckan-admin/config"

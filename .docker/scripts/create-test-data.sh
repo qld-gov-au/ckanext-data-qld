@@ -142,6 +142,14 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data "title=Test Request&description=This is an example&organization_id=${TEST_ORG_ID}" \
     ${CKAN_ACTION_URL}/create_datarequest
 
+##
+# END.
+#
+
+##
+# BEGIN: Create a Reporting organisation with test users
+#
+
 REPORT_ORG_NAME=reporting
 REPORT_ORG_TITLE=Reporting
 
@@ -184,6 +192,9 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data "title=Reporting Request&description=Data Request for reporting&organization_id=${REPORT_ORG_ID}" \
     ${CKAN_ACTION_URL}/create_datarequest
 
+##
+# END.
+#
 
 echo "Creating config value for resource formats:"
 
