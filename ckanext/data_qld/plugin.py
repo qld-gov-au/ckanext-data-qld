@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import logging
-import sys
+import six
 
 import ckan.lib.uploader as uploader
 import ckan.plugins as plugins
@@ -24,9 +24,6 @@ import converters
 import datarequest_auth_functions
 import helpers
 import validation
-
-if sys.version_info[0] >= 3:
-    unicode = str
 
 if ' qa' in toolkit.config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA
@@ -65,7 +62,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
         ignore_missing = toolkit.get_validator('ignore_missing')
         schema.update({
             # This is a custom configuration option
-            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode],
+            'ckanext.data_qld.resource_formats': [ignore_missing, six.text_type],
+            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, six.text_type],
         })
         return schema
 
