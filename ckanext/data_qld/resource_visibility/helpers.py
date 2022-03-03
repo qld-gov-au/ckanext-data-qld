@@ -1,11 +1,12 @@
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import logging
 
 from ckan.model.package import Package
+from ckantoolkit import h as toolkit_helpers, g, get_action
+
 from ckanext.data_qld import helpers as data_qld_helpers, auth_functions as auth_functions
 
-toolkit_helpers = toolkit.h
-get_action = toolkit.get_action
 log = logging.getLogger(__name__)
 
 
@@ -100,7 +101,7 @@ def show_resource_visibility(resource_dict):
     Return False if the user does not have
     admin, editor, or sysadmin access to the datasets organisation.
     """
-    user_obj = toolkit.g.userobj
+    user_obj = g.userobj
     if user_obj is not None:
         is_sysadmin = user_obj.sysadmin
         if is_sysadmin:

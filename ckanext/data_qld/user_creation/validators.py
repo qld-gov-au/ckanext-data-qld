@@ -1,6 +1,8 @@
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
 
-from pylons import config
+import ckantoolkit as toolkit
+
+from ckantoolkit import config
 
 
 def data_qld_user_name_validator(key, data, errors, context):

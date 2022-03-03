@@ -1,7 +1,10 @@
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import hashlib
 import logging
+
 from ckan.controllers.api import ApiController
+import ckantoolkit as toolkit
 
 import plugin
 

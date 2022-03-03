@@ -3,9 +3,9 @@
 import logging
 import six
 
+from ckan import plugins
 import ckan.lib.uploader as uploader
-import ckan.plugins as plugins
-import ckan.plugins.toolkit as toolkit
+import ckantoolkit as toolkit
 
 from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
 from ckanext.data_qld.dataset_deletion import helpers as dataset_deletion_helpers

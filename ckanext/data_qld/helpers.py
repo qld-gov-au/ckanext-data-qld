@@ -5,12 +5,12 @@ import re
 from six import text_type
 
 from ckan import model
-from ckan.plugins import toolkit
-from ckan.plugins.toolkit import c, config, request
+import ckantoolkit as toolkit
+from ckantoolkit import c, config, request
 
 
 def user_has_admin_access(include_editor_access):
-    user = toolkit.c.userobj
+    user = c.userobj
     # If user is "None" - they are not logged in.
     if user is None:
         return False
