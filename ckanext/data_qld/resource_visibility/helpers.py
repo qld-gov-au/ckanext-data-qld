@@ -33,12 +33,12 @@ def get_select_field_options(field_name, field_schema='resource_fields'):
     """
     Return a list of select options.
     """
-    schema = toolkit_helpers.scheming_get_dataset_schema('dataset') \
-        if 'scheming_datasets' in toolkit.config.get('ckan.plugins', '') else {}
+    if toolkit_helpers.hasattr('scheming_get_dataset_schema'):
+        schema = toolkit_helpers.scheming_get_dataset_schema('dataset')
 
-    for field in schema.get(field_schema, []):
-        if field.get('field_name') == field_name and field.get('choices', None):
-            return toolkit_helpers.scheming_field_choices(field)
+        for field in schema.get(field_schema, []):
+            if field.get('field_name') == field_name and field.get('choices', None):
+                return toolkit_helpers.scheming_field_choices(field)
 
     return []
 

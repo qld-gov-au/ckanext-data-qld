@@ -119,8 +119,8 @@ def profanity_checking_enabled():
     :rtype: bool
 
     """
-    return 'ytp_comments' in config.get('ckan.plugins', '') \
-           and toolkit.asbool(config.get('ckan.comments.check_for_profanity', False))
+    return ytp_comments_enabled() \
+        and toolkit.asbool(config.get('ckan.comments.check_for_profanity', False))
 
 
 def get_request():
@@ -156,12 +156,16 @@ def get_year():
     return now.year
 
 
+def _is_route_configured(route_name):
+    return toolkit.url_for(route_name) != route_name
+
+
 def ytp_comments_enabled():
-    return "ytp_comments" in config.get('ckan.plugins', False)
+    return _is_route_configured('comments.list')
 
 
 def is_datarequests_enabled():
-    return "datarequests" in config.get('ckan.plugins', False)
+    return _is_route_configured('datarequest.show')
 
 
 def get_all_groups():
@@ -179,7 +183,7 @@ def get_comment_notification_recipients_enabled():
 
 
 def is_reporting_enabled():
-    return 'data_qld_reporting' in config.get('ckan.plugins', '')
+    return _is_route_configured('dashboard.reports')
 
 
 def is_request_for_resource():
@@ -262,7 +266,7 @@ def unreplied_comments_x_days(thread_url):
     """
     comment_ids = []
 
-    if 'data_qld_reporting' in config.get('ckan.plugins', False):
+    if is_reporting_enabled():
         unreplied_comments = toolkit.get_action(
             'comments_no_replies_after_x_days'
         )({}, {'thread_url': thread_url})
