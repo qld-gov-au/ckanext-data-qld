@@ -4,7 +4,6 @@ import logging
 import six
 
 from ckan import plugins
-import ckan.lib.uploader as uploader
 import ckantoolkit as toolkit
 
 from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
@@ -193,7 +192,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         # The action resource_create and resource_update will then set the data_dict['size'] = upload.filesize if
         # 'size' not in data_dict.
         file_upload = data_dict.get(u'upload', None)
-        if isinstance(file_upload, uploader.ALLOWED_UPLOAD_TYPES):
+        if helpers.is_uploaded_file(file_upload):
             data_dict.pop(u'size', None)
 
     # IRoutes

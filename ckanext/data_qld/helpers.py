@@ -5,6 +5,7 @@ import re
 from six import text_type
 
 from ckan import model
+from ckan.lib import uploader
 import ckantoolkit as toolkit
 from ckantoolkit import c, config, request
 
@@ -317,3 +318,7 @@ def members_sorted(members):
 
 def get_deletion_reason_template():
     return toolkit.render('package/snippets/deletion_reason.html')
+
+
+def is_uploaded_file(upload):
+    return isinstance(upload, uploader.ALLOWED_UPLOAD_TYPES) and upload.filename

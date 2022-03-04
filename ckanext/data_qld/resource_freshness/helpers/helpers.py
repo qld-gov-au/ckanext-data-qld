@@ -2,17 +2,14 @@ import datetime as dt
 import json
 import logging
 
-import ckantoolkit as tk
-from ckan.lib import mailer, uploader
+from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h
+from ckan.lib import mailer
 
-from ckanext.data_qld.helpers import user_has_admin_access
+from ckanext.data_qld.helpers import is_uploaded_file, user_has_admin_access
 from datetime import datetime
 from itertools import groupby
 
 log = logging.getLogger(__name__)
-get_validator = tk.get_validator
-config = tk.config
-h = tk.h
 
 update_frequencies = {
     "monthly": 30,
@@ -67,7 +64,7 @@ def check_resource_data(current_resource, updated_resource, context):
 
     if not data_updated:
         # If there is a file upload object of ALLOWED_UPLOAD_TYPES a new file is being uploaded
-        data_updated = isinstance(updated_resource.get('upload'), uploader.ALLOWED_UPLOAD_TYPES)
+        data_updated = is_uploaded_file(updated_resource.get('upload'))
 
     if not data_updated:
         # Compare urls
@@ -92,7 +89,7 @@ def check_resource_data(current_resource, updated_resource, context):
 
     # This will be used in the 'upload.html' to inject hidden fields if there are any validation errors
     # We need to know if the data was updated to fix an issue with CKAN losing this state with validation errors
-    tk.g.resource_data_updated = data_updated
+    g.resource_data_updated = data_updated
 
 
 def process_next_update_due(data_dict):
@@ -143,9 +140,9 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
 
             site_title = 'Data | Queensland Government'
             site_url = config.get('ckan.site_url')
-            tk.enqueue_job(mailer._mail_recipient,
-                           [contact.get('email'), contact.get('email'), site_title, site_url, subject, body],
-                           title=action_type)
+            enqueue_job(mailer._mail_recipient,
+                        [contact.get('email'), contact.get('email'), site_title, site_url, subject, body],
+                        title=action_type)
             log.info("Added email to job worker default queue for {0} notification to {1}".format(action_type, contact.get('email')))
         except Exception as e:
             log.error("Error sending {0} notification to {1}".format(action_type, contact.get('email')))
@@ -155,7 +152,7 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
 def process_email_notification_for_dataset_due_to_publishing():
     action_type = 'send_email_dataset_due_to_publishing_notification'
     log.info('Started {0}'.format(action_type))
-    results = tk.get_action('data_qld_get_dataset_due_to_publishing')({}, {}).get('results', [])
+    results = get_action('data_qld_get_dataset_due_to_publishing')({}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
         send_email_dataset_notification(datasets_by_contacts, action_type)
@@ -165,7 +162,7 @@ def process_email_notification_for_dataset_due_to_publishing():
 def process_email_notification_for_dataset_overdue():
     action_type = 'send_email_dataset_overdue_notification'
     log.info('Started {0}'.format(action_type))
-    results = tk.get_action('data_qld_get_dataset_overdue')({}, {}).get('results', [])
+    results = get_action('data_qld_get_dataset_overdue')({}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
         send_email_dataset_notification(datasets_by_contacts, action_type)
@@ -173,6 +170,6 @@ def process_email_notification_for_dataset_overdue():
 
 
 def render_jinja2(template_name, extra_vars):
-    env = tk.config['pylons.app_globals'].jinja_env
+    env = config['pylons.app_globals'].jinja_env
     template = env.get_template(template_name)
     return template.render(**extra_vars)
