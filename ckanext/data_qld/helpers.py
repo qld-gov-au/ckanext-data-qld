@@ -156,16 +156,19 @@ def get_year():
     return now.year
 
 
-def _is_route_configured(route_name):
-    return toolkit.url_for(route_name) != route_name
+def _is_action_configured(name):
+    try:
+        return toolkit.get_action(name) is not None
+    except KeyError:
+        return False
 
 
 def ytp_comments_enabled():
-    return _is_route_configured('comments.list')
+    return _is_action_configured('comment_count')
 
 
 def is_datarequests_enabled():
-    return _is_route_configured('datarequest.show')
+    return _is_action_configured('list_datarequests')
 
 
 def get_all_groups():
@@ -183,7 +186,7 @@ def get_comment_notification_recipients_enabled():
 
 
 def is_reporting_enabled():
-    return _is_route_configured('dashboard.reports')
+    return _is_action_configured('report_list')
 
 
 def is_request_for_resource():
