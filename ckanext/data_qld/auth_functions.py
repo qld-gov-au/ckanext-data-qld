@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import ckan.authz as authz
-from ckan.plugins.toolkit import _
+from ckantoolkit import _
 
 
 def has_user_permission_for_some_org(context, data_dict):

@@ -5,22 +5,22 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(
-    name='''ckanext-data-qld''',
+    name='ckanext-data-qld',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
     version='0.0.1',
 
-    description='''Custom extension for Data QLD''',
-    long_description='''''',
+    description='Custom extension for Data QLD',
+    long_description='',
 
     # The project's main homepage.
     url='https://github.com/qld-gov-au/ckanext-data-qld',
 
     # Author details
-    author='''Salsa Digital''',
-    author_email='''''',
+    author='Queensland Government and Salsa Digital',
+    author_email='',
 
     # Choose your license
     license='AGPL',
@@ -31,7 +31,7 @@ setup(
         # 3 - Alpha
         # 4 - Beta
         # 5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
@@ -43,12 +43,12 @@ setup(
 
 
     # What does your project relate to?
-    keywords='''CKAN''',
+    keywords='CKAN',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    # namespace_packages=['ckanext'],
+    namespace_packages=['ckanext'],
 
     install_requires=[
         # CKAN extensions should not list dependencies here, but in a separate
@@ -61,8 +61,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     include_package_data=True,
-    package_data={
-    },
+    package_data={},
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages.
@@ -75,10 +74,11 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points='''
         [ckan.plugins]
-        data_qld_resources=ckanext.data_qld.resources_plugin:DataQldResourcesPlugin
-        data_qld_integration=ckanext.data_qld.integration_plugin:DataQldIntegrationPlugin
+        data_qld=ckanext.data_qld.plugin:DataQldPlugin
+        data_qld_integration=ckanext.data_qld.plugin:DataQldPlugin
+        data_qld_resources=ckanext.data_qld.plugin:PlaceholderPlugin
         data_qld_google_analytics=ckanext.data_qld.google_analytics.plugin:GoogleAnalyticsPlugin
-        data_qld_reporting=ckanext.data_qld.reporting_plugin:ReportingPlugin
+        data_qld_reporting=ckanext.data_qld.plugin:PlaceholderPlugin
 
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras

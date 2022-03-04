@@ -1,0 +1,48 @@
+{% ckan_extends %}
+
+{% block subtitle %}{{ h.resource_display_name(res) }} - {{ h.dataset_display_name(c.package) }}{% endblock %}
+
+{%- block resource_last_updated -%}
+  {% do h.populate_revision(res) %}
+  <tr>
+    <th scope="row">{{ _('Data last updated') }}</th>
+     <td>{{ h.render_datetime(res.last_modified) or h.render_datetime(res.created) or _('unknown') }}</td>
+  </tr>
+{%- endblock -%}
+{%- block resource_created -%}
+  <tr>
+    <th scope="row">{{ _('Created') }}</th>
+    <td>{{ h.render_datetime(res.created or res.Created) or _('unknown') }}</td>
+  </tr>
+{%- endblock -%}
+
+{%- block resource_fields -%}
+
+  {%- if 'schema' not in res -%}
+    {%- do exclude_fields.append('schema') -%}
+    {%- do exclude_fields.append('validation_options') -%}
+    {%- do exclude_fields.append('validation_status') -%}
+    {%- do exclude_fields.append('validation_timestamp') -%}
+  {%- endif -%}
+
+  {%- if h.data_qld_user_has_admin_access(True) == False -%}
+    {%- do exclude_fields.append('nature_of_change') -%}
+  {%- endif -%}
+
+  {%- if 'validation_options' not in res and 'validation_options' not in exclude_fields -%}
+    {%- do exclude_fields.append('validation_options') -%}
+  {%- endif -%}
+
+  {%- if not h.data_qld_show_resource_visibility(res) or not res.resource_visibility -%}
+    {%- do exclude_fields.append('resource_visibility') -%}
+  {%- endif -%}
+
+ {{ super() }}
+{%- endblock -%}
+
+{% block resource_additional_information_inner %}
+  {{ super() }}
+  {{ h.qa_openness_stars_resource_html(res) }}
+  {{ h.archiver_is_resource_broken_html(res) }}<br>
+  {{ h.archiver_is_resource_cached_html(res) }}
+{% endblock %}

@@ -1,4 +1,6 @@
-from ckan.plugins import toolkit
+# encoding: utf-8
+
+import ckantoolkit as toolkit
 
 import constants
 import helpers

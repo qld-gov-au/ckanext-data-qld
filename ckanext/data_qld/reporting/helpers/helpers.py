@@ -1,8 +1,11 @@
-import ckan.model as model
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import logging
 import pytz
 from datetime import datetime, timedelta
+
+from ckan import model
+import ckantoolkit as toolkit
 
 get_action = toolkit.get_action
 check_access = toolkit.check_access

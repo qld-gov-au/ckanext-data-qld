@@ -19,7 +19,10 @@ def go_to_home(context):
 
 @step(u'I go to register page')
 def go_to_register_page(context):
-    when_i_visit_url(context, '/user/register')
+    context.execute_steps(u"""
+        When I go to homepage
+        And I click the link with text that contains "Register"
+    """)
 
 
 @step(u'I log in')
@@ -83,6 +86,11 @@ def edit_dataset(context, name):
 @step(u'I go to organisation page')
 def go_to_organisation_page(context):
     when_i_visit_url(context, '/organization')
+
+
+@step(u'I set persona var "{key}" to "{value}"')
+def set_persona_var(context, key, value):
+    context.persona[key] = value
 
 
 @step(u'I log in and go to the data requests page')
@@ -152,11 +160,6 @@ def go_to_data_request_comments(context, subject):
     """ % (subject))
 
 
-@step(u'I set persona var "{key}" to "{value}"')
-def set_persona_var(context, key, value):
-    context.persona[key] = value
-
-
 @step(u'I submit a comment with subject "{subject}" and comment "{comment}"')
 def submit_comment_with_subject_and_comment(context, subject, comment):
     """
@@ -216,7 +219,7 @@ def create_dataset(context, license, file_format, file):
 
 
 # The default behaving step does not convert base64 emails
-# Modifed the default step to decode the payload from base64
+# Modified the default step to decode the payload from base64
 @step(u'I should receive a base64 email at "{address}" containing "{text}"')
 def should_receive_base64_email_containing_text(context, address, text):
     def filter_contents(mail):
@@ -231,3 +234,17 @@ def should_receive_base64_email_containing_text(context, address, text):
         return text in decoded_payload
 
     assert context.mail.user_messages(address, filter_contents)
+
+
+@step('I log in and go to admin config page')
+def log_in_go_to_admin_config(context):
+    assert context.persona
+    context.execute_steps(u"""
+        When I log in
+        And I go to admin config page
+    """)
+
+
+@step('I go to admin config page')
+def go_to_admin_config(context):
+    when_i_visit_url(context, '/ckan-admin/config')

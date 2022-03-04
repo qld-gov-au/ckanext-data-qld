@@ -1,9 +1,9 @@
 import datetime as dt
 import json
 import logging
-import ckan.plugins.toolkit as tk
-import ckan.lib.mailer as mailer
-import ckan.lib.uploader as uploader
+
+import ckantoolkit as tk
+from ckan.lib import mailer, uploader
 
 from ckanext.data_qld.helpers import user_has_admin_access
 from datetime import datetime

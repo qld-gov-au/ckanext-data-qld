@@ -1,6 +1,9 @@
-import ckan.lib.formatters as formatters
+# encoding: utf-8
+
 import re
-from ckan.plugins.toolkit import Invalid
+
+import ckan.lib.formatters as formatters
+from ckantoolkit import Invalid
 
 
 def filesize_converter(value, context):
