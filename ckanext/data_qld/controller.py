@@ -4,8 +4,8 @@ import json
 import logging
 
 import ckan.model as model
-from ckan.plugins import toolkit as tk
-from ckan.plugins.toolkit import _, c, g
+import ckantoolkit as tk
+from ckantoolkit import _, c, g
 
 import constants
 import helpers

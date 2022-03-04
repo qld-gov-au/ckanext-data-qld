@@ -3,7 +3,8 @@
 import logging
 
 from ckan.model.package import Package
-from ckan.plugins import toolkit
+from ckantoolkit import h, get_action
+
 from ckanext.data_qld import helpers as data_qld_helpers, auth_functions
 
 log = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ def get_package_dict(id, use_get_action=True):
 
     try:
         if use_get_action:
-            return toolkit.get_action('package_show')({}, {'name_or_id': id})
+            return get_action('package_show')({}, {'name_or_id': id})
         else:
             pkg = Package.get(id)
             if pkg:
@@ -33,12 +34,12 @@ def get_select_field_options(field_name, field_schema='resource_fields'):
     """
     Return a list of select options.
     """
-    schema = toolkit.h.scheming_get_dataset_schema('dataset') \
-        if 'scheming_datasets' in toolkit.config.get('ckan.plugins', '') else {}
+    if 'scheming_get_dataset_schema' in h:
+        schema = h.scheming_get_dataset_schema('dataset')
 
-    for field in schema.get(field_schema, []):
-        if field.get('field_name') == field_name and field.get('choices', None):
-            return toolkit.h.scheming_field_choices(field)
+        for field in schema.get(field_schema, []):
+            if field.get('field_name') == field_name and field.get('choices', None):
+                return h.scheming_field_choices(field)
 
     return []
 

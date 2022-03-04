@@ -1,19 +1,18 @@
-import ckan.lib.base as base
-import ckan.lib.helpers as helpers
-import ckan.lib.mailer as mailer
-import ckan.model as model
-import ckan.plugins as plugins
-import ckanext.datarequests.db as db
-import ckanext.datarequests.validator as validator
+# encoding: utf-8
+
 import datetime
 import logging
-from pylons import config
+
+from ckan import model
+from ckan.lib import base, helpers, mailer
+import ckantoolkit as tk
+from ckantoolkit import config
+
+from ckanext.datarequests import db, validator
 
 import constants
 
-c = plugins.toolkit.c
 log = logging.getLogger(__name__)
-tk = plugins.toolkit
 
 # Avoid user_show lag
 USERS_CACHE = {}

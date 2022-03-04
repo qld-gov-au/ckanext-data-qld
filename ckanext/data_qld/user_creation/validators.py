@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from ckan.plugins import toolkit
+import ckantoolkit as toolkit
 
 from ckanext.data_qld import helpers
 

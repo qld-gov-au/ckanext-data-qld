@@ -1,13 +1,16 @@
+# encoding: utf-8
+
 import Queue
-import ckan.plugins as p
 import json
 import logging
+from os import path
 import requests
 import threading
 import urllib
-from os import path
-from pylons import config
+
 from routes.mapper import SubMapper
+import ckan.plugins as p
+from ckantoolkit import config
 
 log = logging.getLogger('ckanext.googleanalytics')
 

@@ -1,10 +1,13 @@
-import ckan.model as model
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import sqlalchemy
+
+from ckan import logic, model
 from ckan.lib.cli import CkanCommand
 from ckan.model.package import Package
 from ckanapi import LocalCKAN
-import ckan.logic as logic
+import ckantoolkit as toolkit
+
 ValidationError = logic.ValidationError
 
 _and_ = sqlalchemy.and_

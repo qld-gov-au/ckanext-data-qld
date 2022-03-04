@@ -1,11 +1,9 @@
-import ckan.plugins.toolkit as tk
+# encoding: utf-8
+
+from ckantoolkit import _, missing, StopOnError
 
 from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
 from ckanext.data_qld import helpers as data_qld_helpers
-
-missing = tk.missing
-StopOnError = tk.StopOnError
-_ = tk._
 
 
 def resource_visibility(key, data, errors, context):

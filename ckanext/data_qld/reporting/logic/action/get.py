@@ -1,4 +1,6 @@
-import ckan.model as model
+# encoding: utf-8
+
+from ckan import model
 import logging
 import sqlalchemy
 import pytz
@@ -16,7 +18,7 @@ from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.datarequests import db
 from datetime import datetime, timedelta
-from ckan.plugins.toolkit import config, NotAuthorized, h
+from ckantoolkit import config, NotAuthorized, h
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace

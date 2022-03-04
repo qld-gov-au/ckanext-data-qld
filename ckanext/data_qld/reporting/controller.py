@@ -1,8 +1,7 @@
 import logging
 
-from ckan.lib.base import BaseController
-from ckan.plugins.toolkit import \
-    _, abort, get_action, get_validator, request, render, \
+from ckantoolkit import \
+    _, abort, BaseController, get_action, get_validator, request, render, \
     Invalid, NotAuthorized, ObjectNotFound
 from ckanext.data_qld import helpers as data_qld_helpers
 from ckanext.data_qld.reporting import constants

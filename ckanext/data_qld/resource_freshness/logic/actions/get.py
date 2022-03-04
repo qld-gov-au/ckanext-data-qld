@@ -1,5 +1,7 @@
+# encoding: utf-8
+
 import ckan.logic as logic
-import ckan.plugins.toolkit as toolkit
+import ckantoolkit as toolkit
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
 from datetime import datetime, timedelta

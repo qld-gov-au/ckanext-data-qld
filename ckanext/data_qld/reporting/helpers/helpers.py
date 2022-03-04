@@ -4,9 +4,9 @@ import logging
 import pytz
 from datetime import datetime, timedelta
 
-import ckan.model as model
-import ckan.plugins.toolkit as toolkit
-from ckan.plugins.toolkit import check_access, get_action
+from ckan import model
+import ckantoolkit as toolkit
+from ckantoolkit import check_access, config, get_action
 
 from ckanext.data_qld import helpers
 
@@ -66,7 +66,7 @@ def get_report_date_range(request):
         end_date = toolkit.h.date_str_to_datetime(end_date)
     else:
         # This end_date will get passed into the method `get_utc_dates` which is expecting a ckan_timezone date to be converted into utc
-        ckan_timezone = toolkit.config.get('ckan.display_timezone', None)
+        ckan_timezone = config.get('ckan.display_timezone', None)
         end_date = datetime.now(pytz.timezone(ckan_timezone))
 
     return start_date.date().isoformat(), end_date.date().isoformat()
@@ -74,7 +74,7 @@ def get_report_date_range(request):
 
 def get_closing_circumstance_list():
     circumstances = []
-    if toolkit.asbool(toolkit.config.get('ckan.datarequests.enable_closing_circumstances', False)):
+    if toolkit.asbool(config.get('ckan.datarequests.enable_closing_circumstances', False)):
         from ckanext.datarequests import helpers
         circumstances = helpers.get_closing_circumstances()
     return circumstances
@@ -169,7 +169,7 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
     date_format = '%Y-%m-%d %H:%M:%S'
 
     timezone = pytz.timezone("UTC")
-    local_timezone = pytz.timezone(toolkit.config.get('ckan.display_timezone'))
+    local_timezone = pytz.timezone(config.get('ckan.display_timezone'))
 
     # Always consider `start_date` and `end_date` as local dates
     start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
@@ -274,7 +274,7 @@ def get_organisation_list(permission):
 
 def get_organisation_list_for_user(permission):
     try:
-        return toolkit.get_action('organization_list_for_user')(get_context(), {'permission': permission})
+        return get_action('organization_list_for_user')(get_context(), {'permission': permission})
     except Exception as e:
         log.error('*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
         log.error(e)

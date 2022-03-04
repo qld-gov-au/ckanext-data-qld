@@ -1,0 +1,32 @@
+{% ckan_extends %}
+
+{% block title %}Data request {{c.datarequest.get('title', '')}}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li>{% link_for _('Data requests'), named_route='datarequest.index' %}</li>
+  <li>{% link_for c.datarequest.get('title'), named_route='datarequest.show', id=datarequest_id %}</li>
+{% endblock %}
+
+{% block content_action %}
+
+  {% if h.check_access('update_datarequest', {'id':datarequest_id }) %}
+    {% link_for _('Manage'), named_route='datarequest.update', id=datarequest_id, class_='btn btn-default', icon='wrench' %}
+  {% endif %}
+
+  {% if h.check_access('close_datarequest', {'id':datarequest_id }) and not c.datarequest.closed %}
+    {% link_for _('Close'), named_route='datarequest.close', id=datarequest_id, class_='btn btn-danger', icon='lock' %}
+  {% endif %}
+
+  {% if h.check_access('open_datarequest', {'id':datarequest_id }) and c.datarequest.closed %}
+    {% link_for _('Re-open'), named_route='datarequest.open', id=datarequest_id, class_='btn btn-success', icon='unlock' %}
+  {% endif %}
+
+{% endblock %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon('datarequest.show', _('Data request'), id=datarequest_id) }}
+
+  {% if h.show_comments_tab() and h.ytp_comments_enabled() %}
+    {{ h.build_nav_icon('datarequest.comment', _('Comments') + ' ' + h.get_content_type_comments_badge(datarequest_id, 'datarequest'), id=datarequest_id) }}
+  {% endif %}
+{% endblock %}

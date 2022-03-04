@@ -19,7 +19,7 @@ setup(
     url='https://github.com/qld-gov-au/ckanext-data-qld',
 
     # Author details
-    author='Salsa Digital',
+    author='Queensland Government and Salsa Digital',
     author_email='',
 
     # Choose your license
@@ -73,10 +73,11 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points='''
         [ckan.plugins]
-        data_qld_resources=ckanext.data_qld.resources_plugin:DataQldResourcesPlugin
-        data_qld_integration=ckanext.data_qld.integration_plugin:DataQldIntegrationPlugin
+        data_qld=ckanext.data_qld.plugin:DataQldPlugin
+        data_qld_integration=ckanext.data_qld.plugin:DataQldPlugin
+        data_qld_resources=ckanext.data_qld.plugin:PlaceholderPlugin
         data_qld_google_analytics=ckanext.data_qld.google_analytics.plugin:GoogleAnalyticsPlugin
-        data_qld_reporting=ckanext.data_qld.reporting_plugin:ReportingPlugin
+        data_qld_reporting=ckanext.data_qld.plugin:PlaceholderPlugin
 
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras

@@ -88,6 +88,11 @@ def go_to_organisation_page(context):
     when_i_visit_url(context, '/organization')
 
 
+@step(u'I set persona var "{key}" to "{value}"')
+def set_persona_var(context, key, value):
+    context.persona[key] = value
+
+
 @step(u'I log in and go to the data requests page')
 def log_in_go_to_datarequest_page(context):
     assert context.persona
