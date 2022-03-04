@@ -34,7 +34,7 @@ def get_select_field_options(field_name, field_schema='resource_fields'):
     """
     Return a list of select options.
     """
-    if toolkit_helpers.hasattr('scheming_get_dataset_schema'):
+    if 'scheming_get_dataset_schema' in toolkit_helpers:
         schema = toolkit_helpers.scheming_get_dataset_schema('dataset')
 
         for field in schema.get(field_schema, []):
