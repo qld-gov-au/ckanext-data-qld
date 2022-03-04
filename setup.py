@@ -19,7 +19,7 @@ setup(
     url='https://github.com/qld-gov-au/ckanext-data-qld',
 
     # Author details
-    author='Salsa Digital',
+    author='Queensland Government and Salsa Digital',
     author_email='',
 
     # Choose your license
