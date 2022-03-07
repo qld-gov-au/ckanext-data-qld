@@ -65,4 +65,8 @@ def filesize_formatter(size):
     :rtype: string
 
     """
-    return formatters.localised_filesize(int(size))
+    try:
+        return formatters.localised_filesize(int(size))
+    except (AttributeError, ValueError):
+        # already formatted or unable to run formatter
+        return size
