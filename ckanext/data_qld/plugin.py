@@ -156,8 +156,10 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IPackageController
     def after_show(self, context, data_dict):
-        de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
-        resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
+        # system processes should have access to all resources
+        if not context.get('ignore_auth', False):
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
+            resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
         resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):

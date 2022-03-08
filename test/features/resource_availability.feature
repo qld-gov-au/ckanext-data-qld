@@ -59,7 +59,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         # Check field visibility, xpath element start with 1.
         Then I should see an element with id "field-resource_visibility"
-        Then I should see an element with xpath "//select[@id='field-resource_visibility']/option[2][@disabled]"
+        And I should see an element with xpath "//select[@id='field-resource_visibility']/option[2][@disabled]"
 
         # Create the resource, with error.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
@@ -114,15 +114,15 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         # Check field visibility, xpath element start with 1.
         Then I should see an element with id "field-resource_visibility"
-        Then I should see an element with xpath "//select[@id='field-resource_visibility']/option[3][@disabled]"
+        And I should see an element with xpath "//select[@id='field-resource_visibility']/option[3][@disabled]"
 
         # Create the resource, with success.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "resource created by <User> and is available"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I select "Resource visible and re-identification risk governance acknowledgement not required" from "resource_visibility"
-        Then I press "save"
+        And I fill in "name" with "resource created by <User> and is available"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I select "Resource visible and re-identification risk governance acknowledgement not required" from "resource_visibility"
+        And I press "save"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available"
 
