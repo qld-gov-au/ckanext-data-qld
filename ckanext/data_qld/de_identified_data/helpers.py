@@ -10,9 +10,9 @@ def process_de_identified_data_dict(data_dict, user_obj):
     Remove de_identified_data value from dict
     if current user doesn't have access to it.
     """
-    if 'de_identified_data' in data_dict and not show_de_identified_data(data_dict, user_obj):
-        del data_dict['de_identified_data']
-    elif data_dict.get('de_identified_data', None) is None:
+    if not show_de_identified_data(data_dict, user_obj):
+        return data_dict.pop('de_identified_data', None)
+    if data_dict.get('de_identified_data', None) is None:
         # Add default value to NO.
         data_dict['de_identified_data'] = 'NO'
 
