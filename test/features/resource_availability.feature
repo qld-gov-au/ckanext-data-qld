@@ -51,6 +51,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
     Scenario Outline: User creates resource for a dataset with Contains de-identified data is YES
         Given "<User>" as the persona
         When I log in
+        And I resize the browser to 1024x2048
 
         ###
         # Create resource that available for non-logged in user.
@@ -106,6 +107,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
     Scenario Outline: User creates resource for a dataset with Contains de-identified data is NO
         Given "<User>" as the persona
         When I log in
+        And I resize the browser to 1024x2048
 
         ###
         # Create resource that available for non-logged in user.
