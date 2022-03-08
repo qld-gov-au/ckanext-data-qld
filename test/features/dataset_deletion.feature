@@ -40,4 +40,4 @@ Feature: Dataset deletion
         And I should not see "Dataset deletion"
         When I go to "/ckan-admin/trash"
         Then I should see "Dataset deletion"
-        Then I press the element with xpath "//button[@name='purge-packages']"
+        Then I press the element with xpath "//form[@id='form-purge-packages']//*[contains(text(), 'Purge')]"
