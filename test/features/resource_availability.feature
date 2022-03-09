@@ -16,11 +16,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I press "save"
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "res1"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
-        Then I press the element with xpath "//button[@value='go-metadata']"
+        And I fill in "name" with "res1"
+        And I fill in "format" with "HTML"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
+        And I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
         Then I should see "Data and Resources"
 
@@ -39,11 +40,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I press "save"
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "res1"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
-        Then I press the element with xpath "//button[@value='go-metadata']"
+        And I fill in "name" with "res1"
+        And I fill in "format" with "HTML"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
+        And I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
         Then I should see "Data and Resources"
 
@@ -64,10 +66,11 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         # Create the resource, with error.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "resource created by <User> and is available"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I press "save"
+        And I fill in "name" with "resource created by <User> and is available"
+        And I fill in "format" with "HTML"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I press "save"
         And I wait for 10 seconds
         Then I should see "This dataset has been recorded as containing de-identified data."
 
@@ -84,11 +87,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to "/dataset/new_resource/contains-de-identified-data-yes"
 
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "resource created by <User> and is NOT available"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
-        Then I press "save"
+        And I fill in "name" with "resource created by <User> and is NOT available"
+        And I fill in "format" with "HTML"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
+        And I press "save"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is NOT available"
 
@@ -122,6 +126,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         # Create the resource, with success.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "resource created by <User> and is available"
+        And I fill in "format" with "HTML"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource visible and re-identification risk governance acknowledgement not required" from "resource_visibility"
@@ -137,10 +142,11 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         # Create the resource, with success.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "resource created by <User> and is available with blank resource_visibility"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I press "save"
+        And I fill in "name" with "resource created by <User> and is available with blank resource_visibility"
+        And I fill in "format" with "HTML"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I press "save"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available with blank resource_visibility"
 
@@ -150,11 +156,12 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to "/dataset/new_resource/contains-de-identified-data-no"
 
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        Then I fill in "name" with "resource created by <User> and is NOT available"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024"
-        Then I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
-        Then I press "save"
+        And I fill in "name" with "resource created by <User> and is NOT available"
+        And I fill in "format" with "HTML"
+        And I fill in "description" with "description"
+        And I fill in "size" with "1024"
+        And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
+        And I press "save"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is NOT available"
 
