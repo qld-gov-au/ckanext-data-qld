@@ -58,7 +58,7 @@ Feature: Comments
         When I log in
         And I go to data request "Test Request" comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
-        Then I submit a comment with subject "Test subject" and comment "Go fuck yourself!"
+        Then I submit a comment with subject "Test subject" and comment "He had sheep, and oxen, and he asses, and menservants, and maidservants, and she asses, and camels."
         Then I should see "Comment blocked due to profanity" within 5 seconds
 
     @comment-report
@@ -66,7 +66,7 @@ Feature: Comments
         Given "CKANUser" as the persona
         When I log in
         Then I go to dataset "warandpeace" comments
-        And I press the element with xpath "//div[@contains(@class, 'comment-action')//a[contains(@class, 'flag-comment')][1]"
+        And I press the element with xpath "//div[@contains(@class, 'comment-action')]//a[contains(@class, 'flag-comment')][1]"
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
         Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
@@ -76,7 +76,7 @@ Feature: Comments
         Given "CKANUser" as the persona
         When I log in
         And I go to data request "Test Request" comments
-        And I press the element with xpath "//div[@contains(@class, 'comment-action')//a[contains(@class, 'flag-comment')][1]"
+        And I press the element with xpath "//div[@contains(@class, 'comment-action')]//a[contains(@class, 'flag-comment')][1]"
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
         Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
