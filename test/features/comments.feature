@@ -21,7 +21,7 @@ Feature: Comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
         Then I submit a comment with subject "Test subject" and comment "This is a test comment"
         Then I should see "This is a test comment" within 10 seconds
-        And I should see an element with xpath "//div[contains(@class, 'comment-wrapper highlight') and contains(string(), 'This is a test comment')]"
+        And I should see an element with xpath "//div[contains(@class, 'comment-wrapper') and contains(string(), 'This is a test comment')]"
 
     @comment-add @datarequest
     Scenario: When a logged-in user submits a comment on a Data Request the comment should then be visible on the Comments tab of the Data Request
