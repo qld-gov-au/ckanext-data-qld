@@ -22,4 +22,4 @@ progressbar==2.5
 -e git+https://github.com/qld-gov-au/ckanext-qa.git@2.0.3-qgov.4#egg=ckanext-qa
 -e git+https://github.com/qld-gov-au/ckanext-report.git@0.3#egg=ckanext-report
 -e git+https://github.com/qld-gov-au/ckanext-validation.git@QOL-7740-ckan-2.9#egg=ckanext-validation
--e git+https://github.com/qld-gov-au/ckanext-ytp-comments.git@2.5.0-qgov#egg=ckanext-ytp-comments
+-e git+https://github.com/qld-gov-au/ckanext-ytp-comments.git@2.5.0-qgov.2#egg=ckanext-ytp-comments
