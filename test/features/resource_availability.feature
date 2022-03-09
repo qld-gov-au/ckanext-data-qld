@@ -76,7 +76,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         # Create the resource, with success.
         When I select "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing" from "resource_visibility"
-        And I take a screenshot
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available"
@@ -130,7 +129,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource visible and re-identification risk governance acknowledgement not required" from "resource_visibility"
-        And I take a screenshot
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available"
