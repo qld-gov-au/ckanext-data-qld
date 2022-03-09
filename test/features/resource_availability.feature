@@ -13,7 +13,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I fill in "version" with "1"
         Then I fill in "author_email" with "test@test.com"
         Then I select "YES" from "de_identified_data"
-        Then I press "save"
+        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "res1"
@@ -37,7 +37,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I fill in "version" with "1"
         Then I fill in "author_email" with "test@test.com"
         Then I select "NO" from "de_identified_data"
-        Then I press "save"
+        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "res1"
@@ -70,14 +70,14 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
-        And I press "save"
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "This dataset has been recorded as containing de-identified data."
 
         # Create the resource, with success.
         When I select "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing" from "resource_visibility"
         And I take a screenshot
-        And I press "save"
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available"
 
@@ -92,7 +92,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
-        And I press "save"
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is NOT available"
 
@@ -131,7 +131,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I fill in "size" with "1024"
         And I select "Resource visible and re-identification risk governance acknowledgement not required" from "resource_visibility"
         And I take a screenshot
-        And I press "save"
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available"
 
@@ -146,7 +146,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
-        And I press "save"
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available with blank resource_visibility"
 
@@ -161,7 +161,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
-        And I press "save"
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is NOT available"
 

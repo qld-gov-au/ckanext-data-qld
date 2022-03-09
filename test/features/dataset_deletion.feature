@@ -12,7 +12,7 @@ Feature: Dataset deletion
         Then I fill in "version" with "1"
         Then I fill in "author_email" with "test@test.com"
         Then I select "NO" from "de_identified_data"
-        Then I press "save"
+        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         Then I fill in "name" with "res1"
