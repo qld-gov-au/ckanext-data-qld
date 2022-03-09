@@ -17,7 +17,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "res1"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
@@ -41,7 +41,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I wait for 10 seconds
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "res1"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
@@ -67,7 +67,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         # Create the resource, with error.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "resource created by <User> and is available"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I press "save"
@@ -88,7 +88,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "resource created by <User> and is NOT available"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
@@ -126,7 +126,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         # Create the resource, with success.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "resource created by <User> and is available"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource visible and re-identification risk governance acknowledgement not required" from "resource_visibility"
@@ -143,7 +143,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         # Create the resource, with success.
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "resource created by <User> and is available with blank resource_visibility"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I press "save"
@@ -157,7 +157,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Then I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "resource created by <User> and is NOT available"
-        And I fill in "format" with "HTML"
+        And I select "HTML" from "format"
         And I fill in "description" with "description"
         And I fill in "size" with "1024"
         And I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
