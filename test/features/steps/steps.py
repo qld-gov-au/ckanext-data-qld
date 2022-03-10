@@ -192,6 +192,24 @@ def submit_reply_with_comment(context, comment):
         "document.querySelector('.comment-wrapper form .form-actions input[type=\"submit\"]').click();")
 
 
+@step(u'I create a dataset with title {title}')
+def create_dataset_titled(context, title):
+    context.execute_steps(u"""
+        When I visit "dataset/new"
+        And I fill in title with "{title}"
+        And I fill in "notes" with "Description"
+        And I fill in "version" with "1.0"
+        And I fill in "author_email" with "test@me.com"
+        And I select "NO" from "de_identified_data"
+        And I press "Add Data"
+        And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
+        And I fill in "name" with "Test Resource"
+        And I select "HTML" from "format"
+        And I fill in "description" with "Test Resource Description"
+        And I press "Finish"
+    """.format(title))
+
+
 @step(u'I create a dataset with license {license} and resource file {file}')
 def create_dataset_json(context, license, file):
     create_dataset(context, license, 'JSON', file)
