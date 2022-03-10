@@ -192,7 +192,7 @@ def submit_reply_with_comment(context, comment):
         "document.querySelector('.comment-wrapper form .form-actions input[type=\"submit\"]').click();")
 
 
-@step(u'I create a dataset with title {title}')
+@step(u'I create a dataset with title "{title}"')
 def create_dataset_titled(context, title):
     context.execute_steps(u"""
         When I visit "dataset/new"
