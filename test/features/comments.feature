@@ -67,6 +67,8 @@ Feature: Comments
         When I log in
         Then I go to dataset "warandpeace" comments
         And I press the element with xpath "//a[contains(@class, 'flag-comment')]"
+        And I take a screenshot
+        And I wait for 2 seconds
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
         Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
@@ -77,6 +79,8 @@ Feature: Comments
         When I log in
         And I go to data request "Test Request" comments
         And I press the element with xpath "//a[contains(@class, 'flag-comment')]"
+        And I take a screenshot
+        And I wait for 2 seconds
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
         Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
