@@ -207,7 +207,7 @@ def create_dataset_titled(context, title):
         And I select "HTML" from "format"
         And I fill in "description" with "Test Resource Description"
         And I press "Finish"
-    """.format(title))
+    """.format(title=title))
 
 
 @step(u'I create a dataset with license {license} and resource file {file}')
