@@ -1,4 +1,4 @@
-@config
+@datarequest
 Feature: Data Request
 
     Scenario: Data Requests are accessible via the /datarequest URL
