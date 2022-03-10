@@ -196,7 +196,7 @@ def submit_reply_with_comment(context, comment):
 def create_dataset_titled(context, title):
     context.execute_steps(u"""
         When I visit "dataset/new"
-        And I fill in title with "{title}"
+        And I fill in "title" with "{title}"
         And I fill in "notes" with "Description"
         And I fill in "version" with "1.0"
         And I fill in "author_email" with "test@me.com"
