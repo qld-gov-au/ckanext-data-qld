@@ -46,6 +46,7 @@ this.ckan.module('flag-comment', function (jQuery) {
      * Returns nothing.
      */
     initialize: function () {
+      jQuery('#comment_form').append("DEBUG: flag-comment.js:initialize");
       jQuery.proxyAll(this, /_on/);
       this.el.on('click', this._onClick);
     },
@@ -56,6 +57,7 @@ this.ckan.module('flag-comment', function (jQuery) {
      * Returns nothing.
      */
     flagged: function () {
+      jQuery('#comment_form').append("DEBUG: flag-comment.js:flagged");
       this.sandbox.body.append(this.createModal());
       this.modal.modal('show');
 
@@ -89,13 +91,16 @@ this.ckan.module('flag-comment', function (jQuery) {
     /* Event handler that displays the confirm dialog */
     _onClick: function (event) {
       event.preventDefault();
+      jQuery('#comment_form').append("DEBUG: flag-comment.js:onClick");
       var comment_id = this.options.comment_id;
       var element = this
       jQuery.get('/comment/' + comment_id + '/flag', function() {
+        jQuery('#comment_form').append("DEBUG: flag-comment.js:onClick get successful");
         jQuery(element.el).addClass('hidden');
         jQuery(element.el).parent().find('.comment-flagged').removeClass('hidden');
       })
       .fail(function() {
+        jQuery('#comment_form').append("DEBUG: flag-comment.js:onClick get failed");
         element.options.content = 'An error occurred while attempting to flag this comment.';
       });
       this.flagged();
