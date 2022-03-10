@@ -65,7 +65,9 @@ Feature: Comments
     Scenario: When a logged-in user reports a comment on a Dataset the comment should be marked as reported and an email sent to the admins of the organisation
         Given "CKANUser" as the persona
         When I log in
-        Then I go to dataset "warandpeace" comments
+        And I go to dataset "warandpeace" comments
+        And I submit a comment with subject "Test reporting" and comment "Testing comment reporting"
+        Then I should see "Testing comment reporting" within 10 seconds
         And I press the element with xpath "//a[contains(@class, 'flag-comment')]"
         And I take a screenshot
         And I wait for 2 seconds
@@ -78,6 +80,8 @@ Feature: Comments
         Given "CKANUser" as the persona
         When I log in
         And I go to data request "Test Request" comments
+        And I submit a comment with subject "Test reporting" and comment "Testing comment reporting"
+        Then I should see "Testing comment reporting" within 10 seconds
         And I press the element with xpath "//a[contains(@class, 'flag-comment')]"
         And I take a screenshot
         And I wait for 2 seconds
