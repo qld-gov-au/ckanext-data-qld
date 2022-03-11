@@ -2,18 +2,18 @@
 Feature: Data Request
 
     Scenario: Data Requests are accessible via the /datarequest URL
-        When I go to datarequest page
+        When I go to the data requests page
         Then the browser's URL should contain "/datarequest"
 
 
     Scenario: When visiting the datarequests page as a non-logged in user, the 'Add Data Request' button is not visible
-        When I go to datarequest page
+        When I go to the data requests page
         Then I should not see an element with xpath "//a[contains(string(), 'Add data request', 'i')]"
 
 
     Scenario: Data requests submitted without a description will produce an error message
         Given "SysAdmin" as the persona
-        When I log in and go to datarequest page
+        When I log in and go to the data requests page
         And I click the link with text that contains "Add data request"
         And I fill in "title" with "Test data request"
         And I press the element with xpath "//button[contains(string(), 'Create Data Request')]"
@@ -25,7 +25,7 @@ Feature: Data Request
 
     Scenario Outline: Data request creator and Sysadmin can see a 'Close' button on the data request detail page for opened data requests
         Given "<User>" as the persona
-        When I log in and go to datarequest page
+        When I log in and go to the data requests page
         And I press "Test Request"
         Then I should see an element with xpath "//a[contains(string(), 'Close')]"
 
@@ -36,7 +36,7 @@ Feature: Data Request
 
     Scenario Outline: Non admin users cannot see a 'Close' button on the data request detail page for opened data requests
         Given "<User>" as the persona
-        When I log in and go to datarequest page
+        When I log in and go to the data requests page
         And I press "Test Request"
         Then I should not see an element with xpath "//a[contains(string(), 'Close')]"
 
