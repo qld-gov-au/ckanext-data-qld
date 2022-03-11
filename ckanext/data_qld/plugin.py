@@ -34,8 +34,13 @@ request = toolkit.request
 
 log = logging.getLogger(__name__)
 
+if toolkit.check_ckan_version("2.9"):
+    from flask_plugin import MixinPlugin
+else:
+    from plugin.pylons_plugin import MixinPlugin
 
-class DataQldPlugin(plugins.SingletonPlugin):
+
+class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     """ Provide functions specific to the Queensland Government Open Data portal.
     """
     plugins.implements(plugins.IConfigurer)
@@ -45,7 +50,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
-    plugins.implements(plugins.IRoutes, inherit=True)
 
     if ' qa' in toolkit.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
@@ -196,29 +200,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
         file_upload = data_dict.get(u'upload', None)
         if helpers.is_uploaded_file(file_upload):
             data_dict.pop(u'size', None)
-
-    # IRoutes
-    def before_map(self, m):
-        # Re_Open a Data Request
-        controller = 'ckanext.data_qld.controller:DataQldUI'
-        m.connect(
-            '/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH, controller=controller,
-            action='open_datarequest', conditions=dict(method=['GET', 'POST']))
-
-        m.connect(
-            '/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
-            controller=controller, action='show_schema', conditions=dict(method=['GET']))
-
-        # Reporting
-        controller = 'ckanext.data_qld.reporting.controller:ReportingController'
-        m.connect('/dashboard/reporting/export', controller=controller, action='export')
-        m.connect('dashboard.reports', '/dashboard/reporting', controller=controller, action='index')
-        m.connect(
-            '/dashboard/reporting/datasets/{org_id}/{metric}', controller=controller, action='datasets')
-        m.connect(
-            '/dashboard/reporting/datarequests/{org_id}/{metric}', controller=controller, action='datarequests')
-
-        return m
 
     # IQA
     def custom_resource_score(self, resource, resource_score):
