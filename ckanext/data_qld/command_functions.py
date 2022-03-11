@@ -1,6 +1,12 @@
 # encoding: utf-8
 
+import logging
+
 from ckantoolkit import get_action, ValidationError
+
+from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
+
+log = logging.getLogger(__name__)
 
 
 def migrate_extras(package_ids):
@@ -134,3 +140,17 @@ def demote_publishers(username_prefix):
     print('- - - - - - - - - - - - - - - - - - - - - - - - -')
 
     return "COMPLETED. Total updates %s\n" % updates
+
+
+def send_email_dataset_due_to_publishing_notification():
+    # Need to do CKAN imports and logger after load config
+    log.info('Started command SendEmailDatasetDueToPublishingNotification')
+    resource_freshness_helpers.process_email_notification_for_dataset_due_to_publishing()
+    log.info('Finished command SendEmailDatasetDueToPublishingNotification')
+
+
+def send_email_dataset_overdue_notification():
+    # Need to do CKAN imports and logger after load config
+    log.info('Started command SendEmailDatasetOverdueNotification')
+    resource_freshness_helpers.process_email_notification_for_dataset_overdue()
+    log.info('Finished command SendEmailDatasetOverdueNotification')
