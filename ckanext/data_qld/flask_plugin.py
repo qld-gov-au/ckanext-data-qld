@@ -2,8 +2,9 @@
 
 import ckan.plugins as p
 
-import blueprints
 import click_cli
+import datarequest_view
+import dataset_view
 
 
 class MixinPlugin(p.SingletonPlugin):
@@ -13,7 +14,7 @@ class MixinPlugin(p.SingletonPlugin):
     # IBlueprint
 
     def get_blueprint(self):
-        return blueprints.get_blueprints()
+        return datarequest_view.get_blueprints().extend(dataset_view.get_blueprints())
 
     # IClick
 
