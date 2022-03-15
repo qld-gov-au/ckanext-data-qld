@@ -15,12 +15,12 @@ class MixinPlugin(plugins.SingletonPlugin):
         # Re_Open a Data Request
         controller = 'ckanext.data_qld.controller:DataQldUI'
         m.connect(
-            'data_qld_datarequest.open',
+            'data_qld.open_datarequest',
             '/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH, controller=controller,
             action='open_datarequest', conditions=dict(method=['GET', 'POST']))
 
         m.connect(
-            'data_qld_dataset.show_schema',
+            'data_qld.show_schema',
             '/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
             controller=controller, action='show_schema', conditions=dict(method=['GET']))
 
