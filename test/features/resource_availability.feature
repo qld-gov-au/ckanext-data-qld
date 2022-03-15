@@ -79,6 +79,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 10 seconds
         Then I should see "resource created by <User> and is available"
+        When I press the element with xpath "//a[@title='resource created by <User> and is available']"
+        Then I should see "Re-identification risk governance acknowledgement/Resource visibility"
 
         ###
         # Create resource that NOT available for non-logged in user.
@@ -165,44 +167,15 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         # Verify the result as non-logged in user.
         Given "Unauthenticated" as the persona
-        And I go to "/dataset/contains-de-identified-data-no"
+        When I go to "/dataset/contains-de-identified-data-no"
         Then I should see "resource created by <User> and is available"
-        Then I should see "resource created by <User> and is available with blank resource_visibility"
-        Then I should not see "resource created by <User> and is NOT available"
+        And I should see "resource created by <User> and is available with blank resource_visibility"
+        And I should not see "resource created by <User> and is NOT available"
+        Then I press the element with xpath "//a[@title='resource created by <User> and is available']"
+        And I should not see "Re-identification risk governance acknowledgement/Resource visibility"
 
         Examples: Users
             | User          |
             | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
-
-
-    Scenario Outline: An editor, admin or sysadmin user views a dataset resource additional info
-        Given "<User>" as the persona
-        When I log in
-
-        And I go to "/dataset/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
-        Then I should see "Re-identification risk governance acknowledgement/Resource visibility"
-
-        Examples: Users
-            | User          |
-            | SysAdmin      |
-            | TestOrgAdmin  |
-            | TestOrgEditor |
-
-
-    Scenario: A Member views a dataset resource additional info
-        Given "TestOrgMember" as the persona
-        When I log in
-
-        And I go to "/dataset/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
-        Then I should not see "Re-identification risk governance acknowledgement/Resource visibility"
-
-    Scenario: A general user views a dataset resource additional info
-        Given "Unauthenticated" as the persona
-
-        And I go to "/dataset/contains-de-identified-data-yes"
-        Then I press the element with xpath "//a[@title='resource created by SysAdmin and is available']"
-        Then I should not see "Re-identification risk governance acknowledgement/Resource visibility"
