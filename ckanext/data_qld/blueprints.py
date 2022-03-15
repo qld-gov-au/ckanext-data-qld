@@ -14,7 +14,7 @@ blueprint = Blueprint(
 
 
 blueprint.add_url_rule(
-    u'{}/open/<id>'.format(constants.DATAREQUESTS_MAIN_PATH),
+    u'/{}/open/<id>'.format(constants.DATAREQUESTS_MAIN_PATH),
     'open_datarequest', view_func=open_datarequest)
 blueprint.add_url_rule(
     u'/dataset/resource/<resource_id>/{}/show'.format(constants.SCHEMA_MAIN_PATH),
