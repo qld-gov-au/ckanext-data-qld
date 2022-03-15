@@ -125,7 +125,7 @@ def create_datarequest(context):
         And I click the link with text that contains "Add data request"
         And I fill in title with random text
         And I fill in "description" with "Test description"
-        And I press the element with xpath "//button[contains(string(), 'Create data request')]"
+        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
     """)
 
 

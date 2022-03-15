@@ -6,7 +6,7 @@ Feature: Data Request
         Then the browser's URL should contain "/datarequest"
 
 
-    Scenario: When visiting the datarequests page as a non-logged in user, the 'Add Data Request' button is not visible
+    Scenario: When visiting the datarequests page as a non-logged in user, the 'Add data request' button is not visible
         When I go to the data requests page
         Then I should not see an element with xpath "//a[contains(string(), 'Add data request', 'i')]"
 
@@ -16,7 +16,7 @@ Feature: Data Request
         When I log in and go to the data requests page
         And I click the link with text that contains "Add data request"
         And I fill in "title" with "Test data request"
-        And I press the element with xpath "//button[contains(string(), 'Create Data Request')]"
+        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         Then I should see an element with the css selector "div.error-explanation.alert.alert-error" within 2 seconds
         And I should see "The form contains invalid entries" within 1 seconds
         And I should see an element with the css selector "span.error-block" within 1 seconds
