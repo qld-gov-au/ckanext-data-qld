@@ -68,7 +68,6 @@ Feature: Comments
         And I resize the browser to 1024x2048
         And I go to dataset "warandpeace" comments
         And I press the element with xpath "//a[contains(@class, 'flag-comment')]"
-        And I take a screenshot
         And I wait for 2 seconds
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
@@ -83,7 +82,6 @@ Feature: Comments
         And I submit a comment with subject "Test reporting" and comment "Testing comment reporting"
         Then I should see "Testing comment reporting" within 10 seconds
         And I press the element with xpath "//a[contains(@class, 'flag-comment')]"
-        And I take a screenshot
         And I wait for 2 seconds
         Then I should see "Reported" within 5 seconds
         When I wait for 3 seconds
