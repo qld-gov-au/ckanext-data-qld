@@ -45,7 +45,6 @@ Feature: Data Request
         | CKANUser              |
         | DataRequestOrgEditor  |
         | DataRequestOrgMember  |
-        | TestOrgAdmin          |
         | TestOrgEditor         |
         | TestOrgMember         |
 
