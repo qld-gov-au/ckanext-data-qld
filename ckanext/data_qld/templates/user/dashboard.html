@@ -11,7 +11,7 @@
     {{ h.build_nav_icon('dashboard.organizations', _('My Organizations')) }}
     {{ h.build_nav_icon('dashboard.groups', _('My Groups')) }}
     {% if h.is_reporting_enabled() and h.check_access('has_user_permission_for_some_org', {'permission': 'create_dataset'}) %}
-        {{ h.build_nav_icon('dashboard.reports', _('My Reports')) }}         
+        {{ h.build_nav_icon('data_qld_reporting.index', _('My Reports')) }}
     {% endif %}
   </ul>
 </header>

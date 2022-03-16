@@ -27,7 +27,7 @@ class MixinPlugin(plugins.SingletonPlugin):
         # Reporting
         controller = 'ckanext.data_qld.reporting.controller:ReportingController'
         m.connect('/dashboard/reporting/export', controller=controller, action='export')
-        m.connect('dashboard.reports', '/dashboard/reporting', controller=controller, action='index')
+        m.connect('data_qld_reporting.index', '/dashboard/reporting', controller=controller, action='index')
         m.connect(
             '/dashboard/reporting/datasets/{org_id}/{metric}', controller=controller, action='datasets')
         m.connect(
