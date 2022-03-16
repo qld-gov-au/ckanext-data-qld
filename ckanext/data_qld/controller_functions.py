@@ -9,14 +9,13 @@ from ckantoolkit import _, abort, c, g, get_action, get_validator, \
     request, render, Invalid, NotAuthorized, ObjectNotFound
 
 from ckanext.ytp.comments.request_helpers import RequestHelper
-import constants
+from constants import OPEN_DATAREQUEST, RESOURCE_SHOW, SHOW_DATAREQUEST
 import helpers
+from .reporting.constants import DATAREQUEST_OPEN_MAX_DAYS, COMMENT_NO_REPLY_MAX_DAYS, \
+    REPORT_TYPES, REPORT_TYPE_ADMIN, REPORT_TYPE_ENGAGEMENT
 from .reporting.helpers import export_helpers, helpers as reporting_helpers
 
 log = logging.getLogger(__name__)
-
-DATAREQUEST_OPEN_MAX_DAYS = constants.DATAREQUEST_OPEN_MAX_DAYS
-COMMENT_NO_REPLY_MAX_DAYS = constants.COMMENT_NO_REPLY_MAX_DAYS
 
 
 def _get_errors_summary(errors):
@@ -40,8 +39,8 @@ def open_datarequest(id):
     # Basic initialization
     c.datarequest = {}
     try:
-        tk.check_access(constants.OPEN_DATAREQUEST, context, data_dict)
-        c.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
+        tk.check_access(OPEN_DATAREQUEST, context, data_dict)
+        c.datarequest = tk.get_action(SHOW_DATAREQUEST)(context, data_dict)
 
         if c.datarequest.get('closed', False) is False:
             return tk.abort(403, _('This data request is already open'))
@@ -50,7 +49,7 @@ def open_datarequest(id):
             data_dict['id'] = id
             data_dict['organization_id'] = c.datarequest.get('organization_id')
 
-            tk.get_action(constants.OPEN_DATAREQUEST)(context, data_dict)
+            tk.get_action(OPEN_DATAREQUEST)(context, data_dict)
             tk.redirect_to(
                 tk.url_for('datarequest.show', id=data_dict['id']))
     except tk.ValidationError as e:
@@ -70,8 +69,8 @@ def show_schema(dataset_id, resource_id):
     context = _get_context()
 
     try:
-        tk.check_access(constants.RESOURCE_SHOW, context, data_dict)
-        resource = tk.get_action(constants.RESOURCE_SHOW)(context, data_dict)
+        tk.check_access(RESOURCE_SHOW, context, data_dict)
+        resource = tk.get_action(RESOURCE_SHOW)(context, data_dict)
         schema_data = resource.get('schema')
         c.schema_data = json.dumps(schema_data, indent=2, sort_keys=True)
         return tk.render('schema/show.html')
@@ -84,14 +83,14 @@ def show_schema(dataset_id, resource_id):
 
 
 def _valid_report_type(report_type):
-    if report_type not in constants.REPORT_TYPES:
+    if report_type not in REPORT_TYPES:
         msg = _('Report type {0} not valid').format(report_type)
         log.warn(msg)
         return abort(404, msg)
 
 
 def _get_report_type_permission(report_type):
-    return 'admin' if report_type == constants.REPORT_TYPE_ADMIN else 'create_dataset'
+    return 'admin' if report_type == REPORT_TYPE_ADMIN else 'create_dataset'
 
 
 def reporting_index():
@@ -130,7 +129,7 @@ def reporting_index():
                     'org_title': org['title'],
                 })
 
-                if report_type == constants.REPORT_TYPE_ENGAGEMENT:
+                if report_type == REPORT_TYPE_ENGAGEMENT:
                     start_date, end_date = reporting_helpers.get_report_date_range(request)
                     extra_vars.update({
                         'start_date': start_date,
@@ -139,7 +138,7 @@ def reporting_index():
                         'datarequest_open_max_days': DATAREQUEST_OPEN_MAX_DAYS,
                         'comment_no_reply_max_days': COMMENT_NO_REPLY_MAX_DAYS
                     })
-                elif report_type == constants.REPORT_TYPE_ADMIN:
+                elif report_type == REPORT_TYPE_ADMIN:
                     extra_vars.update({
                         'metrics': reporting_helpers.gather_admin_metrics(org_id, report_permission)
                     })
@@ -171,9 +170,9 @@ def export_reports():
         if error:
             return error
 
-        if report_type == constants.REPORT_TYPE_ENGAGEMENT:
+        if report_type == REPORT_TYPE_ENGAGEMENT:
             return _export_engagement_report(report_type, report_permission)
-        elif report_type == constants.REPORT_TYPE_ADMIN:
+        elif report_type == REPORT_TYPE_ADMIN:
             return _export_admin_report(report_type, report_permission)
     except NotAuthorized as e:  # Exception raised from check_user_access
         log.warn(e)
