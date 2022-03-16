@@ -99,7 +99,7 @@ def reporting_index():
 
     try:
         report_permission = _get_report_type_permission(report_type)
-        helpers.check_user_access(report_permission)
+        reporting_helpers.check_user_access(report_permission)
 
         extra_vars = {
             'user_dict': helpers.get_user().as_dict(),
@@ -164,7 +164,7 @@ def export_reports():
     report_type = helpers.RequestHelper(request).get_first_query_param('report_type', '')
     try:
         report_permission = _get_report_type_permission(report_type)
-        helpers.check_user_access(report_permission)
+        reporting_helpers.check_user_access(report_permission)
         error = _valid_report_type(report_type)
         if error:
             return error
@@ -193,7 +193,7 @@ def _export_engagement_report(report_type, report_permission):
         dict_csv_rows[key] = []
 
     # This is to allow for closing circumstances to be configurable through the CKAN UI
-    closing_circumstances = [c['circumstance'] for c in helpers.get_closing_circumstance_list()]
+    closing_circumstances = [c['circumstance'] for c in reporting_helpers.get_closing_circumstance_list()]
 
     no_closing_circumstances = ['accepted_dataset', 'no_accepted_dataset']
 
@@ -225,7 +225,7 @@ def _export_engagement_report(report_type, report_permission):
         dict_csv_rows[key] = []
 
     # Gather all the metrics for each organisation
-    for organisation in helpers.get_organisation_list_for_user(report_permission):
+    for organisation in reporting_helpers.get_organisation_list_for_user(report_permission):
         export_helpers.engagement_csv_add_org_metrics(
             organisation,
             start_date,
@@ -254,7 +254,7 @@ def _export_admin_report(report_type, report_permission):
         dict_csv_rows[key] = []
 
     # Gather all the metrics for each organisation
-    for organisation in helpers.get_organisation_list_for_user(report_permission):
+    for organisation in reporting_helpers.get_organisation_list_for_user(report_permission):
         export_helpers.admin_csv_add_org_metrics(
             organisation,
             csv_header_row,
