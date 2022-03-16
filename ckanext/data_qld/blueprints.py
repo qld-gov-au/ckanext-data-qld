@@ -17,7 +17,7 @@ blueprint.add_url_rule(
     u'/{}/open/<id>'.format(constants.DATAREQUESTS_MAIN_PATH),
     'open_datarequest', view_func=controller_functions.open_datarequest)
 blueprint.add_url_rule(
-    u'/dataset/resource/<resource_id>/{}/show'.format(constants.SCHEMA_MAIN_PATH),
+    u'/dataset/<dataset_id>resource/<resource_id>/{}/show'.format(constants.SCHEMA_MAIN_PATH),
     'show_schema', view_func=controller_functions.show_schema)
 
 reporting = Blueprint(
@@ -27,7 +27,7 @@ reporting = Blueprint(
 )
 
 reporting.add_url_rule(
-    u'/', 'index', view_func=controller_functions.reporting_index)
+    u'', 'index', view_func=controller_functions.reporting_index)
 reporting.add_url_rule(
     u'/export',
     'export', view_func=controller_functions.export_reports)
