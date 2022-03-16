@@ -8,7 +8,7 @@ from ckan import model
 import ckantoolkit as toolkit
 from ckantoolkit import check_access, config, get_action
 
-from ckanext.ytp_comments.request_helpers import RequestHelper
+from ckanext.ytp.comments.request_helpers import RequestHelper
 
 from ckanext.data_qld import helpers
 

@@ -8,7 +8,7 @@ import ckantoolkit as tk
 from ckantoolkit import _, abort, c, g, get_action, get_validator, \
     request, render, Invalid, NotAuthorized, ObjectNotFound
 
-from ckanext.ytp_comments.request_helpers import RequestHelper
+from ckanext.ytp.comments.request_helpers import RequestHelper
 import constants
 import helpers
 from .reporting.helpers import export_helpers, helpers as reporting_helpers
