@@ -35,4 +35,4 @@ Feature: Data Validation
         When I wait for 1 seconds
         And I click the link with text that contains "Test Resource"
         And I click the link with text that contains "View Schema File"
-        Then the browser's URL should contain "/schema/show/"
+        Then I should see "Measure of the oblique fractal impedance at noon"
