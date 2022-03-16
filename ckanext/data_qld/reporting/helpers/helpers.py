@@ -8,8 +8,6 @@ from ckan import model
 import ckantoolkit as toolkit
 from ckantoolkit import check_access, config, get_action
 
-from ckanext.ytp.comments.request_helpers import RequestHelper
-
 from ckanext.data_qld import helpers
 
 log = logging.getLogger(__name__)
@@ -56,7 +54,7 @@ def get_username():
 
 
 def get_report_date_range(request):
-    request_helper = RequestHelper(request)
+    request_helper = helpers.RequestHelper(request)
     start_date = request_helper.get_first_query_param('start_date')
     end_date = request_helper.get_first_query_param('end_date')
 

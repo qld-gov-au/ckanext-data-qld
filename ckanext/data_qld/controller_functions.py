@@ -8,7 +8,6 @@ import ckantoolkit as tk
 from ckantoolkit import _, abort, c, g, get_action, get_validator, \
     request, render, Invalid, NotAuthorized, ObjectNotFound
 
-from ckanext.ytp.comments.request_helpers import RequestHelper
 from constants import OPEN_DATAREQUEST, RESOURCE_SHOW, SHOW_DATAREQUEST
 import helpers
 from .reporting.constants import DATAREQUEST_OPEN_MAX_DAYS, COMMENT_NO_REPLY_MAX_DAYS, \
@@ -94,7 +93,7 @@ def _get_report_type_permission(report_type):
 
 
 def reporting_index():
-    request_helper = RequestHelper(request)
+    request_helper = helpers.RequestHelper(request)
     org_id = request_helper.get_first_query_param('organisation')
     report_type = request_helper.get_first_query_param('report_type', '')
 
@@ -162,7 +161,7 @@ def reporting_index():
 
 
 def export_reports():
-    report_type = RequestHelper(request).get_first_query_param('report_type', '')
+    report_type = helpers.RequestHelper(request).get_first_query_param('report_type', '')
     try:
         report_permission = _get_report_type_permission(report_type)
         helpers.check_user_access(report_permission)
@@ -268,7 +267,7 @@ def _export_admin_report(report_type, report_permission):
 
 
 def datasets(org_id, metric):
-    report_type = RequestHelper(request).get_first_query_param('report_type', '')
+    report_type = helpers.RequestHelper(request).get_first_query_param('report_type', '')
     try:
         report_permission = _get_report_type_permission(report_type)
         reporting_helpers.check_user_org_access(org_id, report_permission)
@@ -361,7 +360,7 @@ def datasets(org_id, metric):
 
 def datarequests(org_id, metric):
     """Displays a list of data requests for the given organisation based on the desired metric"""
-    request_helper = RequestHelper(request)
+    request_helper = helpers.RequestHelper(request)
     report_type = request_helper.get_first_query_param('report_type', '')
     try:
         report_permission = _get_report_type_permission(report_type)
