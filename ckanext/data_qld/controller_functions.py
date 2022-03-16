@@ -49,7 +49,7 @@ def open_datarequest(id):
             data_dict['organization_id'] = c.datarequest.get('organization_id')
 
             tk.get_action(OPEN_DATAREQUEST)(context, data_dict)
-            tk.redirect_to(
+            return tk.redirect_to(
                 tk.url_for('datarequest.show', id=data_dict['id']))
     except tk.ValidationError as e:
         log.warn(e)
