@@ -87,6 +87,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
             'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
             'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
+            'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
