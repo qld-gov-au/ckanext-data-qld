@@ -4,18 +4,17 @@ import logging
 import six
 
 from ckan import plugins
-import ckan.lib.uploader as uploader
 import ckantoolkit as toolkit
 
-from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
-from ckanext.data_qld.dataset_deletion import helpers as dataset_deletion_helpers
-from ckanext.data_qld.reporting.helpers import helpers as reporting_helpers
-from ckanext.data_qld.reporting.logic.action import get
-import ckanext.data_qld.resource_freshness.helpers.helpers as resource_freshness_helpers
-import ckanext.data_qld.resource_freshness.validation as resource_freshness_validator
-import ckanext.data_qld.resource_freshness.logic.actions.get as resource_freshness_get_actions
-from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
-from ckanext.data_qld.resource_visibility import validators as resource_visibility_validators
+from .de_identified_data import helpers as de_identified_data_helpers
+from .dataset_deletion import helpers as dataset_deletion_helpers
+from .reporting.helpers import helpers as reporting_helpers
+from .reporting.logic.action import get
+from .resource_freshness.helpers import helpers as resource_freshness_helpers
+from .resource_freshness import validation as resource_freshness_validator
+from .resource_freshness.logic.actions import get as resource_freshness_get_actions
+from .resource_visibility import helpers as resource_visibility_helpers
+from .resource_visibility import validators as resource_visibility_validators
 
 import actions
 import auth_functions as auth
@@ -35,8 +34,13 @@ request = toolkit.request
 
 log = logging.getLogger(__name__)
 
+if toolkit.check_ckan_version("2.9"):
+    from flask_plugin import MixinPlugin
+else:
+    from pylons_plugin import MixinPlugin
 
-class DataQldPlugin(plugins.SingletonPlugin):
+
+class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     """ Provide functions specific to the Queensland Government Open Data portal.
     """
     plugins.implements(plugins.IConfigurer)
@@ -46,7 +50,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
-    plugins.implements(plugins.IRoutes, inherit=True)
 
     if ' qa' in toolkit.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
@@ -84,6 +87,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
             'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
             'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
             'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
+            'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
@@ -157,14 +161,16 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IPackageController
     def after_show(self, context, data_dict):
-        de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
-        resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
+        # system processes should have access to all resources
+        if context.get('ignore_auth', False) is not True:
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
+            resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
         resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):
         for data_dict in search_results.get('results', []):
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, toolkit.g.userobj)
-            resource_visibility_helpers.process_resources(data_dict, toolkit.g.userobj)
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
+            resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
         return search_results
 
@@ -193,31 +199,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
         # The action resource_create and resource_update will then set the data_dict['size'] = upload.filesize if
         # 'size' not in data_dict.
         file_upload = data_dict.get(u'upload', None)
-        if isinstance(file_upload, uploader.ALLOWED_UPLOAD_TYPES):
+        if helpers.is_uploaded_file(file_upload):
             data_dict.pop(u'size', None)
-
-    # IRoutes
-    def before_map(self, m):
-        # Re_Open a Data Request
-        controller = 'ckanext.data_qld.controller:DataQldUI'
-        m.connect(
-            '/%s/open/{id}' % constants.DATAREQUESTS_MAIN_PATH, controller=controller,
-            action='open_datarequest', conditions=dict(method=['GET', 'POST']))
-
-        m.connect(
-            '/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
-            controller=controller, action='show_schema', conditions=dict(method=['GET']))
-
-        # Reporting
-        controller = 'ckanext.data_qld.reporting.controller:ReportingController'
-        m.connect('/dashboard/reporting/export', controller=controller, action='export')
-        m.connect('dashboard.reports', '/dashboard/reporting', controller=controller, action='index')
-        m.connect(
-            '/dashboard/reporting/datasets/{org_id}/{metric}', controller=controller, action='datasets')
-        m.connect(
-            '/dashboard/reporting/datarequests/{org_id}/{metric}', controller=controller, action='datarequests')
-
-        return m
 
     # IQA
     def custom_resource_score(self, resource, resource_score):

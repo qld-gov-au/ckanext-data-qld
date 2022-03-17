@@ -1,10 +1,11 @@
 {#- master snippet for all scheming display fields -#}
 {#- render the field the user requested, or use a default field -#}
-
 {%- set display_snippet = field.display_snippet -%}
 
 {%- if not display_snippet -%}
-  {%- if h.scheming_field_choices(field) -%}
+  {%- if field.repeating_subfields -%}
+    {%- set display_snippet = 'repeating_subfields.html' -%}
+  {%- elif h.scheming_field_choices(field) -%}
     {%- set display_snippet = 'select.html' -%}
   {%- else -%}
     {%- set display_snippet = 'text.html' -%}
@@ -15,14 +16,14 @@
   {%- set display_snippet = 'scheming/display_snippets/' + display_snippet -%}
 {%- endif -%}
 
-
-{%- if field.field_name in data and data[field.field_name] != None and data[field.field_name]|length -%}
-  {%- snippet display_snippet, field=field, data=data, errors=errors,
-    entity_type=entity_type, object_type=object_type -%}
-{%- elif field.field_name|title in data -%}
-  {%- set display_snippet = 'scheming/display_snippets/title_case.html' -%}
-  {%- snippet display_snippet, field=field, data=data, errors=errors,
-    entity_type=entity_type, object_type=object_type -%}
+{%- if field.field_name in data or field.field_name|title in data -%}
+  {%- snippet display_snippet,
+    field=field,
+    data=data,
+    errors=errors,
+    entity_type=entity_type,
+    object_type=object_type
+  -%}
 {%- else -%}
   {%- if field.field_name.lower() == 'url' and field.label.lower() == 'source' -%}
     Not applicable

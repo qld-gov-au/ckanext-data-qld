@@ -1,9 +1,10 @@
 {% ckan_extends %}
 
 {% block breadcrumb_content %}
-    {% set route_name = 'organization_read' %}
     {% if h.ckan_version() > '2.9' %}
-      {% set route_name = h.map_pylons_to_flask_route_name(route_name) %}
+      {% set route_name = 'organization.read' %}
+    {% else %}
+      {% set route_name = 'organization_read' %}
     {% endif %}
     <li>{% link_for _('Organizations'), named_route='organization.index' %}</li>
     <li>{% link_for pkg.organization.title, named_route=route_name, id=pkg.organization.name %}</li>

@@ -18,7 +18,7 @@
   {% endif %}
 
   {% if h.check_access('open_datarequest', {'id':datarequest_id }) and c.datarequest.closed %}
-    {% link_for _('Re-open'), named_route='datarequest.open', id=datarequest_id, class_='btn btn-success', icon='unlock' %}
+    {% link_for _('Re-open'), named_route='data_qld.open_datarequest', id=datarequest_id, class_='btn btn-success', icon='unlock' %}
   {% endif %}
 
 {% endblock %}

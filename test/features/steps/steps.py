@@ -59,7 +59,7 @@ def login_link_visible(context):
     """)
 
 
-@step('I fill in title with random text')
+@step(u'I fill in title with random text')
 def title_random_text(context):
 
     assert context.persona
@@ -109,7 +109,6 @@ def go_to_datarequest_page(context):
 
 @step(u'I log in and create a datarequest')
 def log_in_create_a_datarequest(context):
-
     assert context.persona
     context.execute_steps(u"""
         When I log in and go to the data requests page
@@ -126,7 +125,7 @@ def create_datarequest(context):
         And I click the link with text that contains "Add data request"
         And I fill in title with random text
         And I fill in "description" with "Test description"
-        And I press the element with xpath "//button[contains(string(), 'Create data request')]"
+        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
     """)
 
 
@@ -193,12 +192,30 @@ def submit_reply_with_comment(context, comment):
         "document.querySelector('.comment-wrapper form .form-actions input[type=\"submit\"]').click();")
 
 
-@step('I create a dataset with license {license} and resource file {file}')
+@step(u'I create a dataset with title "{title}"')
+def create_dataset_titled(context, title):
+    context.execute_steps(u"""
+        When I visit "dataset/new"
+        And I fill in "title" with "{title}"
+        And I fill in "notes" with "Description"
+        And I fill in "version" with "1.0"
+        And I fill in "author_email" with "test@me.com"
+        And I select "NO" from "de_identified_data"
+        And I press "Add Data"
+        And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
+        And I fill in "name" with "Test Resource"
+        And I select "HTML" from "format"
+        And I fill in "description" with "Test Resource Description"
+        And I press "Finish"
+    """.format(title=title))
+
+
+@step(u'I create a dataset with license {license} and resource file {file}')
 def create_dataset_json(context, license, file):
     create_dataset(context, license, 'JSON', file)
 
 
-@step('I create a dataset with license {license} and {file_format} resource file {file}')
+@step(u'I create a dataset with license {license} and {file_format} resource file {file}')
 def create_dataset(context, license, file_format, file):
     assert context.persona
     context.execute_steps(u"""
@@ -236,7 +253,7 @@ def should_receive_base64_email_containing_text(context, address, text):
     assert context.mail.user_messages(address, filter_contents)
 
 
-@step('I log in and go to admin config page')
+@step(u'I log in and go to admin config page')
 def log_in_go_to_admin_config(context):
     assert context.persona
     context.execute_steps(u"""
@@ -245,6 +262,6 @@ def log_in_go_to_admin_config(context):
     """)
 
 
-@step('I go to admin config page')
+@step(u'I go to admin config page')
 def go_to_admin_config(context):
     when_i_visit_url(context, '/ckan-admin/config')

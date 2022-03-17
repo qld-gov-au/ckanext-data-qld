@@ -1,5 +1,8 @@
-import logging
+# encoding: utf-8
+
 from ckan.lib.cli import CkanCommand
+
+import command_functions
 
 
 class SendEmailDatasetDueToPublishingNotification(CkanCommand):
@@ -15,11 +18,7 @@ class SendEmailDatasetDueToPublishingNotification(CkanCommand):
     def command(self):
         self._load_config()
         # Need to do CKAN imports and logger after load config
-        from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
-        log = logging.getLogger(__name__)
-        log.info('Started command SendEmailDatasetDueToPublishingNotification')
-        resource_freshness_helpers.process_email_notification_for_dataset_due_to_publishing()
-        log.info('Finished command SendEmailDatasetDueToPublishingNotification')
+        command_functions.send_email_dataset_due_to_publishing_notification()
 
 
 class SendEmailDatasetOverdueNotification(CkanCommand):
@@ -35,8 +34,4 @@ class SendEmailDatasetOverdueNotification(CkanCommand):
     def command(self):
         self._load_config()
         # Need to do CKAN imports and logger after load config
-        from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
-        log = logging.getLogger(__name__)
-        log.info('Started command SendEmailDatasetOverdueNotification')
-        resource_freshness_helpers.process_email_notification_for_dataset_overdue()
-        log.info('Finished command SendEmailDatasetOverdueNotification')
+        command_functions.send_email_dataset_overdue_notification()
