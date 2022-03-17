@@ -3,6 +3,7 @@
 import ckan.plugins as p
 
 import blueprints
+from .reporting import blueprints as reporting_blueprints
 import click_cli
 
 
@@ -13,7 +14,7 @@ class MixinPlugin(p.SingletonPlugin):
     # IBlueprint
 
     def get_blueprint(self):
-        return blueprints.get_blueprints()
+        return [blueprints.blueprint, reporting_blueprints.blueprint]
 
     # IClick
 

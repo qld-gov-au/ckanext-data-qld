@@ -2,19 +2,19 @@
 
 from ckantoolkit import BaseController
 
-from ckanext.data_qld import controller_functions
+from controller_functions import datarequests, datasets, export, index
 
 
 class ReportingController(BaseController):
 
     def index(self):
-        return controller_functions.reporting_index()
+        return index()
 
     def export(self):
-        return controller_functions.export_reports()
+        return export()
 
     def datasets(self, org_id, metric):
-        return controller_functions.datasets(org_id, metric)
+        return datasets(org_id, metric)
 
     def datarequests(self, org_id, metric):
-        return controller_functions.datarequests(org_id, metric)
+        return datarequests(org_id, metric)
