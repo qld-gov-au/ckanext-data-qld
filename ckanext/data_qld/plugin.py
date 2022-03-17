@@ -6,15 +6,15 @@ import six
 from ckan import plugins
 import ckantoolkit as toolkit
 
-from ckanext.data_qld.de_identified_data import helpers as de_identified_data_helpers
-from ckanext.data_qld.dataset_deletion import helpers as dataset_deletion_helpers
-from ckanext.data_qld.reporting.helpers import helpers as reporting_helpers
-from ckanext.data_qld.reporting.logic.action import get
-import ckanext.data_qld.resource_freshness.helpers.helpers as resource_freshness_helpers
-import ckanext.data_qld.resource_freshness.validation as resource_freshness_validator
-import ckanext.data_qld.resource_freshness.logic.actions.get as resource_freshness_get_actions
-from ckanext.data_qld.resource_visibility import helpers as resource_visibility_helpers
-from ckanext.data_qld.resource_visibility import validators as resource_visibility_validators
+from .de_identified_data import helpers as de_identified_data_helpers
+from .dataset_deletion import helpers as dataset_deletion_helpers
+from .reporting.helpers import helpers as reporting_helpers
+from .reporting.logic.action import get
+from .resource_freshness.helpers import helpers as resource_freshness_helpers
+from .resource_freshness import validation as resource_freshness_validator
+from .resource_freshness.logic.actions import get as resource_freshness_get_actions
+from .resource_visibility import helpers as resource_visibility_helpers
+from .resource_visibility import validators as resource_visibility_validators
 
 import actions
 import auth_functions as auth
