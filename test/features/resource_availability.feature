@@ -50,7 +50,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I should see "Data and Resources"
 
 
-    Scenario Outline: User creates resource for a dataset with Contains de-identified data is YES
+    Scenario Outline: When a user creates a resource for a dataset with Contains de-identified data is YES, re-identification risks must be assessed and data can be hidden from the public.
         Given "<User>" as the persona
         When I log in
         And I resize the browser to 1024x2048
@@ -110,7 +110,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
 
-    Scenario Outline: User creates resource for a dataset with Contains de-identified data is NO
+    Scenario Outline: When a user creates a resource for a dataset with Contains de-identified data is NO, re-identification risks do not need to be assessed, but data can still be hidden from the public.
         Given "<User>" as the persona
         When I log in
         And I resize the browser to 1024x2048
