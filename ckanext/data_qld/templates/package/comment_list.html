@@ -2,7 +2,11 @@
 
 {% resource "comments_js/comment_validation.js" %}
 
-{% resource "data_qld/flag-comment.js" %}
+{% if h.ckan_version() > '2.9' %}
+    {% asset "data_qld/flag-comment-js" %}
+{% else %}
+    {% resource "data_qld/flag-comment.js" %}
+{% endif %}
 
 {% set content_type = content_type or 'dataset' %}
 {% set thread = h.get_comment_thread(pkg_name, content_type) %}

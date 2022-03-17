@@ -1,0 +1,64 @@
+ckanext-report-js:
+  contents:
+    - ckanext-report.js
+  output: data_qld/%(version)s_ckanext-report.js
+  extra:
+    preload:
+      - vendor/jquery
+
+data_qld-css:
+  contents:
+    - data_qld.css
+  filters: cssrewrite
+  output: data_qld/%(version)_data-qld.css
+
+dataset-deletion-js:
+  contents:
+    - dataset-deletion.js
+  filters: rjsmin
+  output: data_qld/%(version)s_dataset-deletion.js
+  extra:
+    preload:
+      - vendor/jquery
+
+flag-comment-js:
+  contents:
+    - flag-comment.js
+  filters: rjsmin
+  output: data_qld/%(version)s_flag-comment.js
+  extra:
+    preload:
+      - base/main
+
+main-css:
+  contents:
+    - main.css
+  filters: cssrewrite
+  output: data_qld/%(version)_main.css
+
+next-update-due-js:
+  contents:
+    - next-update-due.js
+  filters: rjsmin
+  output: data_qld/%(version)s_next-update-due.js
+  extra:
+    preload:
+      - vendor/jquery
+
+resource_file_upload-js:
+  contents:
+    - resource_file_upload.js
+  filters: rjsmin
+  output: data_qld/%(version)s_resource_file_upload.js
+  extra:
+    preload:
+      - vendor/jquery
+
+resource_visibility-js:
+  contents:
+    - resource_visibility.js
+  filters: rjsmin
+  output: data_qld/%(version)s_resource_visibility.js
+  extra:
+    preload:
+      - vendor/jquery
