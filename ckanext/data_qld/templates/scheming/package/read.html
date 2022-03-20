@@ -2,12 +2,14 @@
 
 {% block breadcrumb_content %}
     {% if h.ckan_version() > '2.9' %}
-      {% set route_name = 'organization.read' %}
+      {% set index_route_name = 'organization.index' %}
+      {% set org_route_name = 'organization.read' %}
     {% else %}
-      {% set route_name = 'organization_read' %}
+      {% set index_route_name = 'organization_index' %}
+      {% set org_route_name = 'organization_read' %}
     {% endif %}
-    <li>{% link_for _('Organizations'), named_route='organization.index' %}</li>
-    <li>{% link_for pkg.organization.title, named_route=route_name, id=pkg.organization.name %}</li>
+    <li>{% link_for _('Organizations'), named_route=index_route_name %}</li>
+    <li>{% link_for pkg.organization.title, named_route=org_route_name, id=pkg.organization.name %}</li>
 
     <li class="active"><a href="{{ h.url_for('dataset_read', id=pkg.name) }}">{{ pkg.title }}</a></li>
 {% endblock %}
