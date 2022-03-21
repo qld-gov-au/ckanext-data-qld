@@ -1,12 +1,10 @@
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import json
 import logging
 
-request = toolkit.request
-get_action = toolkit.get_action
-ValidationError = toolkit.ValidationError
-get_endpoint = toolkit.get_endpoint
-h = toolkit.h
+from ckantoolkit import request, get_action, ValidationError, get_endpoint, h
+
 log = logging.getLogger(__name__)
 
 

@@ -1,0 +1,23 @@
+{% ckan_extends %}
+
+{% block breadcrumb_content %}
+    {% if h.ckan_version() > '2.9' %}
+      {% set index_route_name = 'organization.index' %}
+      {% set org_route_name = 'organization.read' %}
+    {% else %}
+      {% set index_route_name = 'organization_index' %}
+      {% set org_route_name = 'organization_read' %}
+    {% endif %}
+    <li>{% link_for _('Organizations'), named_route=index_route_name %}</li>
+    <li>{% link_for pkg.organization.title, named_route=org_route_name, id=pkg.organization.name %}</li>
+
+    <li class="active"><a href="{{ h.url_for('dataset_read', id=pkg.name) }}">{{ pkg.title }}</a></li>
+{% endblock %}
+
+{% block package_notes %}
+    <section>
+      {{ h.qa_openness_stars_dataset_html(pkg) }}
+    </section>
+ {{ super() }}
+{% endblock %}
+

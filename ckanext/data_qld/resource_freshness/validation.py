@@ -1,5 +1,6 @@
 # encoding: utf-8
-import ckan.plugins.toolkit as tk
+
+import ckantoolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import datetime as dt
 

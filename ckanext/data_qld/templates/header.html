@@ -1,0 +1,115 @@
+{% ckan_extends %}
+
+{% block header_wrapper %} {% block header_account %}
+<div class="account-masthead">
+  <div class="container">
+    {% block header_account_container_content %} {% if c.userobj %}
+    <div class="account avatar authed" data-module="me" data-me="{{ c.userobj.id }}">
+      <ul class="unstyled">
+        {% block header_account_logged %} {% if c.userobj.sysadmin %}
+        <li>CKAN {{ h.ckan_version() }}</li>
+        <li>
+          <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
+            <i class="fa fa-gavel" aria-hidden="true"></i>
+            <span class="text">{{ _('Admin') }}</span>
+          </a>
+        </li>
+        {% endif %}
+        <li>
+          <a href="{{ h.url_for('user.read', id=c.userobj.name) }}" class="image" title="{{ _('View profile') }}">
+                  {{ h.gravatar((c.userobj.email_hash if c and c.userobj else ''), size=22) }}
+                  <span class="username">{{ c.userobj.display_name }}</span>
+                </a>
+        </li>
+        {% set new_activities = h.new_activities() %}
+        <li class="notifications {% if new_activities > 0 %}notifications-important{% endif %}">
+          {% set notifications_tooltip = ngettext('Dashboard (%(num)d new item)', 'Dashboard (%(num)d new items)', new_activities)
+          %}
+          <a href="{{ h.url_for('dashboard.index') }}" title="{{ notifications_tooltip }}">
+            <i class="fa fa-tachometer" aria-hidden="true"></i>
+            <span class="text">{{ _('Dashboard') }}</span>
+            <span class="badge">{{ new_activities }}</span>
+          </a>
+        </li>
+        {% block header_account_settings_link %}
+          {{ super() }}
+        {% endblock %} {% block header_account_log_out_link %}
+          {{ super() }}
+        {% endblock %} {% endblock %}
+        {% if h.is_datarequests_enabled() %}
+        <li><a href="{{ h.url_for('datarequest.index') }}">Request data</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    {% else %}
+    <nav class="account not-authed">
+      <ul class="unstyled">
+        {% block header_account_notlogged %}
+        <li>{% link_for _('Log in'), named_route='user.login' %}</li>
+        {% if h.check_access('user_create') %}
+        <li>{% link_for _('Register'), named_route='user.register', class_='sub' %}</li>
+        {% endif %} {% endblock %}
+        {% if h.is_datarequests_enabled() %}
+        <li><a href="{{ h.url_for('datarequest.index') }}">Request data</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %} {% endblock %}
+  </div>
+</div>
+{% endblock %}
+<header class="navbar navbar-static-top masthead">
+  {% block header_debug %} {% if g.debug and not g.debug_supress_header %}
+  <div class="debug">Controller : {{ c.controller }}<br/>Action : {{ c.action }}</div>
+  {% endif %} {% endblock %}
+  <div class="container">
+    <button
+      data-target="#main-navigation-toggle"
+      data-toggle="collapse"
+      class="btn btn-navbar navbar-toggle collapsed"
+      type="button"
+    >
+      <span class="fa fa-bars"></span>
+      <span class="sr-only">Open/Close Mobile Menu</span>
+    </button>
+    <hgroup class="header-image pull-left">
+      <!--
+                <img src="https://www.data.qld.gov.au/__data/assets/file/0014/100832/qld-gov-open-data-logo.svg" height="37px" alt="Queensland Government">
+      -->
+      <a class="logo" href="https://www.qld.gov.au" title="Link to Queensland Gov website">
+        <img src="https://www.data.qld.gov.au/__data/assets/file/0035/218789/qg-coa-white.svg" alt="Queensland Government" class="hidden-xs">
+        <img src="https://www.data.qld.gov.au/__data/assets/file/0027/218790/qg-coa-stacked-white.svg" alt="Queensland Government" class="hidden-sm hidden-md hidden-lg">
+        <img src="https://www.data.qld.gov.au/__data/assets/file/0028/218791/qg-coa-stacked.svg" alt="Queensland Government" class="hidden-xs hidden-sm hidden-md hidden-lg qg-print-coat-of-arms">
+      </a>
+      <div class="header__data-portal">
+        <a href="/">Open Data Portal</a>
+      </div>
+    </hgroup>
+
+    <div class="collapse navbar-collapse" id="main-navigation-toggle">
+      {% block header_site_navigation %}
+      <nav class="section navigation">
+        <ul class="nav nav-pills">
+          {% block header_site_navigation_tabs %}
+          <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for('search') }}">Data</a></li>
+          <li>
+            <a href="/article/news-and-events">News and events</a>
+          </li>
+          <li>
+            <a href="/article/case-studies">Case studies</a>
+          </li>
+          <li>
+            <a href="/article/standards-and-guidance">Standards and guidance</a>
+          </li>
+          <li><a href="/article/contact">Contact</a></li>
+		  {% endblock %}
+        </ul>
+      </nav>
+      {% endblock %} {% block header_site_search %}
+        {{ super() }}
+      {% endblock %}
+    </div>
+  </div>
+</header>
+
+{% endblock %}

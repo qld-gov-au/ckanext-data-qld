@@ -1,0 +1,10 @@
+{% set value = data[field.field_name] %}
+{% if not value %}
+  {% set value = data[field.field_name|title] %}
+{% endif %}
+{% if value and field.field_name == 'size' %}
+  {% set value = h.data_qld_filesize_formatter(value) %}
+{% endif %}
+{% if value %}
+  {{ value }}
+{% endif %}

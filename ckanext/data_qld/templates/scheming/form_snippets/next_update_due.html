@@ -1,0 +1,7 @@
+
+{% import 'macros/form.html' as form %}
+
+{%- snippet 'scheming/form_snippets/date.html', field=field, data=data, errors=errors -%}
+
+{{ form.hidden('update_frequency_days', h.data_qld_update_frequencies_from_config()) }}
+{% resource 'data_qld/next-update-due.js' %}

@@ -1,5 +1,4 @@
-ckanext-data-qld
-================
+# ckanext-data-qld
 
 A custom CKAN extension for Data.Qld
 
@@ -13,7 +12,7 @@ A custom CKAN extension for Data.Qld
   - [Pygmy](https://pygmy.readthedocs.io/)
   - [Ahoy](https://github.com/ahoy-cli/ahoy)
 - Make sure that all local web development services are shut down (Apache/Nginx, Mysql, MAMP etc).
-- Checkout project repository (in one of the [supported Docker directories](https://docs.docker.com/docker-for-mac/osxfs/#access-control)).  
+- Checkout project repository (in one of the [supported Docker directories](https://docs.docker.com/docker-for-mac/osxfs/#access-control)).
 - `pygmy up`
 - `ahoy build`
 - You may need to use sudo on linux
@@ -57,7 +56,7 @@ Use `admin`/`password` to login to CKAN.
 
 ## Available `ahoy` commands
 Run each command as `ahoy <command>`.
-  ```  
+  ```
    build        Build or rebuild project.
    clean        Remove containers and all build files.
    cli          Start a shell inside CLI container or run a command.
@@ -79,7 +78,7 @@ Run each command as `ahoy <command>`.
   ```
 
 ## Coding standards
-Python code linting uses [flake8](https://github.com/PyCQA/flake8) with configuration captured in `.flake8` file.   
+Python code linting uses [flake8](https://github.com/PyCQA/flake8) with configuration captured in `.flake8` file.
 
 Set `ALLOW_LINT_FAIL=1` in `.env` to allow lint failures.
 
@@ -101,16 +100,16 @@ Custom steps described in `test/features/steps/steps.py`.
 Test scenarios located in `test/features/*.feature` files.
 
 Test environment configuration is located in `test/features/environment.py` and is setup to connect to a remote Chrome
-instance running in a separate Docker container. 
+instance running in a separate Docker container.
 
 During the test, Behaving passes connection information to [Splinter](https://github.com/cobrateam/splinter) which
-instantiates WebDriver object and establishes connection with Chrome instance. All further communications with Chrome 
+instantiates WebDriver object and establishes connection with Chrome instance. All further communications with Chrome
 are handled through this driver, but in a developer-friendly way.
 
 For a list of supported step-definitions, see https://github.com/ggozad/behaving#behavingweb-supported-matcherssteps.
 
 ## Automated builds (Continuous Integration)
-In software engineering, continuous integration (CI) is the practice of merging all developer working copies to a shared mainline several times a day. 
+In software engineering, continuous integration (CI) is the practice of merging all developer working copies to a shared mainline several times a day.
 Before feature changes can be merged into a shared mainline, a complete build must run and pass all tests on CI server.
 
 This project uses [GitHub Actions](https://github.com/features/actions) as a CI server: it imports production backups into fully built codebase and runs code linting and tests. When tests pass, a deployment process is triggered for nominated branches (usually, `master` and `develop`).
@@ -127,10 +126,6 @@ This project uses [GitHub Actions](https://github.com/features/actions) as a CI 
 
 3. Add the extension to the relevant CKAN `.ini` file `plugins` definition:
 
-        ckan.plugins = ... data_qld_resources data_qld_integration
-
-Or to enable all at once (deprecated):
-
         ckan.plugins = ... data_qld
 
 # data_qld_google_analytics
@@ -140,15 +135,15 @@ A custom CKAN extension for Data.Qld for sending API requests to Google Analytic
 
 1. Add the extension to the relevant CKAN `.ini` file `plugins` definition:
 
-        ckan.plugins = ... data_qld_google_analytics 
+        ckan.plugins = ... data_qld_google_analytics
 
-2. Add the config settings to relevant CKAN `.ini` file 
+2. Add the config settings to relevant CKAN `.ini` file
 
         # ckanext-data_qld_googleanalytics
         ckan.data_qld_googleanalytics.id = UA-1010101-1 # Relevant Google analytics ID
         ckan.data_qld_googleanalytics.collection_url = http://www.google-analytics.com/collect
 
-3. The file capture_api_actions.json is a dictionary of api actions to capture to send to google analytics 
+3. The file capture_api_actions.json is a dictionary of api actions to capture to send to google analytics
 
 a. The dictionary key is the name of the api_action from https://docs.ckan.org/en/2.8/api/index.html#action-api-reference
 b. The dictionary value is the event_label sent to google analytics with the {0} replaced with the query parameter value eg. package_id, resource_id, query values, sql query
@@ -171,7 +166,7 @@ The legacy field values need to be migrated to their schema counterparts.
 
 The `ckanext-data-qld` extension contains a paster command for doing this (ref.: https://github.com/qld-gov-au/ckanext-data-qld/blob/develop/ckanext/data_qld/commands.py)
 
-*Note: This paster command was designed to be run once for initial migration of legacy extra fields, so isn't idempotent. 
+*Note: This paster command was designed to be run once for initial migration of legacy extra fields, so isn't idempotent.
 If migration command is run multiple times there should not be any issues, but it is not recommended to be used again once the site is live*
 
 To run the command:

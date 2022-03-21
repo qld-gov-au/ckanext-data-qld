@@ -1,11 +1,12 @@
-import ckan.plugins.toolkit as toolkit
+# encoding: utf-8
+
 import logging
 
 from ckan.model.package import Package
-from ckanext.data_qld import helpers as data_qld_helpers, auth_functions as auth_functions
+from ckantoolkit import h, get_action
 
-toolkit_helpers = toolkit.h
-get_action = toolkit.get_action
+from ckanext.data_qld import helpers as data_qld_helpers, auth_functions
+
 log = logging.getLogger(__name__)
 
 
@@ -33,12 +34,12 @@ def get_select_field_options(field_name, field_schema='resource_fields'):
     """
     Return a list of select options.
     """
-    schema = toolkit_helpers.scheming_get_dataset_schema('dataset') \
-        if 'scheming_datasets' in toolkit.config.get('ckan.plugins', '') else {}
+    if 'scheming_get_dataset_schema' in h:
+        schema = h.scheming_get_dataset_schema('dataset')
 
-    for field in schema.get(field_schema, []):
-        if field.get('field_name') == field_name and field.get('choices', None):
-            return toolkit_helpers.scheming_field_choices(field)
+        for field in schema.get(field_schema, []):
+            if field.get('field_name') == field_name and field.get('choices', None):
+                return h.scheming_field_choices(field)
 
     return []
 
@@ -100,7 +101,7 @@ def show_resource_visibility(resource_dict):
     Return False if the user does not have
     admin, editor, or sysadmin access to the datasets organisation.
     """
-    user_obj = toolkit.g.userobj
+    user_obj = data_qld_helpers.get_user()
     if user_obj is not None:
         is_sysadmin = user_obj.sysadmin
         if is_sysadmin:

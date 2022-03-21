@@ -1,6 +1,9 @@
-import ckan.lib.formatters as formatters
+# encoding: utf-8
+
 import re
-from ckan.plugins.toolkit import Invalid
+
+import ckan.lib.formatters as formatters
+from ckantoolkit import Invalid
 
 
 def filesize_converter(value, context):
@@ -62,4 +65,8 @@ def filesize_formatter(size):
     :rtype: string
 
     """
-    return formatters.localised_filesize(int(size))
+    try:
+        return formatters.localised_filesize(int(size))
+    except (AttributeError, ValueError):
+        # already formatted or unable to run formatter
+        return size
