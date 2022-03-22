@@ -7,7 +7,30 @@ Feature: Data QLD Theme
 
        Scenario: Organisation is in fact spelled Organisation (as opposed to Organization)
               When I go to organisation page
-              Then I should not see "Organization"
+              Then I should see "Organisation"
+              And I should not see "Organization"
+
+       Scenario: When I create an organisation without a description, the display should not mention its absence
+              When I go to organisation page
+              And I click the link with text "Add Organisation"
+              Then I should see "Create an Organisation"
+              When I fill in "name" with "Org without description"
+              And I click the element with xpath "//button[contains(@class, 'btn-primary')]"
+              Then I should see "Org without description"
+              And I should see "No datasets found"
+              And I should not see "There is no description"
+
+       Scenario: When I create an organisation with a description, there should be a Read More link
+              When I go to organisation page
+              And I click the link with text "Add Organisation"
+              Then I should see "Create an Organisation"
+              When I fill in "name" with "Org with description"
+              And I fill in "description" with "Some description or other"
+              And I click the element with xpath "//button[contains(@class, 'btn-primary')]"
+              Then I should see "Org with description"
+              And I should see "No datasets found"
+              And I should see "Some description or other"
+              And I should see an element with xpath "//a[text() = 'read more' and contains(@href, '/organization/about/org-with-description')]"
 
        Scenario: Explore button does not exist on dataset detail page
               When I go to dataset page
