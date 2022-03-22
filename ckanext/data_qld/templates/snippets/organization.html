@@ -8,7 +8,11 @@
     {% if organization.description %}
         <p>
         {{ h.markdown_extract(organization.description, 180) }}
-        {% link_for _('read more'), named_route='organization.about', id=organization.name %}
+        {% if h.ckan_version() > '2.9' %}
+          {% link_for _('read more'), named_route='organization.about', id=organization.name %}
+        {% else %}
+          {% link_for _('read more'), controller='organization', action='about', id=organization.name %}
+        {% endif %}
         </p>
     {% endif %}
 {% endblock %}
@@ -16,4 +20,3 @@
 {% block package_openness %}
 
 {% endblock %}
-    
