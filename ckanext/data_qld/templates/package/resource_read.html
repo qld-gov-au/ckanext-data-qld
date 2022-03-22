@@ -94,12 +94,14 @@
           </tr>
           {% endblock %}
         </thead>
+        <tbody>
         {% block resource_data_dictionary_data %}
           {% set dict=h.datastore_dictionary(res.id) %}
           {% for field in dict %}
             {% snippet "package/snippets/dictionary_table.html", field=field %}
           {% endfor %}
         {% endblock %}
+        </tbody>
       </table>
     </div>
   {% endblock %}
