@@ -65,26 +65,20 @@ Feature: Comments
     Scenario: When a logged-in user reports a comment on a Dataset the comment should be marked as reported and an email sent to the admins of the organisation
         Given "TestOrgEditor" as the persona
         When I log in
-        And I resize the browser to 1024x2048
         And I go to dataset "warandpeace" comments
         And I press the element with xpath "//a[contains(@class, 'flag-comment')][1]"
-        And I wait for 2 seconds
         Then I should see "Reported" within 5 seconds
-        When I wait for 3 seconds
         Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-report @datarequest
     Scenario: When a logged-in user reports a comment on a Data Request the comment should be marked as reported and an email notification sent to the organisation admins
         Given "CKANUser" as the persona
         When I log in
-        And I resize the browser to 1024x2048
         And I go to data request "Test Request" comments
         And I submit a comment with subject "Test reporting" and comment "Testing comment reporting"
         Then I should see "Testing comment reporting" within 10 seconds
         And I press the element with xpath "//a[contains(@class, 'flag-comment')][1]"
-        And I wait for 2 seconds
         Then I should see "Reported" within 5 seconds
-        When I wait for 3 seconds
         Then I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-reply

@@ -4,11 +4,16 @@
 
 {% endblock %}
 
+{% if h.ckan_version() > '2.9' %}
+  {% set org_about='organization.about' %}
+{% else %}
+  {% set org_about='organization_about' %}
+{% endif %}
 {% block description %}
     {% if organization.description %}
         <p>
         {{ h.markdown_extract(organization.description, 180) }}
-        {% link_for _('read more'), named_route='organization.about', id=organization.name %}
+        {% link_for _('read more'), named_route=org_about, id=organization.name %}
         </p>
     {% endif %}
 {% endblock %}
@@ -16,4 +21,3 @@
 {% block package_openness %}
 
 {% endblock %}
-    
