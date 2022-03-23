@@ -14,7 +14,7 @@ Feature: Data QLD Theme
         Given "SysAdmin" as the persona
         When I log in
         And I go to organisation page
-        And I click the link with text "Add Organisation"
+        And I click the link with text that contains "Add Organisation"
         Then I should see "Create an Organisation"
         When I fill in "name" with "Org without description"
         And I click the element with xpath "//button[contains(@class, 'btn-primary')]"
@@ -26,7 +26,7 @@ Feature: Data QLD Theme
         Given "SysAdmin" as the persona
         When I log in
         And I go to organisation page
-        And I click the link with text "Add Organisation"
+        And I click the link with text that contains "Add Organisation"
         Then I should see "Create an Organisation"
         When I fill in "name" with "Org with description"
         And I fill in "description" with "Some description or other"
