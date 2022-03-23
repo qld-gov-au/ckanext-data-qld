@@ -70,7 +70,7 @@ Feature: Data QLD Theme
         When I log in
         And I create a dataset with license "other-open" and "CSV" resource file "csv_resource.csv"
         And I wait for 10 seconds
-        When I reload
+        And I click the link with text "Test Resource"
         Then I should see an element with xpath "//a[contains(@class, 'btn-primary') and contains(@href, 'download/csv_resource.csv') and contains(text(), 'Download (CSV)')]"
         When I click the element with xpath "//button[@data-toggle='dropdown']"
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(text(), 'CSV')]"
