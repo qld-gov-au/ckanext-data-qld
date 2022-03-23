@@ -34,7 +34,7 @@ Feature: Data QLD Theme
         Then I should see "Org with description"
         And I should see "No datasets found"
         And I should see "Some description or other"
-        And I should see an element with xpath "//a[text() = 'read more' and contains(@href, '/organization/about/org-with-description')]"
+        And I should see an element with xpath "//a[string() = 'read more' and contains(@href, '/organization/about/org-with-description')]"
 
     Scenario: Explore button does not exist on dataset detail page
         When I go to dataset page
@@ -72,9 +72,9 @@ Feature: Data QLD Theme
         And I create a dataset with license "other-open" and "CSV" resource file "csv_resource.csv"
         And I wait for 10 seconds
         And I click the link with text that contains "Test Resource"
-        Then I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(text(), '(CSV)')]"
+        Then I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
         When I press the element with xpath "//button[@data-toggle='dropdown']"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(text(), 'CSV')]"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(text(), 'TSV')]"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(text(), 'JSON')]"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(text(), 'XML')]"
+        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(string(), 'CSV')]"
+        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(string(), 'TSV')]"
+        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(string(), 'JSON')]"
+        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(string(), 'XML')]"
