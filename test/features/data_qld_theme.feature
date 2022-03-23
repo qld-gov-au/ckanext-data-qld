@@ -68,7 +68,7 @@ Feature: Data QLD Theme
     Scenario: As a publisher, when I create a resource with an API entry, I can download it in various formats
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset with license "cc-by-4.0" and "CSV" resource file "csv_resource.csv"
+        And I create a dataset with license "other-open" and "CSV" resource file "csv_resource.csv"
         And I wait for 10 seconds
         When I reload
         Then I should see an element with xpath "//a[contains(@class, 'btn-primary') and contains(@href, 'download/csv_resource.csv') and contains(text(), 'Download (CSV)')]"
