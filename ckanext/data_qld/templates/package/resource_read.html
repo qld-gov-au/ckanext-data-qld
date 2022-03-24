@@ -55,23 +55,7 @@
 							{% endif %}
 						</a>
 						{% block download_resource_button %}
-							{% if res.datastore_active %}
-								<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-								<li>
-									<a href="{{ h.url_for('datastore.dump', resource_id=res.id, bom=True) }}"
-									target="_blank"><span>CSV</span></a>
-									<a href="{{ h.url_for('datastore.dump', resource_id=res.id, format='tsv', bom=True) }}"
-									target="_blank"><span>TSV</span></a>
-									<a href="{{ h.url_for('datastore.dump', resource_id=res.id, format='json') }}"
-									target="_blank"><span>JSON</span></a>
-									<a href="{{ h.url_for('datastore.dump', resource_id=res.id, format='xml') }}"
-									target="_blank"><span>XML</span></a>
-								</li>
-								</ul>
-							{% endif %}
+							{{ super() }}
 						{% endblock %}
 					</div>
 				</li>
@@ -110,12 +94,14 @@
           </tr>
           {% endblock %}
         </thead>
+        <tbody>
         {% block resource_data_dictionary_data %}
           {% set dict=h.datastore_dictionary(res.id) %}
           {% for field in dict %}
             {% snippet "package/snippets/dictionary_table.html", field=field %}
           {% endfor %}
         {% endblock %}
+        </tbody>
       </table>
     </div>
   {% endblock %}
