@@ -91,7 +91,7 @@ this.ckan.module('flag-comment', function (jQuery) {
       event.preventDefault();
       var comment_id = this.options.comment_id;
       var element = this
-      jQuery.post('/comment/' + comment_id + '/flag', function() {
+      jQuery.get('/comment/' + comment_id + '/flag', function() {
         jQuery(element.el).addClass('hidden');
         jQuery(element.el).parent().find('.comment-flagged').removeClass('hidden');
       })
