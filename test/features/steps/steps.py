@@ -265,3 +265,8 @@ def log_in_go_to_admin_config(context):
 @step(u'I go to admin config page')
 def go_to_admin_config(context):
     when_i_visit_url(context, '/ckan-admin/config')
+
+
+@step(u'I log out')
+def log_out(context):
+    when_i_visit_url(context, '/user/logout')

@@ -113,6 +113,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'data_qld_resource_visibility': resource_visibility_validators.resource_visibility,
+            'data_qld_governance_acknowledgement': resource_visibility_validators.governance_acknowledgement,
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
@@ -163,15 +164,15 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     def after_show(self, context, data_dict):
         # system processes should have access to all resources
         if context.get('ignore_auth', False) is not True:
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
         resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):
         for data_dict in search_results.get('results', []):
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
         return search_results
 
     def delete(self, data_dict):

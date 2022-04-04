@@ -194,7 +194,7 @@
       "label": "Contains de-identified data",
       "preset": "select",
       "required": true,
-      "form_include_blank_choice": true,
+      "form_include_blank_choice": false,
       "choices": [
         {
           "value": "NO",
@@ -270,6 +270,42 @@
       "required": false
     },
     {
+      "field_name": "resource_visibility",
+      "label": "Resource visible",
+      "form_include_blank_choice": false,
+      "validators": "data_qld_resource_visibility",
+      "form_snippet": "resource_visibility.html",
+      "help_text": "Select 'FALSE' to hide. A hidden resource can only be seen by members of the dataset's organisation and system administrators",
+      "choices": [
+        {
+          "value": "TRUE",
+          "label": "TRUE"
+        },
+        {
+          "value": "FALSE",
+          "label": "FALSE"
+        }
+      ]
+    },
+    {
+      "field_name": "governance_acknowledgement",
+      "label": "Re-identification risk governance completed?",
+      "form_snippet": "governance_acknowledgement.html",
+      "validators": "data_qld_governance_acknowledgement",
+      "form_include_blank_choice": false,
+      "choices":[
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ],
+      "help_text": "Select 'NO' where the dataset does NOT contain de-identified data. Where the dataset contains de-identified data, appropriate governance process should be completed to minimise re-identification risk. Acknowledge completion by selecting 'YES'. Selecting 'NO' will hide the resource."
+    },
+    {
       "field_name": "schema",
       "label": "Schema",
       "preset": "resource_schema"
@@ -288,28 +324,6 @@
       "field_name": "validation_timestamp",
       "label": "Validation timestamp",
       "preset": "hidden_in_form"
-    },
-    {
-      "field_name": "resource_visibility",
-      "label": "Re-identification risk governance acknowledgement/Resource visibility",
-      "form_include_blank_choice": true,
-      "validators": "data_qld_resource_visibility ignore_empty",
-      "form_snippet": "resource_visibility.html",
-      "help_text": "Datasets containing de-identified data will not be published and visible until a re-identification risk governance acknowledgement has been made.<br/><br/>This resource can be hidden pending an acknowledgement or otherwise hidden until suitable for publishing.",
-      "choices": [
-        {
-          "value": "Resource visible and re-identification risk governance acknowledgement not required",
-          "label": "Resource visible and re-identification risk governance acknowledgement not required"
-        },
-        {
-          "value": "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing",
-          "label": "Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing"
-        },
-        {
-          "value": "Resource NOT visible/Pending acknowledgement",
-          "label": "Resource NOT visible/Pending acknowledgement"
-        }
-      ]
     },
     {
       "field_name": "last_modified",

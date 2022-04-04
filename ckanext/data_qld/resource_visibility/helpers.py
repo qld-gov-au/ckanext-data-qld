@@ -64,27 +64,25 @@ def process_resources(data_dict, user_obj):
     the resource_visibility value and user.
     """
     # Loop each resources,
-    # If resource is `Resource NOT visible/Pending acknowledgement` and
+    # If resource_visibility is `FALSE` or
+    # resource_visibility is `TRUE` and governance_acknowledgement is `NO`
+    # and de_identified_data is `YES` and
     # if user is NOT Members, Editors, Admins or sysadmin, remove the resource.
     is_sysadmin = user_obj is not None and user_obj.sysadmin
-
-    if not is_sysadmin:
-        if not has_user_permission_for_org(data_dict.get('owner_org'), user_obj, 'read'):
-            resources = data_dict.get('resources', [])
-            options = get_select_field_options('resource_visibility')
-            de_identified_data = data_dict.get('de_identified_data', 'NO') == 'YES'
-
-            for resource in list(resources):
-                resource_visibility = resource.get('resource_visibility', '')
-                # Value of options[2] == Resource NOT visible/Pending acknowledgement.
-                if resource_visibility == options[2].get('value') if len(options) >= 3 else False \
-                        or len(resource_visibility) == 0 and de_identified_data:
-                    resources.remove(resource)
-                    data_dict['num_resources'] -= 1
-                else:
-                    # Need to remove the resource visibility field from display
-                    # if current user don't have access to it.
-                    process_resource_visibility(resource)
+    if not is_sysadmin and not has_user_permission_for_org(
+        data_dict.get('owner_org'), user_obj, 'read'
+    ):
+        resources = data_dict.get('resources', [])
+        de_identified_data = data_dict.get('de_identified_data', 'NO')
+        for resource in list(resources):
+            resource_visible = resource.get('resource_visibility', 'FALSE')
+            governance_acknowledgement = resource.get('governance_acknowledgement', 'NO')
+            # Remove resource if the condition is True
+            hide_resource = resource_visible == 'TRUE' and governance_acknowledgement == 'NO' and de_identified_data == 'YES'
+            # Always remove if the `resource_visibility` is `FALSE`
+            if (hide_resource or resource_visible == 'FALSE'):
+                resources.remove(resource)
+                data_dict['num_resources'] -= 1
 
 
 def process_resource_visibility(resource_dict):
@@ -94,6 +92,7 @@ def process_resource_visibility(resource_dict):
     """
     if 'resource_visibility' in resource_dict and not show_resource_visibility(resource_dict):
         del resource_dict['resource_visibility']
+        del resource_dict['governance_acknowledgement']
 
 
 def show_resource_visibility(resource_dict):

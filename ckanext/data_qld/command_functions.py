@@ -5,6 +5,7 @@ import logging
 from ckantoolkit import get_action, ValidationError
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
+import ckan.model as model
 
 log = logging.getLogger(__name__)
 
@@ -154,3 +155,57 @@ def send_email_dataset_overdue_notification():
     log.info('Started command SendEmailDatasetOverdueNotification')
     resource_freshness_helpers.process_email_notification_for_dataset_overdue()
     log.info('Finished command SendEmailDatasetOverdueNotification')
+
+
+def update_missing_values():
+    '''
+    Update datasets to trigger data_last_updated field
+    '''
+    context = {'session': model.Session}
+
+    def _get_packages():
+        return get_action('package_list')(
+            data_dict={
+                'all_fields': True,
+                'include_private': True,
+                'include_drafts': True
+            }
+        )
+
+    def _update_resource(res_dict):
+        # Set some defaults
+        try:
+            get_action('resource_patch')(context, res_dict)
+        except Exception as ex:
+            print('Resource exception: %s' % ex)
+
+    def _check_for_null_values(res, pkg_dict):
+        if res.get('nature_of_change', None) is None:
+            res['nature_of_change'] = 'edit-resource-with-no-new-data'
+        if res.get('update_frequency', None):
+            res['update_frequency'] = 'not-update'
+        if res.get('resource_visibility', None) is None:
+            res['resource_visibility'] = 'TRUE'
+            res['governance_acknowledgement'] = 'NO'
+        elif res['resource_visibility'] == 'Resource visible and re-identification risk governance acknowledgement not required':
+            res['resource_visibility'] = 'TRUE'
+            res['governance_acknowledgement'] = 'NO'
+        elif res['resource_visibility'] == 'Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing':
+            res['resource_visibility'] = 'TRUE'
+            res['governance_acknowledgement'] = 'YES'
+        elif res['resource_visibility'] == 'Resource NOT visible/Pending acknowledgement':
+            res['resource_visibility'] = 'FALSE'
+            res['governance_acknowledgement'] = 'NO'
+
+        return res
+
+    updates = 0
+
+    for package in _get_packages():
+        pkg_dict = get_action('package_show')(context, {'id': package})
+        for res in pkg_dict.get('resources', []):
+            res = _check_for_null_values(res, pkg_dict)
+            _update_resource(res)
+            updates += 1
+
+    return "COMPLETED. Total updates %s\n" % updates
