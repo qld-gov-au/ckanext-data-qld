@@ -162,6 +162,8 @@ def update_missing_values():
     Update datasets to trigger data_last_updated field
     '''
     context = {'session': model.Session}
+    site_user = get_action('get_site_user')({'ignore_auth': True}, {})
+    context['user'] = site_user['name']
 
     def _get_packages():
         return get_action('package_list')(
@@ -180,6 +182,7 @@ def update_missing_values():
             print('Resource exception: %s' % ex)
 
     def _check_for_null_values(res, pkg_dict):
+        log.info('Updating null values for resource %s' % res['id'])
         if res.get('nature_of_change', None) is None:
             res['nature_of_change'] = 'edit-resource-with-no-new-data'
         if res.get('update_frequency', None):

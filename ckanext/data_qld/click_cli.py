@@ -46,5 +46,13 @@ def send_email_dataset_overdue_notification():
     command_functions.send_email_dataset_overdue_notification()
 
 
+@data_qld.command()
+def update_missing_values():
+    """
+    Update missing values in datasets.
+    """
+    command_functions.update_missing_values()
+
+
 def get_commands():
     return [data_qld]
