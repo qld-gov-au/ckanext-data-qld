@@ -2,7 +2,7 @@
 
 import flask
 
-from ckan.views import api as core_api
+import ckan.views.api as core_api
 
 import controller_functions
 
