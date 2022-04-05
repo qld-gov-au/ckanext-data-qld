@@ -3,7 +3,7 @@
 import hashlib
 import logging
 
-from ckantoolkit import c
+from ckantoolkit import c, get_action
 
 import plugin
 
@@ -40,8 +40,11 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         plugin.GoogleAnalyticsPlugin.analytics_queue.put(data_dict)
 
 
-def record_api_action(api_action, request_data):
+def action(get_request_data_function, core_function, api_action, ver):
     try:
+        function = get_action(api_action)
+        side_effect_free = getattr(function, 'side_effect_free', False)
+        request_data = get_request_data_function(try_url_params=side_effect_free)
         capture_api_actions = plugin.GoogleAnalyticsPlugin.capture_api_actions
 
         # Only send api actions if it is in the capture_api_actions dictionary
@@ -64,3 +67,4 @@ def record_api_action(api_action, request_data):
     except Exception as e:
         log.debug(e)
         pass
+    return core_function(api_action, ver=ver)
