@@ -40,7 +40,7 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         plugin.GoogleAnalyticsPlugin.analytics_queue.put(data_dict)
 
 
-def _record_api_action(api_action, request_data):
+def record_api_action(api_action, request_data):
     try:
         capture_api_actions = plugin.GoogleAnalyticsPlugin.capture_api_actions
 
