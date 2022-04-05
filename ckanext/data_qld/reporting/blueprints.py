@@ -1,11 +1,22 @@
 # encoding: utf-8
 
-from flask import Blueprint
+import flask
+import six
 
-from controller_functions import datarequests, datasets, export, index
+from controller_functions import datarequests, datasets, export as export_helper, index
 
 
-blueprint = Blueprint(
+def export():
+    return_value, headers = export_helper()
+    if headers and isinstance(headers, dict):
+        response = flask.make_response(return_value)
+        for key, value in six.iteritems(headers):
+            response.headers[key] = value
+    else:
+        return return_value
+
+
+blueprint = flask.Blueprint(
     u'data_qld_reporting',
     __name__,
     url_prefix='/dashboard/reporting'
