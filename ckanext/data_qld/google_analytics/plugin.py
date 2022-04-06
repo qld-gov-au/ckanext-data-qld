@@ -49,6 +49,8 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurable, inherit=True)
     if check_ckan_version('2.8'):
         p.implements(p.IBlueprint)
+        # workaround for https://github.com/ckan/ckan/issues/6678
+        import ckan.views.api as core_api
     else:
         p.implements(p.IRoutes, inherit=True)
 
