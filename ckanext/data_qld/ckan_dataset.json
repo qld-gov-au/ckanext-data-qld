@@ -41,7 +41,7 @@
       "label": "Organization",
       "preset": "dataset_organization"
     },
-      {
+    {
       "field_name": "data_last_updated",
       "label": "Data last updated",
       "form_snippet": null,
@@ -188,8 +188,8 @@
       "form_snippet": "next_update_due.html",
       "display_snippet": "date.html",
       "validators": "data_qld_validate_next_update_due ignore_empty convert_to_json_if_date"
-     },
-     {
+    },
+    {
       "field_name": "de_identified_data",
       "label": "Contains de-identified data",
       "preset": "select",
@@ -212,7 +212,7 @@
       "form_snippet": null,
       "display_snippet": null,
       "create_validators": "ignore"
-     }
+    }
   ],
   "resource_fields": [
     {
@@ -229,8 +229,7 @@
       "display_snippet": null,
       "help_text": "This dataset’s ‘Next update due’ date is automatically updated when ‘Adding new time series data to the resource’ is selected. This date can be subsequently edited in the dataset ‘Manage’ page.",
       "validators": "data_qld_validate_nature_of_change_data ignore_empty scheming_choices",
-      "create_validators": "ignore",
-      "choices":[
+      "choices": [
         {
           "value": "add-new-time-series",
           "label": "Adding new time series data to the resource"
@@ -293,7 +292,7 @@
       "form_snippet": "governance_acknowledgement.html",
       "validators": "data_qld_governance_acknowledgement",
       "form_include_blank_choice": false,
-      "choices":[
+      "choices": [
         {
           "value": "NO",
           "label": "NO"
