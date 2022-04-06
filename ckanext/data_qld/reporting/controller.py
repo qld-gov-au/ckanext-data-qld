@@ -17,6 +17,7 @@ class ReportingController(BaseController):
         if headers and isinstance(headers, dict):
             for key, value in six.iteritems(headers):
                 response.headers[key] = value
+        return return_value
 
     def datasets(self, org_id, metric):
         return datasets(org_id, metric)
