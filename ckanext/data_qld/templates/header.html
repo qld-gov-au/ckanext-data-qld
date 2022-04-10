@@ -59,6 +59,9 @@
 </div>
 {% endblock %}
 <header class="navbar navbar-static-top masthead">
+  {% block header_debug %}
+    {{ super() }}
+  {% endblock %}
   <div class="container">
     <button
       data-target="#main-navigation-toggle"
