@@ -206,10 +206,13 @@ def is_request_for_resource():
     eg. /dataset/example/resource/b33a702a-f162-44a8-aad9-b9e630a8f56e
     :return:
     """
-    original_request = request.environ.get('pylons.original_request')
-    if original_request:
-        return re.search(r"/dataset/\S+/resource/\S+",
-                         original_request.path)
+    if request:
+        path = request.path
+        if hasattr(request, 'environ'):
+            original_request = request.environ.get('pylons.original_request')
+            if original_request:
+                path = original_request.path
+        return re.search(r"/dataset/\S+/resource/\S+", path)
     return False
 
 
