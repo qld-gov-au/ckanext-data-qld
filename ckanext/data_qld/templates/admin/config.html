@@ -30,6 +30,10 @@
             error=errors['ckan.comments.profanity_list']
         )
     -}}
+
+{% if h.closing_circumstances_enabled %}
+    {{ form.textarea('ckan.datarequests.closing_circumstances', id='field-ckan.datarequests.closing_circumstances', label=_('Data request closing circumstances'), placeholder=_('eg.\nPartially released|nominate_dataset\nTo be released as open data at a later date|nominate_approximate_date\nData openly available elsewhere'), value=data['ckan.datarequests.closing_circumstances'], error=errors['ckan.datarequests.closing_circumstances']) }}
+{% endif %}
 {% endif %}
 
 {{ form.textarea('ckanext.data_qld.resource_formats', id='field-ckanext.data_qld.resource_formats', label=_('Resource formats'), placeholder=_('eg. CSV, DOCX, HTML, PDF'), value=data['ckanext.data_qld.resource_formats'], error=errors['ckanext.data_qld.resource_formats']) }}
@@ -60,4 +64,14 @@
 <p><strong>Data Request Suggested Description:</strong> Guidance on what information to include</p>
 {% endtrans %}
 
+{% if h.closing_circumstances_enabled %}
+    <p>
+        <strong>Data Request Closing Circumstances:</strong>
+        Options displayed when closing a data request </br>
+        Optional conditions are added to an option by adding a pipe character (|) followed by the condition</br>
+        The following conditions can be used:</br>
+        - nominate_dataset (e.g. Released as open data|nominate_dataset)</br>
+        - nominate_approximate_date (e.g.To be released as open data at a later date|nominate_approximate_date)
+    </p>
+{% endif %}
 {% endblock %}
