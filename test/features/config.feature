@@ -12,6 +12,7 @@ Feature: Config
     Scenario: Assert that Data Request configuration values are available
         Given "SysAdmin" as the persona
         When I log in and go to admin config page
+        And I resize the browser to 1024x2048
         Then I should see "Data Request Suggested Description:"
         And I should see "Data request suggested description:"
         And I should see an element with id "field-ckanext.data_qld.datarequest_suggested_description"
