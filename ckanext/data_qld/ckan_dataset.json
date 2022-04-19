@@ -269,12 +269,12 @@
       "required": false
     },
     {
-      "field_name": "resource_visibility",
+      "field_name": "resource_visible",
       "label": "Resource visible",
       "form_include_blank_choice": false,
       "validators": "data_qld_resource_visibility",
       "form_snippet": "resource_visibility.html",
-      "help_text": "Select 'FALSE' to hide. A hidden resource can only be seen by members of the dataset's organisation and system administrators",
+      "help_text": "Select 'FALSE' to hide. A hidden resource can only be seen by members of the dataset's organisation and system administrators.",
       "choices": [
         {
           "value": "TRUE",

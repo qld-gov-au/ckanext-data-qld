@@ -33,8 +33,8 @@
     {%- do exclude_fields.append('validation_options') -%}
   {%- endif -%}
 
-  {%- if not h.data_qld_show_resource_visibility(res) or not res.resource_visibility -%}
-    {%- do exclude_fields.append('resource_visibility') -%}
+  {%- if not h.data_qld_show_resource_visibility(res) or not res.resource_visible -%}
+    {%- do exclude_fields.append('resource_visible') -%}
     {%- do exclude_fields.append('governance_acknowledgement') -%}
   {%- endif -%}
 

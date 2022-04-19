@@ -2,7 +2,7 @@
 
 import ckan.plugins.toolkit as tk
 
-StopOnError = tk.StopOnError
+ValidationError = tk.ValidationError
 _ = tk._
 
 
@@ -14,7 +14,7 @@ def resource_visibility(value):
     if not value:
         return "TRUE"
     if value not in ["TRUE", "FALSE"]:
-        raise StopOnError(_('Invalid resource visibility value. It must be TRUE or FALSE.'))
+        raise ValidationError(_('Invalid resource visibility value. It must be TRUE or FALSE.'))
     return value
 
 
@@ -25,5 +25,5 @@ def governance_acknowledgement(value):
     if not value:
         return "NO"
     if value not in ["YES", "NO"]:
-        raise StopOnError(_('Invalid governance acknowledgement value. It must be YES or NO.'))
+        raise ValidationError(_('Invalid governance acknowledgement value. It must be YES or NO.'))
     return value

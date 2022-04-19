@@ -61,11 +61,11 @@ def has_user_permission_for_org(org_id, user_obj, permission):
 def process_resources(data_dict, user_obj):
     """
     Show or hide resources based on
-    the resource_visibility value and user.
+    the resource_visible value and user.
     """
     # Loop each resources,
-    # If resource_visibility is `FALSE` or
-    # resource_visibility is `TRUE` and governance_acknowledgement is `NO`
+    # If resource_visible is `FALSE` or
+    # resource_visible is `TRUE` and governance_acknowledgement is `NO`
     # and de_identified_data is `YES` and
     # if user is NOT Members, Editors, Admins or sysadmin, remove the resource.
     is_sysadmin = user_obj is not None and user_obj.sysadmin
@@ -75,11 +75,11 @@ def process_resources(data_dict, user_obj):
         resources = data_dict.get('resources', [])
         de_identified_data = data_dict.get('de_identified_data', 'NO')
         for resource in list(resources):
-            resource_visible = resource.get('resource_visibility', 'FALSE')
+            resource_visible = resource.get('resource_visible', 'FALSE')
             governance_acknowledgement = resource.get('governance_acknowledgement', 'NO')
             # Remove resource if the condition is True
             hide_resource = resource_visible == 'TRUE' and governance_acknowledgement == 'NO' and de_identified_data == 'YES'
-            # Always remove if the `resource_visibility` is `FALSE`
+            # Always remove if the `resource_visible` is `FALSE`
             if (hide_resource or resource_visible == 'FALSE'):
                 resources.remove(resource)
                 data_dict['num_resources'] -= 1
@@ -87,11 +87,11 @@ def process_resources(data_dict, user_obj):
 
 def process_resource_visibility(resource_dict):
     """
-    Remove resource_visibility value from dict
+    Remove resource_visible value from dict
     if current user doesn't have access to it.
     """
-    if 'resource_visibility' in resource_dict and not show_resource_visibility(resource_dict):
-        del resource_dict['resource_visibility']
+    if 'resource_visible' in resource_dict and not show_resource_visibility(resource_dict):
+        del resource_dict['resource_visible']
         del resource_dict['governance_acknowledgement']
 
 

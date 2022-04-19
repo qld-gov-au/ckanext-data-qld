@@ -18,7 +18,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
         Then I fill in "name" with "Resource hidden"
         Then I fill in "description" with "hide resource"
-        Then I select "TRUE" from "resource_visibility"
+        Then I select "TRUE" from "resource_visible"
         Then I select "NO" from "governance_acknowledgement"
         Then I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
@@ -41,7 +41,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
         Then I fill in "name" with "Resource not hidden"
         Then I fill in "description" with "dont hide"
-        Then I select "TRUE" from "resource_visibility"
+        Then I select "TRUE" from "resource_visible"
         Then I select "NO" from "governance_acknowledgement"
         Then I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
@@ -63,7 +63,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
         Then I fill in "name" with "Resource hidden"
         Then I fill in "description" with "hide resource"
-        Then I select "FALSE" from "resource_visibility"
+        Then I select "FALSE" from "resource_visible"
         Then I select "NO" from "governance_acknowledgement"
         Then I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
@@ -85,7 +85,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I execute the script "document.getElementById('field-image-url').value='http://ckanext-data-qld.docker.amazee.io/'"
         Then I fill in "name" with "Resource not hidden"
         Then I fill in "description" with "dont hide resource"
-        Then I select "FALSE" from "resource_visibility"
+        Then I select "FALSE" from "resource_visible"
         Then I select "NO" from "governance_acknowledgement"
         Then I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
