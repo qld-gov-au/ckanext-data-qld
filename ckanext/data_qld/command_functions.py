@@ -211,16 +211,16 @@ def update_missing_values():
             resource_patch['nature_of_change'] = 'edit-resource-with-no-new-data'
 
         # Cannot use `not res.get('resource_visible')` because on subsequent runs the value could be 'FALSE' which will make the logic TRUE
-        if res.get('resource_visibility') is None or res.get('resource_visibility') == '':
+        if res.get('resource_visible') is None or res.get('resource_visible') == '':
             resource_patch['resource_visible'] = 'TRUE'
             resource_patch['governance_acknowledgement'] = 'NO'
-        elif res['resource_visibility'] == 'Resource visible and re-identification risk governance acknowledgement not required':
+        elif res['resource_visible'] == 'Resource visible and re-identification risk governance acknowledgement not required':
             resource_patch['resource_visible'] = 'TRUE'
             resource_patch['governance_acknowledgement'] = 'NO'
-        elif res['resource_visibility'] == 'Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing':
+        elif res['resource_visible'] == 'Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing':
             resource_patch['resource_visible'] = 'TRUE'
             resource_patch['governance_acknowledgement'] = 'YES'
-        elif res['resource_visibility'] == 'Resource NOT visible/Pending acknowledgement':
+        elif res['resource_visible'] == 'Resource NOT visible/Pending acknowledgement':
             resource_patch['resource_visible'] = 'FALSE'
             resource_patch['governance_acknowledgement'] = 'NO'
 
