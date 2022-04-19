@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import csv
 import json
 import logging
@@ -7,7 +9,6 @@ from tempfile import gettempdir
 from ckan.common import config
 from ckanext.data_qld.reporting.helpers import helpers
 from datetime import datetime
-from pylons import response
 
 log = logging.getLogger(__name__)
 
@@ -136,10 +137,10 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
 
         fh = open(filepath)
 
-        response.headers[b'Content-Type'] = b'text/csv; charset=utf-8'
-        response.headers[b'Content-Disposition'] = b"attachment;filename=%s" % filename
-
-        return fh.read()
+        return fh.read(), {
+            b'Content-Type': b'text/csv; charset=utf-8',
+            b'Content-Disposition': b"attachment;filename=%s" % filename
+        }
     except Exception as e:
-        log.error('Error creating {0} report CSV export file: {1}'.format(report_type, filepath))
+        log.error('Error creating %s report CSV export file: %s', report_type, filepath)
         log.error(str(e))

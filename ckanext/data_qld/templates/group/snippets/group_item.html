@@ -30,7 +30,7 @@ Example:
     {% endblock %}
     {% block datasets %}
       <td>
-        {% if h.check_access('member_delete', group) and c.controller in ['package', 'dataset'] and c.action in ['groups']
+        {% if h.check_access('member_delete', group) and h.current_url().startswith('/dataset/groups')
             and (
                 c.pkg_dict is none
                 or c.pkg_dict.id is none

@@ -11,19 +11,19 @@ Example:
 {% block group_list %}
 <div class="table-responsive">
   <table class="table table-striped" width="100%">
-  	<thead>
-  		<tr>
-  			<th>Title</th>
-  			<th width="80px">{% if c.controller in ['package', 'dataset'] and c.action in ['groups'] %}&nbsp;{% else %}Datasets{% endif %}</th>
-  		</tr>
-  	</thead>
-  	<tbody>
-	{% block group_list_inner %}
-  {% for group in groups %}
-    {% snippet "group/snippets/group_item.html", group=group, position=loop.index %}
-  {% endfor %}
-  {% endblock %}
-  	</tbody>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th width="80px">{% if h.current_url().startswith('/dataset/groups/') %}&nbsp;{% else %}Datasets{% endif %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% block group_list_inner %}
+        {% for group in groups %}
+            {% snippet "group/snippets/group_item.html", group=group, position=loop.index %}
+        {% endfor %}
+    {% endblock %}
+    </tbody>
   </table>
 </div>
 
