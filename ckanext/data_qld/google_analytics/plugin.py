@@ -8,9 +8,9 @@ import requests
 import threading
 import urllib
 
-from routes.mapper import SubMapper
 import ckan.plugins as p
-from ckantoolkit import config
+from ckantoolkit import check_ckan_version, config
+
 
 log = logging.getLogger('ckanext.googleanalytics')
 
@@ -47,7 +47,12 @@ class AnalyticsPostThread(threading.Thread):
 
 class GoogleAnalyticsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurable, inherit=True)
-    p.implements(p.IRoutes, inherit=True)
+    if check_ckan_version('2.8'):
+        p.implements(p.IBlueprint)
+        # workaround for https://github.com/ckan/ckan/issues/6678
+        import ckan.views.api as core_api
+    else:
+        p.implements(p.IRoutes, inherit=True)
 
     analytics_queue = Queue.Queue()
     capture_api_actions = {}
@@ -73,17 +78,21 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
             t.setDaemon(True)
             t.start()
 
+    # IRoutes
+
     def before_map(self, map):
         '''Add new routes that this extension's controllers handle.
-
-        See IRoutes.
-
         '''
-        # Helpers to reduce code clutter
-        GET_POST = dict(method=['GET', 'POST'])
+        from routes.mapper import SubMapper
         # /api ver 3 or none
         with SubMapper(map, controller='ckanext.data_qld.google_analytics.controller:GoogleAnalyticsApiController',
                        path_prefix='/api{ver:/3|}', ver='/3') as m:
-            m.connect('/action/{api_action}', action='action', conditions=GET_POST)
+            m.connect('/action/{api_action}', action='action', conditions={'method': ['GET', 'POST']})
 
         return map
+
+    # IBlueprint
+
+    def get_blueprint(self):
+        import blueprints
+        return [blueprints.blueprint]

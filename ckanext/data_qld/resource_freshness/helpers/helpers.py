@@ -4,6 +4,7 @@ import logging
 
 from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h
 from ckan.lib import mailer
+from ckan.lib.base import render_jinja2
 
 from ckanext.data_qld.helpers import is_uploaded_file, user_has_admin_access
 from datetime import datetime
@@ -172,9 +173,3 @@ def process_email_notification_for_dataset_overdue():
         datasets_by_contacts = group_dataset_by_contact_email(results)
         send_email_dataset_notification(datasets_by_contacts, action_type)
     log.info('Finished {0}'.format(action_type))
-
-
-def render_jinja2(template_name, extra_vars):
-    env = config['pylons.app_globals'].jinja_env
-    template = env.get_template(template_name)
-    return template.render(**extra_vars)

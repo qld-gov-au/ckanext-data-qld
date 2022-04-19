@@ -1,5 +1,4 @@
-@data-qld-theme
-Feature: Data QLD Theme
+Feature: Theme customisations
 
     Scenario: Lato font is implemented on homepage
         When I go to homepage
@@ -78,3 +77,11 @@ Feature: Data QLD Theme
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(string(), 'TSV')]"
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(string(), 'JSON')]"
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(string(), 'XML')]"
+
+    Scenario: When I encounter a 'resource not found' error page, it has a custom message
+        When I go to "/dataset/nonexistent/resource/nonexistent"
+        Then I should see "Sorry, the page you were looking for could not be found."
+
+        When I go to "/nonexistent"
+        Then I should see an element with xpath "//div[contains(string(), 'was not found') or contains(string(), 'could not be found')]"
+        And I should not see "Sorry, the page you were looking for could not be found."
