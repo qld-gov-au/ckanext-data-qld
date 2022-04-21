@@ -195,6 +195,7 @@
       "preset": "select",
       "required": true,
       "form_include_blank_choice": false,
+      "validators": "data_qld_de_identified_data",
       "choices": [
         {
           "value": "NO",

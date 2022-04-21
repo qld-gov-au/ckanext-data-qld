@@ -27,3 +27,14 @@ def governance_acknowledgement(value):
     if value not in ["YES", "NO"]:
         raise ValidationError(_('Invalid governance acknowledgement value. It must be YES or NO.'))
     return value
+
+
+def de_identified_data(value):
+    """
+    Set to default value if missing
+    """
+    if not value:
+        return "NO"
+    if value not in ["YES", "NO"]:
+        raise ValidationError(_('Invalid de-identified data value. It must be YES or NO.'))
+    return value
