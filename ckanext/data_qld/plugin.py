@@ -59,6 +59,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'data_qld')
+        toolkit.add_resource('fanstatic', 'data_qld_theme')
         toolkit.add_resource('reporting/fanstatic', 'data_qld_reporting')
 
     def update_config_schema(self, schema):
