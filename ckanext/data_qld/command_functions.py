@@ -203,7 +203,7 @@ def update_missing_values():
 
         return package_patch
 
-    def _check_for_resource_null_values(res, context, package_patch):
+    def _check_for_resource_null_values(res, package_patch):
         resource_patch = {"id": res.get('id')}
 
         if not res.get('nature_of_change'):
@@ -245,17 +245,17 @@ def update_missing_values():
         # Update resource values first so the resource last_modified values can be used to calculate dataset data_last_updated
         for resource in package.resources:
             resources_total += 1
-            resource_patch, package_patch = _check_for_resource_null_values(resource.as_dict(), context, package_patch)
+            resource_patch, package_patch = _check_for_resource_null_values(resource.as_dict(), package_patch)
             if len(resource_patch.items()) > 1:
                 result = _update_resource(resource_patch)
-                if result == True:
+                if result is True:
                     resource_updates += 1
                 else:
                     resource_errors += 1
 
         if len(package_patch.items()) > 1:
             result = _update_package(package_patch)
-            if result == True:
+            if result is True:
                 package_updates += 1
             else:
                 package_errors += 1
