@@ -13,5 +13,10 @@
     "order": 3,
     "type": "scalar",
     "property": "datasets_no_groups"
+  },
+  "Datasets with no tags": {
+    "order": 4,
+    "type": "scalar",
+    "property": "datasets_no_tags"
   }
 }

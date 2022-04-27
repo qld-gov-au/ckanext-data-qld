@@ -286,6 +286,15 @@ def datasets(org_id, metric):
             data_dict.update({
                 'datasets': datasets
             })
+        elif metric == 'datasets_no_tags':
+            data_dict.update({
+                'return_count_only': False,
+                'permission': report_permission
+            })
+            datasets = get_action('datasets_no_tags')({}, data_dict)
+            data_dict.update({
+                'datasets': datasets
+            })
 
         return render(
             'reporting/datasets.html',

@@ -56,6 +56,12 @@
                 count=metrics.datasets_no_groups,
                 link='/dashboard/reporting/datasets/' + org_id + '/datasets_no_groups?report_type={0}'.format(report_type),
                 report_type=report_type %}
+            {% snippet "reporting/snippets/linked_metric.html",
+                metric="datasets_no_tags",
+                label='Datasets with no tags',
+                count=metrics.datasets_no_tags,
+                link='/dashboard/reporting/datasets/' + org_id + '/datasets_no_tags?report_type={0}'.format(report_type),
+                report_type=report_type %}
         </tbody>
     </table>
 {% endif %}
