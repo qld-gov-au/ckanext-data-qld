@@ -261,7 +261,8 @@ def gather_admin_metrics(org_id, permission):
 
     return {
         'de_identified_datasets': get_action('de_identified_datasets')({}, data_dict),
-        'overdue_datasets': get_action('overdue_datasets')({}, data_dict)
+        'overdue_datasets': get_action('overdue_datasets')({}, data_dict),
+        'datasets_no_groups': get_action('datasets_no_groups')({}, data_dict),
     }
 
 

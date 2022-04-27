@@ -8,5 +8,10 @@
     "order": 2,
     "type": "scalar",
     "property": "overdue_datasets"
+  },
+  "Datasets not added to group/s": {
+    "order": 3,
+    "type": "scalar",
+    "property": "datasets_no_groups"
   }
 }

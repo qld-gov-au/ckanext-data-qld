@@ -155,6 +155,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'comments_no_replies_after_x_days': get.comments_no_replies_after_x_days,
             'de_identified_datasets': get.de_identified_datasets,
             'overdue_datasets': get.overdue_datasets,
+            'datasets_no_groups': get.datasets_no_groups,
             'data_qld_get_dataset_due_to_publishing': resource_freshness_get_actions.dataset_due_to_publishing,
             'data_qld_get_dataset_overdue': resource_freshness_get_actions.dataset_overdue,
             'data_qld_process_dataset_due_to_publishing': resource_freshness_get_actions.process_dataset_due_to_publishing,
