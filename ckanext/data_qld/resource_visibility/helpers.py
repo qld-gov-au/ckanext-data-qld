@@ -68,17 +68,17 @@ def process_resources(data_dict, user_obj):
         resources = data_dict.get('resources', [])
         # if user is NOT Member, Editor, Admin remove the resource.
         if not has_user_permission_for_org(data_dict.get('owner_org'), user_obj, 'read'):
-            # Loop each resources and remove resource
+            # Loop through each resource and remove the resource when the below condition is True
             # If resource_visible is `FALSE` or
             # resource_visible is `TRUE` and governance_acknowledgement is `NO` and de_identified_data is `YES`
             de_identified_data = data_dict.get('de_identified_data', 'NO')
             for resource in list(resources):
-                resource_visible = resource.get('resource_visible', 'FALSE')
-                governance_acknowledgement = resource.get('governance_acknowledgement', 'NO')
-                # Remove resource if the condition is True
-                hide_resource = resource_visible == 'TRUE' and governance_acknowledgement == 'NO' and de_identified_data == 'YES'
-                # Always remove if the `resource_visible` is `FALSE`
-                if (resource_visible == 'FALSE' or hide_resource):
+                hide_resource = resource.get('resource_visible', 'FALSE') == 'FALSE'
+                if not hide_resource:
+                    governance_acknowledgement = resource.get('governance_acknowledgement', 'NO')
+                    hide_resource = governance_acknowledgement == 'NO' and de_identified_data == 'YES'
+
+                if hide_resource:
                     resources.remove(resource)
                     data_dict['num_resources'] -= 1
 

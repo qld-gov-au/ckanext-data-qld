@@ -38,29 +38,30 @@
             <th width="25%">Figure</th>
         </thead>
         <tbody>
+            {% set metric_link = '/dashboard/reporting/datasets/{org_id}/de-identified-datasets?report_type={report_type}'.format(org_id=org_id, report_type=report_type) %}
             {% snippet "reporting/snippets/linked_metric.html",
                 metric="de-identified-datasets",
                 label='De-identified Datasets',
                 count=metrics.de_identified_datasets,
-                link='/dashboard/reporting/datasets/' + org_id + '/de-identified-datasets?report_type={0}'.format(report_type),
+                link=metric_link,
                 report_type=report_type %}
             {% snippet "reporting/snippets/linked_metric.html",
                 metric="overdue-datasets",
                 label='Overdue Datasets',
                 count=metrics.overdue_datasets,
-                link='/dashboard/reporting/datasets/' + org_id + '/overdue-datasets?report_type={0}'.format(report_type),
+                link=metric_link,
                 report_type=report_type %}
             {% snippet "reporting/snippets/linked_metric.html",
                 metric="datasets_no_groups",
                 label='Datasets not added to group/s',
                 count=metrics.datasets_no_groups,
-                link='/dashboard/reporting/datasets/' + org_id + '/datasets_no_groups?report_type={0}'.format(report_type),
+                link=metric_link,
                 report_type=report_type %}
             {% snippet "reporting/snippets/linked_metric.html",
                 metric="datasets_no_tags",
                 label='Datasets with no tags',
                 count=metrics.datasets_no_tags,
-                link='/dashboard/reporting/datasets/' + org_id + '/datasets_no_tags?report_type={0}'.format(report_type),
+                link=metric_link,
                 report_type=report_type %}
         </tbody>
     </table>

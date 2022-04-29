@@ -188,7 +188,7 @@ def update_missing_values():
             print('Resource exception: %s' % ex)
             return False
 
-    def _check_for_package_null_values(package):
+    def _populate_package_values(package):
         package_patch = {"id": package.get('id')}
 
         # All custom metadata will be in the extras
@@ -203,14 +203,14 @@ def update_missing_values():
 
         return package_patch
 
-    def _check_for_resource_null_values(res, package_patch):
+    def _populate_resource_values(res, package_patch):
         resource_patch = {"id": res.get('id')}
 
         if not res.get('nature_of_change'):
             resource_patch['nature_of_change'] = 'edit-resource-with-no-new-data'
 
-        # Cannot use `not res.get('resource_visible')` because on subsequent runs the value could be 'FALSE' which will make the logic TRUE
-        if res.get('resource_visibility') is None or res.get('resource_visibility') == '':
+        # Migrate the existing field `resource_visibility` and map to two new fields `resource_visible` `governance_acknowledgement`
+        if not res.get('resource_visibility'):
             resource_patch['resource_visible'] = 'TRUE'
             resource_patch['governance_acknowledgement'] = 'NO'
         elif res['resource_visibility'] == 'Resource visible and re-identification risk governance acknowledgement not required':
@@ -241,11 +241,11 @@ def update_missing_values():
     packages = _get_packages()
     for package in packages:
         packages_total += 1
-        package_patch = _check_for_package_null_values(package.as_dict())
+        package_patch = _populate_package_values(package.as_dict())
         # Update resource values first so the resource last_modified values can be used to calculate dataset data_last_updated
         for resource in package.resources:
             resources_total += 1
-            resource_patch, package_patch = _check_for_resource_null_values(resource.as_dict(), package_patch)
+            resource_patch, package_patch = _populate_resource_values(resource.as_dict(), package_patch)
             if len(resource_patch.items()) > 1:
                 result = _update_resource(resource_patch)
                 if result is True:
