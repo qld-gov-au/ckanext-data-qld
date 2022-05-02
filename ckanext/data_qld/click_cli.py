@@ -49,7 +49,16 @@ def send_email_dataset_overdue_notification():
 @data_qld.command()
 def update_missing_values():
     """
-    Update missing values in datasets.
+    Update missing values in datasets/resources.
+    Dataset metadata fields checked:
+        - de_identified_data
+        - data_last_updated
+    Resource metadata fields checked:
+        - nature_of_change
+        - last_modified
+    Migrate the existing field `resource_visibility` and map to two new fields
+        - resource_visible
+        - governance_acknowledgement
     """
     command_functions.update_missing_values()
 

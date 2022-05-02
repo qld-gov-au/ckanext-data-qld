@@ -11,30 +11,26 @@ def resource_visibility(value):
     Set to default value if missing
 
     """
-    if not value:
-        return "TRUE"
-    if value not in ["TRUE", "FALSE"]:
-        raise ValidationError(_('Invalid resource visibility value. It must be TRUE or FALSE.'))
-    return value
+    return validate_value(value, "TRUE", ["TRUE", "FALSE"], 'resource visibility')
 
 
 def governance_acknowledgement(value):
     """
     Set to default value if missing
     """
-    if not value:
-        return "NO"
-    if value not in ["YES", "NO"]:
-        raise ValidationError(_('Invalid governance acknowledgement value. It must be YES or NO.'))
-    return value
+    return validate_value(value, "NO", ["YES", "NO"], 'governance acknowledgement')
 
 
 def de_identified_data(value):
     """
     Set to default value if missing
     """
+    return validate_value(value, "NO", ["YES", "NO"], 'de-identified data')
+
+
+def validate_value(value, default_value, valid_values, field):
     if not value:
-        return "NO"
-    if value not in ["YES", "NO"]:
-        raise ValidationError(_('Invalid de-identified data value. It must be YES or NO.'))
+        return default_value
+    if value not in valid_values:
+        raise ValidationError(_('Invalid {field} value. It must be {valid_values}.'.format(field=field, valid_values=" or ".join(valid_values))))
     return value
