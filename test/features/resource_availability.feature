@@ -1,7 +1,7 @@
 @resource_visibility
 Feature: Re-identification risk governance acknowledgement or Resource visibility
 
-    Scenario: "Create resource_availability test data"
+    Scenario: Sysadmin creates datasets with de_identified_data, resource_visible and governance_acknowledgement values to test resource visibility feature
         Given "SysAdmin" as the persona
         When I log in
         And I create resource_availability test data with title:"Contains de-identified data YES visibility TRUE acknowledgment NO" de_identified_data:"YES" resource_name:"Hide Resource" resource_visible:"TRUE" governance_acknowledgement:"NO"
@@ -14,7 +14,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "<User>" as the persona
         When I log in
         And I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledgment-no"
-        And I wait for 1 seconds
         And I press the element with xpath "//a[@title='Hide Resource']"
         Then I should see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
@@ -25,9 +24,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should not see a hidden resource when de-identified data is YES and Resource visibility is TRUE and Acknowledgement is NO
-        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledged-no"
-        And I wait for 1 seconds
         Then I should not see an element with xpath "//a[@title='Hide Resource']"
 
 
@@ -35,7 +32,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "<User>" as the persona
         And I log in
         And I go to "/dataset/contains-de-identified-data-no-visibility-true-acknowledgment-no"
-        And I wait for 1 seconds
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
@@ -46,9 +42,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should see a visible resource when de-identified data is NO and Resource visibility is TRUE and Acknowledgement is NO
-        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-no-visibility-true-acknowledgment-no"
-        And I wait for 1 seconds
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should not see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should not see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
@@ -58,7 +52,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "<User>" as the persona
         When I log in
         And I go to "/dataset/contains-de-identified-data-no-visibility-false-acknowledgment-no"
-        And I wait for 1 seconds
         And I press the element with xpath "//a[@title='Hide Resource']"
         Then I should see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
@@ -69,9 +62,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should not see a hidden visible resource when de-identified data is NO and Resource visibility is FALSE and Acknowledgement is NO
-        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-no-visibility-false-acknowledgment-no"
-        And I wait for 1 seconds
         Then I should not see an element with xpath "//a[@title='Hide Resource']"
 
 
@@ -79,7 +70,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "<User>" as the persona
         When I log in
         And I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledgment-yes"
-        And I wait for 1 seconds
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
@@ -90,9 +80,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should see a visible resource when de-identified data is YES and Resource visibility is TRUE and Acknowledgement is YES
-        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledgment-yes"
-        And I wait for 1 seconds
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should not see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should not see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
