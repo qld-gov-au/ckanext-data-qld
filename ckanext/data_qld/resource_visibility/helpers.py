@@ -73,7 +73,7 @@ def process_resources(data_dict, user_obj):
             # resource_visible is `TRUE` and governance_acknowledgement is `NO` and de_identified_data is `YES`
             de_identified_data = data_dict.get('de_identified_data', 'NO')
             for resource in list(resources):
-                hide_resource = resource.get('resource_visible', 'FALSE') == 'FALSE'
+                hide_resource = resource.get('resource_visible', 'TRUE') == 'FALSE'
                 if not hide_resource:
                     governance_acknowledgement = resource.get('governance_acknowledgement', 'NO')
                     hide_resource = governance_acknowledgement == 'NO' and de_identified_data == 'YES'
