@@ -85,6 +85,8 @@ setup(
         update_fullname = ckanext.data_qld.user_creation.commands:UpdateFullname
         send_email_dataset_due_to_publishing_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetDueToPublishingNotification
         send_email_dataset_overdue_notification = ckanext.data_qld.resource_freshness.commands:SendEmailDatasetOverdueNotification
+        update_missing_values = ckanext.data_qld.commands:MissingValues
+
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan

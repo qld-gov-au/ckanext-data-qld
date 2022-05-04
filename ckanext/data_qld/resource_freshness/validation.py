@@ -96,11 +96,13 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
             if nature_of_change == 'add-new-time-series' and update_frequency in resource_freshness_helpers.get_update_frequencies():
                 resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
     else:
+        if not nature_of_change:
+            # Set default value for nature_of_change
+            flattened_data[keys] = 'edit-resource-with-no-new-data'
+
         # Resource created
         if (update_frequency in resource_freshness_helpers.get_update_frequencies() and data.get('state') == 'active'):
             resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
-        # Should not have a nature_of_change so remove it
-        flattened_data.pop(keys, None)
 
 
 def data_last_updated(keys, flattened_data, errors, context):

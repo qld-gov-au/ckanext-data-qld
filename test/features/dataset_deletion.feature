@@ -18,7 +18,7 @@ Feature: Dataset deletion
         Then I fill in "name" with "res1"
         Then I fill in "description" with "description"
         Then I fill in "size" with "1024"
-        Then I select "Resource NOT visible/Pending acknowledgement" from "resource_visibility"
+        Then I select "NO" from "resource_visible"
         Then I press the element with xpath "//button[@value='go-metadata']"
         And I wait for 10 seconds
         Then I should see "Data and Resources"

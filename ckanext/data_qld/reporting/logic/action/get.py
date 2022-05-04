@@ -677,3 +677,53 @@ def overdue_datasets(context, data_dict):
         return datasets
     except Exception as e:
         log.error(str(e))
+
+
+def datasets_no_groups(context, data_dict):
+    """
+    Returns the datasets that have no groups
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
+    try:
+        query = (
+            _session_.query(Package)
+            .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
+        )
+
+        datasets = query.all()
+        no_groups = [dataset for dataset in datasets if len(dataset.get_groups(group_type='group')) == 0]
+        return len(no_groups) if return_count_only else no_groups
+    except Exception as e:
+        log.error(str(e))
+
+
+def datasets_no_tags(context, data_dict):
+    """
+    Returns the datasets that have no tags
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission)
+    try:
+        query = (
+            _session_.query(Package)
+            .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
+        )
+
+        datasets = query.all()
+        no_tags = [dataset for dataset in datasets if len(dataset.get_tags()) == 0]
+        return len(no_tags) if return_count_only else no_tags
+    except Exception as e:
+        log.error(str(e))

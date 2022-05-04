@@ -2,9 +2,10 @@
 
 import logging
 
-from ckantoolkit import get_action, ValidationError
+from ckantoolkit import get_action, ValidationError, h, get_validator
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
+import ckan.model as model
 
 log = logging.getLogger(__name__)
 
@@ -154,3 +155,112 @@ def send_email_dataset_overdue_notification():
     log.info('Started command SendEmailDatasetOverdueNotification')
     resource_freshness_helpers.process_email_notification_for_dataset_overdue()
     log.info('Finished command SendEmailDatasetOverdueNotification')
+
+
+def update_missing_values():
+    '''
+    Update datasets to set default values for metadata
+    '''
+    context = {'session': model.Session}
+    site_user = get_action('get_site_user')({'ignore_auth': True}, {})
+    context['user'] = site_user['name']
+
+    def _get_packages():
+        return model.Session.query(model.Package).filter(model.Package.state == 'active').all()
+
+    def _update_package(package_dict):
+        # Set some defaults
+        try:
+            print('Updating package {0}'.format(package_dict['id']))
+            get_action('package_patch')(context, package_dict)
+            return True
+        except Exception as ex:
+            print('Package exception: %s' % ex)
+            return False
+
+    def _update_resource(res_dict):
+        # Set some defaults
+        try:
+            print('Updating resource {0}'.format(res_dict['id']))
+            get_action('resource_patch')(context, res_dict)
+            return True
+        except Exception as ex:
+            print('Resource exception: %s' % ex)
+            return False
+
+    def _populate_package_values(package):
+        package_patch = {"id": package.get('id')}
+
+        # All custom metadata will be in the extras
+        extras = package.get('extras', {})
+
+        if not extras.get('de_identified_data'):
+            package_patch['de_identified_data'] = 'NO'
+
+        if not extras.get('data_last_updated'):
+            # Set empty value to trigger package_patch which will call the validator data_qld_data_last_updated to set value from resources
+            package_patch['data_last_updated'] = ''
+
+        return package_patch
+
+    def _populate_resource_values(res, package_patch):
+        resource_patch = {"id": res.get('id')}
+
+        if not res.get('nature_of_change'):
+            resource_patch['nature_of_change'] = 'edit-resource-with-no-new-data'
+
+        # Migrate the existing field `resource_visibility` and map to two new fields `resource_visible` `governance_acknowledgement`
+        if not res.get('resource_visibility'):
+            resource_patch['resource_visible'] = 'TRUE'
+            resource_patch['governance_acknowledgement'] = 'NO'
+        elif res['resource_visibility'] == 'Resource visible and re-identification risk governance acknowledgement not required':
+            resource_patch['resource_visible'] = 'TRUE'
+            resource_patch['governance_acknowledgement'] = 'NO'
+        elif res['resource_visibility'] == 'Appropriate steps have been taken to minimise personal information re-identification risk prior to publishing':
+            resource_patch['resource_visible'] = 'TRUE'
+            resource_patch['governance_acknowledgement'] = 'YES'
+        elif res['resource_visibility'] == 'Resource NOT visible/Pending acknowledgement':
+            resource_patch['resource_visible'] = 'FALSE'
+            resource_patch['governance_acknowledgement'] = 'NO'
+
+        if not res.get('last_modified'):
+            h.populate_revision(res)
+            last_modified = res.get('revision_timestamp') or res.get('created')
+            resource_patch['last_modified'] = get_validator('convert_to_json_if_datetime')(last_modified, context)
+            # We need to trigger a package_patch to trigger the data_qld_data_last_updated validator to re-calculate data_last_updated
+            package_patch['data_last_updated'] = ''
+
+        return (resource_patch, package_patch)
+
+    packages_total = 0
+    package_updates = 0
+    package_errors = 0
+    resources_total = 0
+    resource_updates = 0
+    resource_errors = 0
+    packages = _get_packages()
+    for package in packages:
+        packages_total += 1
+        package_patch = _populate_package_values(package.as_dict())
+        # Update resource values first so the resource last_modified values can be used to calculate dataset data_last_updated
+        for resource in package.resources:
+            resources_total += 1
+            resource_patch, package_patch = _populate_resource_values(resource.as_dict(), package_patch)
+            if len(resource_patch.items()) > 1:
+                result = _update_resource(resource_patch)
+                if result is True:
+                    resource_updates += 1
+                else:
+                    resource_errors += 1
+
+        if len(package_patch.items()) > 1:
+            result = _update_package(package_patch)
+            if result is True:
+                package_updates += 1
+            else:
+                package_errors += 1
+
+    print("Updated packages. Total:{0}. Updates:{1}. Errors:{2}".format(packages_total, package_updates, package_errors))
+    print("Updated resources. Total:{0}. Updates:{1}. Errors:{2}".format(resources_total, resource_updates, resource_errors))
+
+    return "COMPLETED update_missing_values"

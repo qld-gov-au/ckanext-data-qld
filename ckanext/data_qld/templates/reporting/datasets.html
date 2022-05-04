@@ -11,6 +11,10 @@
             Admin Report: De-identified Datasets: {{ org_title }}
         {% elif metric == 'overdue-datasets' %}
             Admin Report: Overdue Datasets: {{ org_title }}
+        {% elif metric == 'datasets_no_groups' %}
+            Admin Report: Datasets not added to group/s: {{ org_title }}
+        {% elif metric == 'datasets_no_tags' %}
+            Admin Report: Datasets with no tags: {{ org_title }}
         {% endif %}
     </h1>
 
