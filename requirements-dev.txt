@@ -26,5 +26,5 @@ progressbar==2.5
 -e git+https://github.com/qld-gov-au/ckanext-resource-type-validation.git@1.0.2#egg=ckanext-resource-type-validation
 -e git+https://github.com/qld-gov-au/ckanext-ssm-config.git@0.0.2#egg=ckanext-ssm-config
 -e git+https://github.com/qld-gov-au/ckanext-validation.git@v0.0.8-qgov.4#egg=ckanext-validation
--e git+https://github.com/qld-gov-au/ckanext-xloader.git@0.9.0-qgov.1#egg=ckanext-xloader
+-e git+https://github.com/qld-gov-au/ckanext-xloader.git@0.10.0-qgov.1#egg=ckanext-xloader
 -e git+https://github.com/qld-gov-au/ckanext-ytp-comments.git@2.5.0-qgov.2#egg=ckanext-ytp-comments
