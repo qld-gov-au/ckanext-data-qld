@@ -3,7 +3,7 @@
 import hashlib
 import logging
 
-from ckantoolkit import c, get_action
+from ckantoolkit import g, get_action, request
 
 import plugin
 
@@ -30,10 +30,10 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
             "cid": hashlib.md5(user).hexdigest(),
             # customer id should be obfuscated
             "t": "event",
-            "dh": c.environ['HTTP_HOST'],
-            "dp": c.environ['PATH_INFO'],
-            "dr": c.environ.get('HTTP_REFERER', ''),
-            "ec": c.environ['HTTP_HOST'] + " CKAN API Request",
+            "dh": request.environ['HTTP_HOST'],
+            "dp": request.environ['PATH_INFO'],
+            "dr": request.environ.get('HTTP_REFERER', ''),
+            "ec": request.environ['HTTP_HOST'] + " CKAN API Request",
             "ea": request_event_action,
             "el": request_event_label
         }
@@ -61,9 +61,9 @@ def action(get_request_data_function, core_function, api_action, ver):
             if parameter_value == '' and 'sql' in request_data:
                 parameter_value = _alter_sql(request_data['sql'])
 
-            event_action = "{0} - {1}".format(api_action, c.environ['PATH_INFO'].replace('/api/3/', ''))
+            event_action = "{0} - {1}".format(api_action, request.environ['PATH_INFO'].replace('/api/3/', ''))
             event_label = api_action_label.format(parameter_value)
-            _post_analytics(c.user, event_action, event_label, request_data)
+            _post_analytics(g.user, event_action, event_label, request_data)
     except Exception as e:
         log.debug(e)
         pass
