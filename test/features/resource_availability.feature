@@ -27,7 +27,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         When I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledged-no"
         Then I should not see an element with xpath "//a[@title='Hide Resource']"
 
-
     Scenario Outline: Organisation users should see a visible resource when de-identified data is NO and Resource visibility is TRUE and Acknowledgement is NO
         Given "<User>" as the persona
         And I log in
@@ -38,6 +37,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
+            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -46,7 +46,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should not see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should not see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
-
 
     Scenario Outline: Organisation users should see a hidden resource when de-identified data is NO and Resource visibility is FALSE and Acknowledgement is NO
         Given "<User>" as the persona
