@@ -86,7 +86,6 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
             'data_qld_get_package_dict': resource_visibility_helpers.get_package_dict,
             'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
-            'data_qld_show_resource_visibility': resource_visibility_helpers.show_resource_visibility,
             'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
@@ -114,6 +113,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'data_qld_resource_visibility': resource_visibility_validators.resource_visibility,
+            'data_qld_governance_acknowledgement': resource_visibility_validators.governance_acknowledgement,
+            'data_qld_de_identified_data': resource_visibility_validators.de_identified_data,
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
@@ -154,6 +155,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'comments_no_replies_after_x_days': get.comments_no_replies_after_x_days,
             'de_identified_datasets': get.de_identified_datasets,
             'overdue_datasets': get.overdue_datasets,
+            'datasets_no_groups': get.datasets_no_groups,
+            'datasets_no_tags': get.datasets_no_tags,
             'data_qld_get_dataset_due_to_publishing': resource_freshness_get_actions.dataset_due_to_publishing,
             'data_qld_get_dataset_overdue': resource_freshness_get_actions.dataset_overdue,
             'data_qld_process_dataset_due_to_publishing': resource_freshness_get_actions.process_dataset_due_to_publishing,
@@ -164,14 +167,14 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     def after_show(self, context, data_dict):
         # system processes should have access to all resources
         if context.get('ignore_auth', False) is not True:
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
         resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):
         for data_dict in search_results.get('results', []):
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
+            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
         return search_results
 
@@ -188,9 +191,6 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
-        # CKAN background jobs that call 'package_show` will not have request objects
-        if hasattr(request, 'params') and toolkit.get_endpoint()[1] == 'action' and 'package_show' not in request.path:
-            resource_visibility_helpers.process_resource_visibility(resource_dict)
 
     def _check_file_upload(self, data_dict):
         # This method is to fix a bug that the ckanext-scheming creates for setting the file size of an uploaded

@@ -61,56 +61,30 @@ def has_user_permission_for_org(org_id, user_obj, permission):
 def process_resources(data_dict, user_obj):
     """
     Show or hide resources based on
-    the resource_visibility value and user.
+    the resource_visible value and user.
     """
-    # Loop each resources,
-    # If resource is `Resource NOT visible/Pending acknowledgement` and
-    # if user is NOT Members, Editors, Admins or sysadmin, remove the resource.
     is_sysadmin = user_obj is not None and user_obj.sysadmin
-
     if not is_sysadmin:
+        resources = data_dict.get('resources', [])
+        # if user is NOT Member, Editor, Admin remove the resource.
         if not has_user_permission_for_org(data_dict.get('owner_org'), user_obj, 'read'):
-            resources = data_dict.get('resources', [])
-            options = get_select_field_options('resource_visibility')
-            de_identified_data = data_dict.get('de_identified_data', 'NO') == 'YES'
-
+            # Loop through each resource and remove the resource when the below condition is True
+            # If resource_visible is `FALSE` or
+            # resource_visible is `TRUE` and governance_acknowledgement is `NO` and de_identified_data is `YES`
+            de_identified_data = data_dict.get('de_identified_data', 'NO')
             for resource in list(resources):
-                resource_visibility = resource.get('resource_visibility', '')
-                # Value of options[2] == Resource NOT visible/Pending acknowledgement.
-                if resource_visibility == options[2].get('value') if len(options) >= 3 else False \
-                        or len(resource_visibility) == 0 and de_identified_data:
+                hide_resource = resource.get('resource_visible', 'TRUE') == 'FALSE'
+                if not hide_resource:
+                    governance_acknowledgement = resource.get('governance_acknowledgement', 'NO')
+                    hide_resource = governance_acknowledgement == 'NO' and de_identified_data == 'YES'
+
+                if hide_resource:
                     resources.remove(resource)
                     data_dict['num_resources'] -= 1
-                else:
-                    # Need to remove the resource visibility field from display
-                    # if current user don't have access to it.
-                    process_resource_visibility(resource)
 
-
-def process_resource_visibility(resource_dict):
-    """
-    Remove resource_visibility value from dict
-    if current user doesn't have access to it.
-    """
-    if 'resource_visibility' in resource_dict and not show_resource_visibility(resource_dict):
-        del resource_dict['resource_visibility']
-
-
-def show_resource_visibility(resource_dict):
-    """
-    Return False if the user does not have
-    admin, editor, or sysadmin access to the datasets organisation.
-    """
-    user_obj = data_qld_helpers.get_user()
-    if user_obj is not None:
-        is_sysadmin = user_obj.sysadmin
-        if is_sysadmin:
-            return True
-
-        # Load package to get the org of current resource.
-        # Not able to use package_show as it will thrown max recursion depth exceeded.
-        pkg_dict = get_package_dict(resource_dict.get('package_id'), False)
-        if has_user_permission_for_org(pkg_dict.get('owner_org'), user_obj, 'create_dataset'):
-            return True
-
-    return False
+        # if user is NOT Editor, Admin remove the metadata fields the user does not have access to
+        if not has_user_permission_for_org(data_dict.get('owner_org'), user_obj, 'create_dataset'):
+            # Remove metadata fields the user does not have access to
+            for resource in resources:
+                resource.pop('resource_visible', None)
+                resource.pop('governance_acknowledgement', None)

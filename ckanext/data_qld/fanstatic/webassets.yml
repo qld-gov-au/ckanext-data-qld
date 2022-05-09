@@ -53,12 +53,3 @@ resource_file_upload-js:
   extra:
     preload:
       - vendor/jquery
-
-resource_visibility-js:
-  contents:
-    - resource_visibility.js
-  filters: rjsmin
-  output: data_qld/%(version)s_resource_visibility.js
-  extra:
-    preload:
-      - vendor/jquery

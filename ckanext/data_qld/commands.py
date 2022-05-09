@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from ckanext.data_qld.command_functions import demote_publishers, migrate_extras
+from ckanext.data_qld.command_functions import demote_publishers, migrate_extras, update_missing_values
 
 from ckan.lib.cli import CkanCommand
 
@@ -37,3 +37,18 @@ class DemotePublishers(CkanCommand):
         username_prefix = self.options.username_prefix
 
         return demote_publishers(username_prefix)
+
+
+class MissingValues(CkanCommand):
+    """Checks for datasets with missing values and updates them
+    """
+
+    summary = __doc__.split('\n')[0]
+
+    def __init__(self, name):
+        super(MissingValues, self).__init__(name)
+
+    def command(self):
+        self._load_config()
+
+        return update_missing_values()
