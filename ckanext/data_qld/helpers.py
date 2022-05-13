@@ -167,18 +167,6 @@ def get_year():
     return now.year
 
 
-def reformat_date_string(date_string, new_format='%Y-%m-%d'):
-    """
-    Take an ISO-8601 representation of a date, and convert it
-    to the specified format.
-
-    Defaults to %Y-%m-%d, ie trimming a timestamp to a simple date.
-    """
-    if not date_string:
-        return ''
-    return datetime.datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f').strftime(new_format)
-
-
 def _is_action_configured(name):
     try:
         return toolkit.get_action(name) is not None

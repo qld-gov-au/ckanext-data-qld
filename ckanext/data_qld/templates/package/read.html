@@ -7,9 +7,9 @@
 {% if pkg['organization'] and pkg['organization']['title'] %}
   <meta name="DCTERMS.creator" scheme="AGLSTERMS.GOLD" content="c=AU; o=The State of Queensland; ou={{ pkg['organization']['title'] }}" />
 {% endif %}
-<meta name="DCTERMS.created" content="{{ h.reformat_date_string(pkg['metadata_created']) }}" />
+<meta name="DCTERMS.created" content="{{ h.render_datetime(pkg['metadata_created'], date_format='%Y-%m-%d') }}" />
 {% if pkg['metadata_modified'] %}
-  <meta name="DCTERMS.modified" content="{{ h.reformat_date_string(pkg['metadata_modified']) }}" />
+  <meta name="DCTERMS.modified" content="{{ h.render_datetime(pkg['metadata_modified'], date_format='%Y-%m-%d') }}" />
 {% endif %}
 <meta name="DCTERMS.description" content="{{ (pkg['notes'] or pkg['title'] or pkg['name']) | truncate(500) }}" />
 <meta name="DCTERMS.identifier" content="{{ pkg['id'] }}" />
