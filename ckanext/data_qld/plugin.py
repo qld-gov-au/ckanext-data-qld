@@ -90,6 +90,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
             'get_year': helpers.get_year,
+            'reformat_date_string': helpers.reformat_date_string,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
             'is_datarequests_enabled': helpers.is_datarequests_enabled,
             'get_all_groups': helpers.get_all_groups,
