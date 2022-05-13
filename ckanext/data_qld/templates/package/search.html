@@ -1,0 +1,11 @@
+{% ckan_extends %}
+
+{% block meta %}
+{{ super() }}
+<meta name="DCTERMS.title" content="{{ _('Datasets') }}" />
+
+<meta name="DCTERMS.creator" scheme="AGLSTERMS.GOLD" content="c=AU; o=The State of Queensland;" />
+<meta name="DCTERMS.description" content="List of all datasets" />
+
+<meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="index" />
+{% endblock %}
