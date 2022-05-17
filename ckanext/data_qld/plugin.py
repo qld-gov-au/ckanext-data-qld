@@ -178,8 +178,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             resource_freshness_helpers.process_next_update_due(data_dict)
         return search_results
 
-    def delete(self, data_dict):
-        dataset_deletion_helpers.add_deletion_of_dataset_reason(data_dict)
+    def after_delete(self, context, data_dict):
+        dataset_deletion_helpers.add_deletion_of_dataset_reason(context, data_dict)
 
     # IResourceController
     def before_create(self, context, data_dict):
