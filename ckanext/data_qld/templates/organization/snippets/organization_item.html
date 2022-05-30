@@ -11,7 +11,12 @@ Example:
       {% endfor %}
     </ul>
 #}
+{% if h.ckan_version() > '2.9' %}
+{% set url = h.url_for(organization.type ~ '.read', id=organization.name) %}
+{% else %}
 {% set url = h.url_for(organization.type ~ '_read', action='read', id=organization.name) %}
+{% endif %}
+
 {% block item %}
 <tr>
   {% block item_inner %}
