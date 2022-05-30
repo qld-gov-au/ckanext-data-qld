@@ -82,7 +82,7 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
         And I should see an element with xpath "//meta[@name='DCTERMS.created' and @content!='' and @content!='None']"
         And I should see an element with xpath "//meta[@name='DCTERMS.modified' and @content!='' and @content!='None']"
-        And I should see an element with xpath "//meta[@name='DCTERMS.description' and @content='Test Resource Description')]"
+        And I should see an element with xpath "//meta[@name='DCTERMS.description' and @content='Test Resource Description']"
         And I should see an element with xpath "//meta[@name='DCTERMS.identifier' and @content!='' and @content!='None']"
         And I should see an element with xpath "//meta[@name='DCTERMS.jurisdiction' and @content='Queensland' and @scheme='AGLSTERMS.AglsJuri']"
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
