@@ -164,6 +164,18 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
         }
 
     # IPackageController
+
+    def set_maintainer_from_author(self, entity):
+        entity.author = entity.author_email
+        entity.maintainer = entity.author_email
+        entity.maintainer_email = entity.author_email
+
+    def create(self, entity):
+        self.set_maintainer_from_author(entity)
+
+    def edit(self, entity):
+        self.set_maintainer_from_author(entity)
+
     def after_show(self, context, data_dict):
         # system processes should have access to all resources
         if context.get('ignore_auth', False) is not True:
