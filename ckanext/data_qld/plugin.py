@@ -164,6 +164,18 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
         }
 
     # IPackageController
+
+    def set_maintainer_from_author(self, entity):
+        entity.author = entity.author_email
+        entity.maintainer = entity.author_email
+        entity.maintainer_email = entity.author_email
+
+    def create(self, entity):
+        self.set_maintainer_from_author(entity)
+
+    def edit(self, entity):
+        self.set_maintainer_from_author(entity)
+
     def after_show(self, context, data_dict):
         # system processes should have access to all resources
         if context.get('ignore_auth', False) is not True:
@@ -178,8 +190,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             resource_freshness_helpers.process_next_update_due(data_dict)
         return search_results
 
-    def delete(self, data_dict):
-        dataset_deletion_helpers.add_deletion_of_dataset_reason(data_dict)
+    def after_delete(self, context, data_dict):
+        dataset_deletion_helpers.add_deletion_of_dataset_reason(context, data_dict)
 
     # IResourceController
     def before_create(self, context, data_dict):
