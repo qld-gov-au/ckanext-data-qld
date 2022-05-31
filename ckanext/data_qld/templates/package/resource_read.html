@@ -20,12 +20,6 @@
 
 {% block subtitle %}{{ h.resource_display_name(res) }} - {{ h.dataset_display_name(c.package) }}{% endblock %}
 
-{% block breadcrumb_content %}
-{{ super() }}
-<li class="active"><a href="">{{ h.resource_display_name(res) }}</a></li>
-
-{% endblock %}
-
 {% block pre_primary %}
 {% endblock %}
 
