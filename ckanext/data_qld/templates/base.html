@@ -1,5 +1,12 @@
 {% ckan_extends %}
 
+{% block meta %}
+{{ super() }}
+<meta name="DCTERMS.publisher" scheme="AGLSTERMS.AglsAgent" content="corporateName=The State of Queensland; jurisdiction=Queensland" />
+<meta name="DCTERMS.jurisdiction" scheme="AGLSTERMS.AglsJuri" content="Queensland" />
+<meta name="DCTERMS.type" scheme="DCTERMS.DCMIType" content="Text" />
+{% endblock %}
+
   {% block custom_styles %}
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" rel="stylesheet" />
     <link href="{{ h.set_external_resources() }}/__data/assets/git_bridge/0019/100846/open-data/dist/qld.css?h=288c0ce" rel="stylesheet" />

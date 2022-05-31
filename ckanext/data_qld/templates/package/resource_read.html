@@ -4,9 +4,18 @@
 
 {% block meta %}
 {{ super() }}
+<meta name="DCTERMS.title" content="{{ h.resource_display_name(res) }}" />
+
 {% if pkg['organization'] and pkg['organization']['title'] %}
   <meta name="DCTERMS.creator" content="c=AU; o=The State of Queensland; ou={{ pkg['organization']['title'] }}" scheme="AGLSTERMS.GOLD" />
 {% endif %}
+
+<meta name="DCTERMS.created" content="{{ h.render_datetime(res.created, date_format='%Y-%m-%d') or _('unknown') }}" />
+<meta name="DCTERMS.modified" content="{{ h.render_datetime(res.metadata_modified or res.last_modified or res.created, date_format='%Y-%m-%d') or _('unknown') }}" />
+<meta name="DCTERMS.description" content="{{ (res.description or res.name) | truncate(500) }}" />
+<meta name="DCTERMS.identifier" content="{{ res.id }}" />
+
+<meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="dataset" />
 {% endblock %}
 
 {% block subtitle %}{{ h.resource_display_name(res) }} - {{ h.dataset_display_name(c.package) }}{% endblock %}

@@ -124,6 +124,11 @@ def edit_dataset(context, name):
     when_i_visit_url(context, '/dataset/edit/{}'.format(name))
 
 
+@step(u'I go to group page')
+def go_to_group_page(context):
+    when_i_visit_url(context, '/group')
+
+
 @step(u'I go to organisation page')
 def go_to_organisation_page(context):
     when_i_visit_url(context, '/organization')
@@ -178,6 +183,7 @@ def create_dataset_titled(context, title):
         And I fill in "name" with "Test Resource"
         And I select "HTML" from "format"
         And I fill in "description" with "Test Resource Description"
+        And I fill in "size" with "1024" if present
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
     """.format(title=title))
 
@@ -242,6 +248,9 @@ def go_to_admin_config(context):
 @step(u'I log out')
 def log_out(context):
     when_i_visit_url(context, '/user/logout')
+
+
+# ckanext-data-qld
 
 
 @step(u'I create resource_availability test data with title:"{title}" de_identified_data:"{de_identified_data}" resource_name:"{resource_name}" resource_visible:"{resource_visible}" governance_acknowledgement:"{governance_acknowledgement}"')
