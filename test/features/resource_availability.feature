@@ -24,6 +24,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should not see a hidden resource when de-identified data is YES and Resource visibility is TRUE and Acknowledgement is NO
+        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledged-no"
         Then I should not see an element with xpath "//a[@title='Hide Resource']"
 
@@ -42,6 +43,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should see a visible resource when de-identified data is NO and Resource visibility is TRUE and Acknowledgement is NO
+        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-no-visibility-true-acknowledgment-no"
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should not see an element with xpath "//th[contains(text(), 'Resource visible')]"
@@ -61,9 +63,9 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should not see a hidden visible resource when de-identified data is NO and Resource visibility is FALSE and Acknowledgement is NO
+        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-no-visibility-false-acknowledgment-no"
         Then I should not see an element with xpath "//a[@title='Hide Resource']"
-
 
     Scenario Outline: Organisation users should see a visible resource when de-identified data is YES and Resource visibility is TRUE and Acknowledgement is YES
         Given "<User>" as the persona
@@ -79,11 +81,11 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgEditor |
 
     Scenario: Unauthenticated user should see a visible resource when de-identified data is YES and Resource visibility is TRUE and Acknowledgement is YES
+        Given "Unauthenticated" as the persona
         When I go to "/dataset/contains-de-identified-data-yes-visibility-true-acknowledgment-yes"
         And I press the element with xpath "//a[@title='Show Resource']"
         Then I should not see an element with xpath "//th[contains(text(), 'Resource visible')]"
         And I should not see an element with xpath "//th[contains(text(), 'Re-identification risk governance completed?')]"
-
 
     Scenario Outline: Create resource and verify default values are set correct for resource visibility
         Given "<User>" as the persona

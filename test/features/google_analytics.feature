@@ -1,11 +1,15 @@
 @google-analytics
 Feature: GoogleAnalytics
 
+    @unauthenticated
     Scenario: When viewing the HTML source code of a CKAN page, the GTM snippet is visible
+        Given "Unauthenticated" as the persona
         When I go to homepage
         Then I should see an element with xpath "//script[@src='//www.googletagmanager.com/gtm.js?id=False']"
 
+    @unauthenticated
     Scenario: When viewing the HTML source code of a group, the appropriate metadata is visible
+        Given "Unauthenticated" as the persona
         When I go to group page
         And I resize the browser to 1024x2048
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Groups']"
@@ -28,7 +32,9 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='guidelines']"
 
+    @unauthenticated
     Scenario: When viewing the HTML source code of an organisation, the appropriate metadata is visible
+        Given "Unauthenticated" as the persona
         When I go to organisation page
         And I resize the browser to 1024x2048
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Organisations']"
