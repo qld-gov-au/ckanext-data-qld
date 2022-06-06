@@ -24,8 +24,7 @@ Feature: SchemaMetadata
         And I should see "Description: Missing value"
 
     Scenario: When viewing the HTML source code of a dataset page, the structured data script is visible
-        Given "SysAdmin" as the persona
-        When I log in
+        Given "Unauthenticated" as the persona
         When I go to "/dataset/warandpeace"
         Then I should see an element with xpath "//link[@type='application/ld+json']"
 
