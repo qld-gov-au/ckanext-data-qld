@@ -6,9 +6,11 @@
 <meta name="DCTERMS.title" content="{{ group_dict.display_name }}" />
 
 <meta name="DCTERMS.creator" scheme="AGLSTERMS.GOLD" content="c=AU; o=The State of Queensland; ou={{ group_dict.display_name }}" />
-<meta name="DCTERMS.created" content="{{ h.render_datetime(group_dict['created'], date_format='%Y-%m-%d') }}" />
+<meta name="DCTERMS.created" content="{{ h.render_datetime(group_dict['created'], date_format='%Y-%m-%d') or _('unknown') }}" />
 <meta name="DCTERMS.description" content="{{ group_dict.get('description') or group_dict.display_name | truncate(500) }}" />
 <meta name="DCTERMS.identifier" content="{{ group_dict['id'] }}" />
 
+{% block meta_doctype %}
 <meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="guidelines" />
+{% endblock %}
 {% endblock %}
