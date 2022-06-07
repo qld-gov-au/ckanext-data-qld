@@ -17,7 +17,6 @@ Feature: De-identified data
             | TestOrgAdmin  |
             | TestOrgEditor |
 
-
     Scenario Outline: An editor, admin or sysadmin user, when I go to the edit dataset page, the field field-de_identified_data should be visible with the correct values
         Given "<User>" as the persona
         When I log in
@@ -49,6 +48,7 @@ Feature: De-identified data
             | TestOrgAdmin  |
             | TestOrgEditor |
 
+    @unauthenticated
     Scenario: Unauthenticated user cannot view the de-identified data
         Given "Unauthenticated" as the persona
         When I go to "/dataset/warandpeace"
@@ -57,4 +57,3 @@ Feature: De-identified data
 
         And I go to "/api/3/action/package_show?id=warandpeace"
         Then I should not see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
-

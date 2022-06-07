@@ -21,7 +21,6 @@ Feature: Engagement Reporting
             | TestOrgAdmin  |
             | TestOrgEditor |
 
-
     Scenario: As a data request organisation admin, when I view my engagement report, I can verify the number of data requests is correct and increments
         Given "DataRequestOrgAdmin" as the persona
         When I log in
@@ -36,7 +35,6 @@ Feature: Engagement Reporting
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='4' and position()=2]"
-
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of dataset followers is correct and increments
         Given "ReportingOrgAdmin" as the persona
@@ -53,7 +51,6 @@ Feature: Engagement Reporting
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
 
-
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of dataset comments is correct and increments
         Given "ReportingOrgAdmin" as the persona
         When I log in
@@ -68,7 +65,6 @@ Feature: Engagement Reporting
         And I click the link with text that contains "Engagement Report"
         Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-title') and string()='Dataset comments' and position()=1]"
         Then I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
-
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the number of data request comments is correct and increments
         Given "ReportingOrgAdmin" as the persona
