@@ -10,5 +10,7 @@
 <meta name="DCTERMS.description" content="{{ group_dict.get('description') or group_dict.display_name | truncate(500) }}" />
 <meta name="DCTERMS.identifier" content="{{ group_dict['id'] }}" />
 
+{% block meta_doctype %}
 <meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="guidelines" />
+{% endblock %}
 {% endblock %}

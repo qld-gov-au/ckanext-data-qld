@@ -156,6 +156,10 @@ def is_api_request():
     return get_request_action() == 'action' or '/action/' in get_request_path()
 
 
+def is_update_api_request():
+    return is_api_request() and get_request_path().endswith(('_update', '_patch'))
+
+
 def get_gtm_code():
     # To get Google Tag Manager Code
     gtm_code = config.get('ckan.google_tag_manager.gtm_container_id', False)

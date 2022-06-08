@@ -53,9 +53,9 @@ def validate_next_update_due(keys, flattened_data, errors, context):
             today = dt.datetime.now(h.get_display_timezone())
             if next_update_due.date() <= today.date():
                 errors[keys].append(_("Valid date in the future is required"))
-        elif data_qld_helpers.is_api_request() or not current_next_update_due:
+        elif data_qld_helpers.is_update_api_request() or not current_next_update_due:
             flattened_data[keys] = resource_freshness_helpers.recalculate_next_update_due_date(flattened_data, update_frequency, errors, context)
-        else:
+        elif data_qld_helpers.get_request():  # ignore background jobs
             errors[keys].append(_('Missing value'))
             raise StopOnError
     else:
@@ -84,7 +84,7 @@ def validate_nature_of_change_data(keys, flattened_data, errors, context):
         # Only validate the current resource being updated unless its coming from the API
         # The resource_data_updated value is set in  the 'before_update' IResource interface method 'check_resource_data'
         resource_data_updated = context.get('resource_data_updated', {})
-        api_request = data_qld_helpers.is_api_request()
+        api_request = data_qld_helpers.is_update_api_request()
         if api_request or resource_data_updated and resource_data_updated.get('id') == resource.get('id'):
             if api_request or resource_data_updated.get('data_updated', False) is True:
                 # Resource data has been updated or the call is from the API so the nature_of_change validation is required

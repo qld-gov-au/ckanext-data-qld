@@ -13,7 +13,6 @@ Feature: Resource freshness
             | TestOrgAdmin  |
             | TestOrgEditor |
 
-
     Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset new page and select 'monthly' update frequency, then the text 'Next update due' should be visible
         Given "<User>" as the persona
         When I log in
@@ -26,8 +25,6 @@ Feature: Resource freshness
             | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
-
-
 
     Scenario Outline: An editor, admin or sysadmin user, when I go to the edit dataset page, the text 'Next update due' should be visible
         Given "<User>" as the persona
