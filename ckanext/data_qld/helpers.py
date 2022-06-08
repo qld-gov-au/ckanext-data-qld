@@ -153,11 +153,11 @@ def is_delete_request():
 
 
 def is_api_request():
-    action = get_request_action()
-    path = get_request_path()
-    return (action == 'action' or '/action/' in path) \
-        and '_reorder' not in action \
-        and '_reorder' not in path
+    return get_request_action() == 'action' or '/action/' in get_request_path()
+
+
+def is_update_api_request():
+    return is_api_request() and get_request_path().endswith(('_update', '_patch'))
 
 
 def get_gtm_code():
