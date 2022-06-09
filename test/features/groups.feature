@@ -34,5 +34,8 @@ Feature: Group APIs
         Given "Unauthenticated" as the persona
         When I go to "/group"
         Then I should see "silly-walks"
+        And I should not see an element with xpath "//a[contains(@href, '?action=read')]"
+        And I should see an element with xpath "//a[contains(@href, '/group/silly-walks')]"
+
         When I view the "silly-walks" group API "not including" users
         Then I should see an element with xpath "//*[contains(string(), '"success": true,') and contains(string(), '"name": "silly-walks"')]"

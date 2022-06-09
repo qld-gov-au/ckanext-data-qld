@@ -35,5 +35,8 @@ Feature: Organization APIs
         Given "Unauthenticated" as the persona
         When I go to organisation page
         Then I should see "Department of Health"
+        And I should not see an element with xpath "//a[contains(@href, '?action=read')]"
+        And I should see an element with xpath "//a[contains(@href, '/organization/department-of-health')]"
+
         When I view the "department-of-health" organisation API "not including" users
         Then I should see an element with xpath "//*[contains(string(), '"success": true,') and contains(string(), '"name": "department-of-health"')]"
