@@ -12,7 +12,7 @@ Feature: AdminReporting
         Then I should see "Organisation: Test Organisation" within 1 seconds
         And I should see an element with xpath "//tr/th[string()='Criteria' and position()=1]"
         And I should see an element with xpath "//tr/th[string()='Figure' and position()=2]"
-        And I should be able to download via the element with xpath "//button[contains(string(), 'Export')]"
+        And I should be able to download via the element with xpath "//a[contains(string(), 'Export')]"
 
     Scenario: As an editor user of my organisation, I can view 'My Reports' tab in the dashboard but I cannot view the 'Admin Report' link
         Given "TestOrgEditor" as the persona
