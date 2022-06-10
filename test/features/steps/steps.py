@@ -6,7 +6,6 @@ from behaving.web.steps.url import when_i_visit_url
 import email
 import quopri
 import requests
-from selenium.webdriver.common.by import By
 import uuid
 
 
@@ -173,7 +172,7 @@ def go_to_organisation_including_users(context, organisation_id, including):
 
 @step(u'I should be able to download via the element with xpath "{expression}"')
 def test_download_element(context, expression):
-    url = context.browser.find_element(By.xpath(expression)).get_attribute('href')
+    url = context.browser.find_by_xpath(expression).first['href']
     assert requests.get(url).status_code == 200
 
 
