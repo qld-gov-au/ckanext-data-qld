@@ -6,6 +6,7 @@ from behaving.web.steps.url import when_i_visit_url
 import email
 import quopri
 import requests
+import six
 import uuid
 
 
@@ -174,7 +175,11 @@ def go_to_organisation_including_users(context, organisation_id, including):
 def test_download_element(context, expression):
     url = context.browser.find_by_xpath(expression).first['href']
     assert 'reporting/export' in url
-    assert requests.get(url).status_code in [200, 302]
+    cookie_values = {}
+    for cookie in context.browser.cookies.all():
+        cookie_item = six.iteritems(cookie)[0]
+        cookie_values[cookie_item[0]] = cookie_item[1]
+    assert requests.get(url, cookies=cookie_values).status_code == 200
 
 
 @step(u'I create a dataset with title "{title}"')
