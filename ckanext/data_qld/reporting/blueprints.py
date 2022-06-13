@@ -12,6 +12,7 @@ def export():
         response = flask.make_response(return_value)
         for key, value in six.iteritems(headers):
             response.headers[key] = value
+        return response
     else:
         return return_value
 
