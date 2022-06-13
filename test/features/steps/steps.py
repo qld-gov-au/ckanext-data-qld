@@ -5,6 +5,7 @@ from behaving.web.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
 import email
 import quopri
+import requests
 import uuid
 
 
@@ -167,6 +168,13 @@ def go_to_group_including_users(context, group_id, including):
 @step(u'I view the "{organisation_id}" organisation API "{including}" users')
 def go_to_organisation_including_users(context, organisation_id, including):
     when_i_visit_url(context, r'/api/3/action/organization_show?id={}&include_users={}'.format(organisation_id, including in ['with', 'including']))
+
+
+@step(u'I should be able to download via the element with xpath "{expression}"')
+def test_download_element(context, expression):
+    url = context.browser.find_by_xpath(expression).first['href']
+    assert 'reporting/export' in url
+    assert requests.get(url, cookies=context.browser.cookies.all()).status_code == 200
 
 
 @step(u'I create a dataset with title "{title}"')
