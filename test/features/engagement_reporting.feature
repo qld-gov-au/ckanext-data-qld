@@ -78,3 +78,11 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='1']"
+
+        When I click the link with text that contains "To be released as open data at a later date"
+        Then I should see "Engagement Report: Data requests: Reporting Organisation"
+        And I should see "Closed data requests - To be released as open data at a later date"
+        And I should see "Reporting Request"
+        When I click the link with text that contains "Reporting Request"
+        Then I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest/') and contains(string(), 'Data requests')]"
+        And I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest/') and contains(string(), 'Reporting Request')]"
