@@ -49,8 +49,8 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
         And I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-title') and string()='Data request comments' and position()=1]"
         And I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
-        And I should see an element with xpath "//tr[@id='closing-circumstance']/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
-        And I should see an element with xpath "//tr[@id='closing-circumstance']/td[position()=2]/a[contains(@href, '/closed?') and string()='0']"
+        And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
+        And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='0']"
 
         Then I go to dataset "reporting"
         And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
@@ -71,5 +71,5 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
         And I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-title') and string()='Data request comments' and position()=1]"
         And I should see an element with xpath "//tr[@id='datarequest-comments']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
-        And I should see an element with xpath "//tr[@id='closing-circumstance']/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
-        And I should see an element with xpath "//tr[@id='closing-circumstance']/td[position()=2]/a[contains(@href, '/closed?') and string()='1']"
+        And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
+        And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='1']"
