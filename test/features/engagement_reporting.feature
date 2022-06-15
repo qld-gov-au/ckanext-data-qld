@@ -84,5 +84,5 @@ Feature: Engagement Reporting
         And I should see "Closed data requests - To be released as open data at a later date"
         And I should see "Reporting Request"
         When I click the link with text that contains "Reporting Request"
-        Then I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest/') and contains(string(), 'Data requests')]"
+        Then I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest') and contains(string(), 'Data requests')]"
         And I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest/') and contains(string(), 'Reporting Request')]"
