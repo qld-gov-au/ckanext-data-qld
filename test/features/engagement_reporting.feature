@@ -80,7 +80,7 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='1']"
 
         When I click the link with text that contains "To be released as open data at a later date"
-        Then I should see "Engagement Report: Data requests: Reporting Organisation"
+        Then I should see "Engagement Report: Data requests: Reporting"
         And I should see "Closed data requests - To be released as open data at a later date"
         And I should see "Reporting Request"
         When I click the link with text that contains "Reporting Request"
