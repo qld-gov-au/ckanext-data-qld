@@ -54,14 +54,19 @@ Feature: Engagement Reporting
 
         Then I go to dataset "reporting"
         And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
+
         And I go to dataset "reporting" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
+
         And I go to data request "Reporting Request" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
+
         And I go to data request "Reporting Request"
         And I press the element with xpath "//a[contains(string(), 'Close')]"
         And I select "To be released as open data at a later date" from "close_circumstance"
+        And I fill in "approx_publishing_date" with "01/01/1970"
         And I press the element with xpath "//button[contains(string(), 'Close data request')]"
+        And I should see an element with xpath "//i[contains(@class, 'icon-lock')]"
 
         When I go to my reports page
         And I click the link with text that contains "Engagement Report"
