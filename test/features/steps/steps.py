@@ -4,12 +4,9 @@ from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
 import email
-import logging
 import quopri
 import requests
 import uuid
-
-log = logging.getLogger(__name__)
 
 
 @step(u'I get the current URL')
@@ -184,7 +181,7 @@ def test_download_element(context, expression):
 def test_package_patch(context, package_id):
     url = context.base_url + '/api/action/package_patch'
     response = requests.post(url, data={'id': package_id}, cookies=context.browser.cookies.all())
-    log.info("Response from endpoint %s is: %s", url, response)
+    print("Response from endpoint {} is: {}".format(url, response))
     assert response.status_code == 200
     assert '"success": true' in response.text
 
