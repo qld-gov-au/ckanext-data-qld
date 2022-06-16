@@ -33,7 +33,7 @@ Feature: Resource freshness
         And I select "monthly" from "update_frequency"
         Then I should see "Next update due"
         When I fill in "next_update_due" with "01/01/1970"
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
         And I wait for 3 seconds
         Then I should be able to patch dataset "warandpeace" via the API
 
