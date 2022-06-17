@@ -177,6 +177,15 @@ def test_download_element(context, expression):
     assert requests.get(url, cookies=context.browser.cookies.all()).status_code == 200
 
 
+@step(u'I should be able to patch dataset "{package_id}" via the API')
+def test_package_patch(context, package_id):
+    url = context.base_url + 'api/action/package_patch'
+    response = requests.post(url, json={'id': package_id}, cookies=context.browser.cookies.all())
+    print("Response from endpoint {} is: {}, {}".format(url, response, response.text))
+    assert response.status_code == 200
+    assert '"success": true' in response.text
+
+
 @step(u'I create a dataset with title "{title}"')
 def create_dataset_titled(context, title):
     context.execute_steps(u"""
