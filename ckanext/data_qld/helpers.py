@@ -21,6 +21,9 @@ def get_user():
 
 
 def user_has_admin_access(include_editor_access):
+    # background jobs should be treated as admins
+    if not get_request():
+        return True
     user = get_user()
     # If user is "None" - they are not logged in.
     if user is None:

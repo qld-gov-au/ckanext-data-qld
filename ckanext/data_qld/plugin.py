@@ -181,7 +181,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
         if context.get('ignore_auth', False) is not True:
             resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
             de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
-        resource_freshness_helpers.process_next_update_due(data_dict)
+            resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):
         for data_dict in search_results.get('results', []):
