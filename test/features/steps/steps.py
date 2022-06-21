@@ -173,7 +173,6 @@ def go_to_organisation_including_users(context, organisation_id, including):
 @step(u'I should be able to download via the element with xpath "{expression}"')
 def test_download_element(context, expression):
     url = context.browser.find_by_xpath(expression).first['href']
-    assert 'reporting/export' in url
     assert requests.get(url, cookies=context.browser.cookies.all()).status_code == 200
 
 
