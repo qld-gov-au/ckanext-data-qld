@@ -173,7 +173,6 @@ def go_to_organisation_including_users(context, organisation_id, including):
 @step(u'I should be able to download via the element with xpath "{expression}"')
 def test_download_element(context, expression):
     url = context.browser.find_by_xpath(expression).first['href']
-    assert 'reporting/export' in url
     assert requests.get(url, cookies=context.browser.cookies.all()).status_code == 200
 
 
@@ -198,7 +197,7 @@ def create_dataset_titled(context, title):
         And I press "Add Data"
         And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "Test Resource"
-        And I select "HTML" from "format"
+        And I execute the script "document.getElementById('field-format').value='HTML'"
         And I fill in "description" with "Test Resource Description"
         And I fill in "size" with "1024" if present
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
