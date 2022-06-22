@@ -5,4 +5,14 @@ Feature: Dataset APIs
         When I log in
         And I edit the "warandpeace" dataset
         Then I should see an element with xpath "//option[@value='cc-by-nc-sa-4']"
-
+        When I go to dataset "warandpeace"
+        And I press the element with xpath "//a[contains(@href, '/dataset/activity/') and contains(string(), 'Activity Stream')]"
+        Then I should see "created the dataset"
+        When I click the link with text that contains "View this version"
+        Then I should see "You're currently viewing an old version of this dataset."
+        When I go to dataset "warandpeace"
+        And I press the element with xpath "//a[contains(@href, '/dataset/activity/') and contains(string(), 'Activity Stream')]"
+        And I click the link with text that contains "Changes"
+        Then I should see "View changes from"
+        And I should see an element with xpath "//select[@name='old_id']"
+        And I should see an element with xpath "//select[@name='new_id']"
