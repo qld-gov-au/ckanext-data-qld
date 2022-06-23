@@ -109,6 +109,11 @@ commands:
       ahoy cli "flake8 ${@:-ckanext}" || \
       [ "${ALLOW_LINT_FAIL:-0}" -eq 1 ]
 
+  copy-local-files:
+    usage: Update files from local repo.
+    cmd: |
+      docker cp . $(docker-compose ps -q ckan):/app/
+
   test-unit:
     usage: Run unit tests.
     cmd: |
