@@ -11,7 +11,7 @@ Feature: Dataset APIs
         Given "TestOrgEditor" as the persona
         When I log in
         And I edit the "public-test-dataset" dataset
-        And I fill in "author_email" with "test-author@example.com"
+        And I fill in "author_email" with "admin@example.com"
         And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
         And I press the element with xpath "//a[contains(@href, '/dataset/activity/') and contains(string(), 'Activity Stream')]"
         Then I should see "created the dataset"
