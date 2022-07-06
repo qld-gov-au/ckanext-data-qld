@@ -5,6 +5,7 @@ import logging
 from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h
 from ckan.lib import mailer
 from ckan.lib.base import render_jinja2
+from ckan.model.resource import Resource
 
 from ckanext.data_qld.helpers import is_uploaded_file, user_has_admin_access
 from datetime import datetime
@@ -109,8 +110,7 @@ def process_next_update_due(data_dict):
 def process_nature_of_change(resource_dict):
     if user_has_admin_access(True):
         if 'nature_of_change' not in resource_dict:
-            existing_resource = get_action('resource_show')(
-                context={'ignore_auth': True}, data_dict={'id': resource_dict['id']})
+            existing_resource = Resource.get(resource_dict['id'])
             if 'nature_of_change' not in existing_resource:
                 resource_dict['nature_of_change'] = 'edit-resource-with-no-new-data'
     else:
