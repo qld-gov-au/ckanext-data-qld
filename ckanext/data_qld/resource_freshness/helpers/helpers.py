@@ -102,14 +102,20 @@ def process_next_update_due(data_dict):
     if not user_has_admin_access(True):
         if 'next_update_due' in data_dict:
             del data_dict['next_update_due']
-        for res in data_dict.get('resources', []):
-            if 'nature_of_change' in res:
-                del res['nature_of_change']
+    for res in data_dict.get('resources', []):
+        process_nature_of_change(res)
 
 
 def process_nature_of_change(resource_dict):
-    if 'nature_of_change' in resource_dict and not user_has_admin_access(True):
-        del resource_dict['nature_of_change']
+    if user_has_admin_access(True):
+        if 'nature_of_change' not in resource_dict:
+            existing_resource = get_action('resource_show')(
+                context={'ignore_auth': True}, data_dict={'id': resource_dict['id']})
+            if 'nature_of_change' not in existing_resource:
+                resource_dict['nature_of_change'] = 'edit-resource-with-no-new-data'
+    else:
+        if 'nature_of_change' in resource_dict:
+            del resource_dict['nature_of_change']
 
 
 def group_dataset_by_contact_email(datasets):
