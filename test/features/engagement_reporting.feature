@@ -28,14 +28,15 @@ Feature: Engagement Reporting
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
-        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='3' and position()=2]"
+        And I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='25' and position()=2]"
 
         When I create a datarequest
+
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
-        Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='4' and position()=2]"
+        And I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='26' and position()=2]"
 
     Scenario: As an admin user of my organisation, when I view my engagement report, I can verify the numbers are correct and increment
         Given "ReportingOrgAdmin" as the persona
