@@ -111,7 +111,7 @@ def process_nature_of_change(resource_dict):
     if user_has_admin_access(True):
         if 'nature_of_change' not in resource_dict:
             existing_resource = Resource.get(resource_dict['id'])
-            if 'nature_of_change' not in existing_resource:
+            if not existing_resource.getattr('nature_of_change', None):
                 resource_dict['nature_of_change'] = 'edit-resource-with-no-new-data'
     else:
         if 'nature_of_change' in resource_dict:
