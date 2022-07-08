@@ -10,7 +10,7 @@ from ckantoolkit import config
 
 from ckanext.datarequests import db, validator
 
-import constants
+from . import constants
 
 log = logging.getLogger(__name__)
 

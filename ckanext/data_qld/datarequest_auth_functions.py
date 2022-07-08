@@ -2,8 +2,7 @@
 
 import ckantoolkit as toolkit
 
-import constants
-import helpers
+from . import constants, helpers
 
 
 @toolkit.chained_auth_function

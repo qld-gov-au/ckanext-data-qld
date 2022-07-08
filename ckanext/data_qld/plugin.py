@@ -6,6 +6,8 @@ import six
 from ckan import plugins
 import ckantoolkit as toolkit
 
+from . import actions, auth_functions as auth, constants, converters, \
+    datarequest_auth_functions, helpers, validation
 from .de_identified_data import helpers as de_identified_data_helpers
 from .dataset_deletion import helpers as dataset_deletion_helpers
 from .reporting.helpers import helpers as reporting_helpers
@@ -15,14 +17,6 @@ from .resource_freshness import validation as resource_freshness_validator
 from .resource_freshness.logic.actions import get as resource_freshness_get_actions
 from .resource_visibility import helpers as resource_visibility_helpers
 from .resource_visibility import validators as resource_visibility_validators
-
-import actions
-import auth_functions as auth
-import constants
-import converters
-import datarequest_auth_functions
-import helpers
-import validation
 
 if ' qa' in toolkit.config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA

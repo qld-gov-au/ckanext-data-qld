@@ -2,7 +2,7 @@
 
 from ckan.controllers.api import ApiController
 
-import controller_functions
+from . import controller_functions
 
 
 class GoogleAnalyticsApiController(ApiController):

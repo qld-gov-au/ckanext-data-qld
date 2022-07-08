@@ -2,9 +2,8 @@
 
 import ckan.plugins as p
 
-import blueprints
+from . import blueprints, click_cli
 from .reporting import blueprints as reporting_blueprints
-import click_cli
 
 
 class MixinPlugin(p.SingletonPlugin):
