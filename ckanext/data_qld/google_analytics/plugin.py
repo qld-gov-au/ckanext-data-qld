@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import Queue
+from six.moves import queue as Queue
 import json
 import logging
 from os import path
