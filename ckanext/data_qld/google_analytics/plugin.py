@@ -94,5 +94,5 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
     # IBlueprint
 
     def get_blueprint(self):
-        import blueprints
+        from . import blueprints
         return [blueprints.blueprint]

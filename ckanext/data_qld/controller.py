@@ -2,7 +2,7 @@
 
 from ckantoolkit import BaseController
 
-from controller_functions import open_datarequest, show_schema
+from .controller_functions import open_datarequest, show_schema
 
 
 class DataQldUI(BaseController):
