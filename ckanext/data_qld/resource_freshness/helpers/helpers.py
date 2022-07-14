@@ -93,7 +93,7 @@ def check_resource_data(current_resource, updated_resource, context):
         # This will be used in the 'upload.html' to inject hidden fields if there are any validation errors
         # We need to know if the data was updated to fix an issue with CKAN losing this state with validation errors
         g.resource_data_updated = data_updated
-    except TypeError:
+    except (TypeError, RuntimeError):
         # If a context object isn't registered, we're presumably not in a web request
         # and therefore we don't need it
         pass

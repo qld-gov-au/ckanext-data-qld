@@ -138,6 +138,12 @@ def profanity_checking_enabled():
 
 
 def get_request():
+    try:
+        import flask
+        if not flask.has_request_context():
+            return None
+    except ImportError:
+        pass
     return toolkit.request if hasattr(toolkit.request, 'params') else None
 
 
