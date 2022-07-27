@@ -5,7 +5,7 @@ import six
 
 from ckan import plugins
 from ckantoolkit import _, add_template_directory, add_public_directory,\
-    add_resource, config, get_validator, request
+    add_resource, config, get_validator
 
 from . import actions, auth_functions as auth, constants, converters, \
     datarequest_auth_functions, helpers, validation
