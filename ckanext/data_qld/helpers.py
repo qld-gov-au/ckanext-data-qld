@@ -7,7 +7,7 @@ from six import text_type
 from ckan import model
 from ckan.lib import uploader
 import ckantoolkit as toolkit
-from ckantoolkit import c, config, request
+from ckantoolkit import c, check_ckan_version, config, request
 
 
 def get_user():
@@ -88,7 +88,7 @@ def datarequest_default_organisation():
                 'include_followers': False
             })
     except toolkit.ObjectNotFound:
-        toolkit.abort(404,
+        return toolkit.abort(404,
                       toolkit._('Default Data Request Organisation not found. Please get the sysadmin to set one up'))
 
     return organisation
@@ -282,7 +282,7 @@ def latest_revision(resource_id):
 
 def populate_revision(resource):
     if 'revision_timestamp' in resource \
-            or toolkit.check_ckan_version(min_version='2.9'):
+            or is_ckan_29():
         return
     current_revision = latest_revision(resource['id'])
     if current_revision is not None:
@@ -338,6 +338,14 @@ def get_deletion_reason_template():
 
 def is_uploaded_file(upload):
     return isinstance(upload, uploader.ALLOWED_UPLOAD_TYPES) and upload.filename
+
+
+def is_ckan_29():
+    """
+    Returns True if using CKAN 2.9+, with Flask and Webassets.
+    Returns False if those are not present.
+    """
+    return check_ckan_version(min_version='2.9.0')
 
 
 class RequestHelper():

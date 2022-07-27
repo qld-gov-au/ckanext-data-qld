@@ -5,7 +5,7 @@
   {% if h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' and not h.data_qld_data_driven_application(data.data_driven_application)  %}
     <a id='dataset-delete-button' disabled="disabled"
         class="btn btn-danger pull-left"
-        {% if h.ckan_version() > '2.9' %}
+        {% if h.is_ckan_29() %}
           href="{{ h.url_for('dataset.delete', id=data.id) }}"
         {% else %}
           href="{% url_for controller='package', action='delete', id=data.id %}"
@@ -15,6 +15,7 @@
         data-module-template="{{ h.get_deletion_reason_template() }}">
         {% block delete_button_text %}{{ _('Delete') }}{% endblock %}
     </a>
-    {% resource 'data_qld/dataset-deletion.js' %}
+    {% set type = 'asset' if h.is_ckan_29() else 'resource' %}
+    {% include "package/snippets/dataset_deletion_" ~ type ~ ".html" %}
   {% endif %}
 {% endblock %}

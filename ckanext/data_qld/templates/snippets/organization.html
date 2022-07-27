@@ -4,7 +4,7 @@
 
 {% endblock %}
 
-{% if h.ckan_version() > '2.9' %}
+{% if h.is_ckan_29() %}
   {% set org_about='organization.about' %}
 {% else %}
   {% set org_about='organization_about' %}

@@ -1,7 +1,7 @@
 {% for row in h.get_closing_circumstance_list() %}
     {% set data = datarequests.circumstances[row.circumstance]|default(None) %}
     {% if row.condition == 'nominate_approximate_date' %}
-        {% if h.ckan_version() > '2.9' %}
+        {% if h.is_ckan_29() %}
             {% set reporting_url = h.url_for(
                 'data_qld_reporting.datarequests', org_id=org_id, metric='closed') %}
         {% else %}

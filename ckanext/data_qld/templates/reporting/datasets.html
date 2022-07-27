@@ -45,7 +45,7 @@
                             {% set package_id = dataset.name %}
                             {% set package_url_suffix = '' %}
                         {% endif %}
-                        {% if h.ckan_version() > '2.9' %}
+                        {% if h.is_ckan_29() %}
                             {% set package_url = h.url_for('dataset.read', id=package_id) %}
                         {% else %}
                             {% set package_url = h.url_for(controller='package', action='read', id=package_id) %}
