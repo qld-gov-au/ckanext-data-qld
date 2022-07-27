@@ -23,7 +23,7 @@ remote-xloader = https://github.com/qld-gov-au/ckanext-xloader.git tag 0.10.0-qg
 remote-csrf-filter = https://github.com/qld-gov-au/ckanext-csrf-filter.git tag 1.1.3
 
 remote-datarequests = https://github.com/qld-gov-au/ckanext-datarequests.git tag 2.2.0-qgov
-remote-dcat = https://github.com/ckan/ckanext-dcat.git tag 1.1.3
+remote-dcat = https://github.com/ckan/ckanext-dcat.git tag v1.1.3
 remote-harvest = https://github.com/ckan/ckanext-harvest.git commit 89b1a32
 
 ###############################################################################
