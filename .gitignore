@@ -1,3 +1,12 @@
+# archiver settings should not be checked in - only its template
+ckanext/archiver/settings.py
+
+.DS_Store
+# vim
+*.sw?
+# emacs
+*~
+
 .ropeproject
 node_modules
 bower_components
@@ -44,6 +53,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+test/screenshots
 
 # Translations
 *.mo
