@@ -80,7 +80,7 @@ commands:
     usage: Install a site.
     cmd: |
       ahoy title "Installing a fresh site"
-      ahoy cli "./scripts/init.sh"
+      ahoy cli '$APP_DIR/scripts/init.sh'
 
   clean:
     usage: Remove containers and all build files.
@@ -134,6 +134,7 @@ commands:
       ahoy cli "behave -k ${*:-test/features}" --tags @smoke && \
       ahoy cli "behave -k ${*:-test/features} --tags=-reporting $BEHAVE_TAGS" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+      # Run reporting tests last so numbers are consistent
       ahoy cli "behave -k ${*:-test/features} --tags=reporting" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       ahoy stop-mailmock
