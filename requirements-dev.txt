@@ -16,7 +16,7 @@ progressbar==2.5
 
 -e git+https://github.com/ckan/ckanext-dcat.git@v1.2.0#egg=ckanext-dcat
 -e git+https://github.com/ckan/ckanext-scheming.git@release-2.1.0#egg=ckanext-scheming
--e git+https://github.com/qld-gov-au/ckanext-archiver.git@2.1.1-qgov.8#egg=ckanext-archiver
+-e git+https://github.com/qld-gov-au/ckanext-archiver.git@2.1.1-qgov.10#egg=ckanext-archiver
 -e git+https://github.com/qld-gov-au/ckanext-csrf-filter.git@1.1.5#egg=ckanext-csrf-filter
 -e git+https://github.com/qld-gov-au/ckanext-datarequests.git@2.2.1-qgov.2#egg=ckanext-datarequests
 -e git+https://github.com/qld-gov-au/ckanext-odi-certificates.git@1.0.1#egg=ckanext-odi-certificates
