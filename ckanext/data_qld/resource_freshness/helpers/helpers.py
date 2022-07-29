@@ -1,10 +1,11 @@
+# encoding: utf-8
+
 import datetime as dt
 import json
 import logging
 
-from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h
+from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h, render
 from ckan.lib import mailer
-from ckan.lib.base import render_jinja2
 from ckan.model.resource import Resource
 
 from ckanext.data_qld.helpers import is_uploaded_file, user_has_admin_access
@@ -147,8 +148,8 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
                 })
 
             extra_vars = {'datasets': datasets}
-            subject = render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
+            subject = render('emails/subjects/{0}.txt'.format(action_type), extra_vars)
+            body = render('emails/bodies/{0}.txt'.format(action_type), extra_vars)
 
             site_title = 'Data | Queensland Government'
             site_url = config.get('ckan.site_url')

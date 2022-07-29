@@ -4,7 +4,7 @@ import datetime
 import logging
 
 from ckan import model
-from ckan.lib import base, helpers, mailer
+from ckan.lib import mailer
 import ckantoolkit as tk
 from ckantoolkit import config
 
@@ -69,7 +69,7 @@ def _dictize_datarequest(datarequest):
         'organization': None,
         'accepted_dataset': None,
         'followers': 0,
-        'dataset_url': helpers.url_for('datarequest.show', id=datarequest.id, qualified=True)
+        'dataset_url': tk.url_for('datarequest.show', id=datarequest.id, qualified=True)
     }
 
     if datarequest.organization_id:
@@ -112,8 +112,8 @@ def _send_mail(user_ids, action_type, datarequest, job_title):
                 'site_title': config.get('ckan.site_title'),
                 'site_url': config.get('ckan.site_url')
             }
-            subject = base.render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = base.render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
+            subject = tk.render('emails/subjects/{0}.txt'.format(action_type), extra_vars)
+            body = tk.render('emails/bodies/{0}.txt'.format(action_type), extra_vars)
             tk.enqueue_job(mailer.mail_user, [user_data, subject, body], title=job_title)
         except Exception:
             logging.exception("Error sending notification to {0}".format(user_id))
