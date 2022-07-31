@@ -7,6 +7,7 @@ import email
 import quopri
 import requests
 import uuid
+import six
 
 
 @step(u'I get the current URL')
@@ -244,7 +245,7 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
         payload_bytes = quopri.decodestring(payload)
         if len(payload_bytes) > 0:
             payload_bytes += b'='  # do fix the padding error issue
-        decoded_payload = payload_bytes.decode('base64')
+        decoded_payload = six.ensure_binary(payload_bytes).decode('base64')
         print('decoded_payload: ', decoded_payload)
         return text in decoded_payload and (not text2 or text2 in decoded_payload)
 
