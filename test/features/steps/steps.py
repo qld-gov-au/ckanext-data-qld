@@ -245,7 +245,11 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
         payload_bytes = quopri.decodestring(payload)
         if len(payload_bytes) > 0:
             payload_bytes += b'='  # do fix the padding error issue
-        decoded_payload = six.ensure_binary(payload_bytes).decode('base64')
+        if six.PY2:
+            decoded_payload = payload_bytes.decode('base64')
+        else:
+            import base64
+            decoded_payload = base64.b64decode(six.ensure_binary(payload_bytes))
         print('decoded_payload: ', decoded_payload)
         return text in decoded_payload and (not text2 or text2 in decoded_payload)
 
