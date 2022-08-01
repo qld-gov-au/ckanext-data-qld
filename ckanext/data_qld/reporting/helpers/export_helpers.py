@@ -128,7 +128,7 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
     filepath = gettempdir() + '/' + filename
 
     try:
-        with open(filepath, 'wb') as csvfile:
+        with open(filepath, 'w') as csvfile:
             csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             csv_writer.writerow(csv_header_row)
             for label in row_order:
