@@ -4,6 +4,7 @@ import csv
 import json
 import logging
 import os
+import six
 from tempfile import gettempdir
 
 from ckan.plugins.toolkit import abort, config
@@ -139,7 +140,7 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
 
         return fh.read(), {
             b'Content-Type': b'text/csv; charset=utf-8',
-            b'Content-Disposition': b"attachment;filename=%s" % filename
+            b'Content-Disposition': six.ensure_binary("attachment;filename=%s" % filename)
         }
     except Exception as e:
         log.error('Error creating %s report CSV export file: %s', report_type, filepath)
