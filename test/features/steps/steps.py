@@ -98,6 +98,7 @@ def add_resource(context, name, url):
         And I fill in "name" with "{name}"
         And I fill in "description" with "description"
         And I fill in "size" with "1024" if present
+        And I execute the script "document.getElementById('field-format').value='HTML'"
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
     """.format(name=name, url=url))
 
