@@ -6,7 +6,7 @@ import logging
 import os
 from tempfile import gettempdir
 
-from ckan.common import config
+from ckan.plugins.toolkit import abort, config
 from ckanext.data_qld.reporting.helpers import helpers
 from datetime import datetime
 
@@ -144,3 +144,4 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
     except Exception as e:
         log.error('Error creating %s report CSV export file: %s', report_type, filepath)
         log.error(str(e))
+        return abort(500, 'Unable to export report file')
