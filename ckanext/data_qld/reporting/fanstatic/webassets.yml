@@ -1,5 +1,4 @@
 reporting-css:
   contents:
     - reporting.css
-  filters: cssrewrite
   output: data_qld_reporting/%(version)s_reporting.css
