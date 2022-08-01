@@ -191,7 +191,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
         return search_results
 
     def after_delete(self, context, data_dict):
-        dataset_deletion_helpers.add_deletion_of_dataset_reason(context, data_dict)
+        if isinstance(data_dict, dict):
+            dataset_deletion_helpers.add_deletion_of_dataset_reason(context, data_dict)
 
     # IResourceController
     def before_create(self, context, data_dict):
