@@ -2,7 +2,7 @@
 
 from ckan import plugins
 
-import constants
+from . import constants
 
 
 class MixinPlugin(plugins.SingletonPlugin):

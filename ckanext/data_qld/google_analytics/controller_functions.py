@@ -5,7 +5,7 @@ import logging
 
 from ckantoolkit import g, get_action, request
 
-import plugin
+from . import plugin
 
 log = logging.getLogger('ckanext.googleanalytics')
 

@@ -3,7 +3,7 @@
 import flask
 import six
 
-from controller_functions import datarequests, datasets, export as export_helper, index
+from .controller_functions import datarequests, datasets, export as export_helper, index
 
 
 def export():

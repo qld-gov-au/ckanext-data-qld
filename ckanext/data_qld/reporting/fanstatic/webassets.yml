@@ -1,0 +1,4 @@
+reporting-css:
+  contents:
+    - reporting.css
+  output: data_qld_reporting/%(version)s_reporting.css

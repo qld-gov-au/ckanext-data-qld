@@ -8,8 +8,8 @@ from ckantoolkit import _, abort, c, check_access, g, get_action, \
     redirect_to, render, NotAuthorized, ObjectNotFound, url_for, \
     ValidationError
 
-from constants import OPEN_DATAREQUEST, RESOURCE_SHOW, SHOW_DATAREQUEST
-import helpers
+from . import helpers
+from .constants import OPEN_DATAREQUEST, RESOURCE_SHOW, SHOW_DATAREQUEST
 
 log = logging.getLogger(__name__)
 

@@ -1,12 +1,5 @@
-{% resource "comments_js/comments.js" %}
-
-{% resource "comments_js/comment_validation.js" %}
-
-{% if h.ckan_version() > '2.9' %}
-    {% snippet "snippets/flag-comment_asset.html" %}
-{% else %}
-    {% snippet "snippets/flag-comment_resource.html" %}
-{% endif %}
+{% set type = 'asset' if h.is_ckan_29() else 'resource' %}
+{% include "package/snippets/flag-comment_" ~ type ~ ".html" %}
 
 {% set content_type = content_type or 'dataset' %}
 {% set thread = h.get_comment_thread(pkg_name, content_type) %}
@@ -18,8 +11,7 @@
 {%- endif -%}
 
 {% if notification_actions_enabled %}
-    {% resource "comments_js/confirm_mute_content_item.js" %}
-    {% resource "comments_js/follow_or_mute_notifications.js" %}
+    {% include "package/snippets/follow-or-mute-comment_" ~ type ~ ".html" %}
     {% set following_content_item, comments_following, comments_muted = h.user_comment_follow_mute_status(userobj.id, thread.id) %}
 {% endif %}
 

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import Queue
+from six.moves import queue as Queue
 import json
 import logging
 from os import path
@@ -94,5 +94,5 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
     # IBlueprint
 
     def get_blueprint(self):
-        import blueprints
+        from . import blueprints
         return [blueprints.blueprint]

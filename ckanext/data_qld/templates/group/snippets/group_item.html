@@ -13,10 +13,10 @@ Example:
 #}
 {% set type = group.type or 'group' %}
 {% set name = group.name %}
-{% if h.ckan_version() > '2.9' %}
-{% set url = h.url_for(type ~ '.read', id=name) %}
+{% if h.is_ckan_29() %}
+  {% set url = h.url_for(type ~ '.read', id=name) %}
 {% else %}
-{% set url = h.url_for(type ~ '_read', action='read', id=name) %}
+  {% set url = h.url_for(type ~ '_read', action='read', id=name) %}
 {% endif %}
 
 {% block item %}

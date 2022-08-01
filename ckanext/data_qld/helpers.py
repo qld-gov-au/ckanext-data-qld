@@ -6,16 +6,16 @@ from six import text_type
 
 from ckan import model
 from ckan.lib import uploader
-import ckantoolkit as toolkit
-from ckantoolkit import c, config, request
+from ckantoolkit import _, c, g, h, abort, asbool, check_ckan_version, \
+    config, get_action, get_endpoint, ObjectNotFound, render, request
 
 
 def get_user():
     """ Retrieve the current user object.
     """
     # 'g' is not a regular data structure so we can't use 'hasattr'
-    if 'userobj' in dir(toolkit.g):
-        return toolkit.g.userobj
+    if 'userobj' in dir(g):
+        return g.userobj
     else:
         return None
 
@@ -59,9 +59,9 @@ def dataset_data_driven_application(dataset_id):
 
     """
     try:
-        package = toolkit.get_action('package_show')(
+        package = get_action('package_show')(
             data_dict={'id': dataset_id})
-    except toolkit.ObjectNotFound:
+    except ObjectNotFound:
         return False
 
     return data_driven_application(package.get('data_driven_application', ''))
@@ -76,7 +76,7 @@ def datarequest_default_organisation():
     """
     default_organisation = config.get('ckan.datarequests.default_organisation')
     try:
-        organisation = toolkit.get_action('organization_show')(
+        organisation = get_action('organization_show')(
             data_dict={
                 'id': default_organisation,
                 'include_datasets': False,
@@ -87,9 +87,9 @@ def datarequest_default_organisation():
                 'include_tags': False,
                 'include_followers': False
             })
-    except toolkit.ObjectNotFound:
-        toolkit.abort(404,
-                      toolkit._('Default Data Request Organisation not found. Please get the sysadmin to set one up'))
+    except ObjectNotFound:
+        return abort(404,
+                     _('Default Data Request Organisation not found. Please get the sysadmin to set one up'))
 
     return organisation
 
@@ -134,16 +134,22 @@ def profanity_checking_enabled():
 
     """
     return ytp_comments_enabled() \
-        and toolkit.asbool(config.get('ckan.comments.check_for_profanity', False))
+        and asbool(config.get('ckan.comments.check_for_profanity', False))
 
 
 def get_request():
-    return toolkit.request if hasattr(toolkit.request, 'params') else None
+    try:
+        import flask
+        if not flask.has_request_context():
+            return None
+    except ImportError:
+        pass
+    return request if hasattr(request, 'params') else None
 
 
 def get_request_action():
     request = get_request()
-    return toolkit.get_endpoint()[1] if request else ''
+    return get_endpoint()[1] if request else ''
 
 
 def get_request_path():
@@ -176,7 +182,7 @@ def get_year():
 
 def _is_action_configured(name):
     try:
-        return toolkit.get_action(name) is not None
+        return get_action(name) is not None
     except KeyError:
         return False
 
@@ -190,7 +196,7 @@ def is_datarequests_enabled():
 
 
 def get_all_groups():
-    groups = toolkit.get_action('group_list')(
+    groups = get_action('group_list')(
         data_dict={'include_dataset_count': False, 'all_fields': True})
     pkg_group_ids = set(group['id'] for group
                         in c.pkg_dict.get('groups', []))
@@ -276,7 +282,7 @@ def latest_revision(resource_id):
 
 def populate_revision(resource):
     if 'revision_timestamp' in resource \
-            or toolkit.check_ckan_version(min_version='2.9'):
+            or is_ckan_29():
         return
     current_revision = latest_revision(resource['id'])
     if current_revision is not None:
@@ -291,7 +297,7 @@ def unreplied_comments_x_days(thread_url):
     comment_ids = []
 
     if is_reporting_enabled():
-        unreplied_comments = toolkit.get_action(
+        unreplied_comments = get_action(
             'comments_no_replies_after_x_days'
         )({}, {'thread_url': thread_url})
 
@@ -316,7 +322,7 @@ def members_sorted(members):
     members_list = []
     for user_id, user, role in members:
         member_dict = {}
-        tag = toolkit.h.linked_user(user_id)
+        tag = h.linked_user(user_id)
         member_dict['user_id'] = user_id
         member_dict['tag'] = tag
         member_dict['role'] = role
@@ -327,11 +333,19 @@ def members_sorted(members):
 
 
 def get_deletion_reason_template():
-    return toolkit.render('package/snippets/deletion_reason.html')
+    return render('package/snippets/deletion_reason.html')
 
 
 def is_uploaded_file(upload):
     return isinstance(upload, uploader.ALLOWED_UPLOAD_TYPES) and upload.filename
+
+
+def is_ckan_29():
+    """
+    Returns True if using CKAN 2.9+, with Flask and Webassets.
+    Returns False if those are not present.
+    """
+    return check_ckan_version(min_version='2.9.0')
 
 
 class RequestHelper():

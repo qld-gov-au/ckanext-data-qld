@@ -4,8 +4,11 @@ import logging
 import six
 
 from ckan import plugins
-import ckantoolkit as toolkit
+from ckantoolkit import _, add_template_directory, add_public_directory,\
+    add_resource, config, get_validator
 
+from . import actions, auth_functions as auth, constants, converters, \
+    datarequest_auth_functions, helpers, validation
 from .de_identified_data import helpers as de_identified_data_helpers
 from .dataset_deletion import helpers as dataset_deletion_helpers
 from .reporting.helpers import helpers as reporting_helpers
@@ -16,28 +19,18 @@ from .resource_freshness.logic.actions import get as resource_freshness_get_acti
 from .resource_visibility import helpers as resource_visibility_helpers
 from .resource_visibility import validators as resource_visibility_validators
 
-import actions
-import auth_functions as auth
-import constants
-import converters
-import datarequest_auth_functions
-import helpers
-import validation
-
-if ' qa' in toolkit.config.get('ckan.plugins', ''):
+if ' qa' in config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA
     import ckanext.qa.lib as qa_lib
     import ckanext.qa.tasks as qa_tasks
     import os
 
-request = toolkit.request
-
 log = logging.getLogger(__name__)
 
-if toolkit.check_ckan_version("2.9"):
-    from flask_plugin import MixinPlugin
+if helpers.is_ckan_29():
+    from .flask_plugin import MixinPlugin
 else:
-    from pylons_plugin import MixinPlugin
+    from .pylons_plugin import MixinPlugin
 
 
 class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
@@ -51,19 +44,18 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
 
-    if ' qa' in toolkit.config.get('ckan.plugins', ''):
+    if ' qa' in config.get('ckan.plugins', ''):
         plugins.implements(IQA)
 
     # IConfigurer
     def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic', 'data_qld')
-        toolkit.add_resource('fanstatic', 'data_qld_theme')
-        toolkit.add_resource('reporting/fanstatic', 'data_qld_reporting')
+        add_template_directory(config_, 'templates')
+        add_public_directory(config_, 'public')
+        add_resource('fanstatic', 'data_qld_theme')
+        add_resource('reporting/fanstatic', 'data_qld_reporting')
 
     def update_config_schema(self, schema):
-        ignore_missing = toolkit.get_validator('ignore_missing')
+        ignore_missing = get_validator('ignore_missing')
         schema.update({
             # This is a custom configuration option
             'ckanext.data_qld.resource_formats': [ignore_missing, six.text_type],
@@ -91,6 +83,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'get_gtm_container_id': helpers.get_gtm_code,
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
+            'is_ckan_29': helpers.is_ckan_29,
             'is_datarequests_enabled': helpers.is_datarequests_enabled,
             'get_all_groups': helpers.get_all_groups,
             'is_request_for_resource': helpers.is_request_for_resource,
@@ -226,7 +219,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             if hasattr(resource, 'extras') and resource.extras.get('schema', None) and resource.extras.get(
                     'validation_status', '').lower() == 'success':
                 resource_score['openness_score'] = 4
-                resource_score['openness_score_reason'] = toolkit._(
+                resource_score['openness_score_reason'] = _(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_score_format, resource_score.get('openness_score', '')))
 
@@ -241,7 +234,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             if resource_score_format == 'TIFF' and resource_format == 'GEOTIFF':
                 resource_score['openness_score'] = resource_score['openness_score'] = qa_lib.resource_format_scores().get(
                     resource_format)
-                resource_score['openness_score_reason'] = toolkit._(
+                resource_score['openness_score_reason'] = _(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_format, resource_score.get('openness_score', '')))
 
@@ -250,7 +243,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             if resource_score_format == 'ZIP' and 'GDB' in resource_format:
                 resource_score['format'] = 'GDB'
                 resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
-                resource_score['openness_score_reason'] = toolkit._(
+                resource_score['openness_score_reason'] = _(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_format, resource_score.get('openness_score', '')))
 
@@ -262,7 +255,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
                                                                      qa_tasks.extension_variants(resource.url)):
                     resource_score['format'] = 'GPKG'
                     resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
-                    resource_score['openness_score_reason'] = toolkit._(
+                    resource_score['openness_score_reason'] = _(
                         'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                         .format(resource_format, resource_score.get('openness_score', '')))
 

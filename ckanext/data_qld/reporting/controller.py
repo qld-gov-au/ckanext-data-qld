@@ -4,7 +4,7 @@ import six
 
 from ckantoolkit import BaseController, response
 
-from controller_functions import datarequests, datasets, export, index
+from .controller_functions import datarequests, datasets, export, index
 
 
 class ReportingController(BaseController):

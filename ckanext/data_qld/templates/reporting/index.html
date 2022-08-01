@@ -1,9 +1,10 @@
 {% extends "user/dashboard.html" %}
 
+{% set type = 'asset' if h.is_ckan_29() else 'resource' %}
 
 {% block primary_content_inner %}
 
-    {% resource "data_qld_reporting/reporting.css" %}
+    {% include "reporting/snippets/data_qld_reporting_" ~ type ~ ".html" %}
 
     <h1>My Reports</h1>
 

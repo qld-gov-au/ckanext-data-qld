@@ -1,7 +1,7 @@
 {% ckan_extends %}
 
 {% block breadcrumb_content %}
-    {% if h.ckan_version() > '2.9' %}
+    {% if h.is_ckan_29() %}
       {% set index_route_name = 'organization.index' %}
       {% set org_route_name = 'organization.read' %}
     {% else %}

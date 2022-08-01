@@ -4,9 +4,10 @@ import csv
 import json
 import logging
 import os
+import six
 from tempfile import gettempdir
 
-from ckan.common import config
+from ckan.plugins.toolkit import abort, config
 from ckanext.data_qld.reporting.helpers import helpers
 from datetime import datetime
 
@@ -128,7 +129,7 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
     filepath = gettempdir() + '/' + filename
 
     try:
-        with open(filepath, 'wb') as csvfile:
+        with open(filepath, 'w') as csvfile:
             csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             csv_writer.writerow(csv_header_row)
             for label in row_order:
@@ -139,8 +140,9 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
 
         return fh.read(), {
             b'Content-Type': b'text/csv; charset=utf-8',
-            b'Content-Disposition': b"attachment;filename=%s" % filename
+            b'Content-Disposition': six.ensure_binary("attachment;filename=%s" % filename)
         }
     except Exception as e:
         log.error('Error creating %s report CSV export file: %s', report_type, filepath)
         log.error(str(e))
+        return abort(500, 'Unable to export report file')
