@@ -26,6 +26,7 @@ RUN mkdir -p ${VENV_DIR} \
     && pip install setuptools==44.1.0 \
     && pip install -e "git+https://github.com/${CKAN_REPO}.git@${CKAN_VERSION}#egg=ckan" \
     && pip install -r "${SRC_DIR}/ckan/requirements.txt" \
+                   -r "${SRC_DIR}/ckan/dev-requirements.txt" \
     && ln -s "${SRC_DIR}/ckan/who.ini" "$APP_DIR/who.ini" \
     && deactivate \
     && ln -s ${APP_DIR}/ckan /usr/lib/ckan \
