@@ -4,7 +4,7 @@
   {% if data.id %}
     {% if h.check_access('resource_delete', {'id': data.id}) and not h.data_qld_dataset_data_driven_application(data.package_id)  %}
       <a class="btn btn-danger pull-left"
-      {% if h.ckan_version() > '2.9' %}
+      {% if h.is_ckan_29() %}
         href="{% url_for dataset_type ~ '_resource.delete', resource_id=data.id, id=pkg_name %}"
       {% else %}
         href="{{ h.url_for(controller='package', action='resource_delete', resource_id=data.id, id=pkg_name) }}"

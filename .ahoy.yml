@@ -80,7 +80,7 @@ commands:
     usage: Install a site.
     cmd: |
       ahoy title "Installing a fresh site"
-      ahoy cli "./scripts/init.sh"
+      ahoy cli '$APP_DIR/scripts/init.sh'
 
   clean:
     usage: Remove containers and all build files.
@@ -113,6 +113,8 @@ commands:
     usage: Update files from local repo.
     cmd: |
       docker cp . $(docker-compose ps -q ckan):/app/
+      docker cp .docker/scripts/ckan_cli $(docker-compose ps -q ckan):/app/ckan/default/bin/
+      ahoy cli 'chmod u+x $VENV_DIR/bin/ckan_cli; cp .docker/test.ini $CKAN_INI'
 
   test-unit:
     usage: Run unit tests.
@@ -130,7 +132,10 @@ commands:
       fi
       sleep 5 &&
       ahoy cli "behave -k ${*:-test/features}" --tags @smoke && \
-      ahoy cli "behave -k ${*:-test/features} $BEHAVE_TAGS" || \
+      ahoy cli "behave -k ${*:-test/features} --tags=-reporting $BEHAVE_TAGS" || \
+      [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+      # Run reporting tests last so numbers are consistent
+      ahoy cli "behave -k ${*:-test/features} --tags=reporting" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       ahoy stop-mailmock
       ahoy stop-ckan-job-workers

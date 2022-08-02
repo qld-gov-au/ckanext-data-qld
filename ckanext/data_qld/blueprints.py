@@ -4,8 +4,8 @@ from flask import Blueprint
 
 from ckantoolkit import render
 
-from constants import DATAREQUESTS_MAIN_PATH, SCHEMA_MAIN_PATH
-from controller_functions import open_datarequest, show_schema
+from .constants import DATAREQUESTS_MAIN_PATH, SCHEMA_MAIN_PATH
+from .controller_functions import open_datarequest, show_schema
 
 blueprint = Blueprint(
     u'data_qld',

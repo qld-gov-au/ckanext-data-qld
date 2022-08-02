@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 from os import path
 

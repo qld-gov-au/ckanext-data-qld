@@ -4,7 +4,7 @@ import flask
 
 import ckan.views.api as core_api
 
-import controller_functions
+from . import controller_functions
 
 
 def action(api_action, ver=core_api.API_DEFAULT_VERSION):

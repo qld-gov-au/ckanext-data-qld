@@ -6,7 +6,7 @@ from ckantoolkit import _, abort, get_action, get_validator, \
     request, render, Invalid, NotAuthorized, ObjectNotFound
 
 from ckanext.data_qld import helpers
-from constants import DATAREQUEST_OPEN_MAX_DAYS, COMMENT_NO_REPLY_MAX_DAYS, \
+from .constants import DATAREQUEST_OPEN_MAX_DAYS, COMMENT_NO_REPLY_MAX_DAYS, \
     REPORT_TYPES, REPORT_TYPE_ADMIN, REPORT_TYPE_ENGAGEMENT
 from .helpers import export_helpers, helpers as reporting_helpers
 
