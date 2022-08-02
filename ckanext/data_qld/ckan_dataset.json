@@ -307,6 +307,7 @@
     },
     {
       "field_name": "schema",
+      "label": "Data Schema",
       "preset": "resource_schema"
     },
     {

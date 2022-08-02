@@ -18,7 +18,7 @@ remote-scheming = https://github.com/ckan/ckanext-scheming.git tag  release-2.1.
 remote-ssm-config = https://github.com/qld-gov-au/ckanext-ssm-config.git tag  0.0.2
 
 remote-validation = https://github.com/qld-gov-au/ckanext-validation.git tag  v0.0.8-qgov.4
-develop-validation = https://github.com/qld-gov-au/ckanext-validation.git branch develop
+develop-validation = https://github.com/DataShades/ckanext-validation.git branch develop
 
 remote-ytp-comments = https://github.com/qld-gov-au/ckanext-ytp-comments.git tag  2.5.0-qgov.2
 remote-datajson = https://github.com/GSA/ckanext-datajson.git branch main
