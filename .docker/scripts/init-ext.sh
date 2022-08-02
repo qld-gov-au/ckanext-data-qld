@@ -29,7 +29,7 @@ if [ "$VENV_DIR" != "" ]; then
   . ${VENV_DIR}/bin/activate
 fi
 install_requirements . dev-requirements requirements-dev
-for extension in . `ls -d $VENV_DIR/src/ckanext-*`; do
+for extension in . `ls -d $SRC_DIR/ckanext-*`; do
     install_requirements $extension requirements pip-requirements
 done
 python setup.py develop
