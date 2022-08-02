@@ -9,7 +9,7 @@ ckanext-report-js:
 data_qld-css:
   contents:
     - data_qld.css
-  output: data_qld_theme/%(version)_data-qld.css
+  output: data_qld_theme/%(version)s_data-qld.css
 
 dataset-deletion-js:
   contents:
@@ -32,7 +32,7 @@ flag-comment-js:
 main-css:
   contents:
     - main.css
-  output: data_qld_theme/%(version)_main.css
+  output: data_qld_theme/%(version)s_main.css
 
 next-update-due-js:
   contents:
