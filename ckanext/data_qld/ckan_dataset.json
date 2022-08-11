@@ -306,6 +306,23 @@
       "help_text": "Select 'NO' where the dataset does NOT contain de-identified data. Where the dataset contains de-identified data, appropriate governance process should be completed to minimise re-identification risk. Acknowledge completion by selecting 'YES'. Selecting 'NO' will hide the resource."
     },
     {
+        "field_name": "request_privacy_assessment",
+        "label": "Request privacy assessment",
+        "preset": "select",
+        "form_include_blank_choice": true,
+        "choices": [
+          {
+            "value": "NO",
+            "label": "NO"
+          },
+          {
+            "value": "YES",
+            "label": "YES"
+          }
+        ],
+        "help_text": "Where the dataset contains de-identified data, selecting ‘YES’ will hide this resource, pending a privacy assessment. Assessments will not be completed where the dataset does not contain de-identified data. Select ‘NO’ where the dataset does not contain de-identified data or where a privacy assessment is not required."
+    },
+    {
       "field_name": "schema",
       "label": "Data Schema",
       "preset": "resource_schema"
