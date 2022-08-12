@@ -28,6 +28,13 @@ def de_identified_data(value):
     return validate_value(value, "NO", ["YES", "NO"], 'de-identified data')
 
 
+def request_privacy_assessment(value):
+    """
+    Set to default value if missing
+    """
+    return validate_value(value, "", ["YES", "NO"], 'request privacy assessment')
+
+
 def validate_value(value, default_value, valid_values, field):
     if not value:
         return default_value

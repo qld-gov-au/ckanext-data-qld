@@ -122,7 +122,7 @@ def resource_formats(field):
     :rtype: Array resource formats
 
     """
-    resource_formats = config.get('ckanext.data_qld.resource_formats', '').split('\r\n')
+    resource_formats = toolkit.aslist(config.get('ckanext.data_qld.resource_formats', ''))
     return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
             for resource_format in resource_formats]
 

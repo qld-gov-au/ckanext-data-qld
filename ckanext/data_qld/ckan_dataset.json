@@ -310,6 +310,7 @@
         "label": "Request privacy assessment",
         "preset": "select",
         "form_include_blank_choice": true,
+        "validators": "data_qld_request_privacy_assessment",
         "choices": [
           {
             "value": "NO",
