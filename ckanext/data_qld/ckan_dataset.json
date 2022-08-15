@@ -190,22 +190,7 @@
       "validators": "data_qld_validate_next_update_due ignore_empty convert_to_json_if_date"
     },
     {
-      "field_name": "de_identified_data",
-      "label": "Contains de-identified data",
-      "preset": "select",
-      "required": true,
-      "form_include_blank_choice": false,
-      "validators": "data_qld_de_identified_data",
-      "choices": [
-        {
-          "value": "NO",
-          "label": "NO"
-        },
-        {
-          "value": "YES",
-          "label": "YES"
-        }
-      ]
+      "preset": "resource_visibility_de_identified_data"
     },
     {
       "field_name": "deletion_reason",
@@ -270,58 +255,13 @@
       "required": false
     },
     {
-      "field_name": "resource_visible",
-      "label": "Resource visible",
-      "form_include_blank_choice": false,
-      "validators": "data_qld_resource_visibility",
-      "form_snippet": "resource_visibility.html",
-      "help_text": "Select 'FALSE' to hide. A hidden resource can only be seen by members of the dataset's organisation and system administrators.",
-      "choices": [
-        {
-          "value": "TRUE",
-          "label": "TRUE"
-        },
-        {
-          "value": "FALSE",
-          "label": "FALSE"
-        }
-      ]
+      "preset": "resource_visibility_resource_visible"
     },
     {
-      "field_name": "governance_acknowledgement",
-      "label": "Re-identification risk governance completed?",
-      "form_snippet": "governance_acknowledgement.html",
-      "validators": "data_qld_governance_acknowledgement",
-      "form_include_blank_choice": false,
-      "choices": [
-        {
-          "value": "NO",
-          "label": "NO"
-        },
-        {
-          "value": "YES",
-          "label": "YES"
-        }
-      ],
-      "help_text": "Select 'NO' where the dataset does NOT contain de-identified data. Where the dataset contains de-identified data, appropriate governance process should be completed to minimise re-identification risk. Acknowledge completion by selecting 'YES'. Selecting 'NO' will hide the resource."
+      "preset": "resource_visibility_governance_acknowledgement"
     },
     {
-        "field_name": "request_privacy_assessment",
-        "label": "Request privacy assessment",
-        "preset": "select",
-        "form_include_blank_choice": true,
-        "validators": "data_qld_request_privacy_assessment",
-        "choices": [
-          {
-            "value": "NO",
-            "label": "NO"
-          },
-          {
-            "value": "YES",
-            "label": "YES"
-          }
-        ],
-        "help_text": "Where the dataset contains de-identified data, selecting ‘YES’ will hide this resource, pending a privacy assessment. Assessments will not be completed where the dataset does not contain de-identified data. Select ‘NO’ where the dataset does not contain de-identified data or where a privacy assessment is not required."
+      "preset": "resource_visibility_request_privacy_assessment"
     },
     {
       "field_name": "schema",

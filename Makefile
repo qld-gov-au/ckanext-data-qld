@@ -4,7 +4,7 @@
 # ckan_tag = ckan-2.9.5
 remote-ckan = https://github.com/qld-gov-au/ckan.git tag ckan-2.9.5-qgov.7
 
-ext_list = dcat datarequests csrf-filter xloader datajson ytp-comments validation ssm-config scheming s3filestore resource-type-validation report ex-qgov archiver qa odi-certificates harvester-data-qld-geoscience harvest
+ext_list = dcat datarequests csrf-filter xloader datajson ytp-comments validation ssm-config scheming s3filestore resource-type-validation report ex-qgov archiver qa odi-certificates harvester-data-qld-geoscience harvest resource-visibility
 
 remote-archiver = https://github.com/qld-gov-au/ckanext-archiver.git tag  2.1.1-qgov.8
 remote-harvester-data-qld-geoscience = https://github.com/qld-gov-au/ckanext-harvester-data-qld-geoscience tag  v0.0.5
@@ -16,6 +16,7 @@ remote-resource-type-validation = https://github.com/qld-gov-au/ckanext-resource
 remote-s3filestore = https://github.com/qld-gov-au/ckanext-s3filestore.git tag  0.7.7-qgov.2
 remote-scheming = https://github.com/ckan/ckanext-scheming.git tag  release-2.1.0
 remote-ssm-config = https://github.com/qld-gov-au/ckanext-ssm-config.git tag  0.0.2
+remote-resource-visibility = https://github.com/qld-gov-au/ckanext-resource-visibility tag  1.0
 
 remote-validation = https://github.com/qld-gov-au/ckanext-validation.git tag  v0.0.8-qgov.4
 develop-validation = https://github.com/DataShades/ckanext-validation.git branch develop

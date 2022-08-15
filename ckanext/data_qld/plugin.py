@@ -4,7 +4,7 @@ import logging
 import six
 
 from ckan import plugins
-import ckantoolkit as toolkit
+import ckantoolkit as tk
 
 from .de_identified_data import helpers as de_identified_data_helpers
 from .dataset_deletion import helpers as dataset_deletion_helpers
@@ -13,8 +13,6 @@ from .reporting.logic.action import get
 from .resource_freshness.helpers import helpers as resource_freshness_helpers
 from .resource_freshness import validation as resource_freshness_validator
 from .resource_freshness.logic.actions import get as resource_freshness_get_actions
-from .resource_visibility import helpers as resource_visibility_helpers
-from .resource_visibility import validators as resource_visibility_validators
 
 import actions
 import auth_functions as auth
@@ -24,17 +22,16 @@ import datarequest_auth_functions
 import helpers
 import validation
 
-if ' qa' in toolkit.config.get('ckan.plugins', ''):
+if ' qa' in tk.config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA
     import ckanext.qa.lib as qa_lib
     import ckanext.qa.tasks as qa_tasks
     import os
 
-request = toolkit.request
 
 log = logging.getLogger(__name__)
 
-if toolkit.check_ckan_version("2.9"):
+if tk.check_ckan_version("2.9"):
     from flask_plugin import MixinPlugin
 else:
     from pylons_plugin import MixinPlugin
@@ -51,19 +48,19 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
 
-    if ' qa' in toolkit.config.get('ckan.plugins', ''):
+    if ' qa' in tk.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
 
     # IConfigurer
     def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic', 'data_qld')
-        toolkit.add_resource('fanstatic', 'data_qld_theme')
-        toolkit.add_resource('reporting/fanstatic', 'data_qld_reporting')
+        tk.add_template_directory(config_, 'templates')
+        tk.add_public_directory(config_, 'public')
+        tk.add_resource('fanstatic', 'data_qld')
+        tk.add_resource('fanstatic', 'data_qld_theme')
+        tk.add_resource('reporting/fanstatic', 'data_qld_reporting')
 
     def update_config_schema(self, schema):
-        ignore_missing = toolkit.get_validator('ignore_missing')
+        ignore_missing = tk.get_validator('ignore_missing')
         schema.update({
             # This is a custom configuration option
             'ckanext.data_qld.resource_formats': [ignore_missing, six.text_type],
@@ -84,8 +81,6 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'profanity_checking_enabled': helpers.profanity_checking_enabled,
             'data_qld_user_has_admin_editor_org_access': de_identified_data_helpers.user_has_admin_editor_org_access,
             'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
-            'data_qld_get_package_dict': resource_visibility_helpers.get_package_dict,
-            'data_qld_get_select_field_options': resource_visibility_helpers.get_select_field_options,
             'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
@@ -112,10 +107,6 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_scheming_choices': validation.scheming_choices,
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
-            'data_qld_resource_visibility': resource_visibility_validators.resource_visibility,
-            'data_qld_governance_acknowledgement': resource_visibility_validators.governance_acknowledgement,
-            'data_qld_de_identified_data': resource_visibility_validators.de_identified_data,
-            'data_qld_request_privacy_assessment': resource_visibility_validators.request_privacy_assessment,
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,
@@ -180,13 +171,13 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     def after_show(self, context, data_dict):
         # system processes should have access to all resources
         if context.get('ignore_auth', False) is not True:
-            resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
+            tk.h.resource_visibility_process_resources(data_dict, helpers.get_user())
             de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):
         for data_dict in search_results.get('results', []):
-            resource_visibility_helpers.process_resources(data_dict, helpers.get_user())
+            tk.h.resource_visibility_process_resources(data_dict, helpers.get_user())
             de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
         return search_results
@@ -226,7 +217,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             if hasattr(resource, 'extras') and resource.extras.get('schema', None) and resource.extras.get(
                     'validation_status', '').lower() == 'success':
                 resource_score['openness_score'] = 4
-                resource_score['openness_score_reason'] = toolkit._(
+                resource_score['openness_score_reason'] = tk._(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_score_format, resource_score.get('openness_score', '')))
 
@@ -241,7 +232,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             if resource_score_format == 'TIFF' and resource_format == 'GEOTIFF':
                 resource_score['openness_score'] = resource_score['openness_score'] = qa_lib.resource_format_scores().get(
                     resource_format)
-                resource_score['openness_score_reason'] = toolkit._(
+                resource_score['openness_score_reason'] = tk._(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_format, resource_score.get('openness_score', '')))
 
@@ -250,7 +241,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             if resource_score_format == 'ZIP' and 'GDB' in resource_format:
                 resource_score['format'] = 'GDB'
                 resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
-                resource_score['openness_score_reason'] = toolkit._(
+                resource_score['openness_score_reason'] = tk._(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_format, resource_score.get('openness_score', '')))
 
@@ -262,7 +253,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
                                                                      qa_tasks.extension_variants(resource.url)):
                     resource_score['format'] = 'GPKG'
                     resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
-                    resource_score['openness_score_reason'] = toolkit._(
+                    resource_score['openness_score_reason'] = tk._(
                         'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                         .format(resource_format, resource_score.get('openness_score', '')))
 
