@@ -190,6 +190,16 @@
       "validators": "data_qld_validate_next_update_due ignore_empty convert_to_json_if_date"
     },
     {
+      "preset": "resource_visibility_de_identified_data"
+    },
+    {
+      "field_name": "deletion_reason",
+      "label": "Deletion reason",
+      "form_snippet": null,
+      "display_snippet": null,
+      "create_validators": "ignore"
+    },
+    {
         "field_name": "schema",
         "label": "Data Schema",
         "preset": "package_schema"
@@ -214,16 +224,6 @@
         "field_name": "validation_timestamp",
         "label": "Validation timestamp",
         "preset": "hidden_in_form"
-    },
-    {
-      "preset": "resource_visibility_de_identified_data"
-    },
-    {
-      "field_name": "deletion_reason",
-      "label": "Deletion reason",
-      "form_snippet": null,
-      "display_snippet": null,
-      "create_validators": "ignore"
     }
   ],
   "resource_fields": [
