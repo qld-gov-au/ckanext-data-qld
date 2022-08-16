@@ -26,6 +26,11 @@ class DatasetFactory(factories.Dataset):
     security_classification = "PUBLIC"
     de_identified_data = "NO"
     owner_org=factory.LazyFunction(lambda: OrganizationFactory()["id"])
+    schema = ""
+    schema_upload = ""
+    validation_options = ""
+    validation_status = ""
+    validation_timestamp = ""
 
 register(DatasetFactory, "dataset")
 

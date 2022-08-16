@@ -22,7 +22,11 @@ class MixinPlugin(plugins.SingletonPlugin):
         m.connect(
             'data_qld.show_schema',
             '/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
-            controller=controller, action='show_schema', conditions=dict(method=['GET']))
+            controller=controller, action='show_resource_schema', conditions=dict(method=['GET']))
+        m.connect(
+            'data_qld.show_schema',
+            '/dataset/{dataset_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
+            controller=controller, action='show_package_schema', conditions=dict(method=['GET']))
 
         # Reporting
         controller = 'ckanext.data_qld.reporting.controller:ReportingController'

@@ -105,6 +105,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     def get_validators(self):
         return {
             'data_qld_scheming_choices': validation.scheming_choices,
+            'data_qld_read_schema_from_request': validation.read_schema_from_request,
+            'data_qld_read_schema_from_file': validation.read_schema_from_file,
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,

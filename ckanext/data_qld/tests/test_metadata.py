@@ -1,11 +1,18 @@
+import json
+from io import StringIO
+
 import pytest
+
+from werkzeug.datastructures import FileStorage
 
 from ckan.tests import factories
 import ckan.logic as logic
 
+
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestCreateData:
-    def test_create_dataset_and_resource(self, dataset_factory, resource_factory):
+    def test_create_dataset_and_resource(self, dataset_factory,
+                                         resource_factory):
         organization = factories.Organization()
         dataset = dataset_factory(owner_org=organization["id"])
         resource = resource_factory(package_id=dataset["id"])
@@ -20,14 +27,28 @@ class TestCreateData:
         with pytest.raises(logic.ValidationError):
             resource_factory(package_id=dataset["id"], format="_FORMAT")
 
-    def test_resource_request_privacy_assessment(self, dataset, resource_factory):
+    def test_resource_request_privacy_assessment(self, dataset,
+                                                 resource_factory):
         resource = resource_factory(package_id=dataset["id"], format="CSV")
 
-        assert "request_privacy_assessment" in resource
-        assert not resource["request_privacy_assessment"]
-
-        resource_factory(package_id=dataset["id"], format="CSV", request_privacy_assessment="NO")
-        resource_factory(package_id=dataset["id"], format="CSV", request_privacy_assessment="YES")
+        resource_factory(package_id=dataset["id"],
+                         format="CSV",
+                         request_privacy_assessment="NO")
+        resource_factory(package_id=dataset["id"],
+                         format="CSV",
+                         request_privacy_assessment="YES")
 
         with pytest.raises(logic.ValidationError):
-            resource_factory(package_id=dataset["id"], format="_FORMAT", request_privacy_assessment="OF COURSE")
+            resource_factory(package_id=dataset["id"],
+                             format="_FORMAT",
+                             request_privacy_assessment="OF COURSE")
+
+    def test_upload_schema(self, dataset_factory, resource_factory):
+        stream = StringIO(
+            u'{"fields": [{"name": "x", "title": "X", "type": "integer"}],"primaryKey":"x"}'
+        )
+        schema_file = FileStorage(stream, "schema.json", content_type="application/json")
+        dataset = dataset_factory(schema_upload=schema_file)
+
+        assert dataset["schema"]
+        assert not dataset['schema_upload']

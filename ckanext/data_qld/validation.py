@@ -1,5 +1,8 @@
 import ckanext.scheming.helpers as sh
-from ckantoolkit import missing, Invalid, _, get_validator
+from ckantoolkit import missing, Invalid, _, get_validator, request
+
+from ckan.lib.uploader import ALLOWED_UPLOAD_TYPES, _get_underlying_file
+
 
 OneOf = get_validator('OneOf')
 
@@ -34,3 +37,31 @@ def scheming_choices(field, schema):
         raise Invalid(_('unexpected choice "%s"') % value)
 
     return validator
+
+
+def read_schema_from_request(key, data, errors, context):
+    try:
+        request.files
+    except TypeError:
+        # working outside context, cli or tests
+        return data[key]
+
+    if request.files.get("schema_upload") and not data[key]:
+        schema_upload = request.files.get("schema_upload")
+        data[key] = _get_underlying_file(schema_upload).read()
+        return data[key]
+
+    return data[key]
+
+
+def read_schema_from_file(key, data, errors, context):
+    if data[key]:
+        return
+
+    schema_upload_key = ("schema_upload",)
+    schema_upload = data.get(schema_upload_key)
+
+    if isinstance(schema_upload, ALLOWED_UPLOAD_TYPES) \
+        and schema_upload and schema_upload.filename:
+        data[schema_upload_key] = ""
+        data[key] = _get_underlying_file(schema_upload).read()

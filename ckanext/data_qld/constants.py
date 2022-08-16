@@ -8,4 +8,5 @@ OPEN_DATAREQUEST = 'open_datarequest'
 LIST_DATAREQUESTS = 'list_datarequests'
 
 RESOURCE_SHOW = 'resource_show'
+PACKAGE_SHOW = 'package_show'
 SCHEMA_MAIN_PATH = 'schema'
