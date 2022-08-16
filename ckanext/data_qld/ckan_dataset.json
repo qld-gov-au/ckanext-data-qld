@@ -200,7 +200,7 @@
       "create_validators": "ignore"
     },
     {
-        "field_name": "schema",
+        "field_name": "default_data_schema",
         "label": "Data Schema",
         "preset": "package_schema"
     },

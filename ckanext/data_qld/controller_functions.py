@@ -96,7 +96,7 @@ def show_package_schema(dataset_id):
     context = _get_context()
 
     data = _get_package_data(dataset_id, context)
-    schema_data = data.get('schema')
+    schema_data = data.get('default_data_schema')
     c.schema_data = json.dumps(schema_data, indent=2, sort_keys=True)
     return render('schema/show.html')
 

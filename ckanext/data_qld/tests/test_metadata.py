@@ -50,5 +50,5 @@ class TestCreateData:
         schema_file = FileStorage(stream, "schema.json", content_type="application/json")
         dataset = dataset_factory(schema_upload=schema_file)
 
-        assert dataset["schema"]
+        assert dataset["default_data_schema"]
         assert not dataset['schema_upload']
