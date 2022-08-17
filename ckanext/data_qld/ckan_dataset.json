@@ -201,7 +201,7 @@
     },
     {
         "field_name": "default_data_schema",
-        "label": "Data Schema",
+        "label": "Default data schema",
         "preset": "package_schema"
     },
     {
