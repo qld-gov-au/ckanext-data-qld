@@ -28,4 +28,11 @@ def qld_test_create_dataset(context, data_dict):
 def qld_test_purge_dataset(context, data_dict):
     context = {"ignore_auth": True}
     user_obj = tk.get_action("get_site_user")(context, {})
-    return tk.get_action("dataset_purge")({"user": user_obj['name']}, data_dict)
+
+    pkg_dict = tk.get_action("package_show")({"user": user_obj['name']}, data_dict)
+
+    tk.get_action("dataset_purge")({"user": user_obj['name']}, data_dict)
+    tk.get_action("organization_purge")(
+        {"user": user_obj['name']},
+        {"id": pkg_dict["owner_org"]}
+    )
