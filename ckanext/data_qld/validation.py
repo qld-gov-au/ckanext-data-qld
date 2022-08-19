@@ -1,8 +1,9 @@
-import ckanext.scheming.helpers as sh
+from six import string_types
 from ckantoolkit import missing, Invalid, _, get_validator, request
 
 from ckan.lib.uploader import ALLOWED_UPLOAD_TYPES, _get_underlying_file
 
+import ckanext.scheming.helpers as sh
 
 OneOf = get_validator('OneOf')
 
@@ -39,29 +40,70 @@ def scheming_choices(field, schema):
     return validator
 
 
-def read_schema_from_request(key, data, errors, context):
+def process_schema_fields(key, data, errors, context):
+    schema_from_upload_request = read_schema_from_request()
+    if schema_from_upload_request:
+        data[key] = schema_from_upload_request
+        return
+
+    schema_from_upload_file = read_schema_from_file(data)
+    if schema_from_upload_file:
+        data[key] = schema_from_upload_file
+        return
+
+    schema_from_url = get_schema_from_url(key, data, errors)
+    if schema_from_url:
+        data[key] = schema_from_url
+        return
+
+    schema_from_json = get_schema_from_json(data)
+    if schema_from_json:
+        data[key] = schema_from_json
+        return
+
+
+def read_schema_from_request():
     try:
         request.files
     except TypeError:
         # working outside context, cli or tests
-        return data[key]
-
-    if request.files.get("schema_upload") and not data[key]:
-        schema_upload = request.files.get("schema_upload")
-        data[key] = _get_underlying_file(schema_upload).read()
-        return data[key]
-
-    return data[key]
-
-
-def read_schema_from_file(key, data, errors, context):
-    if data[key]:
         return
 
-    schema_upload_key = ("schema_upload",)
+    if request.files.get("schema_upload"):
+        schema_upload = request.files.get("schema_upload")
+        return _get_underlying_file(schema_upload).read()
+
+
+def read_schema_from_file(data):
+    schema_upload_key = ("schema_upload", )
     schema_upload = data.get(schema_upload_key)
 
     if isinstance(schema_upload, ALLOWED_UPLOAD_TYPES) \
         and schema_upload and schema_upload.filename:
         data[schema_upload_key] = ""
-        data[key] = _get_underlying_file(schema_upload).read()
+        return _get_underlying_file(schema_upload).read()
+
+
+def get_schema_from_url(key, data, errors):
+    schema_url_key = ("schema_url", )
+    value = data.get(schema_url_key)
+
+    if not value:
+        return
+
+    if (value and not isinstance(value, string_types)
+            or not value.lower()[:4] == u'http'):
+        data[schema_url_key] = ""
+        err_msg = _('Must be a valid URL "{}"').format(value)
+        raise Invalid(err_msg)
+
+    return value
+
+
+def get_schema_from_json(data):
+    schema_json_key = ("schema_json", )
+    value = data.get(schema_json_key)
+
+    if value:
+        data[schema_json_key] = ""
+        return value

@@ -211,6 +211,18 @@
         "validators": "ignore_missing"
     },
     {
+        "field_name": "schema_json",
+        "form_snippet": null,
+        "display_snippet": null,
+        "validators": "ignore_missing"
+    },
+    {
+        "field_name": "schema_url",
+        "form_snippet": null,
+        "display_snippet": null,
+        "validators": "ignore_missing"
+    },
+    {
         "field_name": "validation_options",
         "label": "Data schema validation options",
         "preset": "validation_options"

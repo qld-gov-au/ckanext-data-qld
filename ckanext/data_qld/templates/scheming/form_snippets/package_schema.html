@@ -11,12 +11,13 @@
        data-module-is_json="{{ 'true' if is_json else 'false' }}"
        data-module-field_url="schema_url"
        data-module-field_json="schema_json"
+       data-module-field_schema="default_data_schema"
        data-module-hide_upload="{{ h.validation_hide_source("upload")|tojson }}"
        data-module-hide_url="{{ h.validation_hide_source("url")|tojson }}"
        data-module-hide_json="{{ h.validation_hide_source("json")|tojson }}"
        >
     <div id="resource-schema-buttons">
-      <label class="control-label">{{ _('Data Schema') }}</label>
+      <label class="control-label">{{ _('Default data schema') }}</label>
       <div class="form-group controls">
 
       </div>
@@ -50,7 +51,7 @@
     {{ form.textarea(
           'schema_json',
           id='field-schema-json',
-          label=h.scheming_language_text('Data Schema JSON definition'),
+          label=h.scheming_language_text('Default data schema JSON definition'),
           value=h.scheming_display_json_value(value, indent=field.get('indent', 2)) if (value and is_json) else None,
           error=errors['schema'] if is_json else None,
           attrs=field.form_attrs or {"class": "form-control"}

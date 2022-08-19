@@ -1,4 +1,5 @@
 from random import randint
+from datetime import datetime as dt
 
 import pytest
 import factory
@@ -13,11 +14,17 @@ from ckanext.validation.model import tables_exist as is_validation_table_exist
 
 
 class OrganizationFactory(factories.Organization):
+    name = factory.LazyFunction(lambda: factory.Faker("slug").generate() + "" +
+                                dt.now().strftime("%Y%m%d-%H%M%S"))
     pass
+
 
 register(OrganizationFactory, "organization")
 
+
 class DatasetFactory(factories.Dataset):
+    name = factory.LazyFunction(lambda: factory.Faker("slug").generate() + "" +
+                                dt.now().strftime("%Y%m%d-%H%M%S"))
     update_frequency = "monthly"
     author_email = factory.Faker("email")
     version = "1.0"
@@ -25,12 +32,14 @@ class DatasetFactory(factories.Dataset):
     data_driven_application = "NO"
     security_classification = "PUBLIC"
     de_identified_data = "NO"
-    owner_org=factory.LazyFunction(lambda: OrganizationFactory()["id"])
-    default_data_schema = ""
-    schema_upload = ""
+    owner_org = factory.LazyFunction(lambda: OrganizationFactory()["id"])
     validation_options = ""
     validation_status = ""
     validation_timestamp = ""
+    default_data_schema = '{"fields": [{"name": "x", "title": "X", "type": "integer"}],"primaryKey":"x"}'
+    schema_upload = ""
+    schema_json = ""
+
 
 register(DatasetFactory, "dataset")
 
@@ -38,6 +47,7 @@ register(DatasetFactory, "dataset")
 class ResourceFactory(factories.Resource):
     size = randint(1, 1000)
     format = "csv"
+
 
 register(ResourceFactory, "resource")
 

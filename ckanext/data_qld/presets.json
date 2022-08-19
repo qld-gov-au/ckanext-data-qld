@@ -15,7 +15,7 @@
     {
         "preset_name": "package_schema",
         "values": {
-          "validators": "ignore_missing data_qld_read_schema_from_request data_qld_read_schema_from_file resource_schema_validator",
+          "validators": "ignore_missing data_qld_process_schema_fields resource_schema_validator",
           "output_validators": "scheming_load_json",
           "form_snippet": "package_schema.html",
           "display_snippet": "package_schema_link.html"
