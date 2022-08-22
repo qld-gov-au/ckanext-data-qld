@@ -8,3 +8,4 @@ REPORT_TYPES = [
     REPORT_TYPE_ENGAGEMENT,
     REPORT_TYPE_ADMIN
 ]
+REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM = config.get('ckanext.data_qld.reporting.de_identified_no_schema.count_from', '2022-01-01')

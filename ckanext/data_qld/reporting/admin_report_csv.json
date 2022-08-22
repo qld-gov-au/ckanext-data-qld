@@ -1,22 +1,27 @@
 {
-  "De-Identified Datasets": {
-    "order": 1,
-    "type": "scalar",
-    "property": "de_identified_datasets"
-  },
-  "Overdue Datasets": {
-    "order": 2,
-    "type": "scalar",
-    "property": "overdue_datasets"
-  },
-  "Datasets not added to group/s": {
-    "order": 3,
-    "type": "scalar",
-    "property": "datasets_no_groups"
-  },
-  "Datasets with no tags": {
-    "order": 4,
-    "type": "scalar",
-    "property": "datasets_no_tags"
-  }
+    "De-identified datasets without default data schema (post-{})": {
+        "order": 1,
+        "type": "scalar",
+        "property": "de_identified_datasets_no_schema"
+    },
+    "De-Identified Datasets": {
+        "order": 2,
+        "type": "scalar",
+        "property": "de_identified_datasets"
+    },
+    "Overdue Datasets": {
+        "order": 3,
+        "type": "scalar",
+        "property": "overdue_datasets"
+    },
+    "Datasets not added to group/s": {
+        "order": 4,
+        "type": "scalar",
+        "property": "datasets_no_groups"
+    },
+    "Datasets with no tags": {
+        "order": 5,
+        "type": "scalar",
+        "property": "datasets_no_tags"
+    }
 }

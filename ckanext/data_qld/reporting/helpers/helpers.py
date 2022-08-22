@@ -9,6 +9,8 @@ import ckantoolkit as toolkit
 from ckantoolkit import check_access, config, get_action
 
 from ckanext.data_qld import helpers
+from ckanext.data_qld.reporting.constants import REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
+
 
 log = logging.getLogger(__name__)
 
@@ -260,6 +262,7 @@ def gather_admin_metrics(org_id, permission):
     }
 
     return {
+        'de_identified_datasets_no_schema': get_action('de_identified_datasets_no_schema')({}, data_dict),
         'de_identified_datasets': get_action('de_identified_datasets')({}, data_dict),
         'overdue_datasets': get_action('overdue_datasets')({}, data_dict),
         'datasets_no_groups': get_action('datasets_no_groups')({}, data_dict),
@@ -282,3 +285,7 @@ def get_organisation_list_for_user(permission):
         log.error('*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
         log.error(e)
         return []
+
+
+def get_deidentified_count_from_date():
+    return REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM

@@ -39,6 +39,13 @@
         </thead>
         <tbody>
             {% snippet "reporting/snippets/linked_metric.html",
+                metric="de-identified-datasets-without-default-schema",
+                label='De-identified datasets without default data schema (post-{})'.format(h.get_deidentified_count_from_date()),
+                count=metrics.de_identified_datasets_no_schema,
+                link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'
+                    .format(org_id=org_id, metric="de_identified_datasets_no_schema", report_type=report_type),
+                report_type=report_type %}
+            {% snippet "reporting/snippets/linked_metric.html",
                 metric="de-identified-datasets",
                 label='De-identified Datasets',
                 count=metrics.de_identified_datasets,
@@ -57,7 +64,7 @@
                 label='Datasets not added to group/s',
                 count=metrics.datasets_no_groups,
                 link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'
-                    .format(org_id=org_id, metric="datasets_no_groups", report_type=report_type), 
+                    .format(org_id=org_id, metric="datasets_no_groups", report_type=report_type),
                 report_type=report_type %}
             {% snippet "reporting/snippets/linked_metric.html",
                 metric="datasets_no_tags",

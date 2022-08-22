@@ -6,9 +6,16 @@ from ckantoolkit import _, abort, get_action, get_validator, \
     request, render, Invalid, NotAuthorized, ObjectNotFound
 
 from ckanext.data_qld import helpers
-from constants import DATAREQUEST_OPEN_MAX_DAYS, COMMENT_NO_REPLY_MAX_DAYS, \
-    REPORT_TYPES, REPORT_TYPE_ADMIN, REPORT_TYPE_ENGAGEMENT
 from .helpers import export_helpers, helpers as reporting_helpers
+from .constants import (
+    DATAREQUEST_OPEN_MAX_DAYS,
+    COMMENT_NO_REPLY_MAX_DAYS,
+    REPORT_TYPES,
+    REPORT_TYPE_ADMIN,
+    REPORT_TYPE_ENGAGEMENT
+
+)
+
 
 log = logging.getLogger(__name__)
 
@@ -94,20 +101,24 @@ def index():
 
 def export():
     report_type = helpers.RequestHelper(request).get_first_query_param('report_type', '')
-    try:
-        report_permission = _get_report_type_permission(report_type)
-        reporting_helpers.check_user_access(report_permission)
-        error = _valid_report_type(report_type)
-        if error:
-            return error
+    report_permission = _get_report_type_permission(report_type)
 
-        if report_type == REPORT_TYPE_ENGAGEMENT:
-            return _export_engagement_report(report_type, report_permission)
-        elif report_type == REPORT_TYPE_ADMIN:
-            return _export_admin_report(report_type, report_permission)
+    try:
+        reporting_helpers.check_user_access(report_permission)
     except NotAuthorized as e:  # Exception raised from check_user_access
         log.warn(e)
         return abort(403, _('You are not authorised to export the {0} report'.format(report_type)))
+
+    error = _valid_report_type(report_type)
+
+    if error:
+        return error
+
+    if report_type == REPORT_TYPE_ENGAGEMENT:
+        return _export_engagement_report(report_type, report_permission)
+    elif report_type == REPORT_TYPE_ADMIN:
+        return _export_admin_report(report_type, report_permission)
+
 
 
 def _export_engagement_report(report_type, report_permission):
@@ -258,6 +269,15 @@ def datasets(org_id, metric):
                 'datasets': datasets,
                 'total_comments': len(comments),
                 'comment_ids': comment_ids
+            })
+        elif metric == 'de_identified_datasets_no_schema':
+            data_dict.update({
+                'return_count_only': False,
+                'permission': report_permission
+            })
+            datasets = get_action('de_identified_datasets_no_schema')({}, data_dict)
+            data_dict.update({
+                'datasets': datasets
             })
         elif metric == 'de-identified-datasets':
             data_dict.update({

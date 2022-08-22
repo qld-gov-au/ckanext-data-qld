@@ -1,24 +1,28 @@
 # encoding: utf-8
 
-from ckan import model
 import logging
+from datetime import datetime, timedelta
+
 import sqlalchemy
 import pytz
+from sqlalchemy import func, distinct, tuple_, and_
+from sqlalchemy.orm import aliased
+from ckantoolkit import config, NotAuthorized, h
 
+from ckan import model
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
 from ckan.model.package import Package
 from ckan.model.group import Group
 from ckan.model.user import User
 from ckan.model.package_extra import PackageExtra
+
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
-from sqlalchemy import func, distinct, tuple_
-from sqlalchemy.orm import aliased
+from ckanext.datarequests import db
+
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
-from ckanext.datarequests import db
-from datetime import datetime, timedelta
-from ckantoolkit import config, NotAuthorized, h
+
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
@@ -642,6 +646,52 @@ def de_identified_datasets(context, data_dict):
         return datasets
     except Exception as e:
         log.error(str(e))
+
+
+def de_identified_datasets_no_schema(context, data_dict):
+    """
+    Returns the datasets that have de-identified data for an organisation
+    and missing default_schema
+
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    count_from = data_dict.get(
+        'count_from',constants.REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM)
+    check_org_access(org_id, permission)
+
+    extras = model.PackageExtra
+    de_identified = aliased(extras)
+    data_schema = aliased(extras)
+    data_last_updated = aliased(extras)
+
+    query = (
+        _session_.query(Package)
+        .join(de_identified)
+        .join(data_schema)
+        .join(data_last_updated)
+        .filter(and_(
+            de_identified.key == 'de_identified_data',
+            de_identified.value == 'YES',
+            de_identified.state == ACTIVE_STATE
+        ))
+        .filter(and_(
+            data_schema.key == 'default_data_schema',
+            data_schema.value == ''
+        ))
+        .filter(and_(
+            data_last_updated.key == 'data_last_updated',
+            data_last_updated.value > count_from
+        ))
+        .filter(Package.owner_org == org_id)
+        .filter(Package.state == ACTIVE_STATE)
+    )
+
+    return query.count() if return_count_only else query.all()
 
 
 def overdue_datasets(context, data_dict):
