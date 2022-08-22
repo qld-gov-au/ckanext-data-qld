@@ -270,21 +270,21 @@ def datasets(org_id, metric):
                 'total_comments': len(comments),
                 'comment_ids': comment_ids
             })
-        elif metric == 'de_identified_datasets_no_schema':
-            data_dict.update({
-                'return_count_only': False,
-                'permission': report_permission
-            })
-            datasets = get_action('de_identified_datasets_no_schema')({}, data_dict)
-            data_dict.update({
-                'datasets': datasets
-            })
         elif metric == 'de-identified-datasets':
             data_dict.update({
                 'return_count_only': False,
                 'permission': report_permission
             })
             datasets = get_action('de_identified_datasets')({}, data_dict)
+            data_dict.update({
+                'datasets': datasets
+            })
+        elif metric == 'de_identified_datasets_no_schema':
+            data_dict.update({
+                'return_count_only': False,
+                'permission': report_permission
+            })
+            datasets = get_action('de_identified_datasets_no_schema')({}, data_dict)
             data_dict.update({
                 'datasets': datasets
             })

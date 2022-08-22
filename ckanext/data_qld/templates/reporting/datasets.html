@@ -7,6 +7,9 @@
     <h1>
         {% if metric == 'no-reply' %}
             Engagement Report: Datasets: {{ org_title }}
+        {% elif metric == 'de_identified_datasets_no_schema' %}
+            Admin Report: De-identified datasets without data schema validation (post-{{ h.get_deidentified_count_from_date() }}):
+            <a href="{{ url_for('organization.read', id=org_id) }}"> {{ org_title }} </a>
         {% elif metric == 'de-identified-datasets' %}
             Admin Report: De-identified Datasets: {{ org_title }}
         {% elif metric == 'overdue-datasets' %}
@@ -21,6 +24,8 @@
     <h2>
         {% if metric == 'no-reply' %}
             Dataset comments with no reply > {{ comment_no_reply_max_days|string }} days
+        {% elif metric == 'de_identified_datasets_no_schema' %}
+            Setting default data schemas for datasets minimises risks of accidental release of personal information by checking that the data structure and content type of new or edited resources matches a predetermined data schema. For example, where de-identification has not occurred through deletion of certain columns
         {% endif %}
     </h2>
 

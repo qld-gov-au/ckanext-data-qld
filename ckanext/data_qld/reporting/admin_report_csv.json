@@ -1,13 +1,13 @@
 {
-    "De-identified datasets without default data schema (post-{})": {
+    "De-Identified Datasets": {
         "order": 1,
         "type": "scalar",
-        "property": "de_identified_datasets_no_schema"
+        "property": "de_identified_datasets"
     },
-    "De-Identified Datasets": {
+    "De-identified datasets without default data schema (post-{})": {
         "order": 2,
         "type": "scalar",
-        "property": "de_identified_datasets"
+        "property": "de_identified_datasets_no_schema"
     },
     "Overdue Datasets": {
         "order": 3,
