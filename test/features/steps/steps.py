@@ -442,3 +442,11 @@ def go_to_data_request_comments(context, subject):
 @step(u'I go to my reports page')
 def go_to_reporting_page(context):
     when_i_visit_url(context, '/dashboard/reporting')
+
+
+@step(u'I patch dataset {package_id} with params {params}')
+def i_patch_dataset(context, package_id, params):
+    params += '&id={}'.format(package_id)
+    context.execute_steps(u"""
+        Given I visit "api/action/qld_test_patch_dataset?{}"
+    """.format(params))
