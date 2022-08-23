@@ -9,7 +9,10 @@ import ckantoolkit as toolkit
 from ckantoolkit import check_access, config, get_action
 
 from ckanext.data_qld import helpers
-from ckanext.data_qld.reporting.constants import REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
+from ckanext.data_qld.reporting.constants import (
+    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
+    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
+)
 
 
 log = logging.getLogger(__name__)
@@ -26,14 +29,14 @@ def check_user_access(permission, context=None):
     )
 
 
-def check_user_org_access(org_id, permission='create_dataset'):
+def check_user_org_access(org_id, permission='create_dataset', context=None):
     data_dict = {
         'org_id': org_id,
         'permission': permission
     }
     check_access(
         'has_user_permission_for_org',
-        get_context(),
+        context or get_context(),
         data_dict
     )
 
@@ -288,4 +291,7 @@ def get_organisation_list_for_user(permission):
 
 
 def get_deidentified_count_from_date():
-    return REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
+    return config.get(
+        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
+        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
+    )

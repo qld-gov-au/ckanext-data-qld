@@ -31,7 +31,7 @@ class DatasetFactory(factories.Dataset):
     license_id = "other-open"
     data_driven_application = "NO"
     security_classification = "PUBLIC"
-    de_identified_data = "NO"
+    de_identified_data = "YES"
     owner_org = factory.LazyFunction(lambda: OrganizationFactory()["id"])
     validation_options = ""
     validation_status = ""
@@ -45,8 +45,12 @@ register(DatasetFactory, "dataset")
 
 
 class ResourceFactory(factories.Resource):
+    url = factory.Faker("url")
+    description = factory.Faker("sentence")
     size = randint(1, 1000)
-    format = "csv"
+    format = "CSV"
+    name = factory.LazyFunction(lambda: factory.Faker("slug").generate() + "" +
+                                dt.now().strftime("%Y%m%d-%H%M%S"))
 
 
 register(ResourceFactory, "resource")

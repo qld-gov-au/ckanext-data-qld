@@ -10,7 +10,10 @@ from tempfile import gettempdir
 from ckan.common import config
 
 from ckanext.data_qld.reporting.helpers import helpers
-from ckanext.data_qld.reporting.constants import REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
+from ckanext.data_qld.reporting.constants import (
+    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
+    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
+)
 
 
 log = logging.getLogger(__name__)
@@ -36,7 +39,10 @@ def csv_row_order_and_properties(report_config):
     for i in range(len(report_config) + 1):
         for key, settings in report_config.items():
             if settings['property'] == "de_identified_datasets_no_schema":
-                key = key.format(REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM)
+                key = key.format(
+                    config.get(REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
+                    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
+                ))
 
             if settings['order'] == i:
                 row_order.append(key)
