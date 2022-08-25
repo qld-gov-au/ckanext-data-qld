@@ -42,23 +42,28 @@ def scheming_choices(field, schema):
 
 def process_schema_fields(key, data, errors, context):
     schema_from_upload_request = read_schema_from_request()
+
     if schema_from_upload_request:
         data[key] = schema_from_upload_request
+        _clear_pseudo_fields(data)
         return
 
     schema_from_upload_file = read_schema_from_file(data)
     if schema_from_upload_file:
         data[key] = schema_from_upload_file
+        _clear_pseudo_fields(data)
         return
 
     schema_from_url = get_schema_from_url(key, data, errors)
     if schema_from_url:
         data[key] = schema_from_url
+        _clear_pseudo_fields(data)
         return
 
     schema_from_json = get_schema_from_json(data)
     if schema_from_json:
         data[key] = schema_from_json
+        _clear_pseudo_fields(data)
         return
 
 
@@ -107,3 +112,11 @@ def get_schema_from_json(data):
     if value:
         data[schema_json_key] = ""
         return value
+
+
+def _clear_pseudo_fields(data):
+    schema_json_key = ("schema_json", )
+    schema_url_key = ("schema_url", )
+    schema_upload_key = ("schema_upload", )
+
+    data[schema_json_key] = data[schema_url_key] = data[schema_upload_key] = ""
