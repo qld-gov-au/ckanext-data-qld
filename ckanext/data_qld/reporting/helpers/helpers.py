@@ -4,9 +4,10 @@ import logging
 import pytz
 from datetime import datetime, timedelta
 
+import ckantoolkit as tk
+
+
 from ckan import model
-import ckantoolkit as toolkit
-from ckantoolkit import check_access, config, get_action
 
 from ckanext.data_qld import helpers
 from ckanext.data_qld.reporting.constants import (
@@ -22,7 +23,7 @@ def check_user_access(permission, context=None):
     data_dict = {
         'permission': permission
     }
-    check_access(
+    tk.check_access(
         'has_user_permission_for_some_org',
         context if context else get_context(),
         data_dict
@@ -34,7 +35,7 @@ def check_user_org_access(org_id, permission='create_dataset', context=None):
         'org_id': org_id,
         'permission': permission
     }
-    check_access(
+    tk.check_access(
         'has_user_permission_for_org',
         context or get_context(),
         data_dict
@@ -52,8 +53,8 @@ def get_context():
 
 def get_username():
     # 'g' is not a regular data structure so we can't use 'hasattr'
-    if 'user' in dir(toolkit.g):
-        return toolkit.g.user
+    if 'user' in dir(tk.g):
+        return tk.g.user
     else:
         return None
 
@@ -64,15 +65,15 @@ def get_report_date_range(request):
     end_date = request_helper.get_first_query_param('end_date')
 
     if start_date:
-        start_date = toolkit.h.date_str_to_datetime(start_date)
+        start_date = tk.h.date_str_to_datetime(start_date)
     else:
         start_date = datetime(2019, 7, 10)
 
     if end_date:
-        end_date = toolkit.h.date_str_to_datetime(end_date)
+        end_date = tk.h.date_str_to_datetime(end_date)
     else:
         # This end_date will get passed into the method `get_utc_dates` which is expecting a ckan_timezone date to be converted into utc
-        ckan_timezone = config.get('ckan.display_timezone', None)
+        ckan_timezone = tk.config.get('ckan.display_timezone', None)
         end_date = datetime.now(pytz.timezone(ckan_timezone))
 
     return start_date.date().isoformat(), end_date.date().isoformat()
@@ -80,7 +81,7 @@ def get_report_date_range(request):
 
 def get_closing_circumstance_list():
     circumstances = []
-    if toolkit.asbool(config.get('ckan.datarequests.enable_closing_circumstances', False)):
+    if tk.asbool(tk.config.get('ckan.datarequests.enable_closing_circumstances', False)):
         from ckanext.datarequests import helpers
         circumstances = helpers.get_closing_circumstances()
     return circumstances
@@ -116,7 +117,7 @@ def get_data_request_metrics(data_dict):
             'days': days
         })
 
-    for data_request in get_action('datarequests')({}, data_dict):
+    for data_request in tk.get_action('datarequests')({}, data_dict):
         total += 1
 
         if data_request.close_time:
@@ -175,7 +176,7 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
     date_format = '%Y-%m-%d %H:%M:%S'
 
     timezone = pytz.timezone("UTC")
-    local_timezone = pytz.timezone(config.get('ckan.display_timezone'))
+    local_timezone = pytz.timezone(tk.config.get('ckan.display_timezone'))
 
     # Always consider `start_date` and `end_date` as local dates
     start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
@@ -239,18 +240,18 @@ def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max
     }
 
     return {
-        'organisation_followers': get_action('organisation_followers')({}, data_dict),
-        'dataset_followers': get_action('dataset_followers')({}, data_dict),
-        'dataset_comments': get_action('dataset_comments')({}, data_dict),
-        'dataset_comment_followers': get_action('dataset_comment_followers')({}, data_dict),
-        'datasets_min_one_comment_follower': get_action('datasets_min_one_comment_follower')({}, data_dict),
-        'dataset_comments_no_replies_after_x_days': get_action('dataset_comments_no_replies_after_x_days')({},
+        'organisation_followers': tk.get_action('organisation_followers')({}, data_dict),
+        'dataset_followers': tk.get_action('dataset_followers')({}, data_dict),
+        'dataset_comments': tk.get_action('dataset_comments')({}, data_dict),
+        'dataset_comment_followers': tk.get_action('dataset_comment_followers')({}, data_dict),
+        'datasets_min_one_comment_follower': tk.get_action('datasets_min_one_comment_follower')({}, data_dict),
+        'dataset_comments_no_replies_after_x_days': tk.get_action('dataset_comments_no_replies_after_x_days')({},
                                                                                                            data_dict),
         'datarequests': get_data_request_metrics(data_dict),
-        'datarequest_comments': get_action('datarequest_comments')({}, data_dict),
-        'datarequests_min_one_comment_follower': get_action('datarequests_min_one_comment_follower')({}, data_dict),
-        'datarequests_no_replies_after_x_days': get_action('datarequests_no_replies_after_x_days')({}, data_dict),
-        'open_datarequests_no_comments_after_x_days': get_action('open_datarequests_no_comments_after_x_days')({},
+        'datarequest_comments': tk.get_action('datarequest_comments')({}, data_dict),
+        'datarequests_min_one_comment_follower': tk.get_action('datarequests_min_one_comment_follower')({}, data_dict),
+        'datarequests_no_replies_after_x_days': tk.get_action('datarequests_no_replies_after_x_days')({}, data_dict),
+        'open_datarequests_no_comments_after_x_days': tk.get_action('open_datarequests_no_comments_after_x_days')({},
                                                                                                                data_dict),
     }
 
@@ -265,11 +266,11 @@ def gather_admin_metrics(org_id, permission):
     }
 
     return {
-        'de_identified_datasets': get_action('de_identified_datasets')({}, data_dict),
-        'de_identified_datasets_no_schema': get_action('de_identified_datasets_no_schema')({}, data_dict),
-        'overdue_datasets': get_action('overdue_datasets')({}, data_dict),
-        'datasets_no_groups': get_action('datasets_no_groups')({}, data_dict),
-        'datasets_no_tags': get_action('datasets_no_tags')({}, data_dict)
+        'de_identified_datasets': tk.get_action('de_identified_datasets')({}, data_dict),
+        'de_identified_datasets_no_schema': tk.get_action('de_identified_datasets_no_schema')({}, data_dict),
+        'overdue_datasets': tk.get_action('overdue_datasets')({}, data_dict),
+        'datasets_no_groups': tk.get_action('datasets_no_groups')({}, data_dict),
+        'datasets_no_tags': tk.get_action('datasets_no_tags')({}, data_dict)
     }
 
 
@@ -283,7 +284,7 @@ def get_organisation_list(permission):
 
 def get_organisation_list_for_user(permission):
     try:
-        return get_action('organization_list_for_user')(get_context(), {'permission': permission})
+        return tk.get_action('organization_list_for_user')(get_context(), {'permission': permission})
     except Exception as e:
         log.error('*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
         log.error(e)
@@ -291,7 +292,9 @@ def get_organisation_list_for_user(permission):
 
 
 def get_deidentified_count_from_date():
-    return config.get(
+    count_from = tk.config.get(
         REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
         REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
     )
+
+    return tk.h.date_str_to_datetime(count_from).strftime("%B %d %Y")
