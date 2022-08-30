@@ -297,4 +297,4 @@ def get_deidentified_count_from_date():
         REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
     )
 
-    return tk.h.date_str_to_datetime(count_from).strftime("%B %d %Y")
+    return tk.h.date_str_to_datetime(count_from).strftime("%d %B %Y")
