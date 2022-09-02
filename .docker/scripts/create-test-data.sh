@@ -4,14 +4,17 @@
 #
 set -e
 
-CKAN_ACTION_URL=http://ckan:3000/api/action
+if [ "$PYTHON_VERSION" = "py3" ]; then
+    PYTHON=python3
+else
+    PYTHON=python
+fi
+CKAN_ACTION_URL=${CKAN_SITE_URL}api/action
 CKAN_USER_NAME="${CKAN_USER_NAME:-admin}"
 CKAN_DISPLAY_NAME="${CKAN_DISPLAY_NAME:-Administrator}"
 CKAN_USER_EMAIL="${CKAN_USER_EMAIL:-admin@localhost}"
 
-if [ "$VENV_DIR" != "" ]; then
-  . ${VENV_DIR}/bin/activate
-fi
+. ${APP_DIR}/scripts/activate
 
 add_user_if_needed () {
     echo "Adding user '$2' ($1) with email address [$3]"
@@ -62,7 +65,7 @@ TEST_ORG=$( \
     ${CKAN_ACTION_URL}/organization_create
 )
 
-TEST_ORG_ID=$(echo $TEST_ORG | python $APP_DIR/scripts/extract-id.py)
+TEST_ORG_ID=$(echo $TEST_ORG | $PYTHON $APP_DIR/scripts/extract-id.py)
 
 echo "Assigning test users to '${TEST_ORG_TITLE}' organisation (${TEST_ORG_ID}):"
 
@@ -198,7 +201,7 @@ DR_ORG=$( \
     ${CKAN_ACTION_URL}/organization_create
 )
 
-DR_ORG_ID=$(echo $DR_ORG | python $APP_DIR/scripts/extract-id.py)
+DR_ORG_ID=$(echo $DR_ORG | $PYTHON $APP_DIR/scripts/extract-id.py)
 
 echo "Assigning test users to ${DR_ORG_TITLE} Organisation:"
 
@@ -252,7 +255,7 @@ REPORT_ORG=$( \
     ${CKAN_ACTION_URL}/organization_create
 )
 
-REPORT_ORG_ID=$(echo $REPORT_ORG | python $APP_DIR/scripts/extract-id.py)
+REPORT_ORG_ID=$(echo $REPORT_ORG | $PYTHON $APP_DIR/scripts/extract-id.py)
 
 echo "Assigning test users to ${REPORT_ORG_TITLE} Organisation:"
 
