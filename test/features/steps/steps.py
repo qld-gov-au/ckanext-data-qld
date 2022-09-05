@@ -450,3 +450,8 @@ def i_patch_dataset(context, package_id, params):
     context.execute_steps(u"""
         Given I visit "api/action/qld_test_patch_dataset?{}"
     """.format(params))
+
+@step(u'I visit resource schema generation page')
+def resource_schema_generation(context):
+    path = urlparse(context.browser.url).path
+    when_i_visit_url(context, path + '/generate_schema')

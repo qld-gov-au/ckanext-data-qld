@@ -1,6 +1,8 @@
 # encoding: utf-8
+import os
 
 import ckantoolkit as tk
+from werkzeug.datastructures import FileStorage
 
 from ckan import plugins
 
@@ -23,7 +25,11 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 @tk.side_effect_free
 def qld_test_create_dataset(context, data_dict):
     package = DatasetFactory(**data_dict)
-    ResourceFactory(package_id=package["id"])
+
+    here = os.path.dirname(__file__)
+    with open(os.path.join(here, 'sample.csv')) as f:
+        file = FileStorage(f, "sample.csv", content_type="text/csv")
+        ResourceFactory(package_id=package["id"], upload=file)
 
     return package
 

@@ -156,8 +156,6 @@ def before_tag(context, tag):
     FIXTURE_NAME = 0
     PARAMS = slice(1, None)
 
-    # fixture_name = fixture.dataset_with_schema
-    # params = name=package-with-schema
     parts = tag.split(":")
 
     if parts[FIXTURE_NAME].startswith("fixture.dataset_with_schema"):
