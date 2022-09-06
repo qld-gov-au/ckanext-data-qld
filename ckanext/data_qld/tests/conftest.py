@@ -45,6 +45,7 @@ register(DatasetFactory, "dataset")
 
 
 class ResourceFactory(factories.Resource):
+    id = factory.Faker("uuid4")
     url = factory.Faker("url")
     description = factory.Faker("sentence")
     size = randint(1, 1000)
