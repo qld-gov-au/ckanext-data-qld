@@ -52,9 +52,25 @@ class ResourceFactory(factories.Resource):
     format = "CSV"
     name = factory.LazyFunction(lambda: factory.Faker("slug").generate() + "" +
                                 dt.now().strftime("%Y%m%d-%H%M%S"))
+    privacy_assessment_result = factory.LazyFunction(
+        lambda: factory.Faker("sentence").generate())
 
 
 register(ResourceFactory, "resource")
+
+
+class SysadminFactory(factories.Sysadmin):
+    pass
+
+
+register(SysadminFactory, "sysadmin")
+
+
+class UserFactory(factories.User):
+    pass
+
+
+register(UserFactory, "user")
 
 
 @pytest.fixture()
