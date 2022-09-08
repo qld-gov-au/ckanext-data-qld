@@ -455,3 +455,18 @@ def i_patch_dataset(context, package_id, params):
 def resource_schema_generation(context):
     path = urlparse(context.browser.url).path
     when_i_visit_url(context, path + '/generate_schema')
+
+
+@step(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
+def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
+    for _ in range(reload_times):
+        element = context.browser.is_element_present_by_xpath(
+            xpath, wait_time=seconds
+        )
+        if not element:
+            context.browser.reload()
+        else:
+            assert element, 'Element with xpath "{}" was found'.format(xpath)
+            return
+
+    assert False, 'Element with xpath "{}" was not found'.format(xpath)
