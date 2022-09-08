@@ -10,6 +10,7 @@ from ckanext.data_qld.reporting.helpers import helpers
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestAdminReportDeIdentifiedNoSchema:
+
     def _make_context(self):
         sysadmin = factories.Sysadmin()
         return {"user": sysadmin["name"], "ignore_auth": True}
@@ -19,31 +20,32 @@ class TestAdminReportDeIdentifiedNoSchema:
         resource_factory(package_id=dataset["id"])
 
         counter = call_action("de_identified_datasets_no_schema",
-                    self._make_context(),
-                    org_id=dataset["owner_org"],
-                    count_from="2011-01-01",
-                    return_count_only=True)
+                              self._make_context(),
+                              org_id=dataset["owner_org"],
+                              count_from="2011-01-01",
+                              return_count_only=True)
 
         assert counter == 1
 
     def test_without_packages(self, dataset_factory, resource_factory):
         counter = call_action("de_identified_datasets_no_schema",
-                    self._make_context(),
-                    org_id=factories.Organization()["id"],
-                    count_from="2011-01-01",
-                    return_count_only=True)
+                              self._make_context(),
+                              org_id=factories.Organization()["id"],
+                              count_from="2011-01-01",
+                              return_count_only=True)
 
         assert counter == 0
 
-    def test_with_count_from_in_future(self, dataset_factory, resource_factory):
+    def test_with_count_from_in_future(self, dataset_factory,
+                                       resource_factory):
         dataset = dataset_factory(default_data_schema="")
         resource_factory(package_id=dataset["id"])
 
         counter = call_action("de_identified_datasets_no_schema",
-                    self._make_context(),
-                    org_id=factories.Organization()["id"],
-                    count_from="2045-01-01",
-                    return_count_only=True)
+                              self._make_context(),
+                              org_id=factories.Organization()["id"],
+                              count_from="2045-01-01",
+                              return_count_only=True)
 
         assert counter == 0
 
@@ -55,10 +57,10 @@ class TestAdminReportDeIdentifiedNoSchema:
             resource_factory(package_id=dataset["id"])
 
         counter = call_action("de_identified_datasets_no_schema",
-            self._make_context(),
-            org_id=org_id,
-            count_from="2011-01-01",
-            return_count_only=True)
+                              self._make_context(),
+                              org_id=org_id,
+                              count_from="2011-01-01",
+                              return_count_only=True)
 
         assert counter == 3
 
@@ -67,26 +69,28 @@ class TestAdminReportDeIdentifiedNoSchema:
         resource_factory(package_id=dataset["id"])
 
         counter = call_action("de_identified_datasets_no_schema",
-            self._make_context(),
-            count_from="2011-01-01",
-            return_count_only=True)
+                              self._make_context(),
+                              count_from="2011-01-01",
+                              return_count_only=True)
 
         assert counter == 0
 
-    def test_dataset_without_resource_has_no_next_update_due(self, dataset_factory):
-        dataset = dataset_factory(default_data_schema="")
+    def test_dataset_without_resource_has_no_next_update_due(
+            self, dataset_factory):
+        dataset = dataset_factory(default_data_schema="", resources=[])
 
         counter = call_action("de_identified_datasets_no_schema",
-            self._make_context(),
-            org_id=dataset["owner_org"],
-            count_from="2011-01-01",
-            return_count_only=True)
+                              self._make_context(),
+                              org_id=dataset["owner_org"],
+                              count_from="2011-01-01",
+                              return_count_only=True)
 
         assert counter == 0
 
 
 @pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db")
 class TestAdminReportCSVExport:
+
     def test_as_regular_user(self, app):
         user = factories.User()
         app.get('/', environ_overrides={"REMOTE_USER": user["name"]})
@@ -101,8 +105,8 @@ class TestAdminReportCSVExport:
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
-            dataset = dataset_factory(default_data_schema="", owner_org=org_id)
-            resource_factory(package_id=dataset["id"])
+            dataset = dataset_factory(default_data_schema="",
+                                      owner_org=org_id)
 
         result = helpers.gather_admin_metrics(org_id, "admin")
 
@@ -112,8 +116,11 @@ class TestAdminReportCSVExport:
         assert result["de_identified_datasets_no_schema"] == 3
         assert result["overdue_datasets"] == 0
 
-    @pytest.mark.ckan_config(u"ckanext.data_qld.reporting.de_identified_no_schema.count_from", u"2045-01-01")
-    def test_set_de_identified_count_from_in_future(self, app, dataset_factory, resource_factory):
+    @pytest.mark.ckan_config(
+        u"ckanext.data_qld.reporting.de_identified_no_schema.count_from",
+        u"2045-01-01")
+    def test_set_de_identified_count_from_in_future(self, app, dataset_factory,
+                                                    resource_factory):
         user = factories.Sysadmin()
         app.get('/', environ_overrides={"REMOTE_USER": user["name"]})
         org_id = factories.Organization()["id"]

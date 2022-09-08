@@ -39,6 +39,15 @@ class DatasetFactory(factories.Dataset):
     default_data_schema = '{"fields": [{"name": "x", "title": "X", "type": "integer"}],"primaryKey":"x"}'
     schema_upload = ""
     schema_json = ""
+    resources = [{
+        "url": factory.Faker("url").generate(),
+        "format": "CSV",
+        "name": factory.Faker("slug").generate(),
+        "description": factory.Faker("sentence").generate(),
+        "size": randint(1, 1000),
+        "last_modified": str(dt.now()),
+        "privacy_assessment_result": factory.Faker("sentence").generate()
+    }]
 
 
 register(DatasetFactory, "dataset")
@@ -54,6 +63,8 @@ class ResourceFactory(factories.Resource):
                                 dt.now().strftime("%Y%m%d-%H%M%S"))
     privacy_assessment_result = factory.LazyFunction(
         lambda: factory.Faker("sentence").generate())
+    last_modified = factory.LazyFunction(lambda: str(dt.now()))
+    resource_visible = "TRUE"
 
 
 register(ResourceFactory, "resource")

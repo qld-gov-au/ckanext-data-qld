@@ -6,7 +6,6 @@ import six
 from ckan import plugins
 import ckantoolkit as tk
 
-from .de_identified_data import helpers as de_identified_data_helpers
 from .dataset_deletion import helpers as dataset_deletion_helpers
 from .reporting.helpers import helpers as reporting_helpers
 from .reporting.logic.action import get
@@ -80,8 +79,6 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
             'data_qld_resource_formats': helpers.resource_formats,
             'profanity_checking_enabled': helpers.profanity_checking_enabled,
-            'data_qld_user_has_admin_editor_org_access': de_identified_data_helpers.user_has_admin_editor_org_access,
-            'data_qld_show_de_identified_data': de_identified_data_helpers.show_de_identified_data,
             'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
@@ -174,14 +171,10 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     def after_show(self, context, data_dict):
         # system processes should have access to all resources
         if context.get('ignore_auth', False) is not True:
-            tk.h.resource_visibility_process_resources(data_dict, helpers.get_user())
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
 
     def after_search(self, search_results, search_params):
         for data_dict in search_results.get('results', []):
-            tk.h.resource_visibility_process_resources(data_dict, helpers.get_user())
-            de_identified_data_helpers.process_de_identified_data_dict(data_dict, helpers.get_user())
             resource_freshness_helpers.process_next_update_due(data_dict)
         return search_results
 
