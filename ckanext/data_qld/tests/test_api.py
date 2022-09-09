@@ -65,9 +65,10 @@ class TestApiPrivacyAssessment:
     def test_excluded_for_member(self, dataset_factory, resource_factory, app,
                                  pkg_show_url):
         user = factories.User()
-        org = factories.Organization(users=[
-            {"name": user["name"], "capacity": "member"}
-        ])
+        org = factories.Organization(users=[{
+            "name": user["name"],
+            "capacity": "member"
+        }])
 
         dataset = dataset_factory(de_identified_data="NO", owner_org=org["id"])
         resource_factory(package_id=dataset["id"])
@@ -85,10 +86,13 @@ class TestApiPrivacyAssessment:
                                           resource_factory, app, pkg_show_url):
         user1 = factories.User()
         user2 = factories.User()
-        org = factories.Organization(users=[
-            {"name": user1["name"], "capacity": "editor"},
-            {"name": user2["name"], "capacity": "admin"}
-        ])
+        org = factories.Organization(users=[{
+            "name": user1["name"],
+            "capacity": "editor"
+        }, {
+            "name": user2["name"],
+            "capacity": "admin"
+        }])
 
         dataset = dataset_factory(de_identified_data="NO", owner_org=org["id"])
         resource_factory(package_id=dataset["id"])
@@ -186,14 +190,30 @@ class TestResourceVisibility:
         assert not pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 0
 
+    def test_resource_page_not_accessible_for_regular_user_if_hidden(
+            self, dataset_factory, app):
+        user = factories.User()
+        dataset = dataset_factory()
+
+        url = url_for(controller='resource',
+                      action='read',
+                      id=dataset['id'],
+                      resource_id=dataset['resources'][0]['id'])
+        app.get(url=url,
+                status=404,
+                environ_overrides={"REMOTE_USER": user["name"]})
+
     def test_visible_for_editor_or_admin(self, dataset_factory, app,
                                          pkg_show_url, resource_factory):
         user1 = factories.User()
         user2 = factories.User()
-        org = factories.Organization(users=[
-            {"name": user1["name"], "capacity": "editor"},
-            {"name": user2["name"], "capacity": "admin"}
-        ])
+        org = factories.Organization(users=[{
+            "name": user1["name"],
+            "capacity": "editor"
+        }, {
+            "name": user2["name"],
+            "capacity": "admin"
+        }])
 
         dataset = dataset_factory(owner_org=org["id"], resources=[])
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
@@ -247,6 +267,17 @@ class TestResourceVisibility:
 
         assert pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 1
+
+        # resource_visible & not governance_acknowledgement & de_identified_data -> HIDE
+        dataset = dataset_factory(resources=[], de_identified_data="YES")
+        resource_factory(package_id=dataset["id"],
+                         resource_visible="TRUE",
+                         governance_acknowledgement="NO")
+
+        pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
+
+        assert not pkg_dict["resources"]
+        assert pkg_dict["num_resources"] == 0
 
         # resource_visible & governance_acknowledgement & not request_privacy_assessment -> SHOW
         dataset = dataset_factory(resources=[], de_identified_data="YES")
