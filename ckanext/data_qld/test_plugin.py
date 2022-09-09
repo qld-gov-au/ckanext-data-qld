@@ -18,7 +18,8 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
         return {
             'qld_test_create_dataset': qld_test_create_dataset,
             'qld_test_purge_dataset': qld_test_purge_dataset,
-            'qld_test_patch_dataset': qld_test_patch_dataset
+            'qld_test_patch_dataset': qld_test_patch_dataset,
+            'qld_test_create_resource_for_dataset': qld_test_create_resource_for_dataset
         }
 
 
@@ -46,6 +47,13 @@ def qld_test_purge_dataset(context, data_dict):
 @tk.side_effect_free
 def qld_test_patch_dataset(context, data_dict):
     tk.get_action("package_patch")(_make_context(), data_dict)
+
+
+@tk.side_effect_free
+def qld_test_create_resource_for_dataset(context, data_dict):
+    resource = ResourceFactory(**data_dict)
+
+    return resource
 
 
 def _make_context():
