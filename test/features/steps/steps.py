@@ -301,6 +301,35 @@ def create_dataset_resource_availability(context, title, de_identified_data, res
                resource_name=resource_name, resource_visible=resource_visible, governance_acknowledgement=governance_acknowledgement))
 
 
+@step(u'I patch dataset {package_id} with params {params}')
+def i_patch_dataset(context, package_id, params):
+    params += '&id={}'.format(package_id)
+    context.execute_steps(u"""
+        Given I visit "api/action/qld_test_patch_dataset?{}"
+    """.format(params))
+
+
+@step(u'I visit resource schema generation page')
+def resource_schema_generation(context):
+    path = urlparse(context.browser.url).path
+    when_i_visit_url(context, path + '/generate_schema')
+
+
+@step(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
+def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
+    for _ in range(reload_times):
+        element = context.browser.is_element_present_by_xpath(
+            xpath, wait_time=seconds
+        )
+        if not element:
+            context.browser.reload()
+        else:
+            assert element, 'Element with xpath "{}" was found'.format(xpath)
+            return
+
+    assert False, 'Element with xpath "{}" was not found'.format(xpath)
+
+
 # ckanext-ytp-comments
 
 
@@ -442,31 +471,3 @@ def go_to_data_request_comments(context, subject):
 @step(u'I go to my reports page')
 def go_to_reporting_page(context):
     when_i_visit_url(context, '/dashboard/reporting')
-
-
-@step(u'I patch dataset {package_id} with params {params}')
-def i_patch_dataset(context, package_id, params):
-    params += '&id={}'.format(package_id)
-    context.execute_steps(u"""
-        Given I visit "api/action/qld_test_patch_dataset?{}"
-    """.format(params))
-
-@step(u'I visit resource schema generation page')
-def resource_schema_generation(context):
-    path = urlparse(context.browser.url).path
-    when_i_visit_url(context, path + '/generate_schema')
-
-
-@step(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
-def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
-    for _ in range(reload_times):
-        element = context.browser.is_element_present_by_xpath(
-            xpath, wait_time=seconds
-        )
-        if not element:
-            context.browser.reload()
-        else:
-            assert element, 'Element with xpath "{}" was found'.format(xpath)
-            return
-
-    assert False, 'Element with xpath "{}" was not found'.format(xpath)
