@@ -90,3 +90,23 @@ Feature: AdminReporting
         When I click the link with text that contains "de-identified-package-without-schema"
         Then I should see "de-identified-package-without-schema"
         And I should see "Data and Resources"
+
+    @fixture.dataset_with_schema:name=package-with-pending-assessment-resource:owner_org=department-of-health
+    @fixture.create_resource_for_dataset_with_params:package_id=package-with-pending-assessment-resource:name=pending-assessment-resource:request_privacy_assessment=YES
+    Scenario: Organisation Admin views 'Pending privacy assessment' count in the admin report
+        Given "Organisation Admin" as the persona
+        When I log in
+        And I visit "dashboard/reporting?report_type=admin&organisation=department-of-health"
+        And I click the link with text that contains "Admin Report"
+        And I press the element with xpath "//button[contains(string(), 'Show')]"
+
+        Then I should see an element with xpath "//tr[@id='pending_privacy_assessment']/td[contains(@class, 'metric-title') and position()=1]/a[contains(@href, 'pending_privacy_assessment?report_type=admin') and contains(string(), 'Pending privacy assessment')]"
+        And I should see an element with xpath "//tr[@id='pending_privacy_assessment']/td[contains(@class, 'metric-data') and position()=2]/a[contains(@href, 'pending_privacy_assessment?report_type=admin')]"
+
+        When I click the link with text that contains "Pending privacy assessment"
+        Then I should see "Admin Report: Pending privacy assessment"
+        And I should see "Department of Health"
+        And I should see "Total number of resources: 1"
+        And I should see "pending-assessment-resource"
+        Then I click the link with text that contains "pending-assessment-resource"
+        And I should see an element with xpath "//th[text()='Request privacy assessment']/following-sibling::td[text()='YES']"

@@ -115,6 +115,7 @@ class TestAdminReportCSVExport:
         assert result["de_identified_datasets"] == 3
         assert result["de_identified_datasets_no_schema"] == 3
         assert result["overdue_datasets"] == 0
+        assert result["pending_privacy_assessment"] == 0
 
     @pytest.mark.ckan_config(
         u"ckanext.data_qld.reporting.de_identified_no_schema.count_from",
@@ -132,3 +133,53 @@ class TestAdminReportCSVExport:
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["de_identified_datasets_no_schema"] == 0
+
+
+@pytest.mark.usefixtures("with_plugins", "clean_db")
+class TestAdminReportPendingPrivacyAssessment:
+
+    def _make_context(self):
+        return {"ignore_auth": True}
+
+    def test_with_pending_resource(self, dataset_factory, resource_factory):
+        dataset = dataset_factory()
+        resource_factory(package_id=dataset["id"], request_privacy_assessment="YES")
+
+        counter = call_action("datasets_pending_privacy_assessment",
+                              self._make_context(),
+                              org_id=dataset["owner_org"],
+                              return_count_only=True)
+
+        assert counter == 1
+
+    def test_without_pending_resource(self, dataset_factory, resource_factory):
+        counter = call_action("datasets_pending_privacy_assessment",
+                              self._make_context(),
+                              org_id=factories.Organization()["id"],
+                              return_count_only=True)
+
+        assert counter == 0
+
+
+    def test_with_multiple_packages(self, dataset_factory, resource_factory):
+        dataset = dataset_factory()
+
+        for _ in range(3):
+            resource_factory(package_id=dataset["id"], request_privacy_assessment="YES")
+
+        counter = call_action("datasets_pending_privacy_assessment",
+                              self._make_context(),
+                              org_id=dataset["owner_org"],
+                              return_count_only=True)
+
+        assert counter == 3
+
+    def test_without_org_id(self, dataset_factory, resource_factory):
+        dataset = dataset_factory(default_data_schema="")
+        resource_factory(package_id=dataset["id"])
+
+        counter = call_action("datasets_pending_privacy_assessment",
+                              self._make_context(),
+                              return_count_only=True)
+
+        assert counter == 0
