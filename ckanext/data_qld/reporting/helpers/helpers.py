@@ -270,7 +270,8 @@ def gather_admin_metrics(org_id, permission):
         'de_identified_datasets_no_schema': tk.get_action('de_identified_datasets_no_schema')({}, data_dict),
         'overdue_datasets': tk.get_action('overdue_datasets')({}, data_dict),
         'datasets_no_groups': tk.get_action('datasets_no_groups')({}, data_dict),
-        'datasets_no_tags': tk.get_action('datasets_no_tags')({}, data_dict)
+        'datasets_no_tags': tk.get_action('datasets_no_tags')({}, data_dict),
+        'pending_privacy_assessment': tk.get_action('datasets_pending_privacy_assessment')({}, data_dict),
     }
 
 

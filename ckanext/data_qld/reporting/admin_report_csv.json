@@ -23,5 +23,10 @@
         "order": 5,
         "type": "scalar",
         "property": "datasets_no_tags"
+    },
+    "Pending privacy assessment": {
+        "order": 6,
+        "type": "scalar",
+        "property": "pending_privacy_assessment"
     }
 }

@@ -2,6 +2,7 @@
 
 import logging
 from datetime import datetime, timedelta
+from ckan.model import resource
 
 import sqlalchemy
 import pytz
@@ -15,6 +16,7 @@ from ckan.model.package import Package
 from ckan.model.group import Group
 from ckan.model.user import User
 from ckan.model.package_extra import PackageExtra
+from ckan.model.resource import Resource
 
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
@@ -26,6 +28,8 @@ from ckanext.data_qld.reporting.constants import (
     REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
     REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
 )
+
+from ckanext.resource_visibility.constants import FIELD_REQUEST_ASSESS, YES
 
 
 _and_ = sqlalchemy.and_
@@ -786,3 +790,29 @@ def datasets_no_tags(context, data_dict):
         return len(no_tags) if return_count_only else no_tags
     except Exception as e:
         log.error(str(e))
+
+
+def datasets_pending_privacy_assessment(context, data_dict):
+    """
+    Returns the datasets that have resource with pending privacy_assessment
+
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission, context)
+
+    ilike = '%"{}": "{}"%'.format(FIELD_REQUEST_ASSESS, YES)
+    query = (
+        _session_.query(Resource)
+        .join(Package)
+        .filter(Package.owner_org == org_id)
+        .filter(Package.id == Resource.package_id)
+        .filter(Package.state == ACTIVE_STATE)
+        .filter(Resource.extras.ilike(ilike))
+    )
+
+    return query.count() if return_count_only else query.all()

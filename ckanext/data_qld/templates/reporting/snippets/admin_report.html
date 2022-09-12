@@ -73,6 +73,13 @@
                 link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'.format(
                     org_id=org_id, metric="datasets_no_tags", report_type=report_type),
                 report_type=report_type %}
+            {% snippet "reporting/snippets/linked_metric.html",
+                metric="pending_privacy_assessment",
+                label='Pending privacy assessment',
+                count=metrics.pending_privacy_assessment,
+                link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'.format(
+                    org_id=org_id, metric="pending_privacy_assessment", report_type=report_type),
+                report_type=report_type %}
         </tbody>
     </table>
 {% endif %}

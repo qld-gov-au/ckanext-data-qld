@@ -315,6 +315,15 @@ def datasets(org_id, metric):
             data_dict.update({
                 'datasets': datasets
             })
+        elif metric == 'pending_privacy_assessment':
+            data_dict.update({
+                'return_count_only': False,
+                'permission': report_permission
+            })
+            resources = get_action('datasets_pending_privacy_assessment')({}, data_dict)
+            data_dict.update({
+                'resources': resources
+            })
 
         return render(
             'reporting/datasets.html',
