@@ -547,3 +547,20 @@ hr.double-thickness {
   position: relative;
   padding: 15px;
 }
+
+
+/* style for checkbox form input */
+.form-group.control-medium .control-checkbox {
+    display: flex;
+    column-gap: 15px;
+}
+.form-group.control-medium .control-checkbox .control-label {
+    margin: 0;
+}
+.form-group.control-medium .control-checkbox .control-label:after {
+    content: unset;
+}
+.form-group.control-medium .control-checkbox input {
+    order: -1;
+    margin: 0;
+}

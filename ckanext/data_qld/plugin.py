@@ -96,7 +96,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'unreplied_comments_x_days': helpers.unreplied_comments_x_days,
             'is_reporting_enabled': helpers.is_reporting_enabled,
             'members_sorted': helpers.members_sorted,
-            'get_deletion_reason_template': helpers.get_deletion_reason_template
+            'get_deletion_reason_template': helpers.get_deletion_reason_template,
         }
 
     # IValidators
@@ -104,8 +104,12 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
         return {
             'data_qld_scheming_choices': validation.scheming_choices,
             'data_qld_process_schema_fields': validation.process_schema_fields,
+            'data_qld_align_default_schema': validation.align_default_schema,
+            'data_qld_check_schema_alignment': validation.check_schema_alignment,
+
             'data_qld_filesize_converter': converters.filesize_converter,
             'data_qld_filesize_formatter': converters.filesize_formatter,
+
             'data_qld_validate_next_update_due': resource_freshness_validator.validate_next_update_due,
             'data_qld_validate_nature_of_change_data': resource_freshness_validator.validate_nature_of_change_data,
             'data_qld_data_last_updated': resource_freshness_validator.data_last_updated,

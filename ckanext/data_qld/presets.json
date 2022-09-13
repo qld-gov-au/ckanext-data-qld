@@ -6,7 +6,7 @@
     {
         "preset_name": "resource_schema",
         "values": {
-          "validators": "ignore_missing resource_schema_validator",
+          "validators": "ignore_missing resource_schema_validator data_qld_check_schema_alignment",
           "output_validators": "scheming_load_json",
           "form_snippet": "resource_schema.html",
           "display_snippet": "resource_schema_link.html"
