@@ -4,7 +4,8 @@
 #
 set -e
 
-CKAN_ACTION_URL=http://ckan:3000/api/action
+CKAN_ACTION_URL=http://ckan-qld.local:5000/api/action
+alias ckan_cli=ckan
 
 if [ "$VENV_DIR" != "" ]; then
   . ${VENV_DIR}/bin/activate
@@ -84,10 +85,10 @@ curl -LsH "Authorization: ${API_KEY}" \
 #
 
 # Creating test data hierarchy which creates organisations assigned to datasets
-ckan_cli create-test-data hierarchy
+ckan_cli seed hierarchy
 
 # Creating basic test data which has datasets with resources
-ckan_cli create-test-data basic
+ckan_cli seed basic
 
 add_user_if_needed organisation_admin "Organisation Admin" organisation_admin@localhost
 add_user_if_needed editor "Publisher" publisher@localhost

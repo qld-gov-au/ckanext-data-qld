@@ -17,7 +17,8 @@ remote-s3filestore = https://github.com/qld-gov-au/ckanext-s3filestore.git tag  
 remote-scheming = https://github.com/ckan/ckanext-scheming.git tag  release-2.1.0
 remote-ssm-config = https://github.com/qld-gov-au/ckanext-ssm-config.git tag  0.0.2
 
-remote-validation-schema-generator = https://github.com/qld-gov-au/ckanext-validation-schema-generator tag develop
+remote-validation-schema-generator = https://github.com/qld-gov-au/ckanext-validation-schema-generator tag 1.0
+develop-validation-schema-generator = https://github.com/qld-gov-au/ckanext-validation-schema-generator tag develop
 
 remote-resource-visibility = https://github.com/qld-gov-au/ckanext-resource-visibility tag 1.0
 develop-resource-visibility = https://github.com/qld-gov-au/ckanext-resource-visibility tag develop
