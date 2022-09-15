@@ -9,6 +9,10 @@ log = logging.getLogger(__name__)
 
 
 def add_deletion_of_dataset_reason(context, data_dict):
+    # if it's a list - it's a resource deletion
+    if isinstance(data_dict, list):
+        return
+
     dataset_id = data_dict.get('id')
     is_api_request = data_qld_helpers.is_api_request()
 

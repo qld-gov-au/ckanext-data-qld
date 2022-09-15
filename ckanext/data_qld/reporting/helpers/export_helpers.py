@@ -4,12 +4,15 @@ import csv
 import json
 import logging
 import os
-import six
 from tempfile import gettempdir
+from datetime import datetime
+
+import six
 
 from ckan.plugins.toolkit import abort, config
+
 from ckanext.data_qld.reporting.helpers import helpers
-from datetime import datetime
+
 
 log = logging.getLogger(__name__)
 
@@ -33,6 +36,9 @@ def csv_row_order_and_properties(report_config):
 
     for i in range(len(report_config) + 1):
         for key, settings in report_config.items():
+            if settings['property'] == "de_identified_datasets_no_schema":
+                key = key.format(helpers.get_deidentified_count_from_date())
+
             if settings['order'] == i:
                 row_order.append(key)
                 row_properties[key] = settings

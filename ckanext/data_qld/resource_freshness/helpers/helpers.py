@@ -101,9 +101,6 @@ def check_resource_data(current_resource, updated_resource, context):
 
 
 def process_next_update_due(data_dict):
-    if not user_has_admin_access(True):
-        if 'next_update_due' in data_dict:
-            del data_dict['next_update_due']
     for res in data_dict.get('resources', []):
         process_nature_of_change(res)
 

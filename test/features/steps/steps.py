@@ -99,7 +99,7 @@ def add_resource(context, name, url):
         And I fill in "description" with "description"
         And I fill in "size" with "1024" if present
         And I execute the script "document.getElementById('field-format').value='HTML'"
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I press the element with xpath "//button[@class="btn btn-primary" and text()="Add"]"
     """.format(name=name, url=url))
 
 
@@ -291,8 +291,8 @@ def create_dataset_resource_availability(context, title, de_identified_data, res
         And I fill in "version" with "1"
         And I fill in "author_email" with "test@test.com"
         And I select "{de_identified_data}" from "de_identified_data"
-        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
-        Then I wait for 1 seconds
+        And I press the element with xpath "//button[contains(text(), 'Next: Add Data')]"
+        Then I reload page every 2 seconds until I see an element with xpath "//input[@id='field-image-url']" but not more than 5 times
         And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "{resource_name}"
         And I fill in "description" with "test description"
@@ -305,6 +305,35 @@ def create_dataset_resource_availability(context, title, de_identified_data, res
     """.format(title=title, de_identified_data=de_identified_data,
                organisation_script="document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == 'Test Organisation'; }).attr('value')",
                resource_name=resource_name, resource_visible=resource_visible, governance_acknowledgement=governance_acknowledgement))
+
+
+@step(u'I patch dataset {package_id} with params {params}')
+def i_patch_dataset(context, package_id, params):
+    params += '&id={}'.format(package_id)
+    context.execute_steps(u"""
+        Given I visit "api/action/qld_test_patch_dataset?{}"
+    """.format(params))
+
+
+@step(u'I visit resource schema generation page')
+def resource_schema_generation(context):
+    path = urlparse(context.browser.url).path
+    when_i_visit_url(context, path + '/generate_schema')
+
+
+@step(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
+def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
+    for _ in range(reload_times):
+        element = context.browser.is_element_present_by_xpath(
+            xpath, wait_time=seconds
+        )
+        if not element:
+            context.browser.reload()
+        else:
+            assert element, 'Element with xpath "{}" was found'.format(xpath)
+            return
+
+    assert False, 'Element with xpath "{}" was not found'.format(xpath)
 
 
 # ckanext-ytp-comments

@@ -9,6 +9,7 @@ if [ "$PYTHON_VERSION" = "py3" ]; then
 else
     PYTHON=python
 fi
+
 CKAN_ACTION_URL=${CKAN_SITE_URL}api/action
 CKAN_USER_NAME="${CKAN_USER_NAME:-admin}"
 CKAN_DISPLAY_NAME="${CKAN_DISPLAY_NAME:-Administrator}"
@@ -85,10 +86,10 @@ curl -LsH "Authorization: ${API_KEY}" \
 #
 
 # Creating test data hierarchy which creates organisations assigned to datasets
-ckan_cli create-test-data hierarchy
+ckan_cli seed hierarchy
 
 # Creating basic test data which has datasets with resources
-ckan_cli create-test-data basic
+ckan_cli seed basic
 
 add_user_if_needed organisation_admin "Organisation Admin" organisation_admin@localhost
 add_user_if_needed editor "Publisher" publisher@localhost

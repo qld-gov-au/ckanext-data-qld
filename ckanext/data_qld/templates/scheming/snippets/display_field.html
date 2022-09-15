@@ -16,7 +16,9 @@
   {%- set display_snippet = 'scheming/display_snippets/' + display_snippet -%}
 {%- endif -%}
 
-{%- if field.field_name in data or field.field_name|title in data -%}
+
+{%- if (field.field_name in data or field.field_name|title in data)
+    or field.field_name in ["default_data_schema", "schema", "align_default_schema"] -%}
   {%- snippet display_snippet,
     field=field,
     data=data,

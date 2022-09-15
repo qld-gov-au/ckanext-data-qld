@@ -31,7 +31,12 @@ install_requirements . dev-requirements requirements-dev
 for extension in . `ls -d $SRC_DIR/ckanext-*`; do
     install_requirements $extension requirements pip-requirements
 done
+
+make prepare
+make sync install py2=1 upgrade_requirements= use_2020_resolver= root_dir="$VENV_DIR/src"
+
 pip install -e .
+
 installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1|")
 
 # Validate that the extension was installed correctly.
