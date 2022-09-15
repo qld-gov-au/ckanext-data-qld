@@ -561,6 +561,5 @@ hr.double-thickness {
     content: unset;
 }
 .form-group.control-medium .control-checkbox input {
-    order: -1;
     margin: 0;
 }

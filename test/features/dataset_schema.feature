@@ -27,7 +27,7 @@ Feature: Dataset Schema
         | DataRequestOrgAdmin  |
         | DataRequestOrgEditor |
 
-    @fixture.dataset_with_schema:name=package-with-schema
+    @fixture.dataset_with_schema::name=package-with-schema
     Scenario: New field visibility on dataset Additional info
         Given "SysAdmin" as the persona
         When I log in
@@ -35,7 +35,7 @@ Feature: Dataset Schema
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[text()="View Schema File"]"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="Field name 'validation_options' not in data"]"
 
-    @fixture.dataset_with_schema:name=package-with-schema
+    @fixture.dataset_with_schema::name=package-with-schema
     Scenario: New field visibility on dataset via API
         Given "SysAdmin" as the persona
         When I log in

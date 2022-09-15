@@ -12,10 +12,10 @@ ROOT_PATH = os.path.realpath(os.path.join(
     '../../'))
 
 # Base URL for relative paths resolution.
-BASE_URL = 'http://ckan:3000/'
+BASE_URL = 'http://ckan-qld.local:5000/'
 
 # URL of remote Chrome instance.
-REMOTE_CHROME_URL = 'http://chrome:4444/wd/hub'
+REMOTE_CHROME_URL = 'http://localhost:4444/wd/hub'
 
 # @see .docker/scripts/init.sh for credentials.
 PERSONAS = {
@@ -146,7 +146,7 @@ def before_scenario(context, scenario):
         FIXTURE_NAME = 0
         PARAMS = slice(1, None)
 
-        parts = tag.split(":")
+        parts = tag.split("::")
 
         if parts[FIXTURE_NAME].startswith("fixture.dataset_with_schema"):
             use_fixture(dataset_with_schema, context, parts[PARAMS])

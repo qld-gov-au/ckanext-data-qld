@@ -17,6 +17,46 @@ def pkg_show_url():
     return url
 
 
+@pytest.fixture
+def pkg_update_url():
+    url = url_for(controller='api',
+                  action="action",
+                  logic_function="package_update",
+                  ver=3)
+    assert url == "/api/3/action/package_update"
+    return url
+
+
+@pytest.fixture
+def pkg_patch_url():
+    url = url_for(controller='api',
+                  action="action",
+                  logic_function="package_patch",
+                  ver=3)
+    assert url == "/api/3/action/package_patch"
+    return url
+
+
+@pytest.fixture
+def res_create_url():
+    url = url_for(controller='api',
+                  action="action",
+                  logic_function="resource_create",
+                  ver=3)
+    assert url == "/api/3/action/resource_create"
+    return url
+
+
+@pytest.fixture
+def res_patch_url():
+    url = url_for(controller='api',
+                  action="action",
+                  logic_function="resource_patch",
+                  ver=3)
+    assert url == "/api/3/action/resource_patch"
+    return url
+
+
 def _get_pkg_dict(app, url, package_id, user=None):
     response = app.get(
         url=url,
@@ -325,3 +365,112 @@ class TestResourceVisibility:
 
         assert pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 1
+
+
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context")
+class TestSchemaAlignment:
+
+    def test_update_and_patch_default_schema(self, dataset_factory, app,
+                                             pkg_show_url, pkg_update_url,
+                                             pkg_patch_url, resource_factory):
+        user = factories.User()
+        org = factories.Organization(users=[{
+            "name": user["name"],
+            "capacity": "editor"
+        }])
+
+        dataset = dataset_factory(owner_org=org["id"], resources=[])
+        resource_factory(package_id=dataset["id"], resource_visible="FALSE")
+
+        new_schema = {
+            "fields": [{
+                "name": "x",
+                "title": "New schema",
+                "type": "integer"
+            }],
+            "primaryKey": "x"
+        }
+
+        pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
+        pkg_dict['default_data_schema'] = new_schema
+
+        resp = app.post(pkg_update_url,
+                        json=pkg_dict,
+                        environ_overrides={"REMOTE_USER": user['name']})
+        assert resp.json['result']['default_data_schema'] == new_schema
+
+        app.post(pkg_patch_url,
+                 json={
+                     "id": dataset["id"],
+                     "default_data_schema": ""
+                 },
+                 environ_overrides={"REMOTE_USER": user['name']})
+        pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
+
+        assert not pkg_dict['default_data_schema']
+
+    def test_create_resource_with_custom_schema(self, dataset_factory, app,
+                                                res_create_url,
+                                                resource_factory):
+        user = factories.User()
+        org = factories.Organization(users=[{
+            "name": user["name"],
+            "capacity": "editor"
+        }])
+
+        dataset = dataset_factory(owner_org=org["id"], resources=[])
+        schema = {
+            "fields": [{
+                "name": "x",
+                "title": "New schema",
+                "type": "integer"
+            }],
+            "primaryKey": "x"
+        }
+        resp = app.post(res_create_url,
+                        json={
+                            "package_id": dataset["id"],
+                            "schema": schema,
+                            "size": 1024,
+                            "format": "CSV",
+                            "description": "random description",
+                            "name": "test-res-01",
+                            "url": "https://example.com"
+                        },
+                        environ_overrides={"REMOTE_USER": user['name']})
+
+        assert resp.json['result']['schema'] == schema
+
+    def test_align_default_schema_visible_via_api(self, dataset_factory,
+                                                  resource_factory, app, pkg_show_url):
+        dataset = dataset_factory(resources=[], de_identified_data="NO")
+        resource_factory(package_id=dataset["id"])
+
+        user = factories.User()
+        pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
+
+        assert 'align_default_schema' in pkg_dict['resources'][0]
+
+    def test_updating_align_default_schema_via_api_is_forbidden(
+            self, dataset_factory, resource_factory, app, res_patch_url):
+
+        user = factories.User()
+        org = factories.Organization(users=[{
+            "name": user["name"],
+            "capacity": "editor"
+        }])
+        dataset = dataset_factory(resources=[],
+                                  de_identified_data="NO",
+                                  owner_org=org["id"])
+        resource = resource_factory(package_id=dataset["id"])
+
+        resp = app.post(res_patch_url,
+                        json={
+                            "id": resource["id"],
+                            "align_default_schema": 1
+                        },
+                        environ_overrides={"REMOTE_USER": user['name']})
+
+        assert resp.status_code == 409
+        assert not resp.json['success']
+        assert 'This field couldn\'t be updated via API' in resp.json['error']['align_default_schema']

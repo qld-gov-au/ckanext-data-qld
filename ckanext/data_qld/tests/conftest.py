@@ -36,7 +36,7 @@ class DatasetFactory(factories.Dataset):
     validation_options = ""
     validation_status = ""
     validation_timestamp = ""
-    default_data_schema = '{"fields": [{"name": "x", "title": "X", "type": "integer"}],"primaryKey":"x"}'
+    default_data_schema = '{"fields": [{"name": "x", "title": "Default schema", "type": "integer"}],"primaryKey":"x"}'
     schema_upload = ""
     schema_json = ""
     resources = [{
@@ -65,6 +65,7 @@ class ResourceFactory(factories.Resource):
         lambda: factory.Faker("sentence").generate())
     last_modified = factory.LazyFunction(lambda: str(dt.now()))
     resource_visible = "TRUE"
+    schema = '{"fields": [{"name": "a", "title": "Resource schema", "type": "integer"}],"primaryKey":"a"}'
 
 
 register(ResourceFactory, "resource")

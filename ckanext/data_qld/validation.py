@@ -148,7 +148,8 @@ def align_default_schema(key, data, errors, context):
     resource_schema = data[resource_schema_key]
     resource_id = data.get((u'resources', resource_idx, 'id'))
 
-    if _is_already_aligned(resource_id, resource_schema, context):
+    if resource_id and _is_already_aligned(resource_id, resource_schema,
+                                           context):
         return
 
     if not default_schema:
@@ -188,10 +189,11 @@ def _is_api_call():
 
 def check_schema_alignment(key, data, errors, context):
     """If resource and package schemes are different set `align_default_schema` to False"""
-    default_schema = data[(FIELD_DEFAULT_SCHEMA, )]
+    default_schema = data.get((FIELD_DEFAULT_SCHEMA, ))
 
     resource_schema = data[key]
     resource_idx = key[1]
 
-    alignment_value = ALIGNED if resource_schema == default_schema else UNALIGNED
+    alignment_value = ALIGNED if (
+        default_schema and resource_schema == default_schema) else UNALIGNED
     data[('resources', resource_idx, FIELD_ALIGNMENT)] = alignment_value

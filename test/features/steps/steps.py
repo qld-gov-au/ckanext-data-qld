@@ -97,7 +97,7 @@ def add_resource(context, name, url):
         And I fill in "name" with "{name}"
         And I fill in "description" with "description"
         And I fill in "size" with "1024" if present
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I press the element with xpath "//button[@class="btn btn-primary" and text()="Add"]"
     """.format(name=name, url=url))
 
 
@@ -285,8 +285,8 @@ def create_dataset_resource_availability(context, title, de_identified_data, res
         And I fill in "version" with "1"
         And I fill in "author_email" with "test@test.com"
         And I select "{de_identified_data}" from "de_identified_data"
-        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
-        Then I wait for 1 seconds
+        And I press the element with xpath "//button[contains(text(), 'Next: Add Data')]"
+        Then I reload page every 2 seconds until I see an element with xpath "//input[@id='field-image-url']" but not more than 5 times
         And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I fill in "name" with "{resource_name}"
         And I fill in "description" with "test description"

@@ -300,7 +300,7 @@
             "form_label": "Align this data schema with the dataset default",
             "form_snippet": "align_default_schema.html",
             "display_snippet": "align_default_schema.html",
-            "validators": "unicode_safe boolean_validator data_qld_align_default_schema",
+            "validators": "ignore_missing unicode_safe boolean_validator data_qld_align_default_schema",
             "help_text": "This data schema value is not aligned with a default data schema. Aligning this resource’s data schema with the dataset’s default data schema (and overwriting any pre-existing schema) ensures consistent validation of data structure.<br>Alternatively, publishers can choose no alignment and may include a customised schema for this resource. Ticking this box and updating the resource will align the schemas, overwriting any existing data schema. The validation options, if any, will not be overwritten.",
             "help_allow_html": true
         },

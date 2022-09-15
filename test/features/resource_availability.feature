@@ -104,8 +104,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgAdmin  |
             | TestOrgEditor |
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=invisible-resource:resource_visible=FALSE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=invisible-resource::resource_visible=FALSE
     Scenario Outline: resource with resource_visible=False must be visible for org editor, org admin, sysadmin
         Given "<User>" as the persona
         When I log in
@@ -118,8 +118,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | TestOrgAdmin  |
             | TestOrgEditor |
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=invisible-resource:resource_visible=FALSE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=invisible-resource::resource_visible=FALSE
     Scenario Outline: resource with resource_visible=False mustnt be visible for regular user, org editor/admin from different org
         Given "<User>" as the persona
         When I log in
@@ -133,8 +133,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | DataRequestOrgMember  |
 
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation:de_identified_data=NO
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=visible-resource:request_privacy_assessment=YES:governance_acknowledgement=YES:resource_visible=TRUE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=NO
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=visible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE
     Scenario Outline: Resource visible, governance_acknowledgement & request_privacy_assessment & not de_identified_data
         Given "<User>" as the persona
         When I log in
@@ -148,8 +148,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | DataRequestOrgMember  |
 
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation:de_identified_data=YES
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=visible-resource:request_privacy_assessment=NO:governance_acknowledgement=YES:resource_visible=TRUE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=YES
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=visible-resource::request_privacy_assessment=NO::governance_acknowledgement=YES::resource_visible=TRUE
     Scenario Outline: Resource visible, governance_acknowledgement & not request_privacy_assessment & de_identified_data
         Given "<User>" as the persona
         When I log in
@@ -162,8 +162,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | DataRequestOrgEditor  |
             | DataRequestOrgMember  |
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation:de_identified_data=YES
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=invisible-resource:request_privacy_assessment=YES:governance_acknowledgement=NO:resource_visible=TRUE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=YES
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=invisible-resource::request_privacy_assessment=YES::governance_acknowledgement=NO::resource_visible=TRUE
     Scenario Outline: Resource visible, not governance_acknowledgement & not request_privacy_assessment & de_identified_data
         Given "<User>" as the persona
         When I log in
@@ -176,8 +176,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | DataRequestOrgEditor  |
             | DataRequestOrgMember  |
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation:de_identified_data=YES
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=invisible-resource:request_privacy_assessment=YES:governance_acknowledgement=YES:resource_visible=TRUE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=YES
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=invisible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE
     Scenario Outline: Resource visible, governance_acknowledgement & request_privacy_assessment & de_identified_data
         Given "<User>" as the persona
         When I log in
@@ -190,8 +190,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | DataRequestOrgEditor  |
             | DataRequestOrgMember  |
 
-    @fixture.dataset_with_schema:name=random_package:owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params:package_id=random_package:name=invisible-resource:resource_visible=FALSE
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=invisible-resource::resource_visible=FALSE
     Scenario Outline: update the invisible resource
         Given "<User>" as the persona
         When I log in

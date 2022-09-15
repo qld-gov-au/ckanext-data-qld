@@ -9,18 +9,19 @@
 
 <div class="form-group control-medium schema-align {% if not is_visible %}hidden{% endif %}">
     <div class="control-checkbox">
+        <input
+            id="{{ field_id }}" type="checkbox"
+            value="{{ "false" if not pkg_dict.default_data_schema else "true" }}" name="{{ field.field_name }}"
+            {% if data[field.field_name] or is_creating %} checked{% endif %}
+            {{ form.attributes(field.form_attrs if 'form_attrs' in field else {}) }}
+        >
+
         <label for="{{ field_id }}" class="control-label">
             {{ h.scheming_language_text(field.form_label) }}
         </label>
         {% if is_required %}
             <span title="{{ _("This field is required") }}" class="control-required">*</span>
         {% endif %}
-        <input
-            id="{{ field_id }}" type="checkbox"
-            value="true" name="{{ field.field_name }}"
-            {% if data[field.field_name] or is_creating %} checked{% endif %}
-            {{ form.attributes(field.form_attrs if 'form_attrs' in field else {}) }}
-        >
     </div>
 
     {% if error and error is iterable %}
