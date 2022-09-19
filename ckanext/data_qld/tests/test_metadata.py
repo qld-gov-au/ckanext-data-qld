@@ -1,4 +1,3 @@
-import json
 from io import StringIO
 
 import pytest
@@ -11,6 +10,7 @@ import ckan.logic as logic
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestCreateData:
+
     def test_create_dataset_and_resource(self, dataset_factory,
                                          resource_factory):
         organization = factories.Organization()
@@ -47,7 +47,9 @@ class TestCreateData:
         stream = StringIO(
             u'{"fields": [{"name": "x", "title": "X", "type": "integer"}],"primaryKey":"x"}'
         )
-        schema_file = FileStorage(stream, "schema.json", content_type="application/json")
+        schema_file = FileStorage(stream,
+                                  "schema.json",
+                                  content_type="application/json")
         dataset = dataset_factory(schema_upload=schema_file)
 
         assert dataset["default_data_schema"]
