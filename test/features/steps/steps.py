@@ -336,6 +336,29 @@ def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
     assert False, 'Element with xpath "{}" was not found'.format(xpath)
 
 
+@step(u'I trigger notification about updated privacy assessment results')
+def i_tigger_notification_assessment_results(context):
+    context.execute_steps(u"""
+        Given I visit "api/action/qld_test_trigger_notify_privacy_assessment_result"
+    """)
+
+
+@step(u'I click the resource link in the email I received at "{address}"')
+def click_link_in_email(context, address):
+    mails = context.mail.user_messages(address)
+    assert mails, u"message not found"
+
+    mail = email.message_from_string(mails[-1])
+    links = []
+
+    payload = mail.get_payload(decode=True).decode("utf-8")
+    links = URL_RE.findall(payload.replace("=\n", ""))
+
+    assert links, u"link not found"
+    url = links[0].rstrip(':')
+
+    context.browser.visit(url)
+
 # ckanext-ytp-comments
 
 

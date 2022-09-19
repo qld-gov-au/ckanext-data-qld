@@ -7,6 +7,7 @@ from werkzeug.datastructures import FileStorage
 from ckan import plugins
 
 from ckanext.data_qld.tests.conftest import DatasetFactory, ResourceFactory
+import ckanext.resource_visibility.utils as utils
 
 
 class DataQldTestPlugin(plugins.SingletonPlugin):
@@ -19,7 +20,8 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
             'qld_test_create_dataset': qld_test_create_dataset,
             'qld_test_purge_dataset': qld_test_purge_dataset,
             'qld_test_patch_dataset': qld_test_patch_dataset,
-            'qld_test_create_resource_for_dataset': qld_test_create_resource_for_dataset
+            'qld_test_create_resource_for_dataset': qld_test_create_resource_for_dataset,
+            'qld_test_trigger_notify_privacy_assessment_result': qld_test_trigger_notify_privacy_assessment_result
         }
 
 
@@ -54,6 +56,19 @@ def qld_test_create_resource_for_dataset(context, data_dict):
     resource = ResourceFactory(**data_dict)
 
     return resource
+
+
+@tk.side_effect_free
+def qld_test_trigger_notify_privacy_assessment_result(context, data_dict):
+    data = utils.get_updated_privacy_assessment_result()
+
+    if not data:
+        return
+
+    for maintainer_email, updated_data in data.items():
+        utils.send_notifications(maintainer_email, updated_data.values())
+        utils._clear_upd_assessment_result_data()
+
 
 
 def _make_context():
