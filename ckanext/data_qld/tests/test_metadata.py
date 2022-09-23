@@ -43,7 +43,7 @@ class TestCreateData:
                              format="_FORMAT",
                              request_privacy_assessment="OF COURSE")
 
-    def test_upload_schema(self, dataset_factory, resource_factory):
+    def test_upload_schema(self, dataset_factory):
         stream = StringIO(
             u'{"fields": [{"name": "x", "title": "X", "type": "integer"}],"primaryKey":"x"}'
         )

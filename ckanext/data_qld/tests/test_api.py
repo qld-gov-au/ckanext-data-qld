@@ -1,7 +1,6 @@
-import resource
-from ckan.tests import factories
 import pytest
 
+from ckan.tests import factories
 from ckan.lib.helpers import url_for
 
 import ckanext.resource_visibility.constants as const
@@ -216,7 +215,7 @@ class TestResourceVisibility:
         assert pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 1
 
-    def test_excluded_for_regular_user(self, dataset_factory, resource_factory,
+    def test_excluded_for_regular_user(self, dataset_factory,
                                        app, pkg_show_url):
         user = factories.User()
         dataset = dataset_factory()
@@ -409,8 +408,7 @@ class TestSchemaAlignment:
 
         assert not pkg_dict['default_data_schema']
 
-    def test_create_resource_with_custom_schema(self, dataset_factory, app,
-                                                res_create_url,
+    def test_create_resource_with_custom_schema(self, dataset_factory,
                                                 resource_factory):
         user = factories.User()
         org = factories.Organization(users=[{
@@ -421,25 +419,20 @@ class TestSchemaAlignment:
         dataset = dataset_factory(owner_org=org["id"], resources=[])
         schema = {
             "fields": [{
-                "name": "x",
-                "title": "New schema",
+                "format": "default",
+                "name": "Game Number",
+                "type": "integer"
+            }, {
+                "format": "default",
+                "name": "Game Length",
                 "type": "integer"
             }],
-            "primaryKey": "x"
+            "missingValues": [""]
         }
-        resp = app.post(res_create_url,
-                        json={
-                            "package_id": dataset["id"],
-                            "schema": schema,
-                            "size": 1024,
-                            "format": "CSV",
-                            "description": "random description",
-                            "name": "test-res-01",
-                            "url": "https://example.com"
-                        },
-                        environ_overrides={"REMOTE_USER": user['name']})
 
-        assert resp.json['result']['schema'] == schema
+        resource = resource_factory(package_id=dataset["id"], schema=schema)
+
+        assert resource['schema'] == schema
 
     def test_align_default_schema_visible_via_api(self, dataset_factory,
                                                   resource_factory, app, pkg_show_url):

@@ -28,11 +28,7 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 @tk.side_effect_free
 def qld_test_create_dataset(context, data_dict):
     package = DatasetFactory(**data_dict)
-
-    here = os.path.dirname(__file__)
-    with open(os.path.join(here, 'sample.csv')) as f:
-        file = FileStorage(f, "sample.csv", content_type="text/csv")
-        ResourceFactory(package_id=package["id"], upload=file)
+    ResourceFactory(package_id=package["id"], bdd=True)
 
     return package
 
@@ -53,6 +49,7 @@ def qld_test_patch_dataset(context, data_dict):
 
 @tk.side_effect_free
 def qld_test_create_resource_for_dataset(context, data_dict):
+    data_dict['bdd'] = True
     resource = ResourceFactory(**data_dict)
 
     return resource
