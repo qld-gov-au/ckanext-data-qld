@@ -63,19 +63,15 @@ Feature: Resource Privacy Assessment Result
     Scenario: Email to dataset contact when result of requested privacy assessment is posted
         Given "SysAdmin" as the persona
         When I log in
-        Then I go to dataset "package-with-new-privacy-assessment"
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I press the element with xpath "//a[text()[contains(.,'Manage')]]"
-        And I should see an element with xpath "//input[@name='privacy_assessment_result']"
-        Then I fill in "privacy_assessment_result" with "New privacy_assessment_result"
+        And I go to dataset "package-with-new-privacy-assessment"
+        And I press the element with xpath "//li[@class="resource-item"]/a"
+        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
+        And I fill in "privacy_assessment_result" with "New privacy_assessment_result"
         And I press the element with xpath "//button[@name="save"]"
-
-        Then I trigger notification about updated privacy assessment results
-
-        And I should receive an email at "test@gmail.com" containing "A privacy risk assessment was requested for a resource. The result of that assessment has been published to Home | Queensland Government."
+        And I trigger notification about updated privacy assessment results
+        Then I should receive an email at "test@gmail.com" containing "A privacy risk assessment was requested for a resource. The result of that assessment has been published to Home | Queensland Government."
         And I should receive an email at "test@gmail.com" containing "Resource/s"
         And I should receive an email at "test@gmail.com" containing "Refer to ‘https://www.data.qld.gov.au/article/standards-and-guidance/publishing-guides-standards/open-data-portal-publishing-guide’ for assistance or contact opendata@qld.gov.au."
         And I should receive an email at "test@gmail.com" containing "Do not reply to this email."
-
-        Then I click the resource link in the email I received at "test@gmail.com"
+        When I click the resource link in the email I received at "test@gmail.com"
         Then I should see "New privacy_assessment_result"

@@ -5,14 +5,11 @@ import pytz
 from datetime import datetime, timedelta
 
 import ckantoolkit as tk
-
-
 from ckan import model
 
 from ckanext.data_qld import helpers
 from ckanext.data_qld.reporting.constants import (
-    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
-    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
+    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
 )
 
 
@@ -294,8 +291,7 @@ def get_organisation_list_for_user(permission):
 
 def get_deidentified_count_from_date():
     count_from = tk.config.get(
-        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
-        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
+        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
     )
 
     return tk.h.date_str_to_datetime(count_from).strftime("%d %B %Y")

@@ -24,10 +24,6 @@ from ckanext.datarequests import db
 
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
-from ckanext.data_qld.reporting.constants import (
-    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
-    REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
-)
 
 from ckanext.resource_visibility.constants import FIELD_REQUEST_ASSESS, YES
 
@@ -669,11 +665,7 @@ def de_identified_datasets_no_schema(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
 
-    default_count_from = config.get(
-        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM,
-        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM_DF
-    )
-
+    default_count_from = helpers.get_deidentified_count_from_date()
     count_from = data_dict.get('count_from', default_count_from)
     check_org_access(org_id, permission, context)
 

@@ -20,11 +20,11 @@ class MixinPlugin(plugins.SingletonPlugin):
             action='open_datarequest', conditions=dict(method=['GET', 'POST']))
 
         m.connect(
-            'data_qld.show_schema',
+            'data_qld.show_resource_schema',
             '/dataset/{dataset_id}/resource/{resource_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
             controller=controller, action='show_resource_schema', conditions=dict(method=['GET']))
         m.connect(
-            'data_qld.show_schema',
+            'data_qld.show_package_schema',
             '/dataset/{dataset_id}/%s/show/' % constants.SCHEMA_MAIN_PATH,
             controller=controller, action='show_package_schema', conditions=dict(method=['GET']))
 

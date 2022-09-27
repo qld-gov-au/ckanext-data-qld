@@ -15,7 +15,7 @@ ROOT_PATH = os.path.realpath(os.path.join(
 BASE_URL = 'http://ckan:5000/'
 
 # URL of remote Chrome instance.
-REMOTE_CHROME_URL = 'http://localhost:4444/wd/hub'
+REMOTE_CHROME_URL = 'http://chrome:4444/wd/hub'
 
 # @see .docker/scripts/init.sh for credentials.
 PERSONAS = {
