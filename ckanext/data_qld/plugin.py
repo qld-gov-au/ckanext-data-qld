@@ -259,32 +259,18 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     # IDataValidation
 
-    def can_validate(self, context, data_dict):
-        pkg_id = data_dict.get(u'package_id')
-        pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
-
-        if pkg_dict.get(FIELD_DE_IDENTIFIED) == YES:
-            return True
-
-        return False
-
     def set_create_mode(self, context, data_dict, current_mode):
-        pkg_id = data_dict.get(u'package_id')
-        pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
-
-        if pkg_dict.get(FIELD_DE_IDENTIFIED) == YES:
-            return "sync"
-
-        return current_mode
+        return "sync" if self._is_de_identified(data_dict) else current_mode
 
     def set_update_mode(self, context, data_dict, current_mode):
+        return "sync" if self._is_de_identified(data_dict) else current_mode
+
+    def _is_de_identified(self, data_dict):
         pkg_id = data_dict.get(u'package_id')
         pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
 
-        if pkg_dict.get(FIELD_DE_IDENTIFIED) == YES:
-            return "sync"
+        return pkg_dict.get(FIELD_DE_IDENTIFIED) == YES
 
-        return current_mode
 
 class PlaceholderPlugin(plugins.SingletonPlugin):
     """ Sinkhole for deprecated plugin definitions.
