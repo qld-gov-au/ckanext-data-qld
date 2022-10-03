@@ -9,6 +9,9 @@ from . import actions, auth_functions as auth, constants, converters, \
     datarequest_auth_functions, helpers, validation
 import ckantoolkit as tk
 
+from ckanext.validation.interfaces import IDataValidation
+from ckanext.resource_visibility.constants import FIELD_DE_IDENTIFIED, YES
+
 from .dataset_deletion import helpers as dataset_deletion_helpers
 from .reporting.helpers import helpers as reporting_helpers
 from .reporting.logic.action import get
@@ -38,6 +41,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
+    plugins.implements(IDataValidation, inherit=True)
 
     if ' qa' in tk.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
@@ -253,6 +257,34 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
         return resource_score
 
+    # IDataValidation
+
+    def can_validate(self, context, data_dict):
+        pkg_id = data_dict.get(u'package_id')
+        pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
+
+        if pkg_dict.get(FIELD_DE_IDENTIFIED) == YES:
+            return True
+
+        return False
+
+    def set_create_mode(self, context, data_dict, current_mode):
+        pkg_id = data_dict.get(u'package_id')
+        pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
+
+        if pkg_dict.get(FIELD_DE_IDENTIFIED) == YES:
+            return "sync"
+
+        return current_mode
+
+    def set_update_mode(self, context, data_dict, current_mode):
+        pkg_id = data_dict.get(u'package_id')
+        pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
+
+        if pkg_dict.get(FIELD_DE_IDENTIFIED) == YES:
+            return "sync"
+
+        return current_mode
 
 class PlaceholderPlugin(plugins.SingletonPlugin):
     """ Sinkhole for deprecated plugin definitions.
