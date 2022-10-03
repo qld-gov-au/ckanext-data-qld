@@ -70,8 +70,11 @@ def show_resource_schema(dataset_id, resource_id):
 
     data = _get_resource_data(resource_id, context)
     schema_data = data.get('schema')
-    c.schema_data = json.dumps(schema_data, indent=2, sort_keys=True)
-    return render('schema/show.html')
+
+    if not schema_data:
+        return abort(404, _('Schema not found'))
+
+    return schema_data
 
 
 def _get_resource_data(resource_id, context):
@@ -98,9 +101,11 @@ def show_package_schema(dataset_id):
 
     data = _get_package_data(dataset_id, context)
     schema_data = data.get('default_data_schema')
-    c.schema_data = json.dumps(schema_data, indent=2, sort_keys=True)
-    return render('schema/show.html')
 
+    if not schema_data:
+        return abort(404, _('Schema not found'))
+
+    return schema_data
 
 def _get_package_data(dataset_id, context):
     data_dict = {"id": dataset_id}

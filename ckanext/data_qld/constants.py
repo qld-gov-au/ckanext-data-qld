@@ -10,3 +10,9 @@ LIST_DATAREQUESTS = 'list_datarequests'
 RESOURCE_SHOW = 'resource_show'
 PACKAGE_SHOW = 'package_show'
 SCHEMA_MAIN_PATH = 'schema'
+
+ALIGNED = True
+UNALIGNED = False
+FIELD_ALIGNMENT = "align_default_schema"
+FIELD_DEFAULT_SCHEMA = "default_data_schema"
+FIELD_RES_SCHEMA = "schema"

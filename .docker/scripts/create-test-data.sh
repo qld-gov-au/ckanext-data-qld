@@ -86,10 +86,10 @@ curl -LsH "Authorization: ${API_KEY}" \
 #
 
 # Creating test data hierarchy which creates organisations assigned to datasets
-ckan_cli seed hierarchy
+ckan_cli create-test-data hierarchy
 
 # Creating basic test data which has datasets with resources
-ckan_cli seed basic
+ckan_cli create-test-data basic
 
 add_user_if_needed organisation_admin "Organisation Admin" organisation_admin@localhost
 add_user_if_needed editor "Publisher" publisher@localhost
