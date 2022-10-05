@@ -76,8 +76,8 @@ class TestApiPrivacyAssessment:
     def test_excluded_for_anon(self, dataset_factory, resource_factory, app,
                                pkg_show_url):
 
-        dataset = dataset_factory(de_identified_data="NO")
-        resource_factory(package_id=dataset["id"], resource_visible="FALSE")
+        dataset = dataset_factory()
+        resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
                            query_string={"name_or_id": dataset["id"]},
@@ -90,7 +90,7 @@ class TestApiPrivacyAssessment:
     def test_excluded_for_regular_user(self, dataset_factory, resource_factory,
                                        app, pkg_show_url):
         user = factories.User()
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
@@ -109,7 +109,7 @@ class TestApiPrivacyAssessment:
             "capacity": "member"
         }])
 
-        dataset = dataset_factory(de_identified_data="NO", owner_org=org["id"])
+        dataset = dataset_factory(owner_org=org["id"])
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
@@ -133,7 +133,7 @@ class TestApiPrivacyAssessment:
             "capacity": "admin"
         }])
 
-        dataset = dataset_factory(de_identified_data="NO", owner_org=org["id"])
+        dataset = dataset_factory(owner_org=org["id"])
         resource_factory(package_id=dataset["id"])
 
         for user in [user1, user2]:
@@ -147,7 +147,7 @@ class TestApiPrivacyAssessment:
 
     def test_present_for_sysadmin(self, dataset_factory, resource_factory, app,
                                   pkg_show_url, sysadmin):
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
@@ -186,9 +186,11 @@ class TestResourceVisibility:
 
     """
 
-    def test_excluded_for_anon(self, dataset_factory, app, pkg_show_url):
+    def test_excluded_for_anon(self, app, dataset_factory, resource_factory,
+                               pkg_show_url):
 
-        dataset = dataset_factory()
+        dataset = dataset_factory(de_identified_data="YES")
+        resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
                            query_string={"name_or_id": dataset["id"]},
@@ -203,8 +205,8 @@ class TestResourceVisibility:
                                                      resource_factory, app,
                                                      pkg_show_url):
 
-        dataset = dataset_factory(de_identified_data="NO")
-        resource_factory(package_id=dataset["id"], resource_visible="FALSE")
+        dataset = dataset_factory()
+        resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
                            query_string={"name_or_id": dataset["id"]},
@@ -215,8 +217,8 @@ class TestResourceVisibility:
         assert pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 1
 
-    def test_excluded_for_regular_user(self, dataset_factory,
-                                       app, pkg_show_url):
+    def test_excluded_for_regular_user(self, dataset_factory, app,
+                                       pkg_show_url):
         user = factories.User()
         dataset = dataset_factory()
 
@@ -230,14 +232,17 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
     def test_resource_page_not_accessible_for_regular_user_if_hidden(
-            self, dataset_factory, app):
+            self, app, dataset_factory, resource_factory):
         user = factories.User()
+
         dataset = dataset_factory()
+        resource = resource_factory(package_id=dataset["id"],
+                                    resource_visible="FALSE")
 
         url = url_for(controller='resource',
                       action='read',
                       id=dataset['id'],
-                      resource_id=dataset['resources'][0]['id'])
+                      resource_id=resource['id'])
         app.get(url=url,
                 status=404,
                 environ_overrides={"REMOTE_USER": user["name"]})
@@ -254,7 +259,7 @@ class TestResourceVisibility:
             "capacity": "admin"
         }])
 
-        dataset = dataset_factory(owner_org=org["id"], resources=[])
+        dataset = dataset_factory(owner_org=org["id"])
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
 
         for user in [user1, user2]:
@@ -269,7 +274,7 @@ class TestResourceVisibility:
 
     def test_visible_for_sysadmin(self, dataset_factory, resource_factory, app,
                                   pkg_show_url, sysadmin):
-        dataset = dataset_factory(resources=[])
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
 
@@ -288,7 +293,7 @@ class TestResourceVisibility:
         user = factories.User()
 
         # not resource_visible -> HIDE
-        dataset = dataset_factory(resources=[])
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
 
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
@@ -297,7 +302,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
         # resource_visible & not governance_acknowledgement & not de_identified_data -> SHOW
-        dataset = dataset_factory(resources=[], de_identified_data="NO")
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="NO")
@@ -308,7 +313,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
         # resource_visible & not governance_acknowledgement & de_identified_data -> HIDE
-        dataset = dataset_factory(resources=[], de_identified_data="YES")
+        dataset = dataset_factory(de_identified_data="YES")
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="NO")
@@ -319,7 +324,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
         # resource_visible & governance_acknowledgement & not request_privacy_assessment -> SHOW
-        dataset = dataset_factory(resources=[], de_identified_data="YES")
+        dataset = dataset_factory(de_identified_data="YES")
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="YES",
@@ -331,7 +336,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
         # resource_visible & governance_acknowledgement & NONE request_privacy_assessment -> SHOW
-        dataset = dataset_factory(resources=[], de_identified_data="YES")
+        dataset = dataset_factory(de_identified_data="YES")
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="YES")
@@ -342,7 +347,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
         # resource_visible & governance_acknowledgement & request_privacy_assessment & de_identified_data -> HIDE
-        dataset = dataset_factory(resources=[], de_identified_data="YES")
+        dataset = dataset_factory(de_identified_data="YES")
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="YES",
@@ -354,7 +359,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
         # resource_visible & governance_acknowledgement & request_privacy_assessment & not de_identified_data -> SHOW
-        dataset = dataset_factory(resources=[], de_identified_data="NO")
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="YES",
@@ -378,7 +383,7 @@ class TestSchemaAlignment:
             "capacity": "editor"
         }])
 
-        dataset = dataset_factory(owner_org=org["id"], resources=[])
+        dataset = dataset_factory(owner_org=org["id"])
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
 
         new_schema = {
@@ -416,7 +421,7 @@ class TestSchemaAlignment:
             "capacity": "editor"
         }])
 
-        dataset = dataset_factory(owner_org=org["id"], resources=[])
+        dataset = dataset_factory(owner_org=org["id"])
         schema = {
             "fields": [{
                 "format": "default",
@@ -435,8 +440,9 @@ class TestSchemaAlignment:
         assert resource['schema'] == schema
 
     def test_align_default_schema_visible_via_api(self, dataset_factory,
-                                                  resource_factory, app, pkg_show_url):
-        dataset = dataset_factory(resources=[], de_identified_data="NO")
+                                                  resource_factory, app,
+                                                  pkg_show_url):
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
         user = factories.User()
@@ -452,9 +458,7 @@ class TestSchemaAlignment:
             "name": user["name"],
             "capacity": "editor"
         }])
-        dataset = dataset_factory(resources=[],
-                                  de_identified_data="NO",
-                                  owner_org=org["id"])
+        dataset = dataset_factory(owner_org=org["id"])
         resource = resource_factory(package_id=dataset["id"])
 
         resp = app.post(res_patch_url,
@@ -466,4 +470,5 @@ class TestSchemaAlignment:
 
         assert resp.status_code == 409
         assert not resp.json['success']
-        assert 'This field couldn\'t be updated via API' in resp.json['error']['align_default_schema']
+        assert 'This field couldn\'t be updated via API' in resp.json['error'][
+            'align_default_schema']

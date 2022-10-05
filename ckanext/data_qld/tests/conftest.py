@@ -2,13 +2,11 @@ import os
 import json
 import six
 import tempfile
-from random import randint
 from datetime import datetime as dt
 
 import pytest
 import factory
 from factory import Faker
-from pytest_factoryboy import register
 from mock import patch
 
 import ckan.tests.helpers as helpers
@@ -22,15 +20,12 @@ from ckanext.harvest.model import setup as harvest_init
 from ckanext.ytp.comments.model import init_tables as ytp_init
 from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
+from ckanext.archiver import utils as archiver_utils
 
 
 class OrganizationFactory(factories.Organization):
     name = factory.LazyFunction(lambda: Faker("slug").generate() + "" + dt.now(
     ).strftime("%Y%m%d-%H%M%S"))
-    pass
-
-
-register(OrganizationFactory, "organization")
 
 
 class DatasetFactory(factories.Dataset):
@@ -42,7 +37,7 @@ class DatasetFactory(factories.Dataset):
     license_id = "other-open"
     data_driven_application = "NO"
     security_classification = "PUBLIC"
-    de_identified_data = "YES"
+    de_identified_data = "NO"
     owner_org = factory.LazyFunction(lambda: OrganizationFactory()["id"])
     validation_options = ""
     validation_status = ""
@@ -50,18 +45,16 @@ class DatasetFactory(factories.Dataset):
     default_data_schema = '{"fields": [{"name": "x", "title": "Default schema", "type": "integer"}],"primaryKey":"x"}'
     schema_upload = ""
     schema_json = ""
-    resources = [{
-        "url": Faker("url").generate(),
-        "format": "CSV",
-        "name": Faker("slug").generate(),
-        "description": Faker("sentence").generate(),
-        "size": randint(1, 1000),
-        "last_modified": str(dt.now()),
-        "privacy_assessment_result": Faker("sentence").generate(),
-    }]
 
 
-register(DatasetFactory, "dataset")
+@pytest.fixture
+def dataset_factory():
+    return DatasetFactory
+
+
+@pytest.fixture
+def dataset():
+    return DatasetFactory()
 
 
 class ResourceFactory(factories.Resource):
@@ -86,20 +79,15 @@ class ResourceFactory(factories.Resource):
             assert False, "Positional args aren't supported, use keyword args."
 
         if kwargs.get('bdd'):
-            return helpers.call_action(
-                "resource_create", context={}, **kwargs
-            )
+            return helpers.call_action("resource_create", context={}, **kwargs)
 
         temp_dir = str(tempfile.mkdtemp())
         with patch.object(uploader, u'_storage_path', temp_dir):
             with patch.dict(config, {u'ckan.storage_path': temp_dir}):
-                resource_dict = helpers.call_action(
-                    "resource_create", context={}, **kwargs
-                )
+                resource_dict = helpers.call_action("resource_create",
+                                                    context={},
+                                                    **kwargs)
         return resource_dict
-
-
-register(ResourceFactory, "resource")
 
 
 def _get_test_file():
@@ -134,14 +122,18 @@ class SysadminFactory(factories.Sysadmin):
     pass
 
 
-register(SysadminFactory, "sysadmin")
+@pytest.fixture
+def sysadmin():
+    return SysadminFactory()
 
 
 class UserFactory(factories.User):
     pass
 
 
-register(UserFactory, "user")
+@pytest.fixture
+def user():
+    return UserFactory()
 
 
 @pytest.fixture
@@ -158,7 +150,5 @@ def clean_db(reset_db):
 
 
 def archival_init():
-    from ckanext.archiver.cli import ArchivalCommands
-
-    ArchivalCommands().initdb()
-    ArchivalCommands().migrate()
+    archiver_utils.initdb()
+    archiver_utils.migrate()

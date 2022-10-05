@@ -25,7 +25,7 @@ class TestPrivacyAssessmentResultValidator:
         context = _make_context()
         context['user'] = user['name']
 
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
                                     privacy_assessment_result="initial value")
 
@@ -48,7 +48,7 @@ class TestPrivacyAssessmentResultValidator:
         context = _make_context()
         context['user'] = user['name']
 
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
                                     privacy_assessment_result="initial value")
 
@@ -68,7 +68,7 @@ class TestPrivacyAssessmentResultValidator:
         context = _make_context()
         context['user'] = user['name']
 
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
                                     privacy_assessment_result="initial value")
 
@@ -91,7 +91,7 @@ class TestPrivacyAssessmentResultValidator:
         context = _make_context()
         context['user'] = sysadmin['name']
 
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"])
 
         value = 'Data'
@@ -109,7 +109,7 @@ class TestPrivacyAssessmentResultValidator:
         context = _make_context()
         context['ignore_auth'] = True
 
-        dataset = dataset_factory(de_identified_data="NO")
+        dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"])
 
         value = 'Data'

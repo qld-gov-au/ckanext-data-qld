@@ -133,7 +133,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
             | DataRequestOrgMember  |
 
 
-    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=NO
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=visible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE
     Scenario Outline: Resource visible, governance_acknowledgement & request_privacy_assessment & not de_identified_data
         Given "<User>" as the persona

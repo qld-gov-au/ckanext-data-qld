@@ -15,8 +15,10 @@ class TestAdminReportDeIdentifiedNoSchema:
         return {"user": sysadmin["name"], "ignore_auth": True}
 
     def test_with_package(self, dataset_factory, resource_factory):
-        dataset = dataset_factory(default_data_schema="")
+        dataset = dataset_factory(default_data_schema="",
+                                  de_identified_data="YES")
         resource_factory(package_id=dataset["id"])
+        call_action("package_patch", id=dataset["id"], notes="test")
 
         counter = call_action("de_identified_datasets_no_schema",
                               self._make_context(),
@@ -52,8 +54,11 @@ class TestAdminReportDeIdentifiedNoSchema:
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
-            dataset = dataset_factory(default_data_schema="", owner_org=org_id)
+            dataset = dataset_factory(default_data_schema="",
+                                      owner_org=org_id,
+                                      de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
+            call_action("package_patch", id=dataset["id"], notes="test")
 
         counter = call_action("de_identified_datasets_no_schema",
                               self._make_context(),
@@ -76,7 +81,7 @@ class TestAdminReportDeIdentifiedNoSchema:
 
     def test_dataset_without_resource_has_no_next_update_due(
             self, dataset_factory):
-        dataset = dataset_factory(default_data_schema="", resources=[])
+        dataset = dataset_factory(default_data_schema="")
 
         counter = call_action("de_identified_datasets_no_schema",
                               self._make_context(),
@@ -105,7 +110,10 @@ class TestAdminReportCSVExport:
 
         for _ in range(3):
             dataset = dataset_factory(default_data_schema="",
-                                      owner_org=org_id)
+                                      owner_org=org_id,
+                                      de_identified_data="YES")
+            resource_factory(package_id=dataset["id"])
+            call_action("package_patch", id=dataset["id"], notes="test")
 
         result = helpers.gather_admin_metrics(org_id, "admin")
 
@@ -142,7 +150,8 @@ class TestAdminReportPendingPrivacyAssessment:
 
     def test_with_pending_resource(self, dataset_factory, resource_factory):
         dataset = dataset_factory()
-        resource_factory(package_id=dataset["id"], request_privacy_assessment="YES")
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment="YES")
 
         counter = call_action("datasets_pending_privacy_assessment",
                               self._make_context(),
@@ -159,12 +168,12 @@ class TestAdminReportPendingPrivacyAssessment:
 
         assert counter == 0
 
-
     def test_with_multiple_packages(self, dataset_factory, resource_factory):
         dataset = dataset_factory()
 
         for _ in range(3):
-            resource_factory(package_id=dataset["id"], request_privacy_assessment="YES")
+            resource_factory(package_id=dataset["id"],
+                             request_privacy_assessment="YES")
 
         counter = call_action("datasets_pending_privacy_assessment",
                               self._make_context(),
