@@ -1,3 +1,6 @@
 ckantoolkit>=0.0.4
 pyrsistent<0.17.0
 beautifulsoup4==4.9.1
+factory-boy==2.1.1
+faker==3.0.1
+pytest-factoryboy==2.0.3
