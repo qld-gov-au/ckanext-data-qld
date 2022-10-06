@@ -81,7 +81,20 @@ def _get_pkg_dict(app, url, package_id, user=None):
     return response.json['result']
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage")
+def _post(app, url, params, extra_environ, status=200):
+    if is_ckan_29():
+        return app.post(url,
+                        json=params,
+                        status=status,
+                        extra_environ=extra_environ)
+    return app.post(url,
+                    params=json.dumps(params),
+                    status=status,
+                    extra_environ=extra_environ)
+
+
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+                         "mock_storage")
 class TestApiPrivacyAssessment:
     """privacy_assessment_result must be visible via API only for organization
     editors, admins and sysadmins.
@@ -175,7 +188,8 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT in resource
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+                         "mock_storage")
 class TestResourceVisibility:
     """We have a custom logic for resource visibility
 
@@ -385,7 +399,8 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+                         "mock_storage")
 class TestSchemaAlignment:
 
     def test_update_and_patch_default_schema(self, dataset_factory, app,
@@ -412,17 +427,20 @@ class TestSchemaAlignment:
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
         pkg_dict['default_data_schema'] = new_schema
 
-        resp = app.post(pkg_update_url,
-                        params=json.dumps(pkg_dict),
-                        extra_environ={"REMOTE_USER": str(user['name'])})
+        resp = _post(app,
+                     pkg_update_url,
+                     params=pkg_dict,
+                     extra_environ={"REMOTE_USER": str(user['name'])})
+
         assert resp.json['result']['default_data_schema'] == new_schema
 
-        app.post(pkg_patch_url,
-                 params=json.dumps({
-                     "id": dataset["id"],
-                     "default_data_schema": ""
-                 }),
-                 extra_environ={"REMOTE_USER": str(user['name'])})
+        _post(app,
+              pkg_patch_url,
+              params={
+                  "id": dataset["id"],
+                  "default_data_schema": ""
+              },
+              extra_environ={"REMOTE_USER": str(user['name'])})
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
         assert not pkg_dict['default_data_schema']
@@ -475,13 +493,14 @@ class TestSchemaAlignment:
         dataset = dataset_factory(owner_org=org["id"])
         resource = resource_factory(package_id=dataset["id"])
 
-        resp = app.post(res_patch_url,
-                        params=json.dumps({
-                            "id": resource["id"],
-                            "align_default_schema": 1
-                        }),
-                        status=409,
-                        extra_environ={"REMOTE_USER": str(user['name'])})
+        resp = _post(app,
+                     res_patch_url,
+                     params={
+                         "id": resource["id"],
+                         "align_default_schema": 1
+                     },
+                     status=409,
+                     extra_environ={"REMOTE_USER": str(user['name'])})
 
         assert not resp.json['success']
         assert 'This field couldn\'t be updated via API' in resp.json['error'][
