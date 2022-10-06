@@ -2,7 +2,7 @@
 
 from ckan.lib.cli import CkanCommand
 
-from . import command_functions
+from ckanext.data_qld import command_functions
 
 
 class SendEmailDatasetDueToPublishingNotification(CkanCommand):

@@ -4,7 +4,11 @@ import ckantoolkit as tk
 
 from ckan import plugins
 
-from ckanext.data_qld.tests.conftest import DatasetFactory, ResourceFactory
+from ckanext.data_qld.tests.conftest import (
+    DatasetFactory,
+    ResourceFactory,
+    OrganizationFactory,
+)
 import ckanext.resource_visibility.utils as utils
 
 
@@ -14,7 +18,7 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 
     def update_config(self, config):
         assert tk.asbool(tk.config.get("ckanext.data_qld.allow_bdd_test_plugin")),\
-                            'BDD test plugin is not allowed'
+            'BDD test plugin is not allowed'
 
     # IActions
 
@@ -32,6 +36,9 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 
 @tk.side_effect_free
 def qld_test_create_dataset(context, data_dict):
+    # org = OrganizationFactory()
+    # data_dict.setdefault("owner_org", org["id"])
+
     package = DatasetFactory(**data_dict)
     ResourceFactory(package_id=package["id"], bdd=True)
 

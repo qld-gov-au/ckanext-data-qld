@@ -44,7 +44,8 @@ def user_has_datarequest_admin_access(datarequest_id, include_editor_access, con
         return True
 
     groups_admin = user.get_groups('organization', 'admin')
-    groups_editor = user.get_groups('organization', 'editor') if include_editor_access else []
+    groups_editor = user.get_groups(
+        'organization', 'editor') if include_editor_access else []
     groups_list = groups_admin + groups_editor
     organisation_list = [g for g in groups_list if g.type == 'organization']
     user_has_access = len(organisation_list) > 0
@@ -54,7 +55,8 @@ def user_has_datarequest_admin_access(datarequest_id, include_editor_access, con
     # User has admin/editor access so check if they are a member of the default_organisation_id or datarequest_organisation_id
     elif user_has_access:
         default_organisation_id = helpers.datarequest_default_organisation_id()
-        datarequest_organisation_id = toolkit.get_action(constants.SHOW_DATAREQUEST)(context, {'id': datarequest_id}).get('organization_id')
+        datarequest_organisation_id = toolkit.get_action(constants.SHOW_DATAREQUEST)(
+            context, {'id': datarequest_id}).get('organization_id')
         for organisation in organisation_list:
             print('organisation.id: s%', organisation.id)
             # Is user an admin/editor of the default organisation

@@ -2,12 +2,14 @@ import json
 from six import string_types
 
 import ckan.plugins.toolkit as tk
-from ckan.lib.uploader import ALLOWED_UPLOAD_TYPES, _get_underlying_file
+from ckan.lib.uploader import _get_underlying_file
 
 import ckanext.scheming.helpers as sh
+from ckanext.validation.helpers import is_url_valid
 
 import ckanext.data_qld.constants as const
-from ckanext.validation.helpers import is_url_valid
+from ckanext.data_qld.helpers import is_uploaded_file, is_ckan_29
+from ckanext.data_qld.utils import is_api_call
 
 
 def scheming_validator(fn):
@@ -73,35 +75,39 @@ def process_schema_fields(key, data, errors, context):
 
 def read_schema_from_request():
     try:
-        tk.request.files
+        if is_ckan_29():
+            form_data = tk.request.files
+        else:
+            form_data = tk.request.params
     except TypeError:
         # working outside context, cli or tests
         return
 
-    if tk.request.files.get("schema_upload"):
-        schema_upload = tk.request.files.get("schema_upload")
+    shema_upload = form_data.get(const.FIELD_SCHEMA_UPLOAD)
+
+    if is_uploaded_file(shema_upload):
+        schema_upload = form_data.get(const.FIELD_SCHEMA_UPLOAD)
         return _get_underlying_file(schema_upload).read()
 
 
 def read_schema_from_file(data):
-    schema_upload_key = ("schema_upload", )
+    schema_upload_key = (const.FIELD_SCHEMA_UPLOAD, )
     schema_upload = data.get(schema_upload_key)
 
-    if isinstance(schema_upload, ALLOWED_UPLOAD_TYPES) \
-        and schema_upload and schema_upload.filename:
+    if is_uploaded_file(schema_upload):
         data[schema_upload_key] = ""
         return _get_underlying_file(schema_upload).read()
 
 
 def get_schema_from_url(key, data, errors):
-    schema_url_key = ("schema_url", )
+    schema_url_key = (const.FIELD_SCHEMA_URL, )
     value = data.get(schema_url_key)
 
     if not value:
         return
 
     if (value and not isinstance(value, string_types)
-            or not value.lower()[:4] == u'http'):
+            or not is_url_valid(value)):
         data[schema_url_key] = ""
         err_msg = tk._('Must be a valid URL "{}"').format(value)
         raise tk.Invalid(err_msg)
@@ -110,7 +116,7 @@ def get_schema_from_url(key, data, errors):
 
 
 def get_schema_from_json(data):
-    schema_json_key = ("schema_json", )
+    schema_json_key = (const.FIELD_SCHEMA_JSON, )
     value = data.get(schema_json_key)
 
     if value:
@@ -119,9 +125,9 @@ def get_schema_from_json(data):
 
 
 def _clear_pseudo_fields(data):
-    schema_json_key = ("schema_json", )
-    schema_url_key = ("schema_url", )
-    schema_upload_key = ("schema_upload", )
+    schema_json_key = (const.FIELD_SCHEMA_JSON, )
+    schema_url_key = (const.FIELD_SCHEMA_URL, )
+    schema_upload_key = (const.FIELD_SCHEMA_UPLOAD, )
 
     data[schema_json_key] = data[schema_url_key] = data[schema_upload_key] = ""
 
@@ -140,9 +146,10 @@ def align_default_schema(key, data, errors, context):
 
     default_schema = data[(const.FIELD_DEFAULT_SCHEMA, )]
     resource_idx = key[1]
-    resource_schema_key = ('resources', resource_idx, const.FIELD_RES_SCHEMA)
+    resource_schema_key = (const.FIELD_RESOURCES, resource_idx,
+                           const.FIELD_RES_SCHEMA)
     resource_schema = data[resource_schema_key]
-    resource_id = data.get((u'resources', resource_idx, 'id'))
+    resource_id = data.get((const.FIELD_RESOURCES, resource_idx, 'id'))
 
     if resource_id and _is_already_aligned(resource_id, resource_schema,
                                            context):
@@ -154,7 +161,7 @@ def align_default_schema(key, data, errors, context):
     if resource_schema == default_schema:
         return
 
-    if _is_api_call():
+    if is_api_call():
         errors[key].append(tk._("This field couldn't be updated via API"))
         raise tk.StopOnError()
 
@@ -178,15 +185,6 @@ def _is_already_aligned(resource_id, resource_schema, context):
     return all([bool(alignment_value), schemas_aligned])
 
 
-def _is_api_call():
-    controller, action = tk.get_endpoint()
-
-    resource_edit = controller == "resource" and action == "edit"
-    resource_create = action == "new_resource"
-
-    return False if (resource_edit or resource_create) else True
-
-
 def check_schema_alignment(key, data, errors, context):
     """If resource and package schemes are different set `align_default_schema` to False"""
     default_schema = data.get((const.FIELD_DEFAULT_SCHEMA, ))
@@ -196,4 +194,5 @@ def check_schema_alignment(key, data, errors, context):
 
     alignment_value = const.ALIGNED if (default_schema and resource_schema
                                         == default_schema) else const.UNALIGNED
-    data[('resources', resource_idx, const.FIELD_ALIGNMENT)] = alignment_value
+    data[(const.FIELD_RESOURCES, resource_idx,
+          const.FIELD_ALIGNMENT)] = alignment_value

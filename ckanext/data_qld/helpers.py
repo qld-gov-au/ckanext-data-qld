@@ -33,7 +33,8 @@ def user_has_admin_access(include_editor_access):
         return True
 
     groups_admin = user.get_groups('organization', 'admin')
-    groups_editor = user.get_groups('organization', 'editor') if include_editor_access else []
+    groups_editor = user.get_groups(
+        'organization', 'editor') if include_editor_access else []
     groups_list = groups_admin + groups_editor
     organisation_list = [g for g in groups_list if g.type == 'organization']
     return len(organisation_list) > 0
@@ -123,7 +124,8 @@ def resource_formats(field):
     :rtype: Array resource formats
 
     """
-    resource_formats = aslist(config.get('ckanext.data_qld.resource_formats', ''))
+    resource_formats = aslist(config.get(
+        'ckanext.data_qld.resource_formats', ''))
     return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
             for resource_format in resource_formats]
 

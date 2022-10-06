@@ -37,7 +37,8 @@ def filesize_bytes(value):
         size_number = re.search(r'\d*\.?\d*', value)
 
         if size_type is None or size_number is None:
-            raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
+            raise Invalid(
+                'Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
         else:
             size_type = size_type.group().upper()
             size_number = float(size_number.group())
@@ -53,7 +54,8 @@ def filesize_bytes(value):
         elif size_type == 'B' or size_type == 'BYTES' or size_type == 'BS':
             fileMultiplier = 1
         else:
-            raise Invalid('Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
+            raise Invalid(
+                'Must be a valid filesize format (e.g. 123, 1.2KB, 2.5MB)')
 
         return int(size_number * fileMultiplier)
     else:

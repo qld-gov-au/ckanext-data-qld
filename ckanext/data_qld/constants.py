@@ -13,6 +13,11 @@ SCHEMA_MAIN_PATH = 'schema'
 
 ALIGNED = True
 UNALIGNED = False
+
 FIELD_ALIGNMENT = "align_default_schema"
 FIELD_DEFAULT_SCHEMA = "default_data_schema"
 FIELD_RES_SCHEMA = "schema"
+FIELD_SCHEMA_UPLOAD = "schema_upload"
+FIELD_SCHEMA_URL = "schema_url"
+FIELD_SCHEMA_JSON = "schema_json"
+FIELD_RESOURCES = "resources"

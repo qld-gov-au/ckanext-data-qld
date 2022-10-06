@@ -1,9 +1,13 @@
+import json
+
 import pytest
 
 from ckan.tests import factories
 from ckan.lib.helpers import url_for
 
 import ckanext.resource_visibility.constants as const
+
+from ckanext.data_qld.helpers import is_ckan_29
 
 
 @pytest.fixture
@@ -56,18 +60,28 @@ def res_patch_url():
     return url
 
 
+def _get_resource_read_url(package_id, resource_id):
+    controller = "resource" if is_ckan_29() else "package"
+    action = "read" if is_ckan_29() else "resource_read"
+
+    return url_for(controller=controller,
+                   action=action,
+                   id=package_id,
+                   resource_id=resource_id)
+
+
 def _get_pkg_dict(app, url, package_id, user=None):
     response = app.get(
         url=url,
-        query_string={"name_or_id": package_id},
+        params={"name_or_id": package_id},
         status=200,
-        environ_overrides={"REMOTE_USER": user["name"] if user else ""},
+        extra_environ={"REMOTE_USER": str(user["name"]) if user else ""},
     )
 
     return response.json['result']
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage")
 class TestApiPrivacyAssessment:
     """privacy_assessment_result must be visible via API only for organization
     editors, admins and sysadmins.
@@ -80,9 +94,9 @@ class TestApiPrivacyAssessment:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
+                           params={"name_or_id": dataset["id"]},
                            status=200,
-                           environ_overrides={"REMOTE_USER": u""})
+                           extra_environ={"REMOTE_USER": ""})
         resource = response.json['result']['resources'][0]
 
         assert const.FIELD_ASSESS_RESULT not in resource
@@ -94,9 +108,9 @@ class TestApiPrivacyAssessment:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
+                           params={"name_or_id": dataset["id"]},
                            status=200,
-                           environ_overrides={"REMOTE_USER": user["name"]})
+                           extra_environ={"REMOTE_USER": str(user["name"])})
         resource = response.json['result']['resources'][0]
 
         assert const.FIELD_ASSESS_RESULT not in resource
@@ -113,9 +127,9 @@ class TestApiPrivacyAssessment:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
+                           params={"name_or_id": dataset["id"]},
                            status=200,
-                           environ_overrides={"REMOTE_USER": user['name']})
+                           extra_environ={"REMOTE_USER": str(user['name'])})
 
         resource = response.json['result']['resources'][0]
 
@@ -137,10 +151,11 @@ class TestApiPrivacyAssessment:
         resource_factory(package_id=dataset["id"])
 
         for user in [user1, user2]:
-            response = app.get(url=pkg_show_url,
-                               query_string={"name_or_id": dataset["id"]},
-                               status=200,
-                               environ_overrides={"REMOTE_USER": user['name']})
+            response = app.get(
+                url=pkg_show_url,
+                params={"name_or_id": dataset["id"]},
+                status=200,
+                extra_environ={"REMOTE_USER": str(user['name'])})
             resource = response.json['result']['resources'][0]
 
             assert const.FIELD_ASSESS_RESULT in resource
@@ -150,16 +165,17 @@ class TestApiPrivacyAssessment:
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
-        response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
-                           status=200,
-                           environ_overrides={"REMOTE_USER": sysadmin['name']})
+        response = app.get(
+            url=pkg_show_url,
+            params={"name_or_id": dataset["id"]},
+            status=200,
+            extra_environ={"REMOTE_USER": str(sysadmin['name'])})
         resource = response.json['result']['resources'][0]
 
         assert const.FIELD_ASSESS_RESULT in resource
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage")
 class TestResourceVisibility:
     """We have a custom logic for resource visibility
 
@@ -193,9 +209,9 @@ class TestResourceVisibility:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
+                           params={"name_or_id": dataset["id"]},
                            status=200,
-                           environ_overrides={"REMOTE_USER": u""})
+                           extra_environ={"REMOTE_USER": ""})
         pkg_dict = response.json['result']
 
         assert not pkg_dict["resources"]
@@ -209,9 +225,9 @@ class TestResourceVisibility:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
+                           params={"name_or_id": dataset["id"]},
                            status=200,
-                           environ_overrides={"REMOTE_USER": u""})
+                           extra_environ={"REMOTE_USER": ""})
         pkg_dict = response.json['result']
 
         assert pkg_dict["resources"]
@@ -223,9 +239,9 @@ class TestResourceVisibility:
         dataset = dataset_factory()
 
         response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
+                           params={"name_or_id": dataset["id"]},
                            status=200,
-                           environ_overrides={"REMOTE_USER": user["name"]})
+                           extra_environ={"REMOTE_USER": str(user["name"])})
         pkg_dict = response.json['result']
 
         assert not pkg_dict["resources"]
@@ -239,13 +255,9 @@ class TestResourceVisibility:
         resource = resource_factory(package_id=dataset["id"],
                                     resource_visible="FALSE")
 
-        url = url_for(controller='resource',
-                      action='read',
-                      id=dataset['id'],
-                      resource_id=resource['id'])
-        app.get(url=url,
+        app.get(url=_get_resource_read_url(dataset['id'], resource['id']),
                 status=404,
-                environ_overrides={"REMOTE_USER": user["name"]})
+                extra_environ={"REMOTE_USER": str(user["name"])})
 
     def test_visible_for_editor_or_admin(self, dataset_factory, app,
                                          pkg_show_url, resource_factory):
@@ -263,10 +275,11 @@ class TestResourceVisibility:
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
 
         for user in [user1, user2]:
-            response = app.get(url=pkg_show_url,
-                               query_string={"name_or_id": dataset["id"]},
-                               status=200,
-                               environ_overrides={"REMOTE_USER": user['name']})
+            response = app.get(
+                url=pkg_show_url,
+                params={"name_or_id": dataset["id"]},
+                status=200,
+                extra_environ={"REMOTE_USER": str(user['name'])})
             pkg_dict = response.json['result']
 
             assert len(pkg_dict["resources"]) == 1
@@ -278,10 +291,11 @@ class TestResourceVisibility:
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
 
-        response = app.get(url=pkg_show_url,
-                           query_string={"name_or_id": dataset["id"]},
-                           status=200,
-                           environ_overrides={"REMOTE_USER": sysadmin['name']})
+        response = app.get(
+            url=pkg_show_url,
+            params={"name_or_id": dataset["id"]},
+            status=200,
+            extra_environ={"REMOTE_USER": str(sysadmin['name'])})
         pkg_dict = response.json['result']
 
         assert len(pkg_dict["resources"]) == 2
@@ -371,7 +385,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage")
 class TestSchemaAlignment:
 
     def test_update_and_patch_default_schema(self, dataset_factory, app,
@@ -399,16 +413,16 @@ class TestSchemaAlignment:
         pkg_dict['default_data_schema'] = new_schema
 
         resp = app.post(pkg_update_url,
-                        json=pkg_dict,
-                        environ_overrides={"REMOTE_USER": user['name']})
+                        params=json.dumps(pkg_dict),
+                        extra_environ={"REMOTE_USER": str(user['name'])})
         assert resp.json['result']['default_data_schema'] == new_schema
 
         app.post(pkg_patch_url,
-                 json={
+                 params=json.dumps({
                      "id": dataset["id"],
                      "default_data_schema": ""
-                 },
-                 environ_overrides={"REMOTE_USER": user['name']})
+                 }),
+                 extra_environ={"REMOTE_USER": str(user['name'])})
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
         assert not pkg_dict['default_data_schema']
@@ -462,13 +476,13 @@ class TestSchemaAlignment:
         resource = resource_factory(package_id=dataset["id"])
 
         resp = app.post(res_patch_url,
-                        json={
+                        params=json.dumps({
                             "id": resource["id"],
                             "align_default_schema": 1
-                        },
-                        environ_overrides={"REMOTE_USER": user['name']})
+                        }),
+                        status=409,
+                        extra_environ={"REMOTE_USER": str(user['name'])})
 
-        assert resp.status_code == 409
         assert not resp.json['success']
         assert 'This field couldn\'t be updated via API' in resp.json['error'][
             'align_default_schema']

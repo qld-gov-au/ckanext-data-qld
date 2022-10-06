@@ -181,7 +181,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     def after_delete(self, context, data_dict):
         if isinstance(data_dict, dict):
-            dataset_deletion_helpers.add_deletion_of_dataset_reason(context, data_dict)
+            dataset_deletion_helpers.add_deletion_of_dataset_reason(
+                context, data_dict)
 
     # IResourceController
     def before_create(self, context, data_dict):
@@ -189,7 +190,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     def before_update(self, context, current_resource, updated_resource):
         self._check_file_upload(updated_resource)
-        resource_freshness_helpers.check_resource_data(current_resource, updated_resource, context)
+        resource_freshness_helpers.check_resource_data(
+            current_resource, updated_resource, context)
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
@@ -207,7 +209,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     # IQA
     def custom_resource_score(self, resource, resource_score):
-        resource_score_format = resource_score.get('format').upper() if resource_score.get('format') is not None else ''
+        resource_score_format = resource_score.get('format').upper(
+        ) if resource_score.get('format') is not None else ''
         resource_format = resource.format.upper() if resource.format is not None else ''
         # If resource openness_score is 3 and format is CSV
         if resource_score.get('openness_score', 0) == 3 and resource_score_format == 'CSV':
@@ -238,7 +241,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             # if it's GDB apply custom score
             if resource_score_format == 'ZIP' and 'GDB' in resource_format:
                 resource_score['format'] = 'GDB'
-                resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
+                resource_score['openness_score'] = qa_lib.resource_format_scores().get(
+                    resource_score['format'])
                 resource_score['openness_score_reason'] = tk._(
                     'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                     .format(resource_format, resource_score.get('openness_score', '')))
@@ -250,7 +254,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
                         or resource.url_type == 'url' and 'GPKG' in (ext.upper() for ext in
                                                                      qa_tasks.extension_variants(resource.url)):
                     resource_score['format'] = 'GPKG'
-                    resource_score['openness_score'] = qa_lib.resource_format_scores().get(resource_score['format'])
+                    resource_score['openness_score'] = qa_lib.resource_format_scores().get(
+                        resource_score['format'])
                     resource_score['openness_score_reason'] = tk._(
                         'Content of file appeared to be format "{0}" which receives openness score: {1}.'
                         .format(resource_format, resource_score.get('openness_score', '')))
@@ -267,7 +272,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     def _is_de_identified(self, data_dict):
         pkg_id = data_dict.get(u'package_id')
-        pkg_dict = tk.get_action(u'package_show')({'ignore_auth': True}, {u'id': pkg_id})
+        pkg_dict = tk.get_action(u'package_show')(
+            {'ignore_auth': True}, {u'id': pkg_id})
 
         return pkg_dict.get(FIELD_DE_IDENTIFIED) == YES
 

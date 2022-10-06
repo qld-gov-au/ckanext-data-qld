@@ -8,7 +8,8 @@ from ckanext.resource_visibility.utils import (
     get_updated_privacy_assessment_result, _clear_upd_assessment_result_data)
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "mock_storage",
+                         "do_not_validate")
 class TestPrivacyAssessmentResultTracking:
     maintainer = "test@gmail.com"
     assess_result = "0.9 High"

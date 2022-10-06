@@ -151,7 +151,8 @@ def before_scenario(context, scenario):
         if parts[FIXTURE_NAME].startswith("fixture.dataset_with_schema"):
             use_fixture(dataset_with_schema, context, parts[PARAMS])
         elif parts[FIXTURE_NAME].startswith("fixture.create_resource_for_dataset_with_params"):
-            use_fixture(create_resource_for_dataset_with_params, context, parts[PARAMS])
+            use_fixture(create_resource_for_dataset_with_params,
+                        context, parts[PARAMS])
 
 
 def after_scenario(context, scenario):
@@ -179,6 +180,7 @@ def dataset_with_schema(context, path="", **kwargs):
     """.format(pkg_id))
 
     context.browser.quit()
+
 
 @fixture
 def create_resource_for_dataset_with_params(context, params="",):

@@ -1,10 +1,8 @@
 import pytest
 
 import ckan.lib.navl.dictization_functions as df
-import ckan.logic.validators as validators
 import ckan.model as model
 import ckan.tests.factories as factories
-import ckan.tests.helpers as helpers
 import ckan.tests.lib.navl.test_validators as t
 
 from ckanext.resource_visibility.validators import privacy_assessment_result
@@ -14,7 +12,8 @@ def _make_context():
     return {"model": model, "session": model.Session}
 
 
-@pytest.mark.usefixtures("clean_db", "with_request_context")
+@pytest.mark.usefixtures("clean_db", "with_request_context", "mock_storage",
+                         "do_not_validate")
 class TestPrivacyAssessmentResultValidator:
     '''
     Test that only sysadmin is able to edit a resource

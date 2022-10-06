@@ -17,10 +17,13 @@ blueprint.add_url_rule(
     u'/{}/open/<id>'.format(DATAREQUESTS_MAIN_PATH),
     view_func=open_datarequest)
 blueprint.add_url_rule(
-    u'/dataset/<dataset_id>/resource/<resource_id>/{}/show'.format(SCHEMA_MAIN_PATH),
+    u'/dataset/<dataset_id>/resource/<resource_id>/{}/show'.format(
+        SCHEMA_MAIN_PATH),
     view_func=show_resource_schema)
 blueprint.add_url_rule(
     u'/dataset/<dataset_id>/{}/show'.format(SCHEMA_MAIN_PATH),
     view_func=show_package_schema)
-blueprint.add_url_rule(u'/header.html', 'header', view_func=lambda: render('header.html'))
-blueprint.add_url_rule(u'/robots.txt', 'robots', view_func=lambda: render('robots.txt'))
+blueprint.add_url_rule(u'/header.html', 'header',
+                       view_func=lambda: render('header.html'))
+blueprint.add_url_rule(u'/robots.txt', 'robots',
+                       view_func=lambda: render('robots.txt'))

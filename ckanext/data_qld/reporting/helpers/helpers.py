@@ -131,9 +131,11 @@ def get_data_request_metrics(data_dict):
                 append_data(circumstances[circumstance], data_request, days)
             else:
                 if data_request.accepted_dataset_id:
-                    append_data(no_circumstance['accepted_dataset'], data_request, days)
+                    append_data(
+                        no_circumstance['accepted_dataset'], data_request, days)
                 else:
-                    append_data(no_circumstance['no_accepted_dataset'], data_request, days)
+                    append_data(
+                        no_circumstance['no_accepted_dataset'], data_request, days)
         else:
             open += 1
             days = delta_in_days(datetime.utcnow(), data_request.open_time)
@@ -142,12 +144,14 @@ def get_data_request_metrics(data_dict):
     for c in circumstances:
         circumstances[c]['count'] = len(circumstances[c]['data'])
         if circumstances[c]['count'] > 0:
-            circumstances[c]['average'] = get_average_closing_days(circumstances[c])
+            circumstances[c]['average'] = get_average_closing_days(
+                circumstances[c])
 
     for n in no_circumstance:
         no_circumstance[n]['count'] = len(no_circumstance[n]['data'])
         if no_circumstance[n]['count'] > 0:
-            no_circumstance[n]['average'] = get_average_closing_days(no_circumstance[n])
+            no_circumstance[n]['average'] = get_average_closing_days(
+                no_circumstance[n])
 
     data_requests = {
         'total': total,
@@ -187,10 +191,12 @@ def get_utc_dates(start_date, end_date, comment_no_reply_max_days=None, datarequ
     utc_end_datetime = tz_end_datetime.astimezone(timezone)
 
     if comment_no_reply_max_days:
-        utc_reply_expected_by_date = utc_end_datetime - timedelta(days=comment_no_reply_max_days)
+        utc_reply_expected_by_date = utc_end_datetime - \
+            timedelta(days=comment_no_reply_max_days)
 
     if datarequest_open_max_days:
-        utc_expected_closure_date = utc_end_datetime - timedelta(days=datarequest_open_max_days)
+        utc_expected_closure_date = utc_end_datetime - \
+            timedelta(days=datarequest_open_max_days)
 
     utc_start_datetime = utc_start_datetime.strftime(date_format)
     utc_end_datetime = utc_end_datetime.strftime(date_format)
@@ -243,13 +249,13 @@ def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max
         'dataset_comment_followers': tk.get_action('dataset_comment_followers')({}, data_dict),
         'datasets_min_one_comment_follower': tk.get_action('datasets_min_one_comment_follower')({}, data_dict),
         'dataset_comments_no_replies_after_x_days': tk.get_action('dataset_comments_no_replies_after_x_days')({},
-                                                                                                           data_dict),
+                                                                                                              data_dict),
         'datarequests': get_data_request_metrics(data_dict),
         'datarequest_comments': tk.get_action('datarequest_comments')({}, data_dict),
         'datarequests_min_one_comment_follower': tk.get_action('datarequests_min_one_comment_follower')({}, data_dict),
         'datarequests_no_replies_after_x_days': tk.get_action('datarequests_no_replies_after_x_days')({}, data_dict),
         'open_datarequests_no_comments_after_x_days': tk.get_action('open_datarequests_no_comments_after_x_days')({},
-                                                                                                               data_dict),
+                                                                                                                  data_dict),
     }
 
 
@@ -275,7 +281,8 @@ def gather_admin_metrics(org_id, permission):
 def get_organisation_list(permission):
     organisations = []
     for user_organisation in get_organisation_list_for_user(permission):
-        organisations.append({'value': user_organisation.get('id'), 'text': user_organisation.get('display_name')})
+        organisations.append({'value': user_organisation.get(
+            'id'), 'text': user_organisation.get('display_name')})
 
     return organisations
 
@@ -284,7 +291,8 @@ def get_organisation_list_for_user(permission):
     try:
         return tk.get_action('organization_list_for_user')(get_context(), {'permission': permission})
     except Exception as e:
-        log.error('*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
+        log.error(
+            '*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
         log.error(e)
         return []
 

@@ -1,20 +1,17 @@
 import os
 import json
 import six
-import tempfile
 from datetime import datetime as dt
 
 import pytest
 import factory
-from factory import Faker
-from mock import patch
+import ckantoolkit as tk
+from faker import Faker
 
 import ckan.tests.helpers as helpers
 from ckan.tests import factories
-from ckan.tests.pytest_ckan.fixtures import FakeFileStorage
-from ckan.lib import uploader
-from ckan.common import config
 
+from ckan.lib import uploader
 from ckanext.qa.cli.commands import init_db as qa_init
 from ckanext.harvest.model import setup as harvest_init
 from ckanext.ytp.comments.model import init_tables as ytp_init
@@ -22,23 +19,40 @@ from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
 
+if tk.check_ckan_version('2.9'):
+    from werkzeug.datastructures import FileStorage as MockFileStorage
+else:
+    import cgi
+
+    class MockFileStorage(cgi.FieldStorage):
+
+        def __init__(self, fp, filename):
+
+            self.file = fp
+            self.filename = filename
+            self.name = u"upload"
+            self.list = None
+
+
+fake = Faker()
+
 
 class OrganizationFactory(factories.Organization):
-    name = factory.LazyFunction(lambda: Faker("slug").generate() + "" + dt.now(
-    ).strftime("%Y%m%d-%H%M%S"))
+    name = factory.LazyAttribute(
+        lambda _: fake.slug() + "" + dt.now().strftime("%Y%m%d-%H%M%S"))
 
 
 class DatasetFactory(factories.Dataset):
-    name = factory.LazyFunction(lambda: Faker("slug").generate() + "" + dt.now(
-    ).strftime("%Y%m%d-%H%M%S"))
+    name = factory.LazyAttribute(
+        lambda _: fake.slug() + "" + dt.now().strftime("%Y%m%d-%H%M%S"))
     update_frequency = "monthly"
-    author_email = Faker("email")
+    author_email = factory.LazyAttribute(lambda _: fake.email())
     version = "1.0"
     license_id = "other-open"
     data_driven_application = "NO"
     security_classification = "PUBLIC"
     de_identified_data = "NO"
-    owner_org = factory.LazyFunction(lambda: OrganizationFactory()["id"])
+    owner_org = factory.LazyAttribute(lambda _: OrganizationFactory()["id"])
     validation_options = ""
     validation_status = ""
     validation_timestamp = ""
@@ -58,17 +72,17 @@ def dataset():
 
 
 class ResourceFactory(factories.Resource):
-    id = factory.Faker("uuid4")
-    description = factory.Faker("sentence")
-    name = factory.LazyFunction(lambda: factory.Faker("slug").generate() + "" +
-                                dt.now().strftime("%Y%m%d-%H%M%S"))
-    privacy_assessment_result = factory.LazyFunction(
-        lambda: factory.Faker("sentence").generate())
-    last_modified = factory.LazyFunction(lambda: str(dt.now()))
+    id = factory.LazyAttribute(lambda _: fake.uuid4())
+    description = factory.LazyAttribute(lambda _: fake.sentence())
+    name = factory.LazyAttribute(
+        lambda _: fake.slug() + "" + dt.now().strftime("%Y%m%d-%H%M%S"))
+    privacy_assessment_result = factory.LazyAttribute(
+        lambda _: fake.sentence())
+    last_modified = factory.LazyAttribute(lambda _: str(dt.now()))
     resource_visible = "TRUE"
-    schema = factory.LazyFunction(lambda: _get_resource_schema())
+    schema = factory.LazyAttribute(lambda _: _get_resource_schema())
 
-    upload = factory.LazyFunction(lambda: _get_test_file())
+    upload = factory.LazyAttribute(lambda _: _get_test_file())
     format = "csv"
     url_type = "upload"
     url = None
@@ -78,16 +92,25 @@ class ResourceFactory(factories.Resource):
         if args:
             assert False, "Positional args aren't supported, use keyword args."
 
-        if kwargs.get('bdd'):
-            return helpers.call_action("resource_create", context={}, **kwargs)
+        return helpers.call_action("resource_create", context={}, **kwargs)
 
-        temp_dir = str(tempfile.mkdtemp())
-        with patch.object(uploader, u'_storage_path', temp_dir):
-            with patch.dict(config, {u'ckan.storage_path': temp_dir}):
-                resource_dict = helpers.call_action("resource_create",
-                                                    context={},
-                                                    **kwargs)
-        return resource_dict
+        # temp_dir = str(tempfile.mkdtemp())
+        # with patch.object(uploader, u'_storage_path', temp_dir):
+        #     with patch.dict(config, {u'ckan.storage_path': temp_dir}):
+        #         resource_dict = helpers.call_action("resource_create",
+        #                                             context={},
+        #                                             **kwargs)
+        # return resource_dict
+
+
+@pytest.fixture
+def resource_factory():
+    return ResourceFactory
+
+
+@pytest.fixture
+def resource():
+    return ResourceFactory()
 
 
 def _get_test_file():
@@ -98,7 +121,7 @@ def _get_test_file():
         test_file.write(six.ensure_binary(file.read()))
         test_file.seek(0)
 
-        return FakeFileStorage(test_file, "test.csv")
+        return MockFileStorage(test_file, "test.csv")
 
 
 def _get_resource_schema():
@@ -152,3 +175,18 @@ def clean_db(reset_db):
 def archival_init():
     archiver_utils.initdb()
     archiver_utils.migrate()
+
+
+@pytest.fixture
+def mock_storage(monkeypatch, ckan_config, tmpdir):
+    monkeypatch.setitem(ckan_config, u'ckan.storage_path', str(tmpdir))
+    monkeypatch.setattr(uploader, u'_storage_path', str(tmpdir))
+
+
+@pytest.fixture
+def do_not_validate(monkeypatch):
+    """Skip resource validation"""
+
+    monkeypatch.setattr(
+        "ckanext.validation.utils.is_resource_could_be_validated",
+        lambda a, b: False)

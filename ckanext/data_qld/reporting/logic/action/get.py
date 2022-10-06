@@ -229,7 +229,8 @@ def dataset_comment_followers(context, data_dict):
         return (
             _session_.query(
                 # We want to count a user each time they follow a comment thread, not just unique user IDs
-                func.count(distinct(tuple_(CommentNotificationRecipient.user_id, CommentNotificationRecipient.thread_id)))
+                func.count(distinct(tuple_(
+                    CommentNotificationRecipient.user_id, CommentNotificationRecipient.thread_id)))
             )
             .filter(
                 _and_(
@@ -334,7 +335,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
+    utc_reply_expected_by_date = data_dict.get(
+        'utc_reply_expected_by_date', None)
 
     check_org_access(org_id, context)
 
@@ -350,7 +352,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 CommentThread.url,
                 Package.name.label("package_name"),
                 comment_reply.parent_id,
-                comment_reply.creation_date.label("comment_reply_creation_date"),
+                comment_reply.creation_date.label(
+                    "comment_reply_creation_date"),
                 comment_reply.comment,
                 Package.title
             )
@@ -400,7 +403,8 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
+    utc_reply_expected_by_date = data_dict.get(
+        'utc_reply_expected_by_date', None)
 
     check_org_access(org_id, context)
 
@@ -469,7 +473,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
+    utc_reply_expected_by_date = data_dict.get(
+        'utc_reply_expected_by_date', None)
 
     check_org_access(org_id, context)
 
@@ -510,7 +515,8 @@ def datarequests_open_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_expected_closure_date = data_dict.get('utc_expected_closure_date', None)
+    utc_expected_closure_date = data_dict.get(
+        'utc_expected_closure_date', None)
 
     check_org_access(org_id, context)
 
@@ -753,7 +759,8 @@ def datasets_no_groups(context, data_dict):
         )
 
         datasets = query.all()
-        no_groups = [dataset for dataset in datasets if len(dataset.get_groups(group_type='group')) == 0]
+        no_groups = [dataset for dataset in datasets if len(
+            dataset.get_groups(group_type='group')) == 0]
         return len(no_groups) if return_count_only else no_groups
     except Exception as e:
         log.error(str(e))
@@ -778,7 +785,8 @@ def datasets_no_tags(context, data_dict):
         )
 
         datasets = query.all()
-        no_tags = [dataset for dataset in datasets if len(dataset.get_tags()) == 0]
+        no_tags = [dataset for dataset in datasets if len(
+            dataset.get_tags()) == 0]
         return len(no_tags) if return_count_only else no_tags
     except Exception as e:
         log.error(str(e))
