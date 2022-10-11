@@ -21,6 +21,9 @@ from .resource_freshness.logic.actions import get as resource_freshness_get_acti
 
 if ' qa' in tk.config.get('ckan.plugins', ''):
     from ckanext.qa.interfaces import IQA
+    import ckanext.qa.lib as qa_lib
+    import ckanext.qa.tasks as qa_tasks
+    import os
 
 if helpers.is_ckan_29():
     from .flask_plugin import MixinPlugin
