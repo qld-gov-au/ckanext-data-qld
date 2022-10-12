@@ -6,8 +6,7 @@ from ckan import plugins
 
 from ckanext.data_qld.tests.conftest import (
     DatasetFactory,
-    ResourceFactory,
-    OrganizationFactory,
+    ResourceFactory
 )
 import ckanext.resource_visibility.utils as utils
 

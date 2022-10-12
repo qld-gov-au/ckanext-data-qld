@@ -5,11 +5,10 @@ import ckan.plugins.toolkit as tk
 from ckan.lib.uploader import _get_underlying_file
 
 import ckanext.scheming.helpers as sh
-from ckanext.validation.helpers import is_url_valid
 
 import ckanext.data_qld.constants as const
 from ckanext.data_qld.helpers import is_uploaded_file, is_ckan_29
-from ckanext.data_qld.utils import is_api_call
+from ckanext.data_qld.utils import is_api_call, is_url_valid
 
 
 def scheming_validator(fn):

@@ -12,9 +12,6 @@ import ckan.tests.helpers as helpers
 from ckan.tests import factories
 
 from ckan.lib import uploader
-from ckanext.qa.cli.commands import init_db as qa_init
-from ckanext.harvest.model import setup as harvest_init
-from ckanext.ytp.comments.model import init_tables as ytp_init
 from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
@@ -94,14 +91,6 @@ class ResourceFactory(factories.Resource):
 
         return helpers.call_action("resource_create", context={}, **kwargs)
 
-        # temp_dir = str(tempfile.mkdtemp())
-        # with patch.object(uploader, u'_storage_path', temp_dir):
-        #     with patch.dict(config, {u'ckan.storage_path': temp_dir}):
-        #         resource_dict = helpers.call_action("resource_create",
-        #                                             context={},
-        #                                             **kwargs)
-        # return resource_dict
-
 
 @pytest.fixture
 def resource_factory():
@@ -162,11 +151,6 @@ def user():
 @pytest.fixture
 def clean_db(reset_db):
     reset_db()
-
-    archival_init()
-    qa_init()
-    harvest_init()
-    ytp_init()
 
     if not is_validation_table_exist():
         validation_init()

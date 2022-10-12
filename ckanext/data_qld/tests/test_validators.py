@@ -3,7 +3,6 @@ import pytest
 import ckan.lib.navl.dictization_functions as df
 import ckan.model as model
 import ckan.tests.factories as factories
-import ckan.tests.lib.navl.test_validators as t
 
 from ckanext.resource_visibility.validators import privacy_assessment_result
 

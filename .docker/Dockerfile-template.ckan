@@ -2,6 +2,7 @@ FROM openknowledge/ckan-dev:@CKAN_VERSION@
 
 ARG SITE_URL=http://ckan:5000/
 ENV PYTHON_VERSION=@PYTHON_VERSION@
+ENV CKAN_VERSION=@CKAN_VERSION@
 ENV CKAN_SITE_URL="${SITE_URL}"
 
 WORKDIR "${APP_DIR}"
@@ -14,6 +15,7 @@ RUN apk add --no-cache build-base \
 # Install CKAN.
 
 RUN cd $SRC_DIR/ckan \
+    && git config --global --add safe.directory "$SRC_DIR/ckan" \
     && git remote set-url origin 'https://github.com/qld-gov-au/ckan.git' \
     && git fetch \
     && git reset --hard && git clean -f \

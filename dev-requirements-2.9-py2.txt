@@ -4,6 +4,7 @@ Appium-Python-Client<=0.52
 ckanapi==4.3
 ckantoolkit>=0.0.4
 factory-boy
+pytest-factoryboy
 flake8==3.8.3
 mock
 pytest-ckan

@@ -7,11 +7,23 @@ on:
       - master
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+      - name: Install requirements
+        run: pip install flake8 pycodestyle
+      - name: Check syntax
+        run: flake8 .
+
   test:
     strategy:
       fail-fast: false
       matrix:
-        ckan-version: [2.9, 2.9-py2, 2.8]
+        ckan-version: [2.9-py2]
 
     name: Continuous Integration build on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest

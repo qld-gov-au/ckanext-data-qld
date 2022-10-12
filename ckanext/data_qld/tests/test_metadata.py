@@ -29,7 +29,7 @@ class TestCreateData:
 
     def test_resource_request_privacy_assessment(self, dataset,
                                                  resource_factory):
-        resource = resource_factory(package_id=dataset["id"], format="CSV")
+        resource_factory(package_id=dataset["id"], format="CSV")
 
         resource_factory(package_id=dataset["id"],
                          format="CSV",

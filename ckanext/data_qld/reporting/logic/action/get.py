@@ -2,7 +2,6 @@
 
 import logging
 from datetime import datetime, timedelta
-from ckan.model import resource
 
 import sqlalchemy
 import pytz
