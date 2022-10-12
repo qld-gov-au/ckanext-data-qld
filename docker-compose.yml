@@ -63,6 +63,8 @@ services:
       - default
     environment:
       <<: *default-environment
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
 
   redis:
     image: redis:6-alpine
