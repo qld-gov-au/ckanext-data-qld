@@ -115,8 +115,8 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_regular_user(self, dataset_factory, resource_factory,
-                                       app, pkg_show_url):
-        user = factories.User()
+                                       app, pkg_show_url, user_factory):
+        user = user_factory()
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
@@ -129,8 +129,8 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_member(self, dataset_factory, resource_factory, app,
-                                 pkg_show_url):
-        user = factories.User()
+                                 pkg_show_url, user_factory):
+        user = user_factory()
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "member"
@@ -148,10 +148,10 @@ class TestApiPrivacyAssessment:
 
         assert const.FIELD_ASSESS_RESULT not in resource
 
-    def test_present_for_editor_and_admin(self, dataset_factory,
+    def test_present_for_editor_and_admin(self, dataset_factory, user_factory,
                                           resource_factory, app, pkg_show_url):
-        user1 = factories.User()
-        user2 = factories.User()
+        user1 = user_factory()
+        user2 = user_factory()
         org = factories.Organization(users=[{
             "name": user1["name"],
             "capacity": "editor"
@@ -248,8 +248,8 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
     def test_excluded_for_regular_user(self, dataset_factory, app,
-                                       pkg_show_url):
-        user = factories.User()
+                                       pkg_show_url, user_factory):
+        user = user_factory()
         dataset = dataset_factory()
 
         response = app.get(url=pkg_show_url,
@@ -262,8 +262,8 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
     def test_resource_page_not_accessible_for_regular_user_if_hidden(
-            self, app, dataset_factory, resource_factory):
-        user = factories.User()
+            self, app, dataset_factory, resource_factory, user_factory):
+        user = user_factory()
 
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
@@ -274,9 +274,10 @@ class TestResourceVisibility:
                 extra_environ={"REMOTE_USER": str(user["name"])})
 
     def test_visible_for_editor_or_admin(self, dataset_factory, app,
-                                         pkg_show_url, resource_factory):
-        user1 = factories.User()
-        user2 = factories.User()
+                                         pkg_show_url, resource_factory,
+                                         user_factory):
+        user1 = user_factory()
+        user2 = user_factory()
         org = factories.Organization(users=[{
             "name": user1["name"],
             "capacity": "editor"
@@ -317,8 +318,8 @@ class TestResourceVisibility:
 
     def test_regular_user_different_conditions(self, dataset_factory,
                                                resource_factory, app,
-                                               pkg_show_url):
-        user = factories.User()
+                                               pkg_show_url, user_factory):
+        user = user_factory()
 
         # not resource_visible -> HIDE
         dataset = dataset_factory()
@@ -405,8 +406,9 @@ class TestSchemaAlignment:
 
     def test_update_and_patch_default_schema(self, dataset_factory, app,
                                              pkg_show_url, pkg_update_url,
-                                             pkg_patch_url, resource_factory):
-        user = factories.User()
+                                             pkg_patch_url, resource_factory,
+                                             user_factory):
+        user = user_factory()
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "editor"
@@ -446,8 +448,9 @@ class TestSchemaAlignment:
         assert not pkg_dict['default_data_schema']
 
     def test_create_resource_with_custom_schema(self, dataset_factory,
-                                                resource_factory):
-        user = factories.User()
+                                                resource_factory,
+                                                user_factory):
+        user = user_factory()
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "editor"
@@ -473,19 +476,20 @@ class TestSchemaAlignment:
 
     def test_align_default_schema_visible_via_api(self, dataset_factory,
                                                   resource_factory, app,
-                                                  pkg_show_url):
+                                                  pkg_show_url, user_factory):
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
-        user = factories.User()
+        user = user_factory()
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
         assert 'align_default_schema' in pkg_dict['resources'][0]
 
     def test_updating_align_default_schema_via_api_is_forbidden(
-            self, dataset_factory, resource_factory, app, res_patch_url):
+            self, dataset_factory, resource_factory, app, res_patch_url,
+            user_factory):
 
-        user = factories.User()
+        user = user_factory()
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "editor"

@@ -27,6 +27,8 @@ services:
         condition: service_healthy
       solr:
         condition: service_started
+      postgres-datastore:
+        condition: service_healthy
     networks:
       - amazeeio-network
       - default
@@ -50,7 +52,7 @@ services:
     environment:
       <<: *default-environment
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "ckan"]
+      test: ["CMD", "pg_isready", "-U", "postgres"]
 
   postgres-datastore:
     image: ckan/ckan-postgres-dev:${CKAN_VERSION}

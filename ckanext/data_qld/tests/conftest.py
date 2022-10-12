@@ -133,7 +133,7 @@ def _get_resource_schema():
 
 
 class SysadminFactory(factories.Sysadmin):
-    pass
+    password = "Password123!"
 
 
 @pytest.fixture
@@ -141,13 +141,23 @@ def sysadmin():
     return SysadminFactory()
 
 
+@pytest.fixture
+def sysadmin_factory():
+    return SysadminFactory
+
+
 class UserFactory(factories.User):
-    pass
+    password = "Password123!"
 
 
 @pytest.fixture
 def user():
     return UserFactory()
+
+
+@pytest.fixture
+def user_factory():
+    return UserFactory
 
 
 @pytest.fixture

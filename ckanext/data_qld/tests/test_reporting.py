@@ -5,7 +5,7 @@ from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.data_qld.reporting.helpers import helpers
-
+from ckanext.data_qld.tests.conftest import SysadminFactory
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "mock_storage",
                          "do_not_validate")
@@ -99,17 +99,17 @@ class TestAdminReportDeIdentifiedNoSchema:
                          "mock_storage", "do_not_validate")
 class TestAdminReportCSVExport:
 
-    def test_as_regular_user(self, app):
-        user = factories.User()
+    def test_as_regular_user(self, app, user_factory):
+        user = user_factory()
         app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
         org_id = factories.Organization()["id"]
 
         with pytest.raises(tk.NotAuthorized):
             helpers.gather_admin_metrics(org_id, "admin")
 
-    def test_as_sysadmin(self, app, dataset_factory, resource_factory):
-        user = factories.Sysadmin()
-        app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
+    def test_as_sysadmin(self, app, dataset_factory, resource_factory,
+                         sysadmin):
+        app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
@@ -135,9 +135,9 @@ class TestAdminReportCSVExport:
         u"ckanext.data_qld.reporting.de_identified_no_schema.count_from",
         u"2045-01-01")
     def test_set_de_identified_count_from_in_future(self, app, dataset_factory,
-                                                    resource_factory):
-        user = factories.Sysadmin()
-        app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
+                                                    resource_factory,
+                                                    sysadmin):
+        app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
@@ -199,5 +199,5 @@ class TestAdminReportPendingPrivacyAssessment:
 
 
 def _make_context():
-    sysadmin = factories.Sysadmin()
+    sysadmin = SysadminFactory()
     return {"user": sysadmin["name"], "ignore_auth": True}
