@@ -7,6 +7,7 @@ from ckan.tests.helpers import call_action
 from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.data_qld.tests.conftest import SysadminFactory
 
+
 @pytest.mark.usefixtures("with_plugins", "clean_db", "mock_storage",
                          "do_not_validate")
 class TestAdminReportDeIdentifiedNoSchema:
