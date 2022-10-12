@@ -12,6 +12,8 @@ import ckan.tests.helpers as helpers
 from ckan.tests import factories
 
 from ckan.lib import uploader
+from ckanext.qa.cli.commands import init_db as qa_init
+from ckanext.ytp.comments.model import init_tables as ytp_init
 from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
@@ -151,6 +153,10 @@ def user():
 @pytest.fixture
 def clean_db(reset_db):
     reset_db()
+
+    archival_init()
+    qa_init()
+    ytp_init()
 
     if not is_validation_table_exist():
         validation_init()
