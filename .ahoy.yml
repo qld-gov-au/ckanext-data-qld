@@ -116,12 +116,11 @@ commands:
       docker cp .docker/scripts $(docker-compose ps -q ckan):/srv/app/
       docker cp .docker/scripts/ckan_cli $(docker-compose ps -q ckan):/usr/bin/
       ahoy cli 'chmod -v u+x /usr/bin/ckan_cli; cp -v .docker/ckan.ini $CKAN_INI'
-      cp -v .docker/test.ini $TEST_INI'
 
   test-unit:
     usage: Run unit tests.
     cmd: |
-      ahoy cli 'pytest --ckan-ini=${TEST_INI} $APP_DIR/ckanext' || \
+      ahoy cli 'pytest --ckan-ini=.docker/test.ini $APP_DIR/ckanext' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:

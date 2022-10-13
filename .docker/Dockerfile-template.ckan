@@ -22,10 +22,8 @@ RUN cd $SRC_DIR/ckan \
     && git checkout '{QGOV_CKAN_VERSION}'
 
 COPY .docker/ckan.ini $CKAN_INI
-COPY .docker/test.ini $TEST_INI
 
 RUN sed -i "s@SITE_URL@${CKAN_SITE_URL}@g" $CKAN_INI
-RUN sed -i "s@SITE_URL@${CKAN_SITE_URL}@g" $TEST_INI
 
 COPY . ${APP_DIR}/
 

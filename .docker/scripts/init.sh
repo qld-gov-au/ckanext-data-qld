@@ -26,6 +26,3 @@ PASTER_PLUGIN=ckanext-report ckan_cli report initdb
 
 # Initialise the QA database tables
 PASTER_PLUGIN=ckanext-qa ckan_cli qa init
-
-# Create some base test data
-. $APP_DIR/scripts/create-test-data.sh
