@@ -166,7 +166,7 @@ class TestAdminReportPendingPrivacyAssessment:
 
         assert counter == 1
 
-    def test_without_pending_resource(self, dataset_factory, resource_factory):
+    def test_without_pending_resource(self):
         counter = call_action("datasets_pending_privacy_assessment",
                               _make_context(),
                               org_id=factories.Organization()["id"],
