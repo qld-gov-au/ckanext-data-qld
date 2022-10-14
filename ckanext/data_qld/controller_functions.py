@@ -3,10 +3,11 @@
 import logging
 import json
 
-import ckan.model as model
 from ckantoolkit import _, abort, c, check_access, g, get_action, \
     redirect_to, NotAuthorized, ObjectNotFound, url_for, \
     ValidationError
+
+from ckan import model
 
 from . import helpers
 from .constants import OPEN_DATAREQUEST, RESOURCE_SHOW, SHOW_DATAREQUEST, PACKAGE_SHOW

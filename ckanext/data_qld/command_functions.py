@@ -4,8 +4,9 @@ import logging
 
 from ckantoolkit import get_action, ValidationError, h, get_validator
 
+from ckan import model
+
 from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
-import ckan.model as model
 
 log = logging.getLogger(__name__)
 
