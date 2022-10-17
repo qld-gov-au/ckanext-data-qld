@@ -72,7 +72,7 @@ Feature: AdminReporting
         Then I should see "Department of Health Spend Data"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=de-identified-package-without-schema::default_data_schema=::owner_org=department-of-health::title=de-identified-package-without-schema
+    @fixture.dataset_with_schema::name=de-identified-package-without-schema::default_data_schema=::owner_org=department-of-health::title=de-identified-package-without-schema::de_identified_data=YES
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify de-identified datasets without default data schema
         Given "Organisation Admin" as the persona
         When I log in
