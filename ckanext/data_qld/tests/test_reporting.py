@@ -8,8 +8,8 @@ from ckanext.data_qld.reporting.helpers import helpers
 from ckanext.data_qld.tests.conftest import SysadminFactory
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "mock_storage",
-                         "do_not_validate")
+@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+                         "mock_storage", "do_not_validate")
 class TestAdminReportDeIdentifiedNoSchema:
 
     def test_with_package(self, dataset_factory, resource_factory):
@@ -150,8 +150,8 @@ class TestAdminReportCSVExport:
         assert result["de_identified_datasets_no_schema"] == 0
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "mock_storage",
-                         "do_not_validate")
+@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+                         "mock_storage", "do_not_validate")
 class TestAdminReportPendingPrivacyAssessment:
 
     def test_with_pending_resource(self, dataset_factory, resource_factory):
