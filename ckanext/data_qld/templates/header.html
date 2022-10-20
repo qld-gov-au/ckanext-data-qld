@@ -91,7 +91,8 @@
       <nav class="section navigation">
         <ul class="nav nav-pills">
           {% block header_site_navigation_tabs %}
-          <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for('search') }}">Data</a></li>
+          {% set dataset_search_route = 'dataset.search' if h.is_ckan_29() else 'search' %}
+          <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for(dataset_search_route) }}">Data</a></li>
           <li>
             <a href="/article/news-and-events">News and events</a>
           </li>
