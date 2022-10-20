@@ -27,9 +27,26 @@ jobs:
         run: .circleci/build.sh
         timeout-minutes: 15
 
+      - name: Test lint
+        run: .circleci/test-lint.sh
+        timeout-minutes: 30
+
       - name: Test
         run: .circleci/test.sh
         timeout-minutes: 30
+
+      - name: Test BDD
+        run: .circleci/test-bdd.sh
+        timeout-minutes: 30
+
+      - name: Retrieve logs
+        if: failure()
+        run: .circleci/test-failure.sh
+        timeout-minutes: 5
+
+      - name: Retrieve logs success
+        run: .circleci/test-failure.sh
+        timeout-minutes: 5
 
       - name: Retrieve screenshots
         if: failure()
