@@ -55,7 +55,7 @@ class DatasetFactory(factories.Dataset):
     validation_options = ""
     validation_status = ""
     validation_timestamp = ""
-    default_data_schema = '{"fields": [{"name": "x", "title": "Default schema", "type": "integer"}],"primaryKey":"x"}'
+    default_data_schema = factory.LazyAttribute(lambda _: _get_default_schema())
     schema_upload = ""
     schema_json = ""
 
@@ -126,9 +126,25 @@ def _get_resource_schema():
             "name": "Game Length",
             "type": "integer"
         }],
-        "missingValues": [""]
+        "missingValues": ["Resource schema"]
     }
 
+    return json.dumps(schema)
+
+
+def _get_default_schema():
+    schema = {
+        "fields": [{
+            "format": "default",
+            "name": "Game Number",
+            "type": "integer"
+        }, {
+            "format": "default",
+            "name": "Game Length",
+            "type": "integer"
+        }],
+        "missingValues": ["Default schema"]
+    }
     return json.dumps(schema)
 
 

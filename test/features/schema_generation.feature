@@ -2,54 +2,43 @@ Feature: Schema Generation
     Enable worker with `ckan jobs clear && ckan jobs worker`, since these tests rely on background tasks
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    Scenario: GUI for creating a data schema but not yet generated, org editor
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    Scenario: GUI for creating a data schema but not yet generated
         Given "TestOrgEditor" as the persona
         When I log in
-        Then I wait for 5 seconds
         And I go to dataset "package-with-csv-res"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I should see an element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
         And I should see an element with xpath "//button[contains(@class, 'btn-generate')]/following::table[contains(@class, 'table-schema')]"
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Not generated']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    Scenario: GUI for creating a data schema but not yet generated, org admin
-        Given "TestOrgAdmin" as the persona
-        When I log in
-        And I go to dataset "package-with-csv-res"
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
-        And I should see an element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
-        And I should see an element with xpath "//button[contains(@class, 'btn-generate')]/following::table[contains(@class, 'table-schema')]"
-        And I should see an element with xpath "//th[string()='Status']/following::td[string()='Not generated']"
-        And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
-
-    @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
     Scenario: Data schema creation tool is triggered and data is suitable for generating a schema.
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
-        Then I reload page every 5 seconds until I see an element with xpath "//th[string()='Status']/following::td[string()='Pending']" but not more than 5 times
+        Then I reload page every 3 seconds until I see an element with xpath "//th[string()='Status']/following::td[string()='Pending']" but not more than 6 times
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'Just now')]]"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
     Scenario: GUI for creating/displaying a data schema where previously successfully generated
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
-        And I reload page every 5 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
 
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Complete']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'seconds ago')]]"
@@ -67,30 +56,32 @@ Feature: Schema Generation
         And I should see an element with xpath "//button[text()='Apply']"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
     Scenario: System actions following the selection of the blank dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
-        And I reload page every 5 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         And I press the element with xpath "//button[text()='Apply']"
         Then I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
         And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Dataset default' and not(@selected)]"
         And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Resource' and not(@selected)]"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
     Scenario: System actions following the selection of the set as dataset default dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
-        And I reload page every 5 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         Then I select "dataset" from "apply_for"
         And I press the element with xpath "//button[text()='Apply']"
         And I go to dataset "package-with-csv-res"
@@ -98,15 +89,16 @@ Feature: Schema Generation
 
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
     Scenario: System actions following the selection of the validate only this resource dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
-        And I reload page every 5 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
-        And I reload page every 5 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 5 times
+        And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         Then I select "resource" from "apply_for"
         And I press the element with xpath "//button[text()='Apply']"
 

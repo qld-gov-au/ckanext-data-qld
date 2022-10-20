@@ -20,7 +20,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -39,7 +38,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -60,7 +58,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -79,7 +76,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -100,7 +96,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -114,7 +109,6 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -205,6 +199,5 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |

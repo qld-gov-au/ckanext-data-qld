@@ -4,16 +4,15 @@ import ckantoolkit as tk
 
 from ckan import plugins
 
-from ckanext.data_qld.tests.conftest import (
-    DatasetFactory,
-    ResourceFactory
-)
+from ckanext.xloader.interfaces import IXloader
+from ckanext.data_qld.tests.conftest import (DatasetFactory, ResourceFactory)
 import ckanext.resource_visibility.utils as utils
 
 
 class DataQldTestPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer, inherit=True)
     plugins.implements(plugins.IActions)
+    plugins.implements(IXloader, inherit=True)
 
     def update_config(self, config):
         assert tk.asbool(tk.config.get("ckanext.data_qld.allow_bdd_test_plugin")),\
@@ -32,14 +31,19 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 
         return {"{}".format(func.__name__): func for func in actions}
 
+    # IXloader
+
+    def can_upload(self, resource_id):
+        context = _make_context()
+        pkg_dict = tk.get_action("resource_show")(context, {"id": resource_id})
+        return pkg_dict.get("xloader")
+
 
 @tk.side_effect_free
 def qld_test_create_dataset(context, data_dict):
-    # org = OrganizationFactory()
-    # data_dict.setdefault("owner_org", org["id"])
-
+    data_dict['resources'] = []
     package = DatasetFactory(**data_dict)
-    ResourceFactory(package_id=package["id"], bdd=True)
+    ResourceFactory(package_id=package["id"])
 
     return package
 
@@ -60,10 +64,9 @@ def qld_test_patch_dataset(context, data_dict):
 
 @tk.side_effect_free
 def qld_test_create_resource_for_dataset(context, data_dict):
-    data_dict['bdd'] = True
-    resource = ResourceFactory(**data_dict)
+    data_dict['xloader'] = data_dict.get("xloader", False)
 
-    return resource
+    return ResourceFactory(**data_dict)
 
 
 @tk.side_effect_free

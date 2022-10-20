@@ -22,7 +22,6 @@ Feature: Dataset Schema
 
         Examples: roles
         | User                 |
-        | SysAdmin             |
         | DataRequestOrgAdmin  |
         | DataRequestOrgEditor |
 

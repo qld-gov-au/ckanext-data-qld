@@ -24,10 +24,9 @@ Feature: Resource align_default_schema field
             | User          |
             | TestOrgEditor |
             | TestOrgAdmin  |
-            | SysAdmin      |
 
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation
-    Scenario Outline: -
+    Scenario Outline: Create resource with schema not aligned to default schema
         Given "<User>" as the persona
         When I log in
         Then I go to "/dataset/package-without-default-schema"
@@ -42,10 +41,11 @@ Feature: Resource align_default_schema field
         And field "align_default_schema" should not be required
 
         Then I uncheck "align_default_schema"
-        And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
+        And I attach the file "csv_resource.csv" to "upload"
         And I fill in "name" with "Another resource"
         And I fill in "description" with "description"
         And I fill in "size" with "1024" if present
+
         And I press the element with xpath "//button[@class="btn btn-primary" and contains(string(), 'Add')]"
 
         Then I press the element with xpath "//li[@class="resource-item"]/a"
@@ -55,9 +55,6 @@ Feature: Resource align_default_schema field
             | User          |
             | TestOrgEditor |
             | TestOrgAdmin  |
-            | SysAdmin      |
-
-
 
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-without-default-schema::name=another-resource
@@ -70,7 +67,7 @@ Feature: Resource align_default_schema field
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
         Then I click the link with text "View Schema File"
-        And I should see an element with xpath "//body/*[contains(text(), '"Resource schema"')]"
+        And I should see an element with xpath "//body[contains(text(), '"Resource schema"')]"
         Then I go back
 
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
@@ -80,13 +77,12 @@ Feature: Resource align_default_schema field
         And I press the element with xpath "//button[text()='Update Resource']"
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='TRUE']"
         Then I click the link with text "View Schema File"
-        And I should see an element with xpath "//body/*[contains(text(), '"Default schema"')]"
+        And I should see an element with xpath "//body[contains(text(), '"Default schema"')]"
 
         Examples: Users
             | User          |
             | TestOrgEditor |
             | TestOrgAdmin  |
-            | SysAdmin      |
 
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-without-default-schema::name=another-resource::schema=
@@ -98,10 +94,10 @@ Feature: Resource align_default_schema field
 
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
-
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
         And I should see "Align this data schema with the dataset default"
-        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"name":"x","title":"Default schema","type":"integer"}],"primaryKey":"x"}'"
+        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"type": "integer","name": "Game Number","format": "default"},{"type": "integer","name": "Game Length","format": "default"}],"missingValues": ["Default schema"]}'"
+
         Then I press the element with xpath "//button[text()='Update Resource']"
 
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='TRUE']"
@@ -112,7 +108,8 @@ Feature: Resource align_default_schema field
 
         # now default and resource schema are different
         Then I press the element with xpath "//textarea[@id='field-schema-json']/preceding-sibling::a[text()='Clear']"
-        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"name":"x","title":"Resource schema","type":"integer"}],"primaryKey":"x"}'"
+        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"type": "integer","name": "Game Number","format": "default"},{"type": "integer","name": "Game Length","format": "default"}], "missingValues": ["Resource schema"]}'"
+
         Then I press the element with xpath "//button[text()='Update Resource']"
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
 
@@ -120,7 +117,7 @@ Feature: Resource align_default_schema field
         Then I press the element with xpath "//button[text()='Update Resource']"
 
         Then I click the link with text "View Schema File"
-        And I should see an element with xpath "//body/*[contains(text(), '"Resource schema"')]"
+        And I should see an element with xpath "//body[contains(text(), '"Resource schema"')]"
         Then I go back
 
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
@@ -130,10 +127,9 @@ Feature: Resource align_default_schema field
         And I press the element with xpath "//button[text()='Update Resource']"
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='TRUE']"
         Then I click the link with text "View Schema File"
-        And I should see an element with xpath "//body/*[contains(text(), '"Default schema"')]"
+        And I should see an element with xpath "//body[contains(text(), '"Default schema"')]"
 
         Examples: Users
             | User          |
             | TestOrgEditor |
             | TestOrgAdmin  |
-            | SysAdmin      |

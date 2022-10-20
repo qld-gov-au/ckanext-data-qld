@@ -8,7 +8,7 @@ echo "==> Lint code"
 ahoy lint
 
 echo "==> Run BDD tests"
-ahoy test-bdd || (ahoy logs; exit 1)
+ahoy test-bdd
 
 echo "==> Run Unit tests"
 ahoy test-unit || (ahoy logs; exit 1)

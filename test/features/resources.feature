@@ -27,6 +27,5 @@ Feature: Resource UI
         And I should see "Where the dataset contains de-identified data, selecting ‘YES’ will hide this resource, pending a privacy assessment. Assessments will not be completed where the dataset does not contain de-identified data. Select ‘NO’ where the dataset does not contain de-identified data or where a privacy assessment is not required."
         Examples: roles
         | Persona              |
-        | SysAdmin             |
         | DataRequestOrgAdmin  |
         | DataRequestOrgEditor |

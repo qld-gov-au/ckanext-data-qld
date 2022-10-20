@@ -5,13 +5,12 @@ import json
 
 from ckantoolkit import _, abort, c, check_access, g, get_action, \
     redirect_to, NotAuthorized, ObjectNotFound, url_for, \
-    ValidationError
+    ValidationError, render
 
 from ckan import model
 
 from . import helpers
 from .constants import OPEN_DATAREQUEST, RESOURCE_SHOW, SHOW_DATAREQUEST, PACKAGE_SHOW
-
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +74,8 @@ def show_resource_schema(dataset_id, resource_id):
     if not schema_data:
         return abort(404, _('Schema not found'))
 
-    return json.dumps(schema_data, indent=4)
+    return render("snippets/show_schema.html",
+                  {"schema": json.dumps(schema_data, indent=4)})
 
 
 def _get_resource_data(resource_id, context):
@@ -106,7 +106,8 @@ def show_package_schema(dataset_id):
     if not schema_data:
         return abort(404, _('Schema not found'))
 
-    return json.dumps(schema_data, indent=4)
+    return render("snippets/show_schema.html",
+                  {"schema": json.dumps(schema_data, indent=4)})
 
 
 def _get_package_data(dataset_id, context):

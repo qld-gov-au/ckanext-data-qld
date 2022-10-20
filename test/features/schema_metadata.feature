@@ -40,7 +40,6 @@ Feature: SchemaMetadata
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -54,7 +53,6 @@ Feature: SchemaMetadata
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -71,7 +69,6 @@ Feature: SchemaMetadata
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -94,6 +91,5 @@ Feature: SchemaMetadata
 
         Examples: Users
           | User          |
-          | SysAdmin      |
           | TestOrgAdmin  |
           | TestOrgEditor |

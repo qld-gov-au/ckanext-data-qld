@@ -75,8 +75,8 @@ Feature: Theme customisations
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset with license "other-open" and "CSV" resource file "csv_resource.csv"
-        And I wait for 10 seconds
         And I click the link with text that contains "Test Resource"
+        And I reload page every 3 seconds until I see an element with xpath "//button[@data-toggle='dropdown']" but not more than 5 times
         Then I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
         When I press the element with xpath "//button[@data-toggle='dropdown']"
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(string(), 'CSV')]"
