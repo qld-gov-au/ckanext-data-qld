@@ -7,11 +7,11 @@
     {%- set activity_type = activity['activity_type'] if activity['activity_type'] else None -%}
     {%- if data -%}
         {%- if data['package'] -%}
-            {%- set id = data['package']['name'] -%}
-            {%- set action = 'dataset_read' -%}
+            {%- set id = data['package']['title'] -%}
+            {%- set action = 'dataset.read' -%}
         {%- elif data['group'] -%}
-            {%- set id = data['group']['name'] -%}
-            {%- set action = 'organization_read' if data['group']['is_organization'] else 'group_read' -%}
+            {%- set id = data['group']['title'] -%}
+            {%- set action = 'organization.read' if data['group']['is_organization'] else 'group.read' -%}
         {%- endif -%}
     {%- endif -%}
     {% if action and id %}{{ h.url_for(action, id=id, _external=True) }}{% if activity_type %} ({{ h.activity_type_nice(activity_type)|capitalize }}){% endif %}{% endif %}
