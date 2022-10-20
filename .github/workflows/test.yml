@@ -29,7 +29,7 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
         # Ignore the failure of a step and avoid terminating the job.
         continue-on-error: true
-      
+
       - name: Build
         run: .circleci/build.sh
         timeout-minutes: 15
@@ -44,19 +44,15 @@ jobs:
 
       - name: Test BDD
         run: .circleci/test-bdd.sh
-        timeout-minutes: 30
+        timeout-minutes: 40
 
       - name: Retrieve logs
-        if: failure()
-        run: .circleci/test-failure.sh
-        timeout-minutes: 5
-
-      - name: Retrieve logs success
-        run: .circleci/test-failure.sh
+        if: always()
+        run: .circleci/get-logs.sh
         timeout-minutes: 5
 
       - name: Retrieve screenshots
-        if: failure()
+        if: always()
         run: .circleci/process-artifacts.sh
         timeout-minutes: 1
 
