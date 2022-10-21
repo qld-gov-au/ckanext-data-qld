@@ -5,16 +5,17 @@
 {% for activity in activities -%}
     {%- set data = activity['data'] if activity['data'] else None -%}
     {%- set activity_type = activity['activity_type'] if activity['activity_type'] else None -%}
+    {%- set id = activity['object_id'] -%}
     {%- if data -%}
         {%- if data['package'] -%}
-            {%- set id = data['package']['title'] -%}
+            {%- set name = data['package']['title'] -%}
             {%- set action = 'dataset.read' -%}
         {%- elif data['group'] -%}
-            {%- set id = data['group']['title'] -%}
-            {%- set action = 'organization.read' if data['group']['is_organization'] else 'group.read' -%}
+            {%- set name = data['group']['title'] -%}
+            {%- set action = 'organization.read' if activity_type == 'changed organization' else 'group.read' -%}
         {%- endif -%}
     {%- endif -%}
-    {% if action and id %}{{ h.url_for(action, id=id, _external=True) }}{% if activity_type %} ({{ h.activity_type_nice(activity_type)|capitalize }}){% endif %}{% endif %}
+    {% if action and id %}{{name}} ({{ h.activity_type_nice(activity_type)|capitalize }}) {{ h.url_for(action, id=id, _external=True) }}{% if activity_type %}{% endif %}{% endif %}
 {% endfor %}
 {{ _('To view your dashboard, click on this link:') }}
 
