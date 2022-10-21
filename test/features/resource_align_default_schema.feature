@@ -1,8 +1,8 @@
 Feature: Resource align_default_schema field
     @fixture.dataset_with_schema::name=package-without-default-schema::default_data_schema=::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-without-default-schema::name=resource-one::schema=
-    Scenario Outline: Create or edit resource in the GUI where default_data_schema is NULL, initial display and behaviour
-        Given "<User>" as the persona
+    Scenario: Create or edit resource in the GUI where default_data_schema is NULL, initial display and behaviour
+        Given "TestOrgEditor" as the persona
         When I log in
         Then I go to "/dataset/package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following-sibling::td[contains(text(),"Field name 'default_data_schema' not in data")]"
@@ -20,14 +20,10 @@ Feature: Resource align_default_schema field
         And I should see "Link"
         And I should see "JSON"
 
-        Examples: Users
-            | User          |
-            | TestOrgEditor |
-            | TestOrgAdmin  |
 
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation
-    Scenario Outline: Create resource with schema not aligned to default schema
-        Given "<User>" as the persona
+    Scenario: Create resource with schema not aligned to default schema
+        Given "TestOrgEditor" as the persona
         When I log in
         Then I go to "/dataset/package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
@@ -51,15 +47,10 @@ Feature: Resource align_default_schema field
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
 
-        Examples: Users
-            | User          |
-            | TestOrgEditor |
-            | TestOrgAdmin  |
-
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-without-default-schema::name=another-resource
-    Scenario Outline: Edit a resource in the GUI where default_data_schema is not NULL and the existing schema value does not match the default_data_schema value
-        Given "<User>" as the persona
+    Scenario: Edit a resource in the GUI where default_data_schema is not NULL and the existing schema value does not match the default_data_schema value
+        Given "TestOrgEditor" as the persona
         When I log in
         Then I go to "/dataset/package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
@@ -79,15 +70,10 @@ Feature: Resource align_default_schema field
         Then I click the link with text "View Schema File"
         And I should see an element with xpath "//body[contains(text(), '"Default schema"')]"
 
-        Examples: Users
-            | User          |
-            | TestOrgEditor |
-            | TestOrgAdmin  |
-
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-without-default-schema::name=another-resource::schema=
-    Scenario Outline: Edit resource in the GUI where default_data_schema is not NULL and the existing schema value matches the default_data_schema value
-        Given "<User>" as the persona
+    Scenario: Edit resource in the GUI where default_data_schema is not NULL and the existing schema value matches the default_data_schema value
+        Given "TestOrgEditor" as the persona
         When I log in
         Then I go to "/dataset/package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
@@ -128,8 +114,3 @@ Feature: Resource align_default_schema field
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='TRUE']"
         Then I click the link with text "View Schema File"
         And I should see an element with xpath "//body[contains(text(), '"Default schema"')]"
-
-        Examples: Users
-            | User          |
-            | TestOrgEditor |
-            | TestOrgAdmin  |
