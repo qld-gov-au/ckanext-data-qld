@@ -3,7 +3,7 @@ Feature: Resource Privacy Assessment Result
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario Outline: Add new resource metadata field 'Privacy assessment result' and display on the edit resource GUI page
-        Given "<Persona>" as the persona
+        Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
 
@@ -15,22 +15,13 @@ Feature: Resource Privacy Assessment Result
         And I should see "Privacy assessment information, including the meaning of the Privacy assessment result, can be found here."
         And I should see an element with xpath "//label[text()='Privacy assessment result']/following::a[text()='here']"
 
-        Examples: roles
-            | Persona              |
-            | TestOrgEditor        |
-            | TestOrgAdmin         |
-
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    Scenario Outline: API viewing of new resource metadata field `Privacy assessment result`
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
+    Scenario: API viewing of new resource metadata field `Privacy assessment result`
         Given "TestOrgEditor" as the persona
         When I log in
         Then I visit "api/action/package_show?id=package-with-csv-res"
         And I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
-
-        Examples: roles
-            | Persona              |
-            | TestOrgEditor        |
-            | TestOrgAdmin         |
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
@@ -50,7 +41,7 @@ Feature: Resource Privacy Assessment Result
         Then I should see "New privacy_assessment_result"
 
     @fixture.dataset_with_schema::name=package-with-new-privacy-assessment::owner_org=test-organisation::author_email=test@gmail.com
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-pending-assessment-resource::name=pending-assessment-resource::request_privacy_assessment=YES
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-new-privacy-assessment::name=pending-assessment-resource::request_privacy_assessment=YES
     Scenario: Email to dataset contact when result of requested privacy assessment is posted
         Given "SysAdmin" as the persona
         When I log in

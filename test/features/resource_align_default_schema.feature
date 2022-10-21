@@ -82,7 +82,7 @@ Feature: Resource align_default_schema field
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
         And I should see "Align this data schema with the dataset default"
-        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"type": "integer","name": "Game Number","format": "default"},{"type": "integer","name": "Game Length","format": "default"}],"missingValues": ["Default schema"]}'"
+        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"format": "default","name": "Game Number","type": "integer"},{"format": "default","name": "Game Length","type": "integer"}],"missingValues": ["Default schema"]}'"
 
         Then I press the element with xpath "//button[text()='Update Resource']"
 
@@ -94,7 +94,7 @@ Feature: Resource align_default_schema field
 
         # now default and resource schema are different
         Then I press the element with xpath "//textarea[@id='field-schema-json']/preceding-sibling::a[text()='Clear']"
-        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"type": "integer","name": "Game Number","format": "default"},{"type": "integer","name": "Game Length","format": "default"}], "missingValues": ["Resource schema"]}'"
+        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"format": "default","name": "Game Number","type": "integer"},{"format": "default","name": "Game Length","type": "integer"}], "missingValues": ["Resource schema"]}'"
 
         Then I press the element with xpath "//button[text()='Update Resource']"
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
