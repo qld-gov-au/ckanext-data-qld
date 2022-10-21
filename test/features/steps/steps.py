@@ -313,14 +313,6 @@ def create_dataset_resource_availability(context, title, de_identified_data, res
                resource_name=resource_name, resource_visible=resource_visible, governance_acknowledgement=governance_acknowledgement))
 
 
-@step(u'I patch dataset {package_id} with params {params}')
-def i_patch_dataset(context, package_id, params):
-    params += '&id={}'.format(package_id)
-    context.execute_steps(u"""
-        Given I visit "api/action/qld_test_patch_dataset?{}"
-    """.format(params))
-
-
 @step(u'I visit resource schema generation page')
 def resource_schema_generation(context):
     path = urlparse(context.browser.url).path
