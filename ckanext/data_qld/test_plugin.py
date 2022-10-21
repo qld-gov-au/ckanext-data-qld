@@ -34,17 +34,15 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 
     def can_upload(self, resource_id):
         context = _make_context()
-        pkg_dict = tk.get_action("resource_show")(context, {"id": resource_id})
-        return pkg_dict.get("xloader")
+        res_dict = tk.get_action("resource_show")(context, {"id": resource_id})
+
+        return tk.asbool(res_dict.get("_xloader"))
 
 
 @tk.side_effect_free
 def qld_test_create_dataset(context, data_dict):
     data_dict['resources'] = []
-    package = DatasetFactory(**data_dict)
-    ResourceFactory(package_id=package["id"])
-
-    return package
+    return DatasetFactory(**data_dict)
 
 
 @tk.side_effect_free
@@ -58,7 +56,7 @@ def qld_test_purge_dataset(context, data_dict):
 
 @tk.side_effect_free
 def qld_test_create_resource_for_dataset(context, data_dict):
-    data_dict['xloader'] = data_dict.get("xloader", False)
+    data_dict['_xloader'] = bool(data_dict.get("xloader"))
 
     return ResourceFactory(**data_dict)
 
