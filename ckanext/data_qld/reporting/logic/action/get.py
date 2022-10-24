@@ -53,7 +53,7 @@ def organisation_followers(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -85,7 +85,7 @@ def dataset_followers(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -118,7 +118,7 @@ def dataset_comments(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -154,7 +154,7 @@ def datarequests(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -185,7 +185,7 @@ def datarequest_comments(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -221,7 +221,7 @@ def dataset_comment_followers(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -261,7 +261,7 @@ def datasets_min_one_comment_follower(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -299,7 +299,7 @@ def datarequests_min_one_comment_follower(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -337,7 +337,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     utc_reply_expected_by_date = data_dict.get(
         'utc_reply_expected_by_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     comment_reply = aliased(Comment, name='comment_reply')
     try:
@@ -405,7 +405,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     utc_reply_expected_by_date = data_dict.get(
         'utc_reply_expected_by_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     comment_reply = aliased(Comment, name='comment_reply')
 
@@ -475,7 +475,7 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     utc_reply_expected_by_date = data_dict.get(
         'utc_reply_expected_by_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -517,7 +517,7 @@ def datarequests_open_after_x_days(context, data_dict):
     utc_expected_closure_date = data_dict.get(
         'utc_expected_closure_date', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -548,7 +548,7 @@ def datarequests_for_circumstance(context, data_dict):
     utc_end_date = data_dict.get('utc_end_date', None)
     circumstance = data_dict.get('circumstance', None)
 
-    check_org_access(org_id, context)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
