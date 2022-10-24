@@ -4,5 +4,8 @@
 #
 set -e
 
-echo "==> Run Unit tests"
-ahoy test-unit
+./test-lint.sh
+
+./test-bdd.sh
+
+./test.sh
