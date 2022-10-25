@@ -1,13 +1,19 @@
+import uuid
+import email
+import quopri
+import re
+
+import requests
+import six
+from six.moves.urllib.parse import urlparse
 from behave import step
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
-import email
-import quopri
-import requests
-import uuid
-import six
+
+URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
+                    (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
 
 
 @step(u'I get the current URL')
@@ -99,7 +105,7 @@ def add_resource(context, name, url):
         And I fill in "description" with "description"
         And I fill in "size" with "1024" if present
         And I execute the script "document.getElementById('field-format').value='HTML'"
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I press the element with xpath "//button[@class="btn btn-primary" and text()="Add"]"
     """.format(name=name, url=url))
 
 
@@ -278,34 +284,49 @@ def log_out(context):
 
 # ckanext-data-qld
 
+@step(u'I visit resource schema generation page')
+def resource_schema_generation(context):
+    path = urlparse(context.browser.url).path
+    when_i_visit_url(context, path + '/generate_schema')
 
-@step(u'I create resource_availability test data with title:"{title}" de_identified_data:"{de_identified_data}" resource_name:"{resource_name}" resource_visible:"{resource_visible}" governance_acknowledgement:"{governance_acknowledgement}"')
-def create_dataset_resource_availability(context, title, de_identified_data, resource_name, resource_visible, governance_acknowledgement):
-    assert context.persona
+
+@step(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
+def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
+    for _ in range(reload_times):
+        element = context.browser.is_element_present_by_xpath(
+            xpath, wait_time=seconds
+        )
+        if not element:
+            context.browser.reload()
+        else:
+            assert element, 'Element with xpath "{}" was found'.format(xpath)
+            return
+
+    assert False, 'Element with xpath "{}" was not found'.format(xpath)
+
+
+@step(u'I trigger notification about updated privacy assessment results')
+def i_trigger_notification_assessment_results(context):
     context.execute_steps(u"""
-        When I go to "/dataset/new"
-        Then I fill in "title" with "{title}"
-        And I fill in "notes" with "test notes"
-        And I execute the script "{organisation_script}"
-        And I select "False" from "private"
-        And I fill in "version" with "1"
-        And I fill in "author_email" with "test@test.com"
-        And I select "{de_identified_data}" from "de_identified_data"
-        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
-        Then I wait for 1 seconds
-        And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
-        And I fill in "name" with "{resource_name}"
-        And I fill in "description" with "test description"
-        And I select "{resource_visible}" from "resource_visible"
-        And I select "{governance_acknowledgement}" from "governance_acknowledgement"
-        And I execute the script "size_field = document.getElementById('field-size'); if (size_field) size_field.value = '1024';"
-        And I press the element with xpath "//button[@value='go-metadata']"
-        Then I wait for 1 seconds
-        and I should see "Data and Resources"
-    """.format(title=title, de_identified_data=de_identified_data,
-               organisation_script="document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == 'Test Organisation'; }).attr('value')",
-               resource_name=resource_name, resource_visible=resource_visible, governance_acknowledgement=governance_acknowledgement))
+        Given I visit "api/action/qld_test_trigger_notify_privacy_assessment_result"
+    """)
 
+
+@step(u'I click the resource link in the email I received at "{address}"')
+def click_link_in_email(context, address):
+    mails = context.mail.user_messages(address)
+    assert mails, u"message not found"
+
+    mail = email.message_from_string(mails[-1])
+    links = []
+
+    payload = mail.get_payload(decode=True).decode("utf-8")
+    links = URL_RE.findall(payload.replace("=\n", ""))
+
+    assert links, u"link not found"
+    url = links[0].rstrip(':')
+
+    context.browser.visit(url)
 
 # ckanext-ytp-comments
 

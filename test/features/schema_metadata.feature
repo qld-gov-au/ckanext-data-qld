@@ -40,7 +40,6 @@ Feature: SchemaMetadata
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -54,7 +53,6 @@ Feature: SchemaMetadata
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -71,7 +69,6 @@ Feature: SchemaMetadata
 
         Examples: Users
             | User          |
-            | SysAdmin      |
             | TestOrgAdmin  |
             | TestOrgEditor |
 
@@ -85,3 +82,14 @@ Feature: SchemaMetadata
         And I go to "/api/3/action/package_show?id=warandpeace"
         Then I should not see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
 
+    Scenario Outline: Check label of the Data schema validation options field
+        Given "<User>" as the persona
+        When I log in
+        And I go to "/dataset/new_resource/warandpeace"
+        Then I should see an element with xpath "//label[text()='Data schema validation options']"
+        Then I should not see an element with xpath "//label[text()='Validation options']"
+
+        Examples: Users
+          | User          |
+          | TestOrgAdmin  |
+          | TestOrgEditor |

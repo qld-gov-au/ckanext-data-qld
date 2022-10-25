@@ -23,7 +23,8 @@ def _get_user(user_id):
         if user_id in USERS_CACHE:
             return USERS_CACHE[user_id]
         else:
-            user = tk.get_action('user_show')({'ignore_auth': True}, {'id': user_id})
+            user = tk.get_action('user_show')(
+                {'ignore_auth': True}, {'id': user_id})
             USERS_CACHE[user_id] = user
             return user
     except Exception as e:
@@ -73,10 +74,12 @@ def _dictize_datarequest(datarequest):
     }
 
     if datarequest.organization_id:
-        data_dict['organization'] = _get_organization(datarequest.organization_id)
+        data_dict['organization'] = _get_organization(
+            datarequest.organization_id)
 
     if datarequest.accepted_dataset_id:
-        data_dict['accepted_dataset'] = _get_package(datarequest.accepted_dataset_id)
+        data_dict['accepted_dataset'] = _get_package(
+            datarequest.accepted_dataset_id)
 
     data_dict['followers'] = db.DataRequestFollower.get_datarequest_followers_number(
         datarequest_id=datarequest.id)
@@ -98,8 +101,10 @@ def _undictize_datarequest_basic(datarequest, data_dict):
 
 def _undictize_datarequest_closing_circumstances(datarequest, data_dict):
     if tk.h.closing_circumstances_enabled:
-        datarequest.close_circumstance = data_dict.get('close_circumstance') or None
-        datarequest.approx_publishing_date = data_dict.get('approx_publishing_date') or None
+        datarequest.close_circumstance = data_dict.get(
+            'close_circumstance') or None
+        datarequest.approx_publishing_date = data_dict.get(
+            'approx_publishing_date') or None
 
 
 def _send_mail(user_ids, action_type, datarequest, job_title):
@@ -112,16 +117,21 @@ def _send_mail(user_ids, action_type, datarequest, job_title):
                 'site_title': config.get('ckan.site_title'),
                 'site_url': config.get('ckan.site_url')
             }
-            subject = tk.render('emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = tk.render('emails/bodies/{0}.txt'.format(action_type), extra_vars)
-            tk.enqueue_job(mailer.mail_user, [user_data, subject, body], title=job_title)
+            subject = tk.render(
+                'emails/subjects/{0}.txt'.format(action_type), extra_vars)
+            body = tk.render(
+                'emails/bodies/{0}.txt'.format(action_type), extra_vars)
+            tk.enqueue_job(mailer.mail_user, [
+                           user_data, subject, body], title=job_title)
         except Exception:
-            logging.exception("Error sending notification to {0}".format(user_id))
+            logging.exception(
+                "Error sending notification to {0}".format(user_id))
 
 
 def _get_admin_users_from_organisation(datarequest_dict):
     # Data QLD modification.
-    users = set([user['id'] for user in datarequest_dict['organization']['users'] if user.get('capacity') == 'admin'])
+    users = set([user['id'] for user in datarequest_dict['organization']
+                ['users'] if user.get('capacity') == 'admin'])
     return users
 
 
@@ -183,7 +193,8 @@ def create_datarequest(original_action, context, data_dict):
         # Data QLD modification
         users = _get_admin_users_from_organisation(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Created Email')
+        _send_mail(users, 'new_datarequest_organisation',
+                   datarequest_dict, 'Data Request Created Email')
 
     return datarequest_dict
 
@@ -238,7 +249,8 @@ def update_datarequest(original_action, context, data_dict):
     # Get the initial data
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._('Data Request %s not found in the data base') % datarequest_id)
 
     data_req = result[0]
 
@@ -266,14 +278,16 @@ def update_datarequest(original_action, context, data_dict):
         # Email Admin users of the assigned organisation
         users = _get_admin_users_from_organisation(datarequest_dict)
         users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'new_datarequest_organisation', datarequest_dict, 'Data Request Assigned Email')
+        _send_mail(users, 'new_datarequest_organisation',
+                   datarequest_dict, 'Data Request Assigned Email')
         # Email Admin users of unassigned organisation
         org_dict = {
             'organization': _get_organization(unassigned_organisation_id)
         }
         users = _get_admin_users_from_organisation(org_dict)
         users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'unassigned_datarequest_organisation', datarequest_dict, 'Data Request Unassigned Email')
+        _send_mail(users, 'unassigned_datarequest_organisation',
+                   datarequest_dict, 'Data Request Unassigned Email')
 
     return datarequest_dict
 
@@ -320,7 +334,8 @@ def close_datarequest(original_action, context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._('Data Request %s not found in the data base') % datarequest_id)
 
     # Validate data
     validator.validate_datarequest_closing(context, data_dict)
@@ -343,7 +358,8 @@ def close_datarequest(original_action, context, data_dict):
 
     # Mailing
     users = [data_req.user_id]
-    _send_mail(users, 'close_datarequest_creator', datarequest_dict, 'Data Request Closed Send Email')
+    _send_mail(users, 'close_datarequest_creator',
+               datarequest_dict, 'Data Request Closed Send Email')
 
     return datarequest_dict
 
@@ -382,7 +398,8 @@ def open_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
 
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._('Data Request %s not found in the data base') % datarequest_id)
 
     data_req = result[0]
     data_req.closed = False
@@ -400,10 +417,12 @@ def open_datarequest(context, data_dict):
     # Mailing
     users = [data_req.user_id]
     # Creator email
-    _send_mail(users, 'open_datarequest_creator', datarequest_dict, 'Data Request Opened Creator Email')
+    _send_mail(users, 'open_datarequest_creator', datarequest_dict,
+               'Data Request Opened Creator Email')
     if datarequest_dict['organization']:
         users = _get_admin_users_from_organisation(datarequest_dict)
         # Admins of organisation email
-        _send_mail(users, 'open_datarequest_organisation', datarequest_dict, 'Data Request Opened Admins Email')
+        _send_mail(users, 'open_datarequest_organisation',
+                   datarequest_dict, 'Data Request Opened Admins Email')
 
     return datarequest_dict

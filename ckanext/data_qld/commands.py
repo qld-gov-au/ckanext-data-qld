@@ -29,7 +29,8 @@ class DemotePublishers(CkanCommand):
 
     def __init__(self, name):
         super(DemotePublishers, self).__init__(name)
-        self.parser.add_option('-u', '--username_prefix', dest='username_prefix', help='Only demote usernames starting with this prefix', type=str, default='publisher-')
+        self.parser.add_option('-u', '--username_prefix', dest='username_prefix',
+                               help='Only demote usernames starting with this prefix', type=str, default='publisher-')
 
     def command(self):
         self._load_config()

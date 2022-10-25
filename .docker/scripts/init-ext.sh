@@ -27,11 +27,22 @@ install_requirements () {
 
 . ${APP_DIR}/scripts/activate
 
-install_requirements . dev-requirements requirements-dev
+install_requirements . extensions
+
 for extension in . `ls -d $SRC_DIR/ckanext-*`; do
     install_requirements $extension requirements pip-requirements
 done
+
+if [ "$CKAN_VERSION" = "2.9-py2" ]; then
+    install_requirements . dev-requirements-2.9-py2
+elif [  "$CKAN_VERSION" = "2.8"  ]; then
+    install_requirements . dev-requirements-py2
+else
+    install_requirements . dev-requirements
+fi
+
 pip install -e .
+
 installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1|")
 
 # Validate that the extension was installed correctly.

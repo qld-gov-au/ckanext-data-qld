@@ -1,0 +1,16 @@
+-e git+https://github.com/ckan/ckanext-dcat.git@v1.2.0#egg=ckanext-dcat
+-e git+https://github.com/ckan/ckanext-scheming.git@release-2.1.0#egg=ckanext-scheming
+-e git+https://github.com/qld-gov-au/ckanext-archiver.git@2.1.1-qgov.12#egg=ckanext-archiver
+-e git+https://github.com/qld-gov-au/ckanext-csrf-filter.git@1.1.5#egg=ckanext-csrf-filter
+-e git+https://github.com/DataShades/ckanext-datarequests.git@dev#egg=ckanext-datarequests
+-e git+https://github.com/qld-gov-au/ckanext-odi-certificates.git@1.0.1#egg=ckanext-odi-certificates
+-e git+https://github.com/qld-gov-au/ckanext-qa.git@2.0.3-qgov.6#egg=ckanext-qa
+-e git+https://github.com/qld-gov-au/ckanext-qgov.git@5.0.3#egg=ckanext-qgov
+-e git+https://github.com/qld-gov-au/ckanext-report.git@0.3#egg=ckanext-report
+-e git+https://github.com/DataShades/ckanext-resource-type-validation.git@dev#egg=ckanext-resource-type-validation
+-e git+https://github.com/qld-gov-au/ckanext-ssm-config.git@0.0.2#egg=ckanext-ssm-config
+-e git+https://github.com/DataShades/ckanext-validation.git@develop#egg=ckanext-validation
+-e git+https://github.com/qld-gov-au/ckanext-xloader.git@0.11.0-qgov.2#egg=ckanext-xloader
+-e git+https://github.com/qld-gov-au/ckanext-ytp-comments.git@2.5.0-qgov.7#egg=ckanext-ytp-comments
+-e git+https://github.com/qld-gov-au/ckanext-resource-visibility.git@develop#egg=ckanext-resource-visibility
+-e git+https://github.com/qld-gov-au/ckanext-validation-schema-generator.git@develop#egg=ckanext-validation-schema-generator

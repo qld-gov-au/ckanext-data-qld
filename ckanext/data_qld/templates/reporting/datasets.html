@@ -6,21 +6,28 @@
 
     <h1>
         {% if metric == 'no-reply' %}
-            Engagement Report: Datasets: {{ org_title }}
+            Engagement Report: Datasets:
+        {% elif metric == 'de_identified_datasets_no_schema' %}
+            Admin Report: De-identified datasets without data schema validation (post-{{ h.get_deidentified_count_from_date() }}):
         {% elif metric == 'de-identified-datasets' %}
-            Admin Report: De-identified Datasets: {{ org_title }}
+            Admin Report: De-identified Datasets:
         {% elif metric == 'overdue-datasets' %}
-            Admin Report: Overdue Datasets: {{ org_title }}
+            Admin Report: Overdue Datasets:
         {% elif metric == 'datasets_no_groups' %}
-            Admin Report: Datasets not added to group/s: {{ org_title }}
+            Admin Report: Datasets not added to group/s:
         {% elif metric == 'datasets_no_tags' %}
-            Admin Report: Datasets with no tags: {{ org_title }}
+            Admin Report: Datasets with no tags:
+        {% elif metric == 'pending_privacy_assessment' %}
+            Admin Report: Pending privacy assessment:
         {% endif %}
+        <a href="{{ url_for('organization.read', id=org_id) }}"> {{ org_title }} </a>
     </h1>
 
     <h2>
         {% if metric == 'no-reply' %}
             Dataset comments with no reply > {{ comment_no_reply_max_days|string }} days
+        {% elif metric == 'de_identified_datasets_no_schema' %}
+            Setting default data schemas for datasets minimises risks of accidental release of personal information by checking that the data structure and content type of new or edited resources matches a predetermined data schema. For example, where de-identification has not occurred through deletion of certain columns
         {% endif %}
     </h2>
 
@@ -51,6 +58,27 @@
                             {% set package_url = h.url_for(controller='package', action='read', id=package_id) %}
                         {% endif %}
                         <a href="{{ package_url }}{{ package_url_suffix }}">{{ dataset.title }}</a>
+                    </h3>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% elif resources|length > 0 %}
+        <h3>
+            Total number of resources: {{ resources|length }}
+        </h3>
+        <hr />
+        <ul class="dataset-list list-unstyled">
+        {% for resource in resources %}
+            <li class="dataset-item">
+                <div class="dataset-content">
+                    <h3 class="dataset-heading">
+                        {% if h.ckan_version() > '2.9' %}
+                            {% set resource_url = h.url_for('resource.read', id=resource.package_id, resource_id=resource.id) %}
+                        {% else %}
+                            {% set resource_url = h.url_for(controller='resource', action='read', id=resource.package_id, resource_id=resource.id) %}
+                        {% endif %}
+                        <a href="{{ resource_url }}">{{ resource.name }}</a>
                     </h3>
                 </div>
             </li>

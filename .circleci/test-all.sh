@@ -6,7 +6,6 @@ set -e
 
 ./test-lint.sh
 
-./test.sh
-
 ./test-bdd.sh
 
+./test.sh

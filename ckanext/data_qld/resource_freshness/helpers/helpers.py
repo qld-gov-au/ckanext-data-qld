@@ -41,14 +41,16 @@ def recalculate_next_update_due_date(flattened_data, update_frequency, errors, c
     due_date = today + dt.timedelta(days=days)
 
     flattened_data[('next_update_due',)] = due_date.date().isoformat()
-    get_validator('convert_to_extras')(('next_update_due',), flattened_data, errors, context)
+    get_validator('convert_to_extras')(
+        ('next_update_due',), flattened_data, errors, context)
 
 
 def update_last_modified(flattened_data, index, errors, context):
     now = dt.datetime.utcnow()
     flattened_data[('resources', index, 'last_modified')] = now
     flattened_data[('data_last_updated', )] = now.isoformat()
-    get_validator('convert_to_extras')(('data_last_updated',), flattened_data, errors, context)
+    get_validator('convert_to_extras')(
+        ('data_last_updated',), flattened_data, errors, context)
 
 
 def check_resource_data(current_resource, updated_resource, context):
@@ -73,12 +75,14 @@ def check_resource_data(current_resource, updated_resource, context):
         # Compare urls
         if updated_resource.get('url_type', '') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
-            updated_resource_url = updated_resource.get('url', '').rsplit('/')[-1]
+            updated_resource_url = updated_resource.get(
+                'url', '').rsplit('/')[-1]
         else:
             updated_resource_url = updated_resource.get('url', '')
         if current_resource.get('url_type', '') == 'upload':
             # Strip the full url for resources of type 'upload' to get filename for compare
-            current_resource_url = current_resource.get('url', '').rsplit('/')[-1]
+            current_resource_url = current_resource.get(
+                'url', '').rsplit('/')[-1]
         else:
             current_resource_url = current_resource.get('url', '')
         # Compare old resource url with current url to find out if the resource data has changed
@@ -101,9 +105,6 @@ def check_resource_data(current_resource, updated_resource, context):
 
 
 def process_next_update_due(data_dict):
-    if not user_has_admin_access(True):
-        if 'next_update_due' in data_dict:
-            del data_dict['next_update_due']
     for res in data_dict.get('resources', []):
         process_nature_of_change(res)
 
@@ -137,10 +138,12 @@ def group_dataset_by_contact_email(datasets):
 def send_email_dataset_notification(datasets_by_contacts, action_type):
     for contact in datasets_by_contacts:
         try:
-            log.info("Preparing email data for {0} notification to {1}".format(action_type, contact.get('email')))
+            log.info("Preparing email data for {0} notification to {1}".format(
+                action_type, contact.get('email')))
             datasets = []
             for contact_dataset in contact.get('datasets', {}):
-                date = datetime.strptime(contact_dataset.get('next_update_due'), '%Y-%m-%d')
+                date = datetime.strptime(
+                    contact_dataset.get('next_update_due'), '%Y-%m-%d')
 
                 datasets.append({
                     'url': h.url_for('dataset_read', id=contact_dataset.get('name'), _external=True),
@@ -148,24 +151,30 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
                 })
 
             extra_vars = {'datasets': datasets}
-            subject = render('emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = render('emails/bodies/{0}.txt'.format(action_type), extra_vars)
+            subject = render(
+                'emails/subjects/{0}.txt'.format(action_type), extra_vars)
+            body = render(
+                'emails/bodies/{0}.txt'.format(action_type), extra_vars)
 
             site_title = 'Data | Queensland Government'
             site_url = config.get('ckan.site_url')
             enqueue_job(mailer._mail_recipient,
-                        [contact.get('email'), contact.get('email'), site_title, site_url, subject, body],
+                        [contact.get('email'), contact.get('email'),
+                         site_title, site_url, subject, body],
                         title=action_type)
-            log.info("Added email to job worker default queue for {0} notification to {1}".format(action_type, contact.get('email')))
+            log.info("Added email to job worker default queue for {0} notification to {1}".format(
+                action_type, contact.get('email')))
         except Exception as e:
-            log.error("Error sending {0} notification to {1}".format(action_type, contact.get('email')))
+            log.error("Error sending {0} notification to {1}".format(
+                action_type, contact.get('email')))
             log.error(str(e))
 
 
 def process_email_notification_for_dataset_due_to_publishing():
     action_type = 'send_email_dataset_due_to_publishing_notification'
     log.info('Started {0}'.format(action_type))
-    results = get_action('data_qld_get_dataset_due_to_publishing')({}, {}).get('results', [])
+    results = get_action('data_qld_get_dataset_due_to_publishing')(
+        {}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
         send_email_dataset_notification(datasets_by_contacts, action_type)
@@ -175,7 +184,8 @@ def process_email_notification_for_dataset_due_to_publishing():
 def process_email_notification_for_dataset_overdue():
     action_type = 'send_email_dataset_overdue_notification'
     log.info('Started {0}'.format(action_type))
-    results = get_action('data_qld_get_dataset_overdue')({}, {}).get('results', [])
+    results = get_action('data_qld_get_dataset_overdue')(
+        {}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
         send_email_dataset_notification(datasets_by_contacts, action_type)

@@ -1,24 +1,31 @@
 # encoding: utf-8
 
-from ckan import model
 import logging
+from datetime import datetime, timedelta
+
 import sqlalchemy
 import pytz
+from sqlalchemy import func, distinct, tuple_, and_
+from sqlalchemy.orm import aliased
+from ckantoolkit import config, NotAuthorized, h
 
+from ckan import model
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
 from ckan.model.package import Package
 from ckan.model.group import Group
 from ckan.model.user import User
 from ckan.model.package_extra import PackageExtra
+from ckan.model.resource import Resource
+
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
-from sqlalchemy import func, distinct, tuple_
-from sqlalchemy.orm import aliased
+from ckanext.datarequests import db
+
 from ckanext.data_qld.reporting import constants
 from ckanext.data_qld.reporting.helpers import helpers
-from ckanext.datarequests import db
-from datetime import datetime, timedelta
-from ckantoolkit import config, NotAuthorized, h
+
+from ckanext.resource_visibility.constants import FIELD_REQUEST_ASSESS, YES
+
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
@@ -46,7 +53,7 @@ def organisation_followers(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -78,7 +85,7 @@ def dataset_followers(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -111,7 +118,7 @@ def dataset_comments(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -147,7 +154,7 @@ def datarequests(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -178,7 +185,7 @@ def datarequest_comments(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -214,14 +221,15 @@ def dataset_comment_followers(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
         return (
             _session_.query(
                 # We want to count a user each time they follow a comment thread, not just unique user IDs
-                func.count(distinct(tuple_(CommentNotificationRecipient.user_id, CommentNotificationRecipient.thread_id)))
+                func.count(distinct(tuple_(
+                    CommentNotificationRecipient.user_id, CommentNotificationRecipient.thread_id)))
             )
             .filter(
                 _and_(
@@ -253,7 +261,7 @@ def datasets_min_one_comment_follower(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         return (
@@ -291,7 +299,7 @@ def datarequests_min_one_comment_follower(context, data_dict):
     utc_start_date = data_dict.get('utc_start_date', None)
     utc_end_date = data_dict.get('utc_end_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -326,9 +334,10 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
+    utc_reply_expected_by_date = data_dict.get(
+        'utc_reply_expected_by_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     comment_reply = aliased(Comment, name='comment_reply')
     try:
@@ -342,7 +351,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 CommentThread.url,
                 Package.name.label("package_name"),
                 comment_reply.parent_id,
-                comment_reply.creation_date.label("comment_reply_creation_date"),
+                comment_reply.creation_date.label(
+                    "comment_reply_creation_date"),
                 comment_reply.comment,
                 Package.title
             )
@@ -392,9 +402,10 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
+    utc_reply_expected_by_date = data_dict.get(
+        'utc_reply_expected_by_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     comment_reply = aliased(Comment, name='comment_reply')
 
@@ -461,9 +472,10 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_reply_expected_by_date = data_dict.get('utc_reply_expected_by_date', None)
+    utc_reply_expected_by_date = data_dict.get(
+        'utc_reply_expected_by_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -502,9 +514,10 @@ def datarequests_open_after_x_days(context, data_dict):
     """
     org_id = data_dict.get('org_id', None)
     utc_start_date = data_dict.get('utc_start_date', None)
-    utc_expected_closure_date = data_dict.get('utc_expected_closure_date', None)
+    utc_expected_closure_date = data_dict.get(
+        'utc_expected_closure_date', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -535,7 +548,7 @@ def datarequests_for_circumstance(context, data_dict):
     utc_end_date = data_dict.get('utc_end_date', None)
     circumstance = data_dict.get('circumstance', None)
 
-    check_org_access(org_id)
+    check_org_access(org_id, context=context)
 
     try:
         db.init_db(model)
@@ -621,7 +634,7 @@ def de_identified_datasets(context, data_dict):
     org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission)
+    check_org_access(org_id, permission, context)
 
     try:
         query = (
@@ -644,6 +657,53 @@ def de_identified_datasets(context, data_dict):
         log.error(str(e))
 
 
+def de_identified_datasets_no_schema(context, data_dict):
+    """
+    Returns the datasets that have de-identified data for an organisation
+    and missing default_schema
+
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+
+    default_count_from = helpers.get_deidentified_count_from_date()
+    count_from = data_dict.get('count_from', default_count_from)
+    check_org_access(org_id, permission, context)
+
+    extras = model.PackageExtra
+    de_identified = aliased(extras)
+    data_schema = aliased(extras)
+    data_last_updated = aliased(extras)
+
+    query = (
+        _session_.query(Package)
+        .join(de_identified)
+        .join(data_schema)
+        .join(data_last_updated)
+        .filter(and_(
+            de_identified.key == 'de_identified_data',
+            de_identified.value == 'YES',
+            de_identified.state == ACTIVE_STATE
+        ))
+        .filter(and_(
+            data_schema.key == 'default_data_schema',
+            data_schema.value == ''
+        ))
+        .filter(and_(
+            data_last_updated.key == 'data_last_updated',
+            data_last_updated.value > count_from
+        ))
+        .filter(Package.owner_org == org_id)
+        .filter(Package.state == ACTIVE_STATE)
+    )
+
+    return query.count() if return_count_only else query.all()
+
+
 def overdue_datasets(context, data_dict):
     """
     Returns the datasets that are over due for an organisation
@@ -654,7 +714,7 @@ def overdue_datasets(context, data_dict):
     org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission)
+    check_org_access(org_id, permission, context)
 
     try:
         # next_update_due is stored as display timezone without timezone as isoformat
@@ -689,7 +749,7 @@ def datasets_no_groups(context, data_dict):
     org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission)
+    check_org_access(org_id, permission, context)
     try:
         query = (
             _session_.query(Package)
@@ -698,7 +758,8 @@ def datasets_no_groups(context, data_dict):
         )
 
         datasets = query.all()
-        no_groups = [dataset for dataset in datasets if len(dataset.get_groups(group_type='group')) == 0]
+        no_groups = [dataset for dataset in datasets if len(
+            dataset.get_groups(group_type='group')) == 0]
         return len(no_groups) if return_count_only else no_groups
     except Exception as e:
         log.error(str(e))
@@ -714,7 +775,7 @@ def datasets_no_tags(context, data_dict):
     org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission)
+    check_org_access(org_id, permission, context)
     try:
         query = (
             _session_.query(Package)
@@ -723,7 +784,34 @@ def datasets_no_tags(context, data_dict):
         )
 
         datasets = query.all()
-        no_tags = [dataset for dataset in datasets if len(dataset.get_tags()) == 0]
+        no_tags = [dataset for dataset in datasets if len(
+            dataset.get_tags()) == 0]
         return len(no_tags) if return_count_only else no_tags
     except Exception as e:
         log.error(str(e))
+
+
+def datasets_pending_privacy_assessment(context, data_dict):
+    """
+    Returns the datasets that have resource with pending privacy_assessment
+
+    :param context:
+    :param data_dict:
+    :return:
+    """
+    org_id = data_dict.get('org_id', None)
+    return_count_only = data_dict.get('return_count_only', False)
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission, context)
+
+    ilike = '%"{}": "{}"%'.format(FIELD_REQUEST_ASSESS, YES)
+    query = (
+        _session_.query(Resource)
+        .join(Package)
+        .filter(Package.owner_org == org_id)
+        .filter(Package.id == Resource.package_id)
+        .filter(Package.state == ACTIVE_STATE)
+        .filter(Resource.extras.ilike(ilike))
+    )
+
+    return query.count() if return_count_only else query.all()

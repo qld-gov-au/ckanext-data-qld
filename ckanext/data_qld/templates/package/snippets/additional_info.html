@@ -18,7 +18,7 @@
   {%- do exclude_fields.append('next_update_due') -%}
 {%- endif -%}
 
-{%- if h.data_qld_show_de_identified_data(pkg_dict, c.userobj) == False -%}
+{%- if h.data_qld_user_has_admin_access(True) == False -%}
   {%- do exclude_fields.append('de_identified_data') -%}
 {%- endif -%}
 

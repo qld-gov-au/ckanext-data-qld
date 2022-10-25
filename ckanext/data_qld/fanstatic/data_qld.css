@@ -31,13 +31,6 @@ a:visited {
   left: 15px;
 }
 
-/* Hide the JSON button for Resource Data Schema */
-#resource-schema-buttons
-  > div
-  > .btn.btn-default[title="Enter manually a Table Schema JSON object"] {
-  visibility: hidden;
-}
-
 a.btn {
   text-decoration: none;
 }
@@ -553,4 +546,20 @@ hr.double-thickness {
 .modal-reason {
   position: relative;
   padding: 15px;
+}
+
+
+/* style for checkbox form input */
+.form-group.control-medium .control-checkbox {
+    display: flex;
+    column-gap: 15px;
+}
+.form-group.control-medium .control-checkbox .control-label {
+    margin: 0;
+}
+.form-group.control-medium .control-checkbox .control-label:after {
+    content: unset;
+}
+.form-group.control-medium .control-checkbox input {
+    margin: 0;
 }
