@@ -268,10 +268,14 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     # IDataValidation
 
     def set_create_mode(self, context, data_dict, current_mode):
-        return "sync" if self._is_de_identified(data_dict) else current_mode
+        if data_dict.get('schema') and self._is_de_identified(data_dict):
+            return "sync"
+        return current_mode
 
     def set_update_mode(self, context, data_dict, current_mode):
-        return "sync" if self._is_de_identified(data_dict) else current_mode
+        if data_dict.get('schema') and self._is_de_identified(data_dict):
+            return "sync"
+        return current_mode
 
     def _is_de_identified(self, data_dict):
         pkg_id = data_dict.get(u'package_id')
