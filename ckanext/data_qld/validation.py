@@ -173,6 +173,9 @@ def _is_already_aligned(resource_id, default_schema, context):
 
     resource = session.query(model.Resource).get(resource_id)
 
+    if not resource:
+        return False
+
     alignment_value = resource.extras.get(const.FIELD_ALIGNMENT)
     resource_schema = resource.extras.get(const.FIELD_RES_SCHEMA)
 
