@@ -150,7 +150,7 @@ def align_default_schema(key, data, errors, context):
     resource_schema = data[resource_schema_key]
     resource_id = data.get((const.FIELD_RESOURCES, resource_idx, 'id'))
 
-    if resource_id and _is_already_aligned(resource_id, resource_schema,
+    if resource_id and _is_already_aligned(resource_id, default_schema,
                                            context):
         return
 
@@ -167,19 +167,25 @@ def align_default_schema(key, data, errors, context):
     data[resource_schema_key] = default_schema
 
 
-def _is_already_aligned(resource_id, resource_schema, context):
+def _is_already_aligned(resource_id, default_schema, context):
     model = context['model']
     session = context['session']
 
     resource = session.query(model.Resource).get(resource_id)
 
-    alignment_value = resource.extras.get(const.FIELD_ALIGNMENT)
-    schema = resource.extras.get(const.FIELD_RES_SCHEMA)
+    if not resource:
+        return False
 
-    if is_url_valid(schema):
-        schemas_aligned = schema == resource_schema
+    alignment_value = resource.extras.get(const.FIELD_ALIGNMENT)
+    resource_schema = resource.extras.get(const.FIELD_RES_SCHEMA)
+
+    if not resource_schema:
+        return False
+
+    if is_url_valid(resource_schema):
+        schemas_aligned = resource_schema == default_schema
     else:
-        schemas_aligned = json.loads(schema) == resource_schema
+        schemas_aligned = json.loads(resource_schema) == default_schema
 
     return all([bool(alignment_value), schemas_aligned])
 

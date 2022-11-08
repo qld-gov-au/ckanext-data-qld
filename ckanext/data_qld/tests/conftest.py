@@ -86,12 +86,15 @@ class ResourceFactory(factories.Resource):
     url_type = "upload"
     url = None
 
+    package_id = factory.LazyAttribute(lambda _: DatasetFactory()["id"])
+
     @classmethod
     def _create(cls, target_class, *args, **kwargs):
         if args:
             assert False, "Positional args aren't supported, use keyword args."
 
-        return helpers.call_action("resource_create", context={}, **kwargs)
+        kwargs.setdefault("context", {})
+        return helpers.call_action("resource_create", **kwargs)
 
 
 @pytest.fixture
