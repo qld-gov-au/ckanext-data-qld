@@ -6,7 +6,7 @@ import logging
 from os import path
 import requests
 import threading
-import urllib
+from six.moves.urllib.parse import urlencode
 
 import ckan.plugins as p
 from ckantoolkit import check_ckan_version, config
@@ -37,7 +37,7 @@ class AnalyticsPostThread(threading.Thread):
 
             # Send analytics data.
             try:
-                data = urllib.urlencode(data_dict)
+                data = urlencode(data_dict)
                 requests.post(self.ga_collection_url, data=data, headers=headers, timeout=5)
                 self.queue.task_done()
             except requests.exceptions.RequestException:
