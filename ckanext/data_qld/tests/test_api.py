@@ -148,6 +148,34 @@ class TestApiPrivacyAssessment:
 
         assert const.FIELD_ASSESS_RESULT not in resource
 
+    def test_excluded_for_editor_and_admin_of_another_org(
+            self, dataset_factory, user_factory, resource_factory, app,
+            pkg_show_url):
+        """An editor or administrator of an organization must have a special
+        permission only within that organization and not in others."""
+        user1 = user_factory()
+        user2 = user_factory()
+        factories.Organization(users=[{
+            "name": user1["name"],
+            "capacity": "editor"
+        }, {
+            "name": user2["name"],
+            "capacity": "admin"
+        }])
+
+        dataset = dataset_factory()
+        resource_factory(package_id=dataset["id"])
+
+        for user in [user1, user2]:
+            response = app.get(
+                url=pkg_show_url,
+                params={"name_or_id": dataset["id"]},
+                status=200,
+                extra_environ={"REMOTE_USER": str(user['name'])})
+            resource = response.json['result']['resources'][0]
+
+            assert const.FIELD_ASSESS_RESULT not in resource
+
     def test_present_for_editor_and_admin(self, dataset_factory, user_factory,
                                           resource_factory, app, pkg_show_url):
         user1 = user_factory()
