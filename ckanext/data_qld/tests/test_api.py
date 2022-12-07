@@ -3,11 +3,14 @@ import json
 import pytest
 
 from ckan.tests import factories
+from ckan.tests.helpers import call_action
 from ckan.lib.helpers import url_for
 
 import ckanext.resource_visibility.constants as const
 
 from ckanext.data_qld.helpers import is_ckan_29
+from ckanext.data_qld.tests.conftest import _get_resource_schema
+from ckanext.data_qld.constants import FIELD_ALIGNMENT, FIELD_DEFAULT_SCHEMA
 
 
 @pytest.fixture
@@ -511,29 +514,36 @@ class TestSchemaAlignment:
         user = user_factory()
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
-        assert 'align_default_schema' in pkg_dict['resources'][0]
+        assert FIELD_ALIGNMENT in pkg_dict['resources'][0]
 
-    def test_updating_align_default_schema_via_api_is_forbidden(
-            self, dataset_factory, resource_factory, app, res_patch_url,
-            user_factory):
 
-        user = user_factory()
-        org = factories.Organization(users=[{
-            "name": user["name"],
-            "capacity": "editor"
-        }])
-        dataset = dataset_factory(owner_org=org["id"])
+@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+                         "mock_storage")
+class TestDefaultSchemaAlignment:
+
+    def test_update_default_schema_triggers_alignment_check(
+            self, dataset_factory, resource_factory):
+        """Update of a default_schema must trigger check of schemas alignment"""
+        dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"])
 
-        resp = _post(app,
-                     res_patch_url,
-                     params={
-                         "id": resource["id"],
-                         "align_default_schema": 1
-                     },
-                     status=409,
-                     extra_environ={"REMOTE_USER": str(user['name'])})
+        assert not resource[FIELD_ALIGNMENT]
 
-        assert not resp.json['success']
-        assert 'This field couldn\'t be updated via API' in resp.json['error'][
-            'align_default_schema']
+        call_action("package_patch",
+                    id=dataset["id"],
+                    default_data_schema=_get_resource_schema())
+
+        resource = call_action("resource_show", id=resource["id"])
+        assert resource[FIELD_ALIGNMENT]
+
+    def test_set_empty_default_schema(self, dataset_factory, resource_factory):
+        schema = _get_resource_schema()
+        dataset = dataset_factory(**{FIELD_DEFAULT_SCHEMA: schema})
+        resource = resource_factory(package_id=dataset["id"])
+
+        assert resource[FIELD_ALIGNMENT]
+
+        call_action("package_patch", id=dataset["id"], default_data_schema="")
+
+        resource = call_action("resource_show", id=resource["id"])
+        assert not resource[FIELD_ALIGNMENT]
