@@ -1,5 +1,6 @@
 import pytest
 
+import ckan.model as model
 import ckan.plugins.toolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
@@ -142,12 +143,45 @@ class TestAdminReportCSVExport:
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
-            dataset = dataset_factory(default_data_schema="", owner_org=org_id)
+            dataset = dataset_factory(default_data_schema="",
+                                      owner_org=org_id,
+                                      de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
 
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["de_identified_datasets_no_schema"] == 0
+
+    @pytest.mark.ckan_config(
+        u"ckanext.data_qld.reporting.de_identified_no_schema.count_from",
+        u"2022-12-01T01:00")
+    @pytest.mark.parametrize(
+        "count_from, pkg_counter",
+        [
+            ("2022-12-01T02:00", 1),
+            ("2022-12-01T01:00:49.982971", 1),
+            ("2022-12-01T00:59", 0),
+        ],
+    )
+    def test_de_identified_parametrize(self, app, dataset_factory, sysadmin,
+                                       count_from, pkg_counter):
+        app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
+        org_id = factories.Organization()["id"]
+
+        dataset = dataset_factory(
+            default_data_schema="",
+            de_identified_data="YES",
+            owner_org=org_id,
+        )
+
+        package = model.Session.query(model.Package).get(dataset["id"])
+        package._extras["data_last_updated"] = model.PackageExtra(
+            value=count_from, key="data_last_updated")
+        model.Session.commit()
+
+        result = helpers.gather_admin_metrics(org_id, "admin")
+
+        assert result[u"de_identified_datasets_no_schema"] == pkg_counter
 
 
 @pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",

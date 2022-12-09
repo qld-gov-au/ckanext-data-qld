@@ -670,8 +670,12 @@ def de_identified_datasets_no_schema(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
 
-    default_count_from = helpers.get_deidentified_count_from_date()
-    count_from = data_dict.get('count_from', default_count_from)
+    count_from_default = config.get(
+        constants.REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
+    )
+    count_from_date = h.date_str_to_datetime(
+        data_dict.get('count_from', count_from_default))
+
     check_org_access(org_id, permission, context)
 
     extras = model.PackageExtra
@@ -695,7 +699,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         ))
         .filter(and_(
             data_last_updated.key == 'data_last_updated',
-            data_last_updated.value > count_from
+            data_last_updated.value > count_from_date.isoformat()
         ))
         .filter(Package.owner_org == org_id)
         .filter(Package.state == ACTIVE_STATE)
