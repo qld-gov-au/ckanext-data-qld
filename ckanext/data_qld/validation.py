@@ -8,7 +8,7 @@ import ckanext.scheming.helpers as sh
 
 import ckanext.data_qld.constants as const
 from ckanext.data_qld.helpers import is_uploaded_file, is_ckan_29
-from ckanext.data_qld.utils import is_api_call, is_url_valid
+from ckanext.data_qld.utils import is_url_valid
 
 
 def scheming_validator(fn):
