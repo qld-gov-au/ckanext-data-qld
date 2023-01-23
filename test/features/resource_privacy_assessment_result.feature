@@ -51,7 +51,7 @@ Feature: Resource Privacy Assessment Result
         And I fill in "privacy_assessment_result" with "New privacy_assessment_result"
         And I press the element with xpath "//button[@name="save"]"
         And I trigger notification about updated privacy assessment results
-        Then I should receive an email at "test@gmail.com" containing "A privacy risk assessment was requested for a resource. The result of that assessment has been published to Home | Queensland Government."
+        Then I should receive an email at "test@gmail.com" containing "A privacy risk assessment was requested for a resource. The result of that assessment has been published to data.qld.gov.au."
         And I should receive an email at "test@gmail.com" containing "Resource/s"
         And I should receive an email at "test@gmail.com" containing "Refer to ‘https://www.data.qld.gov.au/article/standards-and-guidance/publishing-guides-standards/open-data-portal-publishing-guide’ for assistance or contact opendata@qld.gov.au."
         And I should receive an email at "test@gmail.com" containing "Do not reply to this email."
