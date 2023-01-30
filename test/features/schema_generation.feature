@@ -10,7 +10,7 @@ Feature: Schema Generation
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I should see an element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
+        And I should see an element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I should see an element with xpath "//button[contains(@class, 'btn-generate')]/following::table[contains(@class, 'table-schema')]"
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Not generated']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
@@ -24,7 +24,7 @@ Feature: Schema Generation
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
+        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         Then I reload page every 3 seconds until I see an element with xpath "//th[string()='Status']/following::td[string()='Pending']" but not more than 6 times
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'Just now')]]"
 
@@ -37,7 +37,7 @@ Feature: Schema Generation
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
+        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
 
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Complete']"
@@ -64,7 +64,7 @@ Feature: Schema Generation
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
+        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         And I press the element with xpath "//button[text()='Apply']"
         Then I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
@@ -80,7 +80,7 @@ Feature: Schema Generation
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
+        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         Then I select "dataset" from "apply_for"
         And I press the element with xpath "//button[text()='Apply']"
@@ -97,7 +97,7 @@ Feature: Schema Generation
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data scheme')]]"
+        And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         Then I select "resource" from "apply_for"
         And I press the element with xpath "//button[text()='Apply']"
