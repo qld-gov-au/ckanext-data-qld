@@ -8,7 +8,7 @@ import ckanext.scheming.helpers as sh
 
 import ckanext.data_qld.constants as const
 from ckanext.data_qld.helpers import is_uploaded_file, is_ckan_29
-from ckanext.data_qld.utils import is_api_call, is_url_valid
+from ckanext.data_qld.utils import is_url_valid
 
 
 def scheming_validator(fn):
@@ -144,11 +144,9 @@ def align_default_schema(key, data, errors, context):
         return
 
     default_schema = data[(const.FIELD_DEFAULT_SCHEMA, )]
-    resource_idx = key[1]
-    resource_schema_key = (const.FIELD_RESOURCES, resource_idx,
-                           const.FIELD_RES_SCHEMA)
-    resource_schema = data[resource_schema_key]
-    resource_id = data.get((const.FIELD_RESOURCES, resource_idx, 'id'))
+    idx = key[1]
+
+    resource_id = data.get((const.FIELD_RESOURCES, idx, 'id'))
 
     if resource_id and _is_already_aligned(resource_id, default_schema,
                                            context):
@@ -157,14 +155,7 @@ def align_default_schema(key, data, errors, context):
     if not default_schema:
         raise tk.Invalid(tk._("Missing {}").format(const.FIELD_DEFAULT_SCHEMA))
 
-    if resource_schema == default_schema:
-        return
-
-    if is_api_call():
-        errors[key].append(tk._("This field couldn't be updated via API"))
-        raise tk.StopOnError()
-
-    data[resource_schema_key] = default_schema
+    data[(const.FIELD_RESOURCES, idx, const.FIELD_RES_SCHEMA)] = default_schema
 
 
 def _is_already_aligned(resource_id, default_schema, context):
@@ -185,7 +176,12 @@ def _is_already_aligned(resource_id, default_schema, context):
     if is_url_valid(resource_schema):
         schemas_aligned = resource_schema == default_schema
     else:
-        schemas_aligned = json.loads(resource_schema) == default_schema
+        default_schema = json.loads(default_schema) if isinstance(
+            default_schema, string_types) else default_schema
+        resource_schema = json.loads(resource_schema) if isinstance(
+            resource_schema, string_types) else resource_schema
+
+        schemas_aligned = resource_schema == default_schema
 
     return all([bool(alignment_value), schemas_aligned])
 
@@ -201,3 +197,46 @@ def check_schema_alignment(key, data, errors, context):
                                         == default_schema) else const.UNALIGNED
     data[(const.FIELD_RESOURCES, resource_idx,
           const.FIELD_ALIGNMENT)] = alignment_value
+
+
+def check_schema_alignment_default_schema(key, data, errors, context):
+    """If we are updating the package, we want to update alignment for resources
+    too. Because if default_schema is changed, resource couldn'be aligned anymore
+    """
+    model = context['model']
+    session = context['session']
+
+    package_id = data[('id', )]
+
+    if not package_id:
+        return
+
+    default_schema = data[key]
+
+    package = session.query(model.Package).get(package_id)
+
+    for resource in package.resources:
+        schema = resource.extras.get(const.FIELD_RES_SCHEMA)
+
+        if not schema:
+            continue
+
+        if default_schema:
+            if is_url_valid(schema):
+                schemas_aligned = schema == default_schema
+            else:
+                default_schema = json.loads(default_schema) if isinstance(
+                    default_schema, string_types) else default_schema
+                schema = json.loads(schema) if isinstance(
+                    schema, string_types) else schema
+
+                schemas_aligned = schema == default_schema
+        else:
+            schemas_aligned = False
+
+        if resource.extras.get(const.FIELD_ALIGNMENT) and schemas_aligned:
+            continue
+
+        resource.extras[const.FIELD_ALIGNMENT] = schemas_aligned
+        model.Session.query(model.Resource).filter_by(id=resource.id).update(
+            {'extras': resource.extras}, synchronize_session=False)
