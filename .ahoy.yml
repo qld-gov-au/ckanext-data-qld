@@ -120,7 +120,13 @@ commands:
   test-unit:
     usage: Run unit tests.
     cmd: |
-      ahoy cli 'pytest --ckan-ini=.docker/test.ini $APP_DIR/ckanext' || \
+      ahoy cli 'pytest -q --ckan-ini=.docker/test.ini $APP_DIR/ckanext' || \
+      [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
+
+  test-unit-failed-rerun:
+    usage: Run unit tests.
+    cmd: |
+      ahoy cli 'pytest -q --lf --ckan-ini=.docker/test.ini $APP_DIR/ckanext' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:
