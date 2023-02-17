@@ -26,6 +26,8 @@ from ckanext.data_qld.reporting.helpers import helpers
 
 from ckanext.resource_visibility.constants import FIELD_REQUEST_ASSESS, YES
 
+from ...helpers import helpers
+
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
@@ -670,11 +672,8 @@ def de_identified_datasets_no_schema(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
 
-    count_from_default = config.get(
-        constants.REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
-    )
     count_from_date = h.date_str_to_datetime(
-        data_dict.get('count_from', count_from_default))
+        data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
     check_org_access(org_id, permission, context)
 
