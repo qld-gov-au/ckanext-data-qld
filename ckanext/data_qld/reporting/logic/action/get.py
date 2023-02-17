@@ -26,8 +26,6 @@ from ckanext.data_qld.reporting.helpers import helpers
 
 from ckanext.resource_visibility.constants import FIELD_REQUEST_ASSESS, YES
 
-from ...helpers import helpers
-
 
 _and_ = sqlalchemy.and_
 _replace_ = func.replace
