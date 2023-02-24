@@ -72,7 +72,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
             'get_closing_circumstance_list': reporting_helpers.get_closing_circumstance_list,
             'get_organisation_list': reporting_helpers.get_organisation_list,
-            'get_deidentified_count_from_date': reporting_helpers.get_deidentified_count_from_date,
+            'get_deidentified_count_from_date_display': reporting_helpers.get_deidentified_count_from_date_display,
             'data_qld_data_driven_application': helpers.data_driven_application,
             'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
             'data_qld_resource_formats': helpers.resource_formats,

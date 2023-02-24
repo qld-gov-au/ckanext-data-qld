@@ -8,7 +8,7 @@
         {% if metric == 'no-reply' %}
             Engagement Report: Datasets:
         {% elif metric == 'de_identified_datasets_no_schema' %}
-            Admin Report: De-identified datasets without data schema validation (post-{{ h.get_deidentified_count_from_date() }}):
+            Admin Report: De-identified datasets without data schema validation (post-{{ h.get_deidentified_count_from_date_display() }}):
         {% elif metric == 'de-identified-datasets' %}
             Admin Report: De-identified Datasets:
         {% elif metric == 'overdue-datasets' %}

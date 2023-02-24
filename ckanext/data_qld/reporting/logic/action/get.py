@@ -677,22 +677,23 @@ def de_identified_datasets_no_schema(context, data_dict):
 
     extras = model.PackageExtra
     de_identified = aliased(extras)
-    data_schema = aliased(extras)
     data_last_updated = aliased(extras)
+
+    sub_query = _session_.query(extras.package_id).filter(
+        and_(
+            extras.key == 'default_data_schema',
+            extras.value != ''
+        ))
 
     query = (
         _session_.query(Package)
         .join(de_identified)
-        .join(data_schema)
         .join(data_last_updated)
+        .filter(Package.id.notin_(sub_query))
         .filter(and_(
             de_identified.key == 'de_identified_data',
             de_identified.value == 'YES',
             de_identified.state == ACTIVE_STATE
-        ))
-        .filter(and_(
-            data_schema.key == 'default_data_schema',
-            data_schema.value == ''
         ))
         .filter(and_(
             data_last_updated.key == 'data_last_updated',

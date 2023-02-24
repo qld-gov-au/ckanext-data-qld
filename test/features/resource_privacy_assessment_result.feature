@@ -2,7 +2,7 @@ Feature: Resource Privacy Assessment Result
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
-    Scenario Outline: Add new resource metadata field 'Privacy assessment result' and display on the edit resource GUI page
+    Scenario: Add new resource metadata field 'Privacy assessment result' and display on the edit resource GUI page
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to dataset "package-with-csv-res"
