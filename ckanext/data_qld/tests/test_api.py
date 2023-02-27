@@ -476,7 +476,7 @@ class TestSchemaAlignment:
               extra_environ={"REMOTE_USER": str(user['name'])})
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
-        assert not pkg_dict['default_data_schema']
+        assert 'default_data_schema' not in pkg_dict
 
     def test_create_resource_with_custom_schema(self, dataset_factory,
                                                 resource_factory,
