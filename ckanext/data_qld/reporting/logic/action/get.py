@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 import pytz
-from sqlalchemy import func, distinct, tuple_, and_
+from sqlalchemy import func, distinct, tuple_, and_, literal_column
 from sqlalchemy.orm import aliased
 from ckantoolkit import config, NotAuthorized, h
 
@@ -648,7 +648,7 @@ def de_identified_datasets(context, data_dict):
         )
 
         if return_count_only:
-            datasets = query.count()
+            datasets = query_count(query)
         else:
             datasets = query.all()
 
@@ -703,7 +703,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         .filter(Package.state == ACTIVE_STATE)
     )
 
-    return query.count() if return_count_only else query.all()
+    return query_count(query) if return_count_only else query.all()
 
 
 def overdue_datasets(context, data_dict):
@@ -733,7 +733,7 @@ def overdue_datasets(context, data_dict):
         )
 
         if return_count_only:
-            datasets = query.count()
+            datasets = query_count(query)
         else:
             datasets = query.all()
         return datasets
@@ -816,4 +816,21 @@ def datasets_pending_privacy_assessment(context, data_dict):
         .filter(Resource.extras.ilike(ilike))
     )
 
-    return query.count() if return_count_only else query.all()
+    return query_count(query) if return_count_only else query.all()
+
+
+def query_count(query):
+    """
+    A SQL count that's more efficient than the default query.count()
+    SQL query then becomes:
+    SELECT count(1) AS count_1 FROM table;
+
+    source: https://datawookie.dev/blog/2021/01/sqlalchemy-efficient-counting/
+
+    :param query:
+    :return:
+    """
+    ONE = literal_column("1")
+    counter = query.statement.with_only_columns([func.count(ONE)])
+    counter = counter.order_by(None)
+    return query.session.execute(counter).scalar()
