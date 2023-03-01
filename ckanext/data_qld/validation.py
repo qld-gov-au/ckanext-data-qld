@@ -143,13 +143,14 @@ def align_default_schema(key, data, errors, context):
     if len(key) != 3 or key[2] != const.FIELD_ALIGNMENT:
         return
 
-    default_schema = data[(const.FIELD_DEFAULT_SCHEMA, )]
     idx = key[1]
-
+    default_schema = data[(const.FIELD_DEFAULT_SCHEMA, )]
+    resource_schema = data[(const.FIELD_RESOURCES, idx,
+                            const.FIELD_RES_SCHEMA)]
     resource_id = data.get((const.FIELD_RESOURCES, idx, 'id'))
 
-    if resource_id and _is_already_aligned(resource_id, default_schema,
-                                           context):
+    if resource_id and resource_schema and _is_already_aligned(
+            resource_id, default_schema, context):
         return
 
     if not default_schema:

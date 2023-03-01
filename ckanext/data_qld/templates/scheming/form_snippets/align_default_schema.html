@@ -4,10 +4,11 @@
 {% set field_id = "field-" ~ field.field_name %}
 {% set error = errors[field.field_name] %}
 {% set is_required = h.scheming_field_required(field) %}
-{% set is_visible = pkg_dict.default_data_schema and pkg_dict.default_data_schema != data["schema"] %}
+{% set has_default_schema = pkg_dict.default_data_schema %}
+{% set is_visible = has_default_schema and pkg_dict.default_data_schema != data["schema"] %}
 {% set is_creating = not data["id"] %}
 
-<div class="form-group control-medium schema-align {% if not is_visible %}hidden{% endif %}">
+<div class="form-group control-medium schema-align {% if not is_visible %}hidden{% endif %} {% if not has_default_schema %}no-default-schema{% endif %}">
     <div class="control-checkbox">
         <input
             id="{{ field_id }}" type="checkbox"
