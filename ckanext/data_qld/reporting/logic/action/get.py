@@ -11,11 +11,14 @@ from ckantoolkit import config, NotAuthorized, h
 
 from ckan import model
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
-from ckan.model.package import Package
 from ckan.model.group import Group
-from ckan.model.user import User
+from ckan.model.member import Member
+from ckan.model.package import Package
 from ckan.model.package_extra import PackageExtra
+from ckan.model.packagetag import PackageTag
 from ckan.model.resource import Resource
+from ckan.model.tag import Tag
+from ckan.model.user import User
 
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
@@ -753,16 +756,27 @@ def datasets_no_groups(context, data_dict):
     permission = data_dict.get('permission', 'admin')
     check_org_access(org_id, permission, context)
     try:
+        sub_query = (_session_.query(Package.id)
+            .join(Member)
+            .join(Group)
+            .filter(Package.id == Member.table_id)
+            .filter(Member.group_id == Group.id)
+            .filter(Member.table_name == 'package')
+            .filter(Member.state == ACTIVE_STATE)
+            .filter(Package.owner_org == org_id)
+            .filter(Package.state == ACTIVE_STATE)
+            .filter(Group.type == 'group')
+            .order_by(Package.title)
+        )
+
         query = (
             _session_.query(Package)
             .filter(Package.owner_org == org_id)
             .filter(Package.state == ACTIVE_STATE)
+            .filter(Package.id.notin_(sub_query))
         )
 
-        datasets = query.all()
-        no_groups = [dataset for dataset in datasets if len(
-            dataset.get_groups(group_type='group')) == 0]
-        return len(no_groups) if return_count_only else no_groups
+        return query_count(query) if return_count_only else query.all()
     except Exception as e:
         log.error(str(e))
 
@@ -779,16 +793,24 @@ def datasets_no_tags(context, data_dict):
     permission = data_dict.get('permission', 'admin')
     check_org_access(org_id, permission, context)
     try:
+        sub_query = (_session_.query(Tag.package_id)
+            .join(PackageTag)
+            .join(Package)
+            .filter(PackageTag.tag_id == Tag.id)
+            .filter(PackageTag.package_id == Package.id)
+            .filter(Package.owner_org == org_id)
+            .filter(Tag.vocabulary_id is None)
+            .filter(PackageTag.state == ACTIVE_STATE)
+        )
+
         query = (
             _session_.query(Package)
             .filter(Package.owner_org == org_id)
             .filter(Package.state == ACTIVE_STATE)
+            .filter(Package.id.notin_(sub_query))
         )
 
-        datasets = query.all()
-        no_tags = [dataset for dataset in datasets if len(
-            dataset.get_tags()) == 0]
-        return len(no_tags) if return_count_only else no_tags
+        return query_count(query) if return_count_only else query.all()
     except Exception as e:
         log.error(str(e))
 
