@@ -782,8 +782,8 @@ def datasets_no_tags(context, data_dict):
     permission = data_dict.get('permission', 'admin')
     check_org_access(org_id, permission, context)
     try:
-        sub_query = (_session_.query(model.Tag.package_id)
-                     .join(model.PackageTag)
+        sub_query = (_session_.query(model.PackageTag.package_id)
+                     .join(model.Tag)
                      .join(model.Package)
                      .filter(model.PackageTag.tag_id == model.Tag.id)
                      .filter(model.PackageTag.package_id == model.Package.id)
