@@ -78,7 +78,7 @@ def read_schema_from_request():
             form_data = tk.request.files
         else:
             form_data = tk.request.params
-    except TypeError:
+    except (TypeError, RuntimeError):
         # working outside context, cli or tests
         return
 
