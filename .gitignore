@@ -76,3 +76,6 @@ target/
 
 # generated from template
 Dockerfile.ckan
+
+# LC CDM
+deps.mk

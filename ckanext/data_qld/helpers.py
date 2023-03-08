@@ -7,7 +7,8 @@ from six import text_type
 from ckan import model
 from ckan.lib import uploader
 from ckantoolkit import _, c, g, h, abort, asbool, check_ckan_version, \
-    config, get_action, get_endpoint, ObjectNotFound, render, request
+    config, get_action, get_endpoint, ObjectNotFound, render, request, \
+    aslist
 
 
 def get_user():
@@ -32,7 +33,8 @@ def user_has_admin_access(include_editor_access):
         return True
 
     groups_admin = user.get_groups('organization', 'admin')
-    groups_editor = user.get_groups('organization', 'editor') if include_editor_access else []
+    groups_editor = user.get_groups(
+        'organization', 'editor') if include_editor_access else []
     groups_list = groups_admin + groups_editor
     organisation_list = [g for g in groups_list if g.type == 'organization']
     return len(organisation_list) > 0
@@ -122,7 +124,8 @@ def resource_formats(field):
     :rtype: Array resource formats
 
     """
-    resource_formats = config.get('ckanext.data_qld.resource_formats', '').split('\r\n')
+    resource_formats = aslist(config.get(
+        'ckanext.data_qld.resource_formats', ''))
     return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
             for resource_format in resource_formats]
 
@@ -234,7 +237,8 @@ def is_request_for_resource():
 def set_external_resources():
     environment = config.get('ckan.site_url', '')
     if 'ckan' in environment:
-        return '//staging.data.qld.gov.au'
+        # return '//staging.data.qld.gov.au'
+        return '/cicd'
     else:
         return ''
 

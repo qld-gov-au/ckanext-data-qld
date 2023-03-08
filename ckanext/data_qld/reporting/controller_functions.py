@@ -6,9 +6,16 @@ from ckantoolkit import _, abort, get_action, get_validator, \
     request, render, Invalid, NotAuthorized, ObjectNotFound
 
 from ckanext.data_qld import helpers
-from .constants import DATAREQUEST_OPEN_MAX_DAYS, COMMENT_NO_REPLY_MAX_DAYS, \
-    REPORT_TYPES, REPORT_TYPE_ADMIN, REPORT_TYPE_ENGAGEMENT
 from .helpers import export_helpers, helpers as reporting_helpers
+from .constants import (
+    DATAREQUEST_OPEN_MAX_DAYS,
+    COMMENT_NO_REPLY_MAX_DAYS,
+    REPORT_TYPES,
+    REPORT_TYPE_ADMIN,
+    REPORT_TYPE_ENGAGEMENT
+
+)
+
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +49,8 @@ def index():
             if error:
                 return error
 
-            organisations = reporting_helpers.get_organisation_list(report_permission)
+            organisations = reporting_helpers.get_organisation_list(
+                report_permission)
 
             extra_vars.update({
                 'organisations': organisations,
@@ -61,7 +69,8 @@ def index():
                 })
 
                 if report_type == REPORT_TYPE_ENGAGEMENT:
-                    start_date, end_date = reporting_helpers.get_report_date_range(request)
+                    start_date, end_date = reporting_helpers.get_report_date_range(
+                        request)
                     extra_vars.update({
                         'start_date': start_date,
                         'end_date': end_date,
@@ -78,36 +87,43 @@ def index():
             'reporting/index.html',
             extra_vars=extra_vars
         )
-    except ObjectNotFound as e:  # Exception raised from get_action('organization_show')
+    # Exception raised from get_action('organization_show')
+    except ObjectNotFound as e:
         log.warn(e)
         return abort(404, _('Organisation %s not found') % org_id)
     except NotAuthorized as e:  # Exception raised from check_user_access
         log.warn(e)
         organisation = request_helper.get_first_query_param('organisation')
         if organisation:
-            msg = 'You are not authorised to view the {0} report for organisation {1}'.format(report_type, organisation)
+            msg = 'You are not authorised to view the {0} report for organisation {1}'.format(
+                report_type, organisation)
         else:
-            msg = 'You are not authorised to view the {0} report'.format(report_type)
+            msg = 'You are not authorised to view the {0} report'.format(
+                report_type)
 
         return abort(403, _(msg))
 
 
 def export():
-    report_type = helpers.RequestHelper(request).get_first_query_param('report_type', '')
-    try:
-        report_permission = _get_report_type_permission(report_type)
-        reporting_helpers.check_user_access(report_permission)
-        error = _valid_report_type(report_type)
-        if error:
-            return error
+    report_type = helpers.RequestHelper(
+        request).get_first_query_param('report_type', '')
+    report_permission = _get_report_type_permission(report_type)
 
-        if report_type == REPORT_TYPE_ENGAGEMENT:
-            return _export_engagement_report(report_type, report_permission)
-        elif report_type == REPORT_TYPE_ADMIN:
-            return _export_admin_report(report_type, report_permission)
+    try:
+        reporting_helpers.check_user_access(report_permission)
     except NotAuthorized as e:  # Exception raised from check_user_access
         log.warn(e)
         return abort(403, _('You are not authorised to export the {0} report'.format(report_type)))
+
+    error = _valid_report_type(report_type)
+
+    if error:
+        return error
+
+    if report_type == REPORT_TYPE_ENGAGEMENT:
+        return _export_engagement_report(report_type, report_permission)
+    elif report_type == REPORT_TYPE_ADMIN:
+        return _export_admin_report(report_type, report_permission)
 
 
 def _export_engagement_report(report_type, report_permission):
@@ -115,7 +131,8 @@ def _export_engagement_report(report_type, report_permission):
 
     report_config = export_helpers.csv_report_config(report_type)
 
-    row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
+    row_order, row_properties = export_helpers.csv_row_order_and_properties(
+        report_config)
 
     csv_header_row = ['']
 
@@ -125,7 +142,8 @@ def _export_engagement_report(report_type, report_permission):
         dict_csv_rows[key] = []
 
     # This is to allow for closing circumstances to be configurable through the CKAN UI
-    closing_circumstances = [c['circumstance'] for c in reporting_helpers.get_closing_circumstance_list()]
+    closing_circumstances = [c['circumstance']
+                             for c in reporting_helpers.get_closing_circumstance_list()]
 
     no_closing_circumstances = ['accepted_dataset', 'no_accepted_dataset']
 
@@ -136,7 +154,8 @@ def _export_engagement_report(report_type, report_permission):
 
     # Data requests without closing circumstance, i.e. those prior to ~July 2020
     for no_circumstance in no_closing_circumstances:
-        key = 'Closed data requests - Closed %s' % no_circumstance.replace('_', ' ')
+        key = 'Closed data requests - Closed %s' % no_circumstance.replace(
+            '_', ' ')
         row_order.append(key)
         dict_csv_rows[key] = []
 
@@ -152,7 +171,8 @@ def _export_engagement_report(report_type, report_permission):
 
     # Add the average closing time column for each closure without circumstance
     for no_circumstance in no_closing_circumstances:
-        key = 'Average days closed data request - Closed %s' % no_circumstance.replace('_', ' ')
+        key = 'Average days closed data request - Closed %s' % no_circumstance.replace(
+            '_', ' ')
         row_order.append(key)
         dict_csv_rows[key] = []
 
@@ -176,7 +196,8 @@ def _export_engagement_report(report_type, report_permission):
 def _export_admin_report(report_type, report_permission):
     report_config = export_helpers.csv_report_config(report_type)
 
-    row_order, row_properties = export_helpers.csv_row_order_and_properties(report_config)
+    row_order, row_properties = export_helpers.csv_row_order_and_properties(
+        report_config)
 
     csv_header_row = ['Criteria']
 
@@ -199,7 +220,8 @@ def _export_admin_report(report_type, report_permission):
 
 
 def datasets(org_id, metric):
-    report_type = helpers.RequestHelper(request).get_first_query_param('report_type', '')
+    report_type = helpers.RequestHelper(
+        request).get_first_query_param('report_type', '')
     try:
         report_permission = _get_report_type_permission(report_type)
         reporting_helpers.check_user_org_access(org_id, report_permission)
@@ -207,7 +229,8 @@ def datasets(org_id, metric):
         if error:
             return error
 
-        get_validator('group_id_exists')(org_id, reporting_helpers.get_context())
+        get_validator('group_id_exists')(
+            org_id, reporting_helpers.get_context())
 
         org = get_action('organization_show')({}, {'id': org_id})
 
@@ -221,7 +244,8 @@ def datasets(org_id, metric):
 
         if metric == 'no-reply':
 
-            start_date, end_date = reporting_helpers.get_report_date_range(request)
+            start_date, end_date = reporting_helpers.get_report_date_range(
+                request)
 
             utc_start_date, \
                 utc_end_date, \
@@ -249,7 +273,8 @@ def datasets(org_id, metric):
             comment_ids = {}
             for comment in comments:
                 if comment.package_name in comment_ids:
-                    comment_ids[comment.package_name].append(comment.comment_id)
+                    comment_ids[comment.package_name].append(
+                        comment.comment_id)
                 else:
                     comment_ids[comment.package_name] = [comment.comment_id]
                     datasets.append(comment)
@@ -265,6 +290,16 @@ def datasets(org_id, metric):
                 'permission': report_permission
             })
             datasets = get_action('de_identified_datasets')({}, data_dict)
+            data_dict.update({
+                'datasets': datasets
+            })
+        elif metric == 'de_identified_datasets_no_schema':
+            data_dict.update({
+                'return_count_only': False,
+                'permission': report_permission
+            })
+            datasets = get_action(
+                'de_identified_datasets_no_schema')({}, data_dict)
             data_dict.update({
                 'datasets': datasets
             })
@@ -295,12 +330,23 @@ def datasets(org_id, metric):
             data_dict.update({
                 'datasets': datasets
             })
+        elif metric == 'pending_privacy_assessment':
+            data_dict.update({
+                'return_count_only': False,
+                'permission': report_permission
+            })
+            resources = get_action(
+                'datasets_pending_privacy_assessment')({}, data_dict)
+            data_dict.update({
+                'resources': resources
+            })
 
         return render(
             'reporting/datasets.html',
             extra_vars=data_dict
         )
-    except Invalid as e:  # Exception raised from get_validator('group_id_exists')
+    # Exception raised from get_validator('group_id_exists')
+    except Invalid as e:
         log.warn(e)
         return abort(404, _('Organisation %s not found') % org_id)
     except NotAuthorized as e:  # Exception raised from check_user_access
@@ -319,7 +365,8 @@ def datarequests(org_id, metric):
         if error:
             return error
 
-        get_validator('group_id_exists')(org_id, reporting_helpers.get_context())
+        get_validator('group_id_exists')(
+            org_id, reporting_helpers.get_context())
 
         start_date, end_date = reporting_helpers.get_report_date_range(request)
 
@@ -351,16 +398,19 @@ def datarequests(org_id, metric):
         }
 
         if metric == 'no-reply':
-            datarequests_comments = get_action('datarequests_no_replies_after_x_days')({}, data_dict)
+            datarequests_comments = get_action(
+                'datarequests_no_replies_after_x_days')({}, data_dict)
             # Action `datarequests_no_replies_after_x_days` returns a collection of comments with no replies
             # On this page we only need to display distinct datarequests containing those comments
             distinct_datarequests = []
             comment_ids = {}
             for datarequest in datarequests_comments:
                 if datarequest.datarequest_id in comment_ids:
-                    comment_ids[datarequest.datarequest_id].append(datarequest.comment_id)
+                    comment_ids[datarequest.datarequest_id].append(
+                        datarequest.comment_id)
                 else:
-                    comment_ids[datarequest.datarequest_id] = [datarequest.comment_id]
+                    comment_ids[datarequest.datarequest_id] = [
+                        datarequest.comment_id]
                     distinct_datarequests.append(datarequest)
 
             datarequests = distinct_datarequests
@@ -371,16 +421,21 @@ def datarequests(org_id, metric):
                 }
             )
         elif metric == 'no-comments':
-            datarequests = get_action('open_datarequests_no_comments_after_x_days')({}, data_dict)
+            datarequests = get_action(
+                'open_datarequests_no_comments_after_x_days')({}, data_dict)
         elif metric == 'open-max-days':
-            datarequests = get_action('datarequests_open_after_x_days')({}, data_dict)
+            datarequests = get_action(
+                'datarequests_open_after_x_days')({}, data_dict)
         else:
-            closing_circumstances = [x['circumstance'] for x in reporting_helpers.get_closing_circumstance_list()]
+            closing_circumstances = [
+                x['circumstance'] for x in reporting_helpers.get_closing_circumstance_list()]
 
             if circumstance not in closing_circumstances:
-                raise Invalid(_('Circumstance {0} is not valid'.format(circumstance)))
+                raise Invalid(
+                    _('Circumstance {0} is not valid'.format(circumstance)))
 
-            datarequests = get_action('datarequests_for_circumstance')({}, data_dict)
+            datarequests = get_action(
+                'datarequests_for_circumstance')({}, data_dict)
 
         data_dict['datarequests'] = datarequests
 
@@ -388,7 +443,8 @@ def datarequests(org_id, metric):
             'reporting/datarequests.html',
             extra_vars=data_dict
         )
-    except Invalid as e:  # Exception raised from get_validator('group_id_exists')
+    # Exception raised from get_validator('group_id_exists')
+    except Invalid as e:
         log.warn(e)
         return abort(404, _('Organisation %s not found') % org_id)
     except NotAuthorized as e:  # Exception raised from check_user_access

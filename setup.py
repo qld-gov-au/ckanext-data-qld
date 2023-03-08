@@ -79,6 +79,8 @@ setup(
         data_qld_google_analytics=ckanext.data_qld.google_analytics.plugin:GoogleAnalyticsPlugin
         data_qld_reporting=ckanext.data_qld.plugin:PlaceholderPlugin
 
+        data_qld_test=ckanext.data_qld.test_plugin:DataQldTestPlugin
+
         [paste.paster_command]
         migrate_extras = ckanext.data_qld.commands:MigrateExtras
         demote_publishers = ckanext.data_qld.commands:DemotePublishers

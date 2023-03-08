@@ -46,6 +46,13 @@
                     .format(org_id=org_id, metric="de-identified-datasets", report_type=report_type),
                 report_type=report_type %}
             {% snippet "reporting/snippets/linked_metric.html",
+                metric="de_identified_datasets_no_schema",
+                label='De-identified datasets without default data schema (post-{})'.format(h.get_deidentified_count_from_date_display()),
+                count=metrics.de_identified_datasets_no_schema,
+                link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'
+                    .format(org_id=org_id, metric="de_identified_datasets_no_schema", report_type=report_type),
+                report_type=report_type %}
+            {% snippet "reporting/snippets/linked_metric.html",
                 metric="overdue-datasets",
                 label='Overdue Datasets',
                 count=metrics.overdue_datasets,
@@ -57,7 +64,7 @@
                 label='Datasets not added to group/s',
                 count=metrics.datasets_no_groups,
                 link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'
-                    .format(org_id=org_id, metric="datasets_no_groups", report_type=report_type), 
+                    .format(org_id=org_id, metric="datasets_no_groups", report_type=report_type),
                 report_type=report_type %}
             {% snippet "reporting/snippets/linked_metric.html",
                 metric="datasets_no_tags",
@@ -65,6 +72,13 @@
                 count=metrics.datasets_no_tags,
                 link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'.format(
                     org_id=org_id, metric="datasets_no_tags", report_type=report_type),
+                report_type=report_type %}
+            {% snippet "reporting/snippets/linked_metric.html",
+                metric="pending_privacy_assessment",
+                label='Pending privacy assessment',
+                count=metrics.pending_privacy_assessment,
+                link='/dashboard/reporting/datasets/{org_id}/{metric}?report_type={report_type}'.format(
+                    org_id=org_id, metric="pending_privacy_assessment", report_type=report_type),
                 report_type=report_type %}
         </tbody>
     </table>

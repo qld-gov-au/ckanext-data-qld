@@ -1,0 +1,38 @@
+{% import 'macros/form.html' as form %}
+
+{% set pkg_dict = h.resource_visibility_get_package_dict(data['package_id']) %}
+{% set field_id = "field-" ~ field.field_name %}
+{% set error = errors[field.field_name] %}
+{% set is_required = h.scheming_field_required(field) %}
+{% set has_default_schema = pkg_dict.default_data_schema %}
+{% set is_visible = has_default_schema and pkg_dict.default_data_schema != data["schema"] %}
+{% set is_creating = not data["id"] %}
+
+<div class="form-group control-medium schema-align {% if not is_visible %}hidden{% endif %} {% if not has_default_schema %}no-default-schema{% endif %}">
+    <div class="control-checkbox">
+        <input
+            id="{{ field_id }}" type="checkbox"
+            value="{{ "false" if not pkg_dict.default_data_schema else "true" }}" name="{{ field.field_name }}"
+            {% if data[field.field_name] or is_creating %} checked{% endif %}
+            {{ form.attributes(field.form_attrs if 'form_attrs' in field else {}) }}
+        >
+
+        <label for="{{ field_id }}" class="control-label">
+            {{ h.scheming_language_text(field.form_label) }}
+        </label>
+        {% if is_required %}
+            <span title="{{ _("This field is required") }}" class="control-required">*</span>
+        {% endif %}
+    </div>
+
+    {% if error and error is iterable %}
+        <strong class="error-inline">{{ error|join(', ') }}</strong>
+    {% endif %}
+
+    {% if field.help_text %}
+        {% set text = h.scheming_language_text(field.help_text) %}
+        {% set help_inline = field.get('help_inline', false) %}
+
+        {{ form.info(text=text|safe if field.get('help_allow_html', false) else text, inline=help_inline) }}
+    {% endif %}
+</div>

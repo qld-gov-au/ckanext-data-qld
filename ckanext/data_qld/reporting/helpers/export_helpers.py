@@ -4,12 +4,15 @@ import csv
 import json
 import logging
 import os
-import six
 from tempfile import gettempdir
+from datetime import datetime
+
+import six
 
 from ckan.plugins.toolkit import abort, config
+
 from ckanext.data_qld.reporting.helpers import helpers
-from datetime import datetime
+
 
 log = logging.getLogger(__name__)
 
@@ -17,7 +20,8 @@ log = logging.getLogger(__name__)
 def csv_report_config(report_type):
     """Load a CSV report config file specified in the ini file, or
     fall back to predefined file in the extension"""
-    path = config.get('ckan.reporting.json_config', os.path.dirname(os.path.realpath(__file__)) + '/../{0}_report_csv.json'.format(report_type))
+    path = config.get('ckan.reporting.json_config', os.path.dirname(
+        os.path.realpath(__file__)) + '/../{0}_report_csv.json'.format(report_type))
 
     with open(path) as json_data:
         return json.load(json_data)
@@ -33,6 +37,9 @@ def csv_row_order_and_properties(report_config):
 
     for i in range(len(report_config) + 1):
         for key, settings in report_config.items():
+            if settings['property'] == "de_identified_datasets_no_schema":
+                key = key.format(helpers.get_deidentified_count_from_date_display())
+
             if settings['order'] == i:
                 row_order.append(key)
                 row_properties[key] = settings
@@ -69,7 +76,8 @@ def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, ro
             metric_value = len(metrics.get(settings['property'], {}))
             dict_csv_rows[key].append(str(int(metric_value)))
         elif settings['type'] == 'complex':
-            metric_value = metrics.get(settings['property'], {})[settings['element']]
+            metric_value = metrics.get(settings['property'], {})[
+                settings['element']]
             dict_csv_rows[key].append(str(int(metric_value)))
 
     # Output the closing circumstances rows:
@@ -80,7 +88,8 @@ def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, ro
 
     for circumstance in closing_circumstances:
         metric_dict = circumstance_metrics.get(circumstance, {})
-        dict_csv_rows['Closed data requests - %s' % circumstance].append(str(int(metric_dict.get('count', 0))))
+        dict_csv_rows['Closed data requests - %s' %
+                      circumstance].append(str(int(metric_dict.get('count', 0))))
 
     for n in no_circumstance_closures:
         dict_csv_rows['Closed data requests - Closed %s' % n.replace('_', ' ')].append(
@@ -89,14 +98,16 @@ def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, ro
     # Now the average closing time for each circumstance
     for circumstance in closing_circumstances:
         metric_dict = circumstance_metrics.get(circumstance, {})
-        dict_csv_rows['Average days closed data request - %s' % circumstance].append(str(int(metric_dict.get('average', 0))))
+        dict_csv_rows['Average days closed data request - %s' %
+                      circumstance].append(str(int(metric_dict.get('average', 0))))
 
     # Now the average closing time for no circumstance data request closures
     for n in no_circumstance_closures:
         dict_csv_rows['Average days closed data request - Closed %s' % n.replace('_', ' ')].append(
             str(int(no_circumstance_closures[n].get('average', 0))))
 
-    dict_csv_rows['Average days closed data requests - overall'].append(str(int(datarequest_metrics.get('average_overall', 0))))
+    dict_csv_rows['Average days closed data requests - overall'].append(
+        str(int(datarequest_metrics.get('average_overall', 0))))
 
 
 def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows, permission):
@@ -120,17 +131,20 @@ def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows
             metric_value = len(metrics.get(settings['property'], {}))
             dict_csv_rows[key].append(str(int(metric_value)))
         elif settings['type'] == 'complex':
-            metric_value = metrics.get(settings['property'], {})[settings['element']]
+            metric_value = metrics.get(settings['property'], {})[
+                settings['element']]
             dict_csv_rows[key].append(str(int(metric_value)))
 
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
-    filename = '{0}-{1}-report.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M"), report_type)
+    filename = '{0}-{1}-report.csv'.format(
+        datetime.now().strftime("%Y-%m-%d-%H-%M"), report_type)
     filepath = gettempdir() + '/' + filename
 
     try:
         with open(filepath, 'w') as csvfile:
-            csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            csv_writer = csv.writer(
+                csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             csv_writer.writerow(csv_header_row)
             for label in row_order:
                 row = [label] + dict_csv_rows[label]
@@ -143,6 +157,7 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
             b'Content-Disposition': six.ensure_binary("attachment;filename=%s" % filename)
         }
     except Exception as e:
-        log.error('Error creating %s report CSV export file: %s', report_type, filepath)
+        log.error('Error creating %s report CSV export file: %s',
+                  report_type, filepath)
         log.error(str(e))
         return abort(500, 'Unable to export report file')

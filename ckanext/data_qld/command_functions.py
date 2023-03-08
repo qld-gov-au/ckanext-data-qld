@@ -4,8 +4,9 @@ import logging
 
 from ckantoolkit import get_action, ValidationError, h, get_validator
 
+from ckan import model
+
 from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
-import ckan.model as model
 
 log = logging.getLogger(__name__)
 
@@ -16,7 +17,8 @@ def migrate_extras(package_ids):
     :return:
     """
     context = {'ignore_auth': True}
-    package_ids = [pkg['id'] for pkg in get_action('package_list')(context=context)]
+    package_ids = [pkg['id']
+                   for pkg in get_action('package_list')(context=context)]
 
     package_patch = get_action('package_patch')
     # Step 1: Get all the package IDs.
@@ -100,7 +102,8 @@ def migrate_extras(package_ids):
                 })
         except ValidationError as e:
             print('Package Failed: ', package_id, '\n', e.error_dict, )
-            print('Package Payload: ', package_id, security_classification, data_driven_application, version, author_email, notes, update_frequency, resources)
+            print('Package Payload: ', package_id, security_classification, data_driven_application,
+                  version, author_email, notes, update_frequency, resources)
 
     return 'SUCCESS'
 
@@ -124,16 +127,19 @@ def demote_publishers(username_prefix):
         print('- - - - - - - - - - - - - - - - - - - - - - - - -')
         updates_required = False
         users = org.get('users', [])
-        print('Processing organisation ID: %s | Name: %s' % (org['id'], org['name']))
+        print('Processing organisation ID: %s | Name: %s' %
+              (org['id'], org['name']))
         if users:
             for user in org['users']:
                 if user['name'].startswith(username_prefix) and user['capacity'] == 'admin':
-                    print('- Setting capacity for user %s to "editor" in organisation %s' % (user['name'], org['name']))
+                    print('- Setting capacity for user %s to "editor" in organisation %s' %
+                          (user['name'], org['name']))
                     user['capacity'] = 'editor'
                     updates_required = True
                     updates += 1
             if updates_required:
-                print('- Updating user capacities for organisation %s' % org['name'])
+                print('- Updating user capacities for organisation %s' %
+                      org['name'])
                 _patch_organisation_users(org['id'], users)
             else:
                 print('- Nothing to update for organisation %s' % org['name'])
@@ -226,7 +232,8 @@ def update_missing_values():
         if not res.get('last_modified'):
             h.populate_revision(res)
             last_modified = res.get('revision_timestamp') or res.get('created')
-            resource_patch['last_modified'] = get_validator('convert_to_json_if_datetime')(last_modified, context)
+            resource_patch['last_modified'] = get_validator(
+                'convert_to_json_if_datetime')(last_modified, context)
             # We need to trigger a package_patch to trigger the data_qld_data_last_updated validator to re-calculate data_last_updated
             package_patch['data_last_updated'] = ''
 
@@ -245,7 +252,8 @@ def update_missing_values():
         # Update resource values first so the resource last_modified values can be used to calculate dataset data_last_updated
         for resource in package.resources:
             resources_total += 1
-            resource_patch, package_patch = _populate_resource_values(resource.as_dict(), package_patch)
+            resource_patch, package_patch = _populate_resource_values(
+                resource.as_dict(), package_patch)
             if len(resource_patch.items()) > 1:
                 result = _update_resource(resource_patch)
                 if result is True:
@@ -260,7 +268,9 @@ def update_missing_values():
             else:
                 package_errors += 1
 
-    print("Updated packages. Total:{0}. Updates:{1}. Errors:{2}".format(packages_total, package_updates, package_errors))
-    print("Updated resources. Total:{0}. Updates:{1}. Errors:{2}".format(resources_total, resource_updates, resource_errors))
+    print("Updated packages. Total:{0}. Updates:{1}. Errors:{2}".format(
+        packages_total, package_updates, package_errors))
+    print("Updated resources. Total:{0}. Updates:{1}. Errors:{2}".format(
+        resources_total, resource_updates, resource_errors))
 
     return "COMPLETED update_missing_values"
