@@ -198,6 +198,15 @@ def is_datarequests_enabled():
     return _is_action_configured('list_datarequests')
 
 
+def dashboard_index_route():
+    if check_ckan_version('2.10'):
+        if _is_action_configured('dashboard_activity_list'):
+            return 'activity.dashboard'
+        else:
+            return 'dashboard.datasets'
+    return 'dashboard.index'
+
+
 def get_all_groups():
     groups = get_action('group_list')(
         data_dict={'include_dataset_count': False, 'all_fields': True})
