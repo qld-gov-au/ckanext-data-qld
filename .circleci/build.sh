@@ -17,6 +17,9 @@ ahoy pull
 if [ "$CKAN_VERSION" = "2.8" ]; then
     PYTHON_VERSION=py2
     QGOV_CKAN_VERSION=ckan-2.8.8-qgov.5
+elif [ "$CKAN_VERSION" = "2.10" ]; then
+    PYTHON_VERSION=py3
+    QGOV_CKAN_VERSION=ckan-2.10.0
 else
     QGOV_CKAN_VERSION=ckan-2.9.5-qgov.8
     if [ "$CKAN_VERSION" = "2.9-py2" ]; then

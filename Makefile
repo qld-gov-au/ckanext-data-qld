@@ -4,11 +4,10 @@
 # ckan_tag = ckan-2.9.5
 remote-ckan = https://github.com/qld-gov-au/ckan.git tag ckan-2.9.5-qgov.7
 
-ext_list = dcat datarequests csrf-filter xloader datajson ytp-comments validation ssm-config scheming s3filestore resource-type-validation report ex-qgov archiver qa odi-certificates harvester-data-qld-geoscience harvest resource-visibility validation-schema-generator qgov
+ext_list = dcat datarequests csrf-filter xloader datajson ytp-comments validation ssm-config scheming s3filestore resource-type-validation report ex-qgov archiver qa harvester-data-qld-geoscience harvest resource-visibility validation-schema-generator qgov
 
 remote-archiver = https://github.com/qld-gov-au/ckanext-archiver.git tag  2.1.1-qgov.12
 remote-harvester-data-qld-geoscience = https://github.com/qld-gov-au/ckanext-harvester-data-qld-geoscience tag  v0.0.5
-remote-odi-certificates = https://github.com/qld-gov-au/ckanext-odi-certificates.git tag  1.0.1
 remote-qa = https://github.com/qld-gov-au/ckanext-qa.git tag  2.0.3-qgov.6
 remote-ex-qgov = https://github.com/qld-gov-au/ckan-ex-qgov.git tag  5.0.2
 remote-report = https://github.com/qld-gov-au/ckanext-report.git tag  0.3

@@ -82,6 +82,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'get_gtm_container_id': helpers.get_gtm_code,
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
+            'dashboard_index_route': helpers.dashboard_index_route,
             'is_ckan_29': helpers.is_ckan_29,
             'is_datarequests_enabled': helpers.is_datarequests_enabled,
             'get_all_groups': helpers.get_all_groups,

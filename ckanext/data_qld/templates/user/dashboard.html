@@ -6,7 +6,7 @@
     {% link_for _('Edit settings'), named_route='user.edit', id=user_dict.get('name', ''), class_='btn btn-default', icon='cog' %}
   </div>
   <ul class="nav nav-tabs">
-    {{ h.build_nav_icon('dashboard.index', _('News feed')) }}
+    {{ h.build_nav_icon(h.dashboard_index_route(), _('News feed')) }}
     {{ h.build_nav_icon('dashboard.datasets', _('My Datasets')) }}
     {{ h.build_nav_icon('dashboard.organizations', _('My Organizations')) }}
     {{ h.build_nav_icon('dashboard.groups', _('My Groups')) }}
