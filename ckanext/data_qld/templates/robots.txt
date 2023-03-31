@@ -1,4 +1,5 @@
 {% block all_user_agents %}
+User-agent: *
 {% if h.is_prod() %}
 {% raw %}
 Disallow: /dataset/rate/
