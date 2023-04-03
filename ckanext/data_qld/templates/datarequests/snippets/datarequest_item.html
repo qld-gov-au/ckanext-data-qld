@@ -12,7 +12,7 @@
             <i class="icon-unlock fa fa-unlock"></i> {% trans %}Open{% endtrans %}
           </span>
         {% endif %}
-        {% link_for h.truncate(title, truncate_title), named_route='datarequest.show', id=datarequest.get('id', '') %}
+        {% link_for title|truncate(truncate_title_length), named_route='datarequest.show', id=datarequest.get('id', '') %}
       </h3>
       {% if description %}
         <div>{{ description }}</div>
