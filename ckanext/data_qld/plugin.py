@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 import logging
-import six
 
 from ckan import plugins
 
@@ -58,10 +57,11 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     def update_config_schema(self, schema):
         ignore_missing = tk.get_validator('ignore_missing')
+        unicode_safe = tk.get_validator('unicode_safe')
         schema.update({
             # This is a custom configuration option
-            'ckanext.data_qld.resource_formats': [ignore_missing, six.text_type],
-            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, six.text_type],
+            'ckanext.data_qld.resource_formats': [ignore_missing, unicode_safe],
+            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode_safe],
         })
         return schema
 

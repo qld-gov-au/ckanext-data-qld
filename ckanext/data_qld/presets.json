@@ -39,7 +39,7 @@
     {
       "preset_name": "data_qld_resource_url_upload",
       "values": {
-        "validators": "scheming_required unicode remove_whitespace",
+        "validators": "scheming_required unicode_safe remove_whitespace",
         "form_snippet": "upload.html",
         "form_placeholder": "http://example.com/my-data.csv",
         "upload_field": "upload",
@@ -58,7 +58,7 @@
     {
       "preset_name": "data_qld_title",
       "values": {
-        "validators": "if_empty_same_as(name) unicode",
+        "validators": "if_empty_same_as(name) unicode_safe",
         "form_snippet": "text.html",
         "form_attrs": {
           "data-module": "slug-preview-target"
