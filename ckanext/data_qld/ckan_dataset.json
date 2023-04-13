@@ -59,7 +59,7 @@
         {
             "field_name": "version",
             "label": "Version",
-            "validators": "scheming_required unicode package_version_validator",
+            "validators": "scheming_required unicode_safe package_version_validator",
             "form_placeholder": "1.0",
             "required": true
         },
