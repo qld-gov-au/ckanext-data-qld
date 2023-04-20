@@ -788,7 +788,6 @@ def datasets_no_tags(context, data_dict):
                      .filter(model.PackageTag.tag_id == model.Tag.id)
                      .filter(model.PackageTag.package_id == model.Package.id)
                      .filter(model.Package.owner_org == org_id)
-                     .filter(model.Tag.vocabulary_id is None)
                      .filter(model.PackageTag.state == ACTIVE_STATE)
                      )
 
