@@ -1,4 +1,4 @@
-{% set type = 'asset' if h.is_ckan_29() else 'resource' %}
+{% set type = 'asset' %}
 {% include "package/snippets/flag-comment_" ~ type ~ ".html" %}
 
 {% set content_type = content_type or 'dataset' %}

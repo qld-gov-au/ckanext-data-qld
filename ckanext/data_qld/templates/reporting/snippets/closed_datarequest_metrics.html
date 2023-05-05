@@ -1,14 +1,8 @@
 {% for row in h.get_closing_circumstance_list() %}
     {% set data = datarequests.circumstances[row.circumstance]|default(None) %}
     {% if row.condition == 'nominate_approximate_date' %}
-        {% if h.is_ckan_29() %}
-            {% set reporting_url = h.url_for(
-                'data_qld_reporting.datarequests', org_id=org_id, metric='closed') %}
-        {% else %}
-            {% set reporting_url = h.url_for(
-                controller='ckanext.data_qld.reporting.controller:ReportingController',
-                action='datarequests', org_id=org_id, metric='closed') %}
-        {% endif %}
+        {% set reporting_url = h.url_for(
+            'data_qld_reporting.datarequests', org_id=org_id, metric='closed') %}
         {% set url = reporting_url + '?start_date=' + start_date + '&end_date=' + end_date + '&circumstance=' + row.circumstance + '&report_type=' + report_type
         %}
     {% else %}
