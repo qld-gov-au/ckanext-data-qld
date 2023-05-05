@@ -12,7 +12,7 @@ Feature: Dataset APIs
         When I log in
         And I edit the "public-test-dataset" dataset
         And I fill in "author_email" with "admin@example.com"
-        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
+        And I press the element with xpath "//form[@id='dataset-edit']//button[contains(@class, 'btn-primary')]"
         And I press the element with xpath "//a[contains(@href, '/dataset/activity/') and contains(string(), 'Activity Stream')]"
         Then I should see "created the dataset"
         When I click the link with text that contains "View this version"

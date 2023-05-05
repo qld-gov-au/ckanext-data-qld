@@ -12,7 +12,7 @@ Feature: Dataset deletion
         Then I fill in "version" with "1"
         Then I fill in "author_email" with "test@test.com"
         Then I fill in "de_identified_data" with "NO" if present
-        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
+        And I press the element with xpath "//form[@id='dataset-edit']//button[contains(@class, 'btn-primary')]"
 
         Then I attach the file "csv_resource.csv" to "upload"
         Then I fill in "name" with "res1"
