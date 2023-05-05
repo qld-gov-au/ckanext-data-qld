@@ -152,7 +152,8 @@ def datarequests(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest
@@ -183,7 +184,8 @@ def datarequest_comments(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 func.count(distinct(Comment.id))
@@ -219,7 +221,8 @@ def dataset_comment_followers(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 # We want to count a user each time they follow a comment thread, not just unique user IDs
@@ -297,7 +300,8 @@ def datarequests_min_one_comment_follower(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 func.count(distinct(db.DataRequest.id))
@@ -405,7 +409,8 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     comment_reply = aliased(Comment, name='comment_reply')
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         comments = (
             _session_.query(
                 Comment.id.label("comment_id"),
@@ -473,7 +478,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest.id,
@@ -515,7 +521,8 @@ def datarequests_open_after_x_days(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest.id,
@@ -546,7 +553,8 @@ def datarequests_for_circumstance(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest

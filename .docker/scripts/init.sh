@@ -27,5 +27,11 @@ ckan_cli report initdb
 # Initialise the QA database tables
 ckan_cli qa init
 
+# Initialise the data request tables if applicable
+if (ckan_cli datarequests --help); then
+    ckan_cli datarequests init_db
+    ckan_cli datarequests update_db
+fi
+
 # Create some base test data
 . $APP_DIR/scripts/create-test-data.sh
