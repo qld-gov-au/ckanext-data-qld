@@ -3,7 +3,7 @@
 {% block header_wrapper %} {% block header_account %}
 <div class="account-masthead">
   <div class="container">
-    {% block header_account_container_content %} {% if c.userobj %}
+    {% block header_account_container_content %} {% if g.userobj %}
     <div class="account avatar authed" data-module="me" data-me="{{ c.userobj.id }}">
       <ul class="unstyled">
         {% block header_account_logged %} {% if c.userobj.sysadmin %}

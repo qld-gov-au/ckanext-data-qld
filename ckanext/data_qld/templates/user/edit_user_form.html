@@ -5,10 +5,10 @@
 
   <fieldset>
     <legend>{{ _('Change details') }}</legend>
-    {% if c.userobj.sysadmin == True %}
-      {{ form.input('name', label=_('Username'), id='field-username', value=data.name, error=errors.name, classes=['control-medium'], is_required=true, attrs={'class': 'form-control'}) }}
+    {% if g.userobj.sysadmin == True %}
+    {{ form.input('name', label=_('Username'), id='field-username', value=data.name, error=errors.name, classes=['control-medium'], is_required=true, attrs={'class': 'form-control'}) }}
     {% else %}
-      {{ form.input('name', label=_('Username'), id='field-username', value=data.name, error=errors.name, classes=['control-medium'], attrs={'readonly': '', 'class': 'form-control'}) }}
+    {{ form.input('name', label=_('Username'), id='field-username', value=data.name, error=errors.name, classes=['control-medium'], attrs={'readonly': '', 'class': 'form-control'}) }}
     {% endif %}
 
     {{ form.input('fullname', label=_('Full name'), id='field-fullname', value=data.fullname, error=errors.fullname, placeholder=_('eg. Joe Bloggs'), classes=['control-medium'], is_required=true) }}
@@ -18,7 +18,7 @@
     {{ form.markdown('about', label=_('About'), id='field-about', value=data.about, error=errors.about, placeholder=_('A little information about yourself')) }}
 
     {% if show_email_notifications %}
-      {% call form.checkbox('activity_streams_email_notifications', label=_('Subscribe to notification emails'), id='field-activity-streams-email-notifications', value=True, checked=c.userobj.activity_streams_email_notifications) %}
+      {% call form.checkbox('activity_streams_email_notifications', label=_('Subscribe to notification emails'), id='field-activity-streams-email-notifications', value=True, checked=g.userobj.activity_streams_email_notifications) %}
       {% set helper_text = _("You will receive notification emails from {site_title}, e.g. when you have new activities on your dashboard."|string) %}
       {{ form.info(helper_text.format(site_title=g.site_title), classes=['info-help-tight']) }}
       {% endcall %}
