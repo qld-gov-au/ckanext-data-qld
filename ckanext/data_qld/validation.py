@@ -7,7 +7,7 @@ from ckan.lib.uploader import _get_underlying_file
 import ckanext.scheming.helpers as sh
 
 import ckanext.data_qld.constants as const
-from ckanext.data_qld.helpers import is_uploaded_file, is_ckan_29
+from ckanext.data_qld.helpers import is_uploaded_file
 from ckanext.data_qld.utils import is_url_valid
 
 
@@ -74,10 +74,7 @@ def process_schema_fields(key, data, errors, context):
 
 def read_schema_from_request():
     try:
-        if is_ckan_29():
-            form_data = tk.request.files
-        else:
-            form_data = tk.request.params
+        form_data = tk.request.files
     except (TypeError, RuntimeError):
         # working outside context, cli or tests
         return

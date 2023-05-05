@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import os
 import json
 import six
@@ -5,8 +7,8 @@ from datetime import datetime as dt
 
 import pytest
 import factory
-import ckantoolkit as tk
 from faker import Faker
+from werkzeug.datastructures import FileStorage as MockFileStorage
 
 import ckan.tests.helpers as helpers
 from ckan.tests import factories
@@ -17,21 +19,6 @@ from ckanext.ytp.comments.model import init_tables as ytp_init
 from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
-
-if tk.check_ckan_version('2.9'):
-    from werkzeug.datastructures import FileStorage as MockFileStorage
-else:
-    import cgi
-
-    class MockFileStorage(cgi.FieldStorage):
-
-        def __init__(self, fp, filename):
-
-            self.file = fp
-            self.filename = filename
-            self.name = u"upload"
-            self.list = None
-
 
 fake = Faker()
 
