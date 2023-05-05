@@ -35,8 +35,6 @@ done
 
 if [ "$CKAN_VERSION" = "2.9-py2" ]; then
     install_requirements . dev-requirements-2.9-py2
-elif [  "$CKAN_VERSION" = "2.8"  ]; then
-    install_requirements . dev-requirements-py2
 else
     install_requirements . dev-requirements
 fi
