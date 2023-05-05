@@ -81,7 +81,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
             'dashboard_index_route': helpers.dashboard_index_route,
-            'is_ckan_29': helpers.is_ckan_29,
             'is_datarequests_enabled': helpers.is_datarequests_enabled,
             'get_all_groups': helpers.get_all_groups,
             'is_request_for_resource': helpers.is_request_for_resource,
