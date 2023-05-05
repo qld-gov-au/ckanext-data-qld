@@ -225,6 +225,10 @@ def is_reporting_enabled():
     return _is_action_configured('report_list')
 
 
+def is_apikey_enabled():
+    return _is_action_configured('user_generate_apikey')
+
+
 def is_request_for_resource():
     """
     Searching for a url path for /dataset/ and /resource/

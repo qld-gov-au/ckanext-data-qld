@@ -94,6 +94,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
             'is_reporting_enabled': helpers.is_reporting_enabled,
             'members_sorted': helpers.members_sorted,
             'get_deletion_reason_template': helpers.get_deletion_reason_template,
+            'check_ckan_version': tk.check_ckan_version,
+            'is_apikey_enabled': helpers.is_apikey_enabled
         }
 
     # IValidators
