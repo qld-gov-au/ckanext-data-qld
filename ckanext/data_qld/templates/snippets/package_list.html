@@ -20,7 +20,7 @@ Example:
             {% block package_list_inner %}
                 {% for package in packages %}
                     {% if package.type != 'showcase' %}
-                        {% snippet 'snippets/package_item.html', package=package, item_class=item_class, hide_resources=hide_resources, banner=banner, truncate_length=truncate_length, truncate_title_length=truncate_title_length %}
+                        {% snippet 'snippets/package_item.html', package=package, item_class=item_class, hide_resources=hide_resources, banner=banner, truncate=truncate, truncate_title=truncate_title %}
                     {% endif %}
                 {% endfor %}
             {% endblock %}
