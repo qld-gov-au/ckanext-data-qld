@@ -3,7 +3,6 @@ User-agent: *
 {% if h.is_prod() %}
 {% raw %}
 Disallow: /dataset/rate/
-Disallow: /revision/
 Disallow: /dataset/*/history
 Disallow: /api/
 Disallow: /en/storage/

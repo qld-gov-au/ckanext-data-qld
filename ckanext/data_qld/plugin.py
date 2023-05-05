@@ -92,7 +92,6 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'is_prod': helpers.is_prod,
             'comment_notification_recipients_enabled':
                 helpers.get_comment_notification_recipients_enabled,
-            'populate_revision': helpers.populate_revision,
             'unreplied_comments_x_days': helpers.unreplied_comments_x_days,
             'is_reporting_enabled': helpers.is_reporting_enabled,
             'members_sorted': helpers.members_sorted,

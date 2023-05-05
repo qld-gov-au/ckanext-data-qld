@@ -2,7 +2,7 @@
 
 import logging
 
-from ckantoolkit import get_action, ValidationError, h, get_validator
+from ckantoolkit import get_action, ValidationError, get_validator
 
 from ckan import model
 
@@ -230,8 +230,7 @@ def update_missing_values():
             resource_patch['governance_acknowledgement'] = 'NO'
 
         if not res.get('last_modified'):
-            h.populate_revision(res)
-            last_modified = res.get('revision_timestamp') or res.get('created')
+            last_modified = res.get('created')
             resource_patch['last_modified'] = get_validator(
                 'convert_to_json_if_datetime')(last_modified, context)
             # We need to trigger a package_patch to trigger the data_qld_data_last_updated validator to re-calculate data_last_updated
