@@ -5,7 +5,6 @@ from behave import fixture, use_fixture
 from behaving import environment as benv
 from behaving.web.steps.browser import named_browser
 
-
 # Path to the root of the project.
 ROOT_PATH = os.path.realpath(os.path.join(
     os.path.dirname(os.path.realpath(__file__)),

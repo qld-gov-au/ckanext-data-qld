@@ -16,7 +16,7 @@ Feature: SchemaMetadata
     Scenario: When I create a resource without a name or description, I should see errors
         Given "SysAdmin" as the persona
         When I log in
-        And I go to "/dataset/new_resource/warandpeace"
+        And I open the new resource form for dataset "warandpeace"
         And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
         And I press the element with xpath "//button[contains(string(), 'Add')]"
         Then I should see "Name: Missing value"
@@ -85,7 +85,7 @@ Feature: SchemaMetadata
     Scenario Outline: Check label of the Data schema validation options field
         Given "<User>" as the persona
         When I log in
-        And I go to "/dataset/new_resource/warandpeace"
+        And I open the new resource form for dataset "warandpeace"
         Then I should see an element with xpath "//label[text()='Data schema validation options']"
         Then I should not see an element with xpath "//label[text()='Validation options']"
 

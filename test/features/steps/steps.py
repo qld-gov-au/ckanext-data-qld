@@ -98,12 +98,21 @@ def fill_in_field_if_present(context, name, value):
     """.format(name, value))
 
 
+@step(u'I open the new resource form for dataset "{name}"')
+def go_to_new_resource_form(context, name):
+    context.execute_steps(u"""
+        When I edit the "{name}" dataset
+        And I click the link with text that contains "Resources"
+        And I click the link with text that contains "Add new resource"
+    """.format(name=name))
+
+
 @step(u'I create a resource with name "{name}" and URL "{url}"')
 def add_resource(context, name, url):
     context.execute_steps(u"""
         When I log in
-        And I visit "/dataset/new_resource/test-dataset"
-        And I execute the script "document.getElementById('field-image-url').value='{url}'"
+        And I open the new resource form for dataset "test-dataset"
+        And I execute the script "$('#resource-edit [name=url]').val('{url}')"
         And I fill in "name" with "{name}"
         And I fill in "description" with "description"
         And I fill in "size" with "1024" if present
@@ -172,12 +181,16 @@ def go_to_user_show(context, user_id):
 
 @step(u'I view the "{group_id}" group API "{including}" users')
 def go_to_group_including_users(context, group_id, including):
-    when_i_visit_url(context, r'/api/3/action/group_show?id={}&include_users={}'.format(group_id, including in ['with', 'including']))
+    when_i_visit_url(
+        context, r'/api/3/action/group_show?id={}&include_users={}'.format(
+            group_id, including in ['with', 'including']))
 
 
 @step(u'I view the "{organisation_id}" organisation API "{including}" users')
 def go_to_organisation_including_users(context, organisation_id, including):
-    when_i_visit_url(context, r'/api/3/action/organization_show?id={}&include_users={}'.format(organisation_id, including in ['with', 'including']))
+    when_i_visit_url(
+        context, r'/api/3/action/organization_show?id={}&include_users={}'.format(
+            organisation_id, including in ['with', 'including']))
 
 
 @step(u'I should be able to download via the element with xpath "{expression}"')

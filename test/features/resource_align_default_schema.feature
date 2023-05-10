@@ -4,7 +4,7 @@ Feature: Resource align_default_schema field
     Scenario: Create or edit resource in the GUI where default_data_schema is NULL, initial display and behaviour
         Given "TestOrgEditor" as the persona
         When I log in
-        Then I go to "/dataset/package-without-default-schema"
+        Then I go to dataset "package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following-sibling::td[contains(text(),"Field name 'default_data_schema' not in data")]"
 
         Then I press the element with xpath "//li[@class="resource-item"]/a"
@@ -14,7 +14,7 @@ Feature: Resource align_default_schema field
         And I should see "Link"
         And I should see "JSON"
 
-        And I go to "/dataset/package-without-default-schema/resource/new"
+        Then I open the new resource form for "package-without-default-schema"
         And I should not see "Align this data schema with the dataset default"
         And I should see "Upload"
         And I should see "Link"
@@ -25,10 +25,10 @@ Feature: Resource align_default_schema field
     Scenario: Create resource with schema not aligned to default schema
         Given "TestOrgEditor" as the persona
         When I log in
-        Then I go to "/dataset/package-without-default-schema"
+        Then I go to dataset "package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
-        And I go to "/dataset/package-without-default-schema/resource/new"
+        Then I open the new resource form for dataset "package-without-default-schema"
 
         And I should see an element with xpath "//div[contains(@class,'schema-align')]/following-sibling::div[@class='image-upload']"
         And I should see an element with xpath "//input[@type='checkbox' and @name='align_default_schema' and @checked]/following-sibling::label[@for='field-align_default_schema' and text()=contains(.,'Align this data schema with the dataset default')]"
@@ -52,7 +52,7 @@ Feature: Resource align_default_schema field
     Scenario: Edit a resource in the GUI where default_data_schema is not NULL and the existing schema value does not match the default_data_schema value
         Given "TestOrgEditor" as the persona
         When I log in
-        Then I go to "/dataset/package-without-default-schema"
+        Then I go to dataset "package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
         Then I press the element with xpath "//li[@class="resource-item"]/a"

@@ -4,8 +4,8 @@ Feature: Data Validation
     Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I can see the '</> JSON' button
        Given "<User>" as the persona
         When I log in
-        And I visit "dataset/new_resource/annakarenina"
-        And I should see an element with xpath "//*[@id='resource-schema-buttons']//a[contains(string(), 'JSON')]"
+        And I open the new resource form for dataset "warandpeace"
+        Then I should see an element with xpath "//*[@id='resource-schema-buttons']//a[contains(string(), 'JSON')]"
 
         Examples: Users
         | User              |
