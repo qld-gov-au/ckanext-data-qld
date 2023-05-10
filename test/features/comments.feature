@@ -4,14 +4,14 @@ Feature: Comments
     @unauthenticated
     Scenario: The Add Comment form should not display for a non-logged-in user - instead they see a 'Login to comment' button
         Given "Unauthenticated" as the persona
-        When I go to dataset "warandpeace" comments
+        When I go to dataset "public-test-dataset" comments
         Then I should see "Login to comment" within 1 seconds
         And I should not see the add comment form
 
     Scenario: Logged-in users see the add comment form
         Given "CKANUser" as the persona
         When I log in
-        Then I go to dataset "warandpeace" comments
+        Then I go to dataset "public-test-dataset" comments
         Then I should see the add comment form
 
     @comment-add

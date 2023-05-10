@@ -43,7 +43,7 @@ Feature: Theme customisations
     Scenario: Explore button does not exist on dataset detail page
         Given "Unauthenticated" as the persona
         When I go to dataset page
-        And I click the link with text that contains "A Wonderful Story"
+        And I click the link with text that contains "public-test"
         Then I should not see "Explore"
 
     @unauthenticated
