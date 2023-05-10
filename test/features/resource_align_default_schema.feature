@@ -75,7 +75,7 @@ Feature: Resource align_default_schema field
     Scenario: Edit resource in the GUI where default_data_schema is not NULL and the existing schema value matches the default_data_schema value
         Given "TestOrgEditor" as the persona
         When I log in
-        Then I go to "/dataset/package-without-default-schema"
+        Then I go to dataset "package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
         Then I press the element with xpath "//li[@class="resource-item"]/a"
