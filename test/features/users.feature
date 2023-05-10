@@ -115,7 +115,8 @@ Feature: User APIs
         Given "Publisher" as the persona
         When I log in
         And I go to the dashboard
-        Then I should see an element with xpath "//h2[contains(string(), 'News feed')]"
+        Then I should see my datasets
+        And I should see "Add Dataset"
 
     @email
     Scenario: As a registered user, when I have locked my account with too many failed logins, I can reset my password to unlock it
