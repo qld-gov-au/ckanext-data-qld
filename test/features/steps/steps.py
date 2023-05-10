@@ -1,16 +1,20 @@
-import uuid
-import email
-import quopri
-import re
-
-import requests
-import six
-from six.moves.urllib.parse import urlparse
 from behave import step
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
+import email
+import quopri
+import re
+import requests
+import six
+from six.moves.urllib.parse import urlparse
+import uuid
+
+# Monkey-patch Selenium 3 to handle Python 3.9
+import base64
+if not hasattr(base64, 'encodestring'):
+    base64.encodestring = base64.encodebytes
 
 URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
                     (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
