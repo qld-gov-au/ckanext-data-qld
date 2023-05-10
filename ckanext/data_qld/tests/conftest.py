@@ -10,10 +10,12 @@ import factory
 from faker import Faker
 from werkzeug.datastructures import FileStorage as MockFileStorage
 
+from ckan import model
 import ckan.tests.helpers as helpers
 from ckan.tests import factories
 
 from ckan.lib import uploader
+from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
 from ckanext.ytp.comments.model import init_tables as ytp_init
 from ckanext.validation.model import create_tables as validation_init
@@ -173,6 +175,7 @@ def clean_db(reset_db):
     archival_init()
     qa_init()
     ytp_init()
+    datarequest_db.init_db(model)
 
     if not is_validation_table_exist():
         validation_init()
