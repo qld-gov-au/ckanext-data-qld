@@ -14,7 +14,7 @@ Feature: Resource align_default_schema field
         And I should see "Link"
         And I should see "JSON"
 
-        Then I open the new resource form for "package-without-default-schema"
+        Then I open the new resource form for dataset "package-without-default-schema"
         And I should not see "Align this data schema with the dataset default"
         And I should see "Upload"
         And I should see "Link"
