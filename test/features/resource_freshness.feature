@@ -30,7 +30,7 @@ Feature: Resource freshness
         Given "<User>" as the persona
         When I log in
         Then I should be able to patch dataset "test-dataset" via the API
-        And I go to "/dataset/edit/test-dataset"
+        And I edit the "test-dataset" dataset
         And I select "monthly" from "update_frequency"
         Then I should see "Next update due"
         When I fill in "next_update_due" with "01/01/1970"

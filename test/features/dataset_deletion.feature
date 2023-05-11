@@ -22,7 +22,7 @@ Feature: Dataset deletion
         Then I press the element with xpath "//button[@value='go-metadata']"
         Then I should see "Data and Resources"
 
-        When I go to "/dataset/edit/dataset-deletion"
+        When I edit the "dataset-deletion" dataset
         Then I press the element with xpath "//a[@data-module='confirm-action']"
         Then I should see "Briefly describe the reason for deleting this dataset"
         And I should see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"

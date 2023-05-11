@@ -46,7 +46,7 @@ Feature: SchemaMetadata
     Scenario Outline: Edit existing dataset, field de_identified_data value should be NO
         Given "<User>" as the persona
         When I log in
-        And I go to "/dataset/edit/public-test-dataset"
+        And I edit the "public-test-dataset" dataset
         Then I should see an element with id "field-de_identified_data"
         Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@value='YES']"
         Then I should see an element with xpath "//select[@id='field-de_identified_data']/option[@selected='' and @value='NO']"
