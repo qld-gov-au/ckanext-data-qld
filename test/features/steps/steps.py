@@ -145,6 +145,45 @@ def edit_dataset(context, name):
     when_i_visit_url(context, '/dataset/edit/{}'.format(name))
 
 
+@step(u'I fill in default dataset fields')
+def fill_in_default_dataset_fields(context):
+    context.execute_steps(u"""
+        When I fill in title with random text
+        And I fill in "notes" with "Description"
+        And I fill in "version" with "1.0"
+        And I fill in "author_email" with "test@me.com"
+        And I execute the script "document.getElementById('field-license_id').value='other-open'"
+        And I fill in "de_identified_data" with "NO" if present
+    """)
+
+
+@step(u'I fill in default resource fields')
+def fill_in_default_resource_fields(context):
+    context.execute_steps(u"""
+        When I fill in "name" with "Test Resource"
+        And I fill in "description" with "Test Resource Description"
+    """)
+
+
+@step(u'I fill in link resource fields')
+def fill_in_default_link_resource_fields(context):
+    context.execute_steps(u"""
+        When I execute the script "$('#resource-edit [name=url]').val('https://example.com')"
+        And I execute the script "document.getElementById('field-format').value='HTML'"
+        And I fill in "size" with "1024" if present
+    """)
+
+
+@step(u'I upload "{file_name}" of type "{file_format}" to resource')
+def upload_file_to_resource(context, file_name, file_format):
+    context.execute_steps(u"""
+        When I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
+        And I attach the file {file_name} to "upload"
+        # Don't quote the injected string since it can have trailing spaces
+        And I execute the script "document.getElementById('field-format').value={file_format}"
+    """.format(file_name=file_name, file_format=file_format))
+
+
 @step(u'I go to group page')
 def go_to_group_page(context):
     when_i_visit_url(context, '/group')
@@ -247,18 +286,15 @@ def create_dataset(context, license, file_format, file):
     assert context.persona
     context.execute_steps(u"""
         When I visit "/dataset/new"
-        And I fill in title with random text
-        And I fill in "notes" with "Description"
-        And I fill in "version" with "1.0"
-        And I fill in "author_email" with "test@me.com"
+        And I fill in default dataset fields
         And I execute the script "document.getElementById('field-license_id').value={license}"
-        Then I fill in "de_identified_data" with "NO" if present
         And I press "Add Data"
         And I attach the file {file} to "upload"
         And I fill in "name" with "Test Resource"
         And I execute the script "document.getElementById('field-format').value={file_format}"
         And I fill in "description" with "Test Resource Description"
         And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        Then I should see "Data and Resources"
     """.format(license=license, file=file, file_format=file_format))
 
 
