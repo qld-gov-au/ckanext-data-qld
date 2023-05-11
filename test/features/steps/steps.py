@@ -126,6 +126,7 @@ def title_random_text(context):
     assert context.persona
     context.execute_steps(u"""
         When I fill in "title" with "Test Title {0}"
+        And I fill in "name" with "test-title-{0}" if present
     """.format(uuid.uuid4()))
 
 
