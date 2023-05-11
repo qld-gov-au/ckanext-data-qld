@@ -62,7 +62,7 @@ echo "Creating ${TEST_ORG_TITLE} organisation:"
 
 TEST_ORG=$( \
     curl -LsH "Authorization: ${API_KEY}" \
-    --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
+    --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}&description=Organisation%20for%20testing%20issues" \
     ${CKAN_ACTION_URL}/organization_create
 )
 
@@ -86,14 +86,6 @@ curl -LsH "Authorization: ${API_KEY}" \
 #
 
 # Creating test data hierarchy which creates organisations assigned to datasets
-echo "Creating department-of-health organisation:"
-organisation_create=$( \
-    curl -LsH "Authorization: ${API_KEY}" \
-    --data "name=department-of-health&title=Department%20of%20Health" \
-    ${CKAN_ACTION_URL}/organization_create
-)
-echo ${organisation_create}
-
 echo "Creating food-standards-agency organisation:"
 organisation_create=$( \
     curl -LsH "Authorization: ${API_KEY}" \
@@ -103,7 +95,6 @@ organisation_create=$( \
 echo ${organisation_create}
 
 add_user_if_needed organisation_admin "Organisation Admin" organisation_admin@localhost
-add_user_if_needed editor "Publisher" publisher@localhost
 add_user_if_needed foodie "Foodie" foodie@localhost
 add_user_if_needed group_admin "Group Admin" group_admin@localhost
 add_user_if_needed walker "Walker" walker@localhost
@@ -135,22 +126,6 @@ package_owner_org_update=$( \
     ${CKAN_ACTION_URL}/package_owner_org_update
 )
 echo ${package_owner_org_update}
-
-echo "Updating organisation_admin to have admin privileges in the department-of-health Organisation:"
-organisation_admin_update=$( \
-    curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"id": "department-of-health", "username": "organisation_admin", "role": "admin"}' \
-    ${CKAN_ACTION_URL}/organization_member_create
-)
-echo ${organisation_admin_update}
-
-echo "Updating publisher to have editor privileges in the department-of-health Organisation:"
-publisher_update=$( \
-    curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"id": "department-of-health", "username": "editor", "role": "editor"}' \
-    ${CKAN_ACTION_URL}/organization_member_create
-)
-echo ${publisher_update}
 
 echo "Updating foodie to have admin privileges in the food-standards-agency Organisation:"
 foodie_update=$( \

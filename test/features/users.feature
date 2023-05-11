@@ -14,7 +14,7 @@ Feature: User APIs
             | Group Admin   |
 
     Scenario: User autocomplete is not accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgMember" as the persona
         When I log in
         And I search the autocomplete API for user "admin"
         Then I should see an element with xpath "//body//div[contains(string(), 'Internal server error')]"
@@ -40,7 +40,7 @@ Feature: User APIs
             | Group Admin   |
 
     Scenario: User list is not accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgMember" as the persona
         When I log in
         And I go to the user list API
         Then I should see an element with xpath "//*[contains(string(), '"success": false') and contains(string(), 'Authorization Error')]"
@@ -64,13 +64,13 @@ Feature: User APIs
             | Group Admin   |
 
     Scenario: User detail for self is accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgMember" as the persona
         When I log in
-        And I go to the "editor" user API
-        Then I should see an element with xpath "//*[contains(string(), '"success": true') and contains(string(), '"name": "editor"')]"
+        And I go to the "test_org_member" user API
+        Then I should see an element with xpath "//*[contains(string(), '"success": true') and contains(string(), '"name": "test_org_member"')]"
 
     Scenario: Non-self user detail is not accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgEditor" as the persona
         When I log in
         And I go to the "admin" user API
         Then I should see an element with xpath "//*[contains(string(), '"success": false') and contains(string(), 'Authorization Error')]"
@@ -78,7 +78,7 @@ Feature: User APIs
     @unauthenticated
     Scenario: User detail is not accessible anonymously
         Given "Unauthenticated" as the persona
-        When I go to the "editor" user API
+        When I go to the "test_org_member" user API
         Then I should see an element with xpath "//*[contains(string(), '"success": false') and contains(string(), 'Authorization Error')]"
 
     Scenario Outline: User profile page is accessible to admins
@@ -94,13 +94,13 @@ Feature: User APIs
             | Group Admin   |
 
     Scenario: User profile page for self is accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgMember" as the persona
         When I log in
-        And I go to the "editor" profile page
-        Then I should see an element with xpath "//h1[string() = 'Publisher']"
+        And I go to the "test_org_member" profile page
+        Then I should see an element with xpath "//h1[string() = 'Test Member']"
 
     Scenario: Non-self user profile page is not accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgMember" as the persona
         When I log in
         And I go to the "admin" profile page
         Then I should see an element with xpath "//*[contains(string(), 'Not authorised to see this page')]"
@@ -108,11 +108,11 @@ Feature: User APIs
     @unauthenticated
     Scenario: User profile page is not accessible anonymously
         Given "Unauthenticated" as the persona
-        When I go to the "editor" profile page
+        When I go to the "test_org_member" profile page
         Then I should see an element with xpath "//*[contains(string(), 'Not authorised to see this page')]"
 
     Scenario: Dashboard page is accessible to non-admins
-        Given "Publisher" as the persona
+        Given "TestOrgEditor" as the persona
         When I log in
         And I go to the dashboard
         Then I should see my datasets
