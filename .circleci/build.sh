@@ -22,7 +22,7 @@ fi
 if [ "$CKAN_VERSION" = "2.10" ]; then
     QGOV_CKAN_VERSION=ckan-2.10.0-qgov.1
 else
-    QGOV_CKAN_VERSION=ckan-2.9.5-qgov.8
+    QGOV_CKAN_VERSION=ckan-2.9.8-qgov.03
 fi
 
 sed "s|@CKAN_VERSION@|$CKAN_VERSION|g" .docker/Dockerfile-template.ckan \
