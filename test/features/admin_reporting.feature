@@ -50,9 +50,9 @@ Feature: AdminReporting
         And I should see an element with xpath "//tr[@id='datasets_no_groups']/td[contains(@class, 'metric-data') and position()=2]/a[contains(@href, 'datasets_no_groups?report_type=admin')]"
 
         When I click the link with text that contains "Datasets not added to group/s"
-        Then I should see "Admin Report: Datasets not added to group/s: Reporting"
-        And I should see "Dataset for reporting"
-        When I click the link with text that contains "Dataset for reporting"
+        Then I should see "Admin Report: Datasets not added to group/s: Reporting Organisation"
+        And I should see "reporting-dataset"
+        When I click the link with text that contains "reporting-dataset"
         Then I should see "Dataset for reporting"
         And I should see "Data and Resources"
 
@@ -66,13 +66,13 @@ Feature: AdminReporting
         And I should see an element with xpath "//tr[@id='datasets_no_tags']/td[contains(@class, 'metric-data') and position()=2]/a[contains(@href, 'datasets_no_tags?report_type=admin')]"
 
         When I click the link with text that contains "Datasets with no tags"
-        Then I should see "Admin Report: Datasets with no tags: Reporting"
-        And I should see "Dataset for reporting"
-        When I click the link with text that contains "Dataset for reporting"
+        Then I should see "Admin Report: Datasets with no tags: Reporting Organisation"
+        And I should see "reporting-dataset"
+        When I click the link with text that contains "reporting-dataset"
         Then I should see "Dataset for reporting"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=de-identified-package-without-schema::default_data_schema=::owner_org=reporting::title=de-identified-package-without-schema::de_identified_data=YES
+    @fixture.dataset_with_schema::name=de-identified-package-without-schema::default_data_schema=::owner_org=reporting-org::title=de-identified-package-without-schema::de_identified_data=YES
     @fixture.create_resource_for_dataset_with_params::package_id=de-identified-package-without-schema
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify de-identified datasets without default data schema
         Given "ReportingOrgAdmin" as the persona
@@ -86,18 +86,18 @@ Feature: AdminReporting
 
         When I click the link with text that contains "De-identified datasets without default data schema"
         Then I should see "Admin Report: De-identified datasets without data schema validation (post-"
-        And I should see "Reporting"
+        And I should see "Reporting Organisation"
         And I should see "de-identified-package-without-schema"
         When I click the link with text that contains "de-identified-package-without-schema"
         Then I should see "de-identified-package-without-schema"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=package-with-pending-assessment-resource::owner_org=reporting
+    @fixture.dataset_with_schema::name=package-with-pending-assessment-resource::owner_org=reporting-org
     @fixture.create_resource_for_dataset_with_params::package_id=package-with-pending-assessment-resource::name=pending-assessment-resource::request_privacy_assessment=YES
     Scenario: Organisation admin views 'Pending privacy assessment' count in the admin report
         Given "ReportingOrgAdmin" as the persona
         When I log in
-        And I visit "dashboard/reporting?report_type=admin&organisation=reporting"
+        And I visit "dashboard/reporting?report_type=admin&organisation=reporting-org"
         And I click the link with text that contains "Admin Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
 
@@ -106,7 +106,7 @@ Feature: AdminReporting
 
         When I click the link with text that contains "Pending privacy assessment"
         Then I should see "Admin Report: Pending privacy assessment"
-        And I should see "Reporting"
+        And I should see "Reporting Organisation"
         And I should see "Total number of resources: 1"
         And I should see "pending-assessment-resource"
         Then I click the link with text that contains "pending-assessment-resource"
