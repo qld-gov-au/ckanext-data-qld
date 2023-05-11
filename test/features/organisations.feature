@@ -8,9 +8,9 @@ Feature: Organization APIs
         Then I should see an element with xpath "//*[contains(string(), '"success": true') and contains(string(), '"name": "test_org_admin"') and contains(string(), '"name": "test_org_editor"')]"
 
         Examples: Admins
-            | Persona             |
-            | SysAdmin            |
-            | Organisation Admin  |
+            | Persona       |
+            | SysAdmin      |
+            | TestOrgAdmin  |
 
     Scenario Outline: Organisation membership is not accessible to non-admins
         Given "<Persona>" as the persona

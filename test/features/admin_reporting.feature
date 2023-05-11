@@ -94,7 +94,7 @@ Feature: AdminReporting
 
     @fixture.dataset_with_schema::name=package-with-pending-assessment-resource::owner_org=reporting
     @fixture.create_resource_for_dataset_with_params::package_id=package-with-pending-assessment-resource::name=pending-assessment-resource::request_privacy_assessment=YES
-    Scenario: Organisation Admin views 'Pending privacy assessment' count in the admin report
+    Scenario: Organisation admin views 'Pending privacy assessment' count in the admin report
         Given "ReportingOrgAdmin" as the persona
         When I log in
         And I visit "dashboard/reporting?report_type=admin&organisation=reporting"

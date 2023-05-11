@@ -94,7 +94,6 @@ organisation_create=$( \
 )
 echo ${organisation_create}
 
-add_user_if_needed organisation_admin "Organisation Admin" organisation_admin@localhost
 add_user_if_needed foodie "Foodie" foodie@localhost
 add_user_if_needed group_admin "Group Admin" group_admin@localhost
 add_user_if_needed walker "Walker" walker@localhost

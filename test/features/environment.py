@@ -28,11 +28,6 @@ PERSONAS = {
         'email': u'',
         'password': u''
     },
-    'Organisation Admin': {
-        'name': u'organisation_admin',
-        'email': u'organisation_admin@localhost',
-        'password': u'Password123!'
-    },
     'Group Admin': {
         'name': u'group_admin',
         'email': u'group_admin@localhost',
