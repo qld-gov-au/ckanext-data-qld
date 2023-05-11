@@ -189,7 +189,7 @@ def archival_init():
 @pytest.fixture
 def mock_storage(monkeypatch, ckan_config, tmpdir):
     monkeypatch.setitem(ckan_config, u'ckan.storage_path', str(tmpdir))
-    monkeypatch.setattr(uploader, u'_storage_path', str(tmpdir))
+    monkeypatch.setattr(uploader, u'get_storage_path', lambda: str(tmpdir))
 
 
 @pytest.fixture
