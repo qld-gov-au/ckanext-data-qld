@@ -8,7 +8,7 @@
 -e git+https://github.com/qld-gov-au/ckanext-report.git@0.3.1-qgov.2#egg=ckanext-report
 -e git+https://github.com/qld-gov-au/ckanext-resource-type-validation.git@1.0.5#egg=ckanext-resource-type-validation
 -e git+https://github.com/qld-gov-au/ckanext-ssm-config.git@0.0.2#egg=ckanext-ssm-config
--e git+https://github.com/qld-gov-au/ckanext-validation.git@v0.0.8-qgov.8#egg=ckanext-validation
+-e git+https://github.com/qld-gov-au/ckanext-validation.git@v0.0.8-qgov.11#egg=ckanext-validation
 -e git+https://github.com/qld-gov-au/ckanext-xloader.git@0.11.0-qgov.2#egg=ckanext-xloader
 -e git+https://github.com/qld-gov-au/ckanext-ytp-comments.git@2.5.0-qgov.10#egg=ckanext-ytp-comments
 -e git+https://github.com/qld-gov-au/ckanext-resource-visibility.git@develop#egg=ckanext-resource-visibility
