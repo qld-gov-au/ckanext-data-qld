@@ -133,7 +133,6 @@ commands:
     usage: Run BDD tests.
     cmd: |
       ahoy cli "rm -f test/screenshots/*"
-      ahoy install-site
       ahoy start-ckan-job-workers
       ahoy start-mailmock &
       sleep 5 &&
