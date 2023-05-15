@@ -6,7 +6,6 @@ Feature: Dataset APIs
         And I edit the "test-dataset" dataset
         Then I should see an element with xpath "//option[@value='cc-by-nc-sa-4']"
 
-    @ckan29
     Scenario: As a publisher, I can view the change history of a dataset
         Given "TestOrgEditor" as the persona
         When I log in
