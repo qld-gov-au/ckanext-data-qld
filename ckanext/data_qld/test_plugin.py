@@ -48,10 +48,7 @@ def qld_test_create_dataset(context, data_dict):
 @tk.side_effect_free
 def qld_test_purge_dataset(context, data_dict):
     context = _make_context()
-    pkg_dict = tk.get_action("package_show")(context, data_dict)
-
     tk.get_action("dataset_purge")(context, data_dict)
-    tk.get_action("organization_purge")(context, {"id": pkg_dict["owner_org"]})
 
 
 @tk.side_effect_free

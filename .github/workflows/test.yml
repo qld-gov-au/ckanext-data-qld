@@ -10,8 +10,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install requirements
@@ -32,7 +32,7 @@ jobs:
       CKAN_VERSION: ${{ matrix.ckan-version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         timeout-minutes: 2
 
       - name: Build
@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload screenshots
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: CKAN ${{ matrix.ckan-version }} screenshots
           path: /tmp/artifacts/behave/screenshots

@@ -225,6 +225,10 @@ def is_reporting_enabled():
     return _is_action_configured('report_list')
 
 
+def is_apikey_enabled():
+    return _is_action_configured('user_generate_apikey')
+
+
 def is_request_for_resource():
     """
     Searching for a url path for /dataset/ and /resource/
@@ -281,27 +285,6 @@ def set_background_image_class():
     return background_class
 
 
-def latest_revision(resource_id):
-    resource_revisions = model.Session.query(model.resource_revision_table)\
-        .filter(model.ResourceRevision.id == resource_id,
-                model.ResourceRevision.expired_timestamp > '9999-01-01')
-    highest_value = None
-    for revision in resource_revisions:
-        if highest_value is None or revision.revision_timestamp > \
-                highest_value.revision_timestamp:
-            highest_value = revision
-    return highest_value
-
-
-def populate_revision(resource):
-    if 'revision_timestamp' in resource \
-            or is_ckan_29():
-        return
-    current_revision = latest_revision(resource['id'])
-    if current_revision is not None:
-        resource['revision_timestamp'] = current_revision.revision_timestamp
-
-
 def unreplied_comments_x_days(thread_url):
     """A helper function for Data.Qld Engagement Reporting
     to highlight un-replied comments after x number of days.
@@ -351,14 +334,6 @@ def get_deletion_reason_template():
 
 def is_uploaded_file(upload):
     return isinstance(upload, uploader.ALLOWED_UPLOAD_TYPES) and upload.filename
-
-
-def is_ckan_29():
-    """
-    Returns True if using CKAN 2.9+, with Flask and Webassets.
-    Returns False if those are not present.
-    """
-    return check_ckan_version(min_version='2.9.0')
 
 
 class RequestHelper():

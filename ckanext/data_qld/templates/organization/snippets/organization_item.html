@@ -13,11 +13,7 @@ Example:
 #}
 {% set type = organization.type or 'organization' %}
 {% set name = organization.name %}
-{% if h.is_ckan_29() %}
-  {% set url = h.url_for(type ~ '.read', id=name) %}
-{% else %}
-  {% set url = h.url_for(type ~ '_read', action='read', id=name) %}
-{% endif %}
+{% set url = h.url_for(type ~ '.read', id=name) %}
 
 {% block item %}
 <tr>

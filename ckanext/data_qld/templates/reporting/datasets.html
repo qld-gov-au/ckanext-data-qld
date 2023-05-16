@@ -52,11 +52,7 @@
                             {% set package_id = dataset.name %}
                             {% set package_url_suffix = '' %}
                         {% endif %}
-                        {% if h.is_ckan_29() %}
-                            {% set package_url = h.url_for('dataset.read', id=package_id) %}
-                        {% else %}
-                            {% set package_url = h.url_for(controller='package', action='read', id=package_id) %}
-                        {% endif %}
+                        {% set package_url = h.url_for('dataset.read', id=package_id) %}
                         <a href="{{ package_url }}{{ package_url_suffix }}">{{ dataset.title }}</a>
                     </h3>
                 </div>

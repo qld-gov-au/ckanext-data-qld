@@ -169,8 +169,9 @@ def create_datarequest(original_action, context, data_dict):
     model = context['model']
     session = context['session']
 
-    # Init the data base
-    db.init_db(model)
+    # Init the data base if needed
+    if not db.DataRequest:
+        db.init_db(model)
 
     # Check access
     tk.check_access(constants.CREATE_DATAREQUEST, context, data_dict)
@@ -240,8 +241,9 @@ def update_datarequest(original_action, context, data_dict):
     if not datarequest_id:
         raise tk.ValidationError(tk._('Data Request ID has not been included'))
 
-    # Init the data base
-    db.init_db(model)
+    # Init the data base if needed
+    if not db.DataRequest:
+        db.init_db(model)
 
     # Check access
     tk.check_access(constants.UPDATE_DATAREQUEST, context, data_dict)
@@ -325,8 +327,9 @@ def close_datarequest(original_action, context, data_dict):
     if not datarequest_id:
         raise tk.ValidationError(tk._('Data Request ID has not been included'))
 
-    # Init the data base
-    db.init_db(model)
+    # Init the data base if needed
+    if not db.DataRequest:
+        db.init_db(model)
 
     # Check access
     tk.check_access(constants.CLOSE_DATAREQUEST, context, data_dict)
@@ -388,8 +391,9 @@ def open_datarequest(context, data_dict):
     if not datarequest_id:
         raise tk.ValidationError(tk._('Data Request ID has not been included'))
 
-        # Init the data base
-    db.init_db(model)
+    # Init the data base if needed
+    if not db.DataRequest:
+        db.init_db(model)
 
     # Check access
     tk.check_access(constants.OPEN_DATAREQUEST, context, data_dict)
