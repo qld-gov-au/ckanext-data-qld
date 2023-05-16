@@ -5,12 +5,12 @@ Feature: Dataset Schema
         When I log in
         And I visit "/dataset/new"
 
-        And I should see an element with xpath "//label[text()="Default data schema"]"
+        Then I should see an element with xpath "//label[text()="Default data schema"]"
         And I should see an element with xpath "//label[@for="field-de_identified_data"]/following::div[@id="resource-schema-buttons"]"
 
-        Then I should see "Upload"
-        And I should see "Link"
-        And I should see "JSON"
+        And I should see an element with xpath "//input[@name='schema_upload']"
+        And I should see an element with xpath "//input[@name='schema_url']"
+        And I should see an element with xpath "//input[@name='schema_json']"
 
         And field "default_data_schema" should not be required
         And field "schema_upload" should not be required
