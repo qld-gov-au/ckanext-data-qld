@@ -125,7 +125,7 @@ def resource_formats(field):
 
     """
     resource_formats = aslist(config.get(
-        'ckanext.data_qld.resource_formats', ''))
+        'ckanext.data_qld.resource_formats', ''), '\n')
     return [{'value': resource_format.strip().upper(), 'label': resource_format.strip().upper()}
             for resource_format in resource_formats]
 
