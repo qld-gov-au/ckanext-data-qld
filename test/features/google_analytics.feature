@@ -45,13 +45,13 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I click the link with text that contains "Department of Health"
+        When I click the link with text that contains "Test Organisation"
         And I click the link with text that contains "About"
-        Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Department of Health']"
+        Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Test Organisation']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
-        And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Department of Health' and @scheme='AGLSTERMS.GOLD']"
+        And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
         And I should see an element with xpath "//meta[@name='DCTERMS.created' and @content!='' and @content!='None']"
-        And I should see an element with xpath "//meta[@name='DCTERMS.description' and @content='Department of Health']"
+        And I should see an element with xpath "//meta[@name='DCTERMS.description' and @content='Organisation for testing issues']"
         And I should see an element with xpath "//meta[@name='DCTERMS.identifier' and @content!='' and @content!='None']"
         And I should see an element with xpath "//meta[@name='DCTERMS.jurisdiction' and @content='Queensland' and @scheme='AGLSTERMS.AglsJuri']"
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
@@ -70,8 +70,8 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
         When I log in
-        And I create a dataset with title "DCTERMS-testing"
-        Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='DCTERMS-testing']"
+        And I create a dataset with name "dcterms-testing" and title "DCTERMS testing"
+        Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='DCTERMS testing']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
         And I should see an element with xpath "//meta[@name='DCTERMS.created' and @content!='' and @content!='None']"

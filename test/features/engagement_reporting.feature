@@ -53,10 +53,10 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='0']"
 
-        Then I go to dataset "reporting"
+        Then I go to dataset "reporting-dataset"
         And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
 
-        And I go to dataset "reporting" comments
+        And I go to dataset "reporting-dataset" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
 
         And I go to data request "Reporting Request" comments

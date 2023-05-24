@@ -62,7 +62,7 @@ echo "Creating ${TEST_ORG_TITLE} organisation:"
 
 TEST_ORG=$( \
     curl -LsH "Authorization: ${API_KEY}" \
-    --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}" \
+    --data "name=${TEST_ORG_NAME}&title=${TEST_ORG_TITLE}&description=Organisation%20for%20testing%20issues" \
     ${CKAN_ACTION_URL}/organization_create
 )
 
@@ -86,13 +86,14 @@ curl -LsH "Authorization: ${API_KEY}" \
 #
 
 # Creating test data hierarchy which creates organisations assigned to datasets
-ckan_cli create-test-data hierarchy
+echo "Creating food-standards-agency organisation:"
+organisation_create=$( \
+    curl -LsH "Authorization: ${API_KEY}" \
+    --data "name=food-standards-agency&title=Food%20Standards%20Agency" \
+    ${CKAN_ACTION_URL}/organization_create
+)
+echo ${organisation_create}
 
-# Creating basic test data which has datasets with resources
-ckan_cli create-test-data basic
-
-add_user_if_needed organisation_admin "Organisation Admin" organisation_admin@localhost
-add_user_if_needed editor "Publisher" publisher@localhost
 add_user_if_needed foodie "Foodie" foodie@localhost
 add_user_if_needed group_admin "Group Admin" group_admin@localhost
 add_user_if_needed walker "Walker" walker@localhost
@@ -102,7 +103,7 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data '{"name": "test-dataset", "owner_org": "'"${TEST_ORG_ID}"'", "private": true,
 "update_frequency": "monthly", "author_email": "admin@localhost", "version": "1.0",
 "license_id": "other-open", "data_driven_application": "NO", "security_classification": "PUBLIC",
-"notes": "test", "de_identified_data": "NO"}' \
+"notes": "private test", "de_identified_data": "NO"}' \
     ${CKAN_ACTION_URL}/package_create
 
 # Create public test dataset with our standard fields
@@ -110,20 +111,12 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data '{"name": "public-test-dataset", "owner_org": "'"${TEST_ORG_ID}"'",
 "update_frequency": "monthly", "author_email": "admin@example.com", "version": "1.0",
 "license_id": "other-open", "data_driven_application": "NO", "security_classification": "PUBLIC",
-"notes": "test", "de_identified_data": "NO"}' \
+"notes": "public test", "de_identified_data": "NO"}' \
     ${CKAN_ACTION_URL}/package_create
 
 # Datasets need to be assigned to an organisation
 
 echo "Assigning test Datasets to Organisation..."
-
-echo "Updating annakarenina to use ${TEST_ORG_TITLE} organisation:"
-package_owner_org_update=$( \
-    curl -LsH "Authorization: ${API_KEY}" \
-    --data "id=annakarenina&organization_id=${TEST_ORG_NAME}" \
-    ${CKAN_ACTION_URL}/package_owner_org_update
-)
-echo ${package_owner_org_update}
 
 echo "Updating warandpeace to use ${TEST_ORG_TITLE} organisation:"
 package_owner_org_update=$( \
@@ -132,22 +125,6 @@ package_owner_org_update=$( \
     ${CKAN_ACTION_URL}/package_owner_org_update
 )
 echo ${package_owner_org_update}
-
-echo "Updating organisation_admin to have admin privileges in the department-of-health Organisation:"
-organisation_admin_update=$( \
-    curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"id": "department-of-health", "username": "organisation_admin", "role": "admin"}' \
-    ${CKAN_ACTION_URL}/organization_member_create
-)
-echo ${organisation_admin_update}
-
-echo "Updating publisher to have editor privileges in the department-of-health Organisation:"
-publisher_update=$( \
-    curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"id": "department-of-health", "username": "editor", "role": "editor"}' \
-    ${CKAN_ACTION_URL}/organization_member_create
-)
-echo ${publisher_update}
 
 echo "Updating foodie to have admin privileges in the food-standards-agency Organisation:"
 foodie_update=$( \
@@ -161,6 +138,14 @@ echo "Creating non-organisation group:"
 group_create=$( \
     curl -LsH "Authorization: ${API_KEY}" \
     --data '{"name": "silly-walks"}' \
+    ${CKAN_ACTION_URL}/group_create
+)
+echo ${group_create}
+
+echo "Creating Dave's Books group:"
+group_create=$( \
+    curl -LsH "Authorization: ${API_KEY}" \
+    --data '{"name": "dave", "title": "Dave'"'"'s books", "description": "These are books that David likes."}' \
     ${CKAN_ACTION_URL}/group_create
 )
 echo ${group_create}
@@ -240,8 +225,8 @@ curl -LsH "Authorization: ${API_KEY}" \
 # BEGIN: Create a Reporting organisation with test users
 #
 
-REPORT_ORG_NAME=reporting
-REPORT_ORG_TITLE=Reporting
+REPORT_ORG_NAME=reporting-org
+REPORT_ORG_TITLE="Reporting Organisation"
 
 echo "Creating test users for ${REPORT_ORG_TITLE} Organisation:"
 
@@ -271,7 +256,7 @@ curl -LsH "Authorization: ${API_KEY}" \
 echo "Creating test dataset for reporting:"
 
 curl -LsH "Authorization: ${API_KEY}" \
-    --data "name=reporting&description=Dataset for reporting&owner_org=${REPORT_ORG_ID}&\
+    --data "name=reporting-dataset&notes=Dataset for reporting&owner_org=${REPORT_ORG_ID}&\
 update_frequency=near-realtime&author_email=report_admin@localhost&version=1.0&license_id=cc-by-4\
 &data_driven_application=NO&security_classification=PUBLIC&notes=test&de_identified_data=NO"\
     ${CKAN_ACTION_URL}/package_create
@@ -290,23 +275,15 @@ curl -LsH "Authorization: ${API_KEY}" \
 # BEGIN: Add sysadmin config values.
 # This needs to be done before closing datarequests as they require the below config values
 #
-echo "Adding ckan.datarequests.closing_circumstances:"
+echo "Adding sysadmin config:"
 
 curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"ckan.comments.profanity_list": "", "ckan.datarequests.closing_circumstances":
-        "Released as open data|nominate_dataset\r\nOpen dataset already exists|nominate_dataset\r\nPartially released|nominate_dataset\r\nTo be released as open data at a later date|nominate_approximate_date\r\nData openly available elsewhere\r\nNot suitable for release as open data\r\nRequested data not available/cannot be compiled\r\nRequestor initiated closure"}' \
-    ${CKAN_ACTION_URL}/config_option_update
-
-echo "Creating config value for resource formats:"
-
-curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"ckanext.data_qld.resource_formats": "CSV\r\nHTML\r\nJSON\r\nRDF\r\nTXT\r\nXLS"}' \
-    ${CKAN_ACTION_URL}/config_option_update
-
-echo "Creating config value for excluded display name words:"
-
-curl -LsH "Authorization: ${API_KEY}" \
-    --data '{"ckanext.data_qld.excluded_display_name_words": "gov"}' \
+    --data '{
+        "ckan.comments.profanity_list": "",
+        "ckan.datarequests.closing_circumstances": "Released as open data|nominate_dataset\r\nOpen dataset already exists|nominate_dataset\r\nPartially released|nominate_dataset\r\nTo be released as open data at a later date|nominate_approximate_date\r\nData openly available elsewhere\r\nNot suitable for release as open data\r\nRequested data not available/cannot be compiled\r\nRequestor initiated closure",
+        "ckanext.data_qld.resource_formats": "CSV\r\nHTML\r\nJSON\r\nRDF\r\nTXT\r\nXLS",
+        "ckanext.data_qld.excluded_display_name_words": "gov"
+    }' \
     ${CKAN_ACTION_URL}/config_option_update
 
 if [ "$VENV_DIR" != "" ]; then

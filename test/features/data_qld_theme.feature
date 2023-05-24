@@ -19,7 +19,8 @@ Feature: Theme customisations
         And I go to organisation page
         And I click the link with text that contains "Add Organisation"
         Then I should see "Create an Organisation"
-        When I fill in "title" with "Org without description"
+        When I execute the script "$('#field-name').val('Org without description')"
+        And I execute the script "$('#field-url').val('org-without-description')"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         Then I should see "Org without description"
         And I should see "No datasets found"
@@ -31,7 +32,8 @@ Feature: Theme customisations
         And I go to organisation page
         And I click the link with text that contains "Add Organisation"
         Then I should see "Create an Organisation"
-        When I fill in "title" with "Org with description"
+        When I execute the script "$('#field-name').val('Org with description')"
+        And I execute the script "$('#field-url').val('org-with-description')"
         And I fill in "description" with "Some description or other"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         Then I should see "Org with description"
@@ -43,7 +45,7 @@ Feature: Theme customisations
     Scenario: Explore button does not exist on dataset detail page
         Given "Unauthenticated" as the persona
         When I go to dataset page
-        And I click the link with text that contains "A Wonderful Story"
+        And I click the link with text that contains "public-test"
         Then I should not see "Explore"
 
     @unauthenticated

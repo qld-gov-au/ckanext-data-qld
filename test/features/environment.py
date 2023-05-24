@@ -5,7 +5,6 @@ from behave import fixture, use_fixture
 from behaving import environment as benv
 from behaving.web.steps.browser import named_browser
 
-
 # Path to the root of the project.
 ROOT_PATH = os.path.realpath(os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -29,19 +28,9 @@ PERSONAS = {
         'email': u'',
         'password': u''
     },
-    'Organisation Admin': {
-        'name': u'organisation_admin',
-        'email': u'organisation_admin@localhost',
-        'password': u'Password123!'
-    },
     'Group Admin': {
         'name': u'group_admin',
         'email': u'group_admin@localhost',
-        'password': u'Password123!'
-    },
-    'Publisher': {
-        'name': u'editor',
-        'email': u'publisher@localhost',
         'password': u'Password123!'
     },
     'Walker': {

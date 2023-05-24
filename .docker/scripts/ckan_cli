@@ -27,7 +27,6 @@
 # variable. This variable is irrelevant if using the 'ckan' command.
 
 CKAN_INI="${CKAN_INI:-/etc/ckan/default/production.ini}"
-
 PASTER_PLUGIN="${PASTER_PLUGIN:-ckan}"
 # First, look for a command alongside this file
 ENV_DIR=$(dirname "$0")

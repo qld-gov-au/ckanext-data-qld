@@ -7,6 +7,5 @@
   "resource_search": "resource_search | Query: {0}",
   "organization_show": "organization_show | Organisation ID: {0}",
   "follow_dataset": "follow_dataset | Package ID: {0}",
-  "package_activity_list": "package_activity_list | Package ID: {0}",
-  "revision_show": "revision_show | Revision ID: {0}"
+  "package_activity_list": "package_activity_list | Package ID: {0}"
 }

@@ -66,7 +66,7 @@ commands:
 
   pull:
     usage: Pull latest docker images.
-    cmd: if [ ! -z "$(docker image ls -q)" ]; then docker image ls --format \"{{.Repository}}:{{.Tag}}\" | grep amazeeio/ | grep -v none | xargs -n1 docker pull | cat; fi
+    cmd: if [ ! -z "$(docker image ls -q)" ]; then docker image ls --format \"{{.Repository}}:{{.Tag}}\" | grep ckan/ckan- | grep -v none | xargs -n1 docker pull | cat; fi
 
   cli:
     usage: Start a shell inside CLI container or run a command.
@@ -115,7 +115,7 @@ commands:
       docker cp . $(docker-compose ps -q ckan):/srv/app/
       docker cp .docker/scripts $(docker-compose ps -q ckan):/srv/app/
       docker cp .docker/scripts/ckan_cli $(docker-compose ps -q ckan):/usr/bin/
-      ahoy cli 'chmod -v u+x /usr/bin/ckan_cli; cp -v .docker/ckan.ini $CKAN_INI'
+      ahoy cli 'chmod -v u+x /usr/bin/ckan_cli $APP_DIR/scripts/*; cp -v .docker/ckan.ini $CKAN_INI; $APP_DIR/scripts/process-config.sh'
 
   test-unit:
     usage: Run unit tests.
@@ -132,14 +132,12 @@ commands:
   test-bdd:
     usage: Run BDD tests.
     cmd: |
+      ahoy cli "rm -f test/screenshots/*"
       ahoy start-ckan-job-workers
       ahoy start-mailmock &
-      if [ "$CKAN_VERSION" = "2.8" ]; then
-        BEHAVE_TAGS="--tags=-ckan29"
-      fi
       sleep 5 &&
       ahoy cli "behave -k ${*:-test/features}" --tags @smoke && \
-      ahoy cli "behave -k ${*:-test/features} --tags=-reporting $BEHAVE_TAGS" || \
+      ahoy cli "behave -k ${*:-test/features} --tags=-reporting" || \
       [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       # Run reporting tests last so numbers are consistent
       ahoy cli "behave -k ${*:-test/features} --tags=reporting" || \

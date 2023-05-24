@@ -19,7 +19,7 @@ Feature: Resource UI
     Scenario Outline: Add new resource metadata field on the create and edit resource GUI pages
         Given "<Persona>" as the persona
         When I log in
-        And I visit "/dataset/data_request_dataset/resource/new"
+        And I open the new resource form for dataset "data_request_dataset"
         Then I should see an element with xpath "//label[@for="field-request_privacy_assessment"]"
         And field "request_privacy_assessment" should not be required
         And I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"

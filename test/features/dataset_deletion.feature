@@ -4,25 +4,8 @@ Feature: Dataset deletion
     Scenario: Sysadmin creates and deletes a dataset
         Given "SysAdmin" as the persona
         When I log in
-        And I go to "/dataset/new"
-        Then I fill in "title" with "Dataset deletion"
-        Then I fill in "notes" with "notes"
-        Then I execute the script "document.getElementById('field-organizations').value=jQuery('#field-organizations option').filter(function () { return $(this).html() == 'Test Organisation'; }).attr('value')"
-        Then I select "False" from "private"
-        Then I fill in "version" with "1"
-        Then I fill in "author_email" with "test@test.com"
-        Then I fill in "de_identified_data" with "NO" if present
-        And I press the element with xpath "//form[contains(@class, 'dataset-form')]//button[contains(@class, 'btn-primary')]"
-
-        Then I attach the file "csv_resource.csv" to "upload"
-        Then I fill in "name" with "res1"
-        Then I fill in "description" with "description"
-        Then I fill in "size" with "1024" if present
-        Then I fill in "resource_visibility" with "FALSE" if present
-        Then I press the element with xpath "//button[@value='go-metadata']"
-        Then I should see "Data and Resources"
-
-        When I go to "/dataset/edit/dataset-deletion"
+        And I create a dataset with name "dataset-deletion" and title "Dataset deletion"
+        And I edit the "dataset-deletion" dataset
         Then I press the element with xpath "//a[@data-module='confirm-action']"
         Then I should see "Briefly describe the reason for deleting this dataset"
         And I should see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"

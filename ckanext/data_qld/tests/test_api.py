@@ -1,4 +1,4 @@
-import json
+# encoding: utf-8
 
 import pytest
 
@@ -8,7 +8,6 @@ from ckan.lib.helpers import url_for
 
 import ckanext.resource_visibility.constants as const
 
-from ckanext.data_qld.helpers import is_ckan_29
 from ckanext.data_qld.tests.conftest import _get_resource_schema
 from ckanext.data_qld.constants import FIELD_ALIGNMENT, FIELD_DEFAULT_SCHEMA
 
@@ -64,8 +63,8 @@ def res_patch_url():
 
 
 def _get_resource_read_url(package_id, resource_id):
-    controller = "resource" if is_ckan_29() else "package"
-    action = "read" if is_ckan_29() else "resource_read"
+    controller = "resource"
+    action = "read"
 
     return url_for(controller=controller,
                    action=action,
@@ -85,13 +84,8 @@ def _get_pkg_dict(app, url, package_id, user=None):
 
 
 def _post(app, url, params, extra_environ, status=200):
-    if is_ckan_29():
-        return app.post(url,
-                        json=params,
-                        status=status,
-                        extra_environ=extra_environ)
     return app.post(url,
-                    params=json.dumps(params),
+                    json=params,
                     status=status,
                     extra_environ=extra_environ)
 
