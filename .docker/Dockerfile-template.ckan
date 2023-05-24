@@ -23,8 +23,6 @@ RUN cd $SRC_DIR/ckan \
 
 COPY .docker/ckan.ini $CKAN_INI
 
-RUN sed -i "s@SITE_URL@${CKAN_SITE_URL}@g" $CKAN_INI
-
 COPY . ${APP_DIR}/
 
 COPY .docker/scripts ${APP_DIR}/scripts

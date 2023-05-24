@@ -162,6 +162,7 @@ def fill_in_default_resource_fields(context):
     context.execute_steps(u"""
         When I fill in "name" with "Test Resource"
         And I fill in "description" with "Test Resource Description"
+        And I fill in "size" with "1024" if present
     """)
 
 
@@ -170,7 +171,6 @@ def fill_in_default_link_resource_fields(context):
     context.execute_steps(u"""
         When I execute the script "$('#resource-edit [name=url]').val('https://example.com')"
         And I execute the script "document.getElementById('field-format').value='HTML'"
-        And I fill in "size" with "1024" if present
     """)
 
 
