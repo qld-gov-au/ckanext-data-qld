@@ -136,13 +136,24 @@ commands:
       ahoy start-ckan-job-workers
       ahoy start-mailmock &
       sleep 5 &&
-      if [ "$BEHAVE_TAG" = "authenticated" ]; then
+      if [ "$BEHAVE_TAG" = "" ]; then
+        # no tag specified, probably running locally
+        ahoy cli "behave -k ${*:-test/features} --tags=smoke" \
+          || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+        ahoy cli "behave -k ${*:-test/features} --tags=-smoke --tags=-reporting" \
+          || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+        # Run reporting tests last so numbers are consistent
+        ahoy cli "behave -k ${*:-test/features} --tags=reporting" || \
+          [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
+      elif [ "$BEHAVE_TAG" = "authenticated" ]; then
+        # run any tests that don't have a specific tag
         ahoy cli "behave -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-reporting" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
         # Run reporting tests last so numbers are consistent
         ahoy cli "behave -k ${*:-test/features} --tags=reporting" || \
           [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       else
+        # run tests with the specified tag
         ahoy cli "behave -k ${*:-test/features} --tags=$BEHAVE_TAG --tags=-reporting" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       fi
