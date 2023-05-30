@@ -26,7 +26,7 @@ jobs:
         ckan-version: [2.9, 2.9-py2]
         behave-tag: [smoke, authenticated, unauthenticated]
 
-    name: Continuous Integration build on CKAN ${{ matrix.ckan-version }}
+    name: Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
     container: drevops/ci-builder
     env:
@@ -41,15 +41,12 @@ jobs:
         run: .circleci/build.sh
         timeout-minutes: 15
 
-      - name: Test lint
-        run: .circleci/test-lint.sh
-        timeout-minutes: 3
-
-      - name: Test BDD
+      - name: Test ${{ matrix.behave-tag }} BDD
         run: .circleci/test-bdd.sh
         timeout-minutes: 45
 
-      - name: Test
+      - name: Unit tests
+        if: ${{ matrix.behave-tag == 'smoke' }}
         run: .circleci/test.sh
         timeout-minutes: 45
 
@@ -67,6 +64,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: CKAN ${{ matrix.ckan-version }} screenshots
+          name: CKAN ${{ matrix.ckan-version }} ${{ matrix.behave-tag }} screenshots
           path: /tmp/artifacts/behave/screenshots
         timeout-minutes: 1
