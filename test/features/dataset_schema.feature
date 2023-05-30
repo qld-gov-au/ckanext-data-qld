@@ -10,7 +10,7 @@ Feature: Dataset Schema
 
         And I should see an element with xpath "//input[@name='schema_upload']"
         And I should see an element with xpath "//input[@name='schema_url']"
-        And I should see an element with xpath "//input[@name='schema_json']"
+        And I should see an element with xpath "//textarea[@name='schema_json']"
 
         And field "default_data_schema" should not be required
         And field "schema_upload" should not be required
