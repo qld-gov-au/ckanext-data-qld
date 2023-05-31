@@ -4,8 +4,6 @@ A custom CKAN extension for Data.Qld
 
 [![Tests](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml/badge.svg)](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml)
 
-[![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop.svg?style=shield)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop)
-
 ## Local environment setup
 - Make sure that you have latest versions of all required software installed:
   - [Docker](https://www.docker.com/)

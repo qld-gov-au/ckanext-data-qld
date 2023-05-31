@@ -9,6 +9,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -17,7 +18,7 @@ jobs:
       - name: Install requirements
         run: pip install flake8 pycodestyle
       - name: Check syntax
-        run: flake8 .
+        run: flake8
 
   test:
     strategy:
@@ -38,26 +39,26 @@ jobs:
         timeout-minutes: 2
 
       - name: Build
-        run: .circleci/build.sh
+        run: bin/build.sh
         timeout-minutes: 15
 
       - name: Test ${{ matrix.behave-tag }} BDD
-        run: .circleci/test-bdd.sh
+        run: bin/test-bdd.sh
         timeout-minutes: 45
 
       - name: Unit tests
         if: ${{ matrix.behave-tag == 'smoke' }}
-        run: .circleci/test.sh
+        run: bin/test.sh
         timeout-minutes: 45
 
       - name: Retrieve logs
         if: always()
-        run: .circleci/get-logs.sh
+        run: bin/get-logs.sh
         timeout-minutes: 5
 
       - name: Retrieve screenshots
         if: always()
-        run: .circleci/process-artifacts.sh
+        run: bin/process-artifacts.sh
         timeout-minutes: 1
 
       - name: Upload screenshots
