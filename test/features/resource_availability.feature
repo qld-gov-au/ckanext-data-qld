@@ -69,7 +69,9 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "TestOrgEditor" as the persona
         When I log in
         Then I go to dataset "random_package"
+        And I should see "HIDDEN"
         And I click the link with text that contains "invisible-resource"
+        And I should see "HIDDEN"
         And I click the link with text that contains "Manage"
         And I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"
         And I should see an element with xpath "//select[@id="field-request_privacy_assessment"]//option[@value="" or @value="YES" or @value="NO"]"
@@ -81,4 +83,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
     Scenario: Unauthenticated user should see a visible resource when de-identified data is NO and Resource visibility is TRUE and Acknowledgement is NO
         Given "Unauthenticated" as the persona
         When I go to dataset "random_package"
+        And I should not see "HIDDEN"
         And I should see "visible-resource"
+        And I click the link with text that contains "visible-resource"
+        And I should not see "HIDDEN"
