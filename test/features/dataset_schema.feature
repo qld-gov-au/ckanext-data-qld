@@ -31,7 +31,7 @@ Feature: Dataset Schema
         When I log in
         And I go to dataset "package-with-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[text()="View Schema File"]"
-        Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="Field name 'validation_options' not in data"]"
+        Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="[blank]"]"
 
     @fixture.dataset_with_schema::name=package-with-schema
     Scenario: New field visibility on dataset via API
