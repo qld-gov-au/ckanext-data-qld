@@ -32,6 +32,3 @@ if (ckan_cli datarequests --help); then
     ckan_cli datarequests init_db
     ckan_cli datarequests update_db
 fi
-
-# Create some base test data
-. $APP_DIR/bin/create-test-data.sh

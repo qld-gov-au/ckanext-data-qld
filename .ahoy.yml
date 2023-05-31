@@ -12,7 +12,6 @@ commands:
       ahoy clean
       ahoy build-network
       ahoy up -- --build --force-recreate
-      ahoy install-site
       ahoy title "Build complete"
       ahoy doctor
       ahoy info 1
@@ -42,6 +41,7 @@ commands:
       if docker-compose logs | grep -q "\[Error\]"; then docker-compose logs; exit 1; fi
       if docker-compose logs | grep -q "Exception"; then docker-compose logs; exit 1; fi
       docker ps -a --filter name=^/${COMPOSE_PROJECT_NAME}_
+      ahoy cli '$APP_DIR/bin/init.sh'
       export DOCTOR_CHECK_CLI=0
 
   down:
@@ -80,7 +80,7 @@ commands:
     usage: Install test site data.
     cmd: |
       ahoy title "Installing a fresh site"
-      ahoy cli '$APP_DIR/bin/init.sh'
+      ahoy cli '$APP_DIR/bin/init.sh && $APP_DIR/bin/create-test-data.sh'
 
   clean:
     usage: Remove containers and all build files.
@@ -132,6 +132,7 @@ commands:
     usage: Run BDD tests.
     cmd: |
       ahoy cli "rm -f test/screenshots/*"
+      ahoy install-site
       ahoy start-ckan-job-workers
       ahoy start-mailmock &
       sleep 5 &&
