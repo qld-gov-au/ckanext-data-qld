@@ -17,13 +17,13 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Then I go to dataset "random_package"
         And I should not see "invisible-resource"
 
-    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=NO
-    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=visible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE
-    Scenario: Resource visible, governance_acknowledgement & request_privacy_assessment & not de_identified_data
+    @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation
+    @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=invisible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE
+    Scenario: Resource invisible, governance_acknowledgement & request_privacy_assessment
         Given "CKANUser" as the persona
         When I log in
         Then I go to dataset "random_package"
-        And I should see "visible-resource"
+        And I should not see "invisible-resource"
 
     @fixture.dataset_with_schema::name=random_package::owner_org=test-organisation::de_identified_data=YES
     @fixture.create_resource_for_dataset_with_params::package_id=random_package::name=visible-resource::request_privacy_assessment=NO::governance_acknowledgement=YES::resource_visible=TRUE
