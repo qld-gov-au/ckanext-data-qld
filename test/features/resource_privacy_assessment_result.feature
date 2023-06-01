@@ -9,7 +9,7 @@ Feature: Resource Privacy Assessment Result
         And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
         Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
         And I should see an element with xpath "//input[@name='privacy_assessment_result' and @readonly]"
-        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[text()[contains(.,'Refer to the linked Privacy Assessment Report for details of the assessment.')]]"
+        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::a[text()[contains(.,'Privacy Assessment Report')]]"
         And I should see "Refer to the linked Privacy Assessment Report for details of the assessment."
         And I should see an element with xpath "//label[text()='Privacy assessment result']/following::a[text()='here']"
 
