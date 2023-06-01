@@ -396,7 +396,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
         # resource_visible & governance_acknowledgement & NONE request_privacy_assessment -> SHOW
-        dataset = dataset_factory(de_identified_data="YES")
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="YES")
@@ -406,8 +406,8 @@ class TestResourceVisibility:
         assert pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 1
 
-        # resource_visible & governance_acknowledgement & request_privacy_assessment & de_identified_data -> HIDE
-        dataset = dataset_factory(de_identified_data="YES")
+        # resource_visible & governance_acknowledgement & request_privacy_assessment -> HIDE
+        dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          resource_visible="TRUE",
                          governance_acknowledgement="YES",
@@ -417,18 +417,6 @@ class TestResourceVisibility:
 
         assert not pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 0
-
-        # resource_visible & governance_acknowledgement & request_privacy_assessment & not de_identified_data -> SHOW
-        dataset = dataset_factory()
-        resource_factory(package_id=dataset["id"],
-                         resource_visible="TRUE",
-                         governance_acknowledgement="YES",
-                         request_privacy_assessment="YES")
-
-        pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
-
-        assert pkg_dict["resources"]
-        assert pkg_dict["num_resources"] == 1
 
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
