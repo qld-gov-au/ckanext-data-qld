@@ -32,6 +32,7 @@ class TestPrivacyAssessmentResultTracking:
                     privacy_assessment_result=self.assess_result)
 
         data = get_updated_privacy_assessment_result()
+        assert self.maintainer in data
         assert data[self.maintainer]
 
         tracked_data = data[self.maintainer][resource["id"]]
@@ -57,6 +58,7 @@ class TestPrivacyAssessmentResultTracking:
                     privacy_assessment_result=self.assess_result)
 
         data = get_updated_privacy_assessment_result()
+        assert self.maintainer in data
         assert data[self.maintainer]
 
         _clear_upd_assessment_result_data()

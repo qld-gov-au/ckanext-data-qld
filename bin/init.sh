@@ -4,7 +4,7 @@
 #
 set -e
 
-. ${APP_DIR}/scripts/activate
+. ${APP_DIR}/bin/activate
 CLICK_ARGS="--yes" ckan_cli db clean
 ckan_cli db init
 ckan_cli db upgrade
@@ -32,6 +32,3 @@ if (ckan_cli datarequests --help); then
     ckan_cli datarequests init_db
     ckan_cli datarequests update_db
 fi
-
-# Create some base test data
-. $APP_DIR/scripts/create-test-data.sh

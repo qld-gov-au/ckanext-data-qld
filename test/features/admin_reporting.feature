@@ -51,8 +51,8 @@ Feature: AdminReporting
 
         When I click the link with text that contains "Datasets not added to group/s"
         Then I should see "Admin Report: Datasets not added to group/s: Reporting Organisation"
-        And I should see "reporting-dataset"
-        When I click the link with text that contains "reporting-dataset"
+        And I should see "Dataset for reporting"
+        When I click the link with text that contains "Dataset for reporting"
         Then I should see "Dataset for reporting"
         And I should see "Data and Resources"
 
@@ -67,8 +67,8 @@ Feature: AdminReporting
 
         When I click the link with text that contains "Datasets with no tags"
         Then I should see "Admin Report: Datasets with no tags: Reporting Organisation"
-        And I should see "reporting-dataset"
-        When I click the link with text that contains "reporting-dataset"
+        And I should see "Dataset for reporting"
+        When I click the link with text that contains "Dataset for reporting"
         Then I should see "Dataset for reporting"
         And I should see "Data and Resources"
 

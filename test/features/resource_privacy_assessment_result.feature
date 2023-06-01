@@ -11,9 +11,7 @@ Feature: Resource Privacy Assessment Result
         Then I press the element with xpath "//a[text()[contains(.,'Manage')]]"
         And I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
         And I should see an element with xpath "//input[@name='privacy_assessment_result' and @readonly]"
-        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[text()[contains(.,'Privacy assessment information, including the meaning of the Privacy assessment result, can be found')]]"
-        And I should see "Privacy assessment information, including the meaning of the Privacy assessment result, can be found here."
-        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::a[text()='here']"
+        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[contains(translate(text(), 'PA', 'pa'),'privacy assessment')]"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
     @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res

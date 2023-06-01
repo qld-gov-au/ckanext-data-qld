@@ -2,7 +2,8 @@
 ##
 # Install current extension.
 #
-set -ex
+set -e
+set -x
 
 install_requirements () {
     PROJECT_DIR=$1
@@ -32,7 +33,7 @@ install_requirements () {
     done
 }
 
-. ${APP_DIR}/scripts/activate
+. ${APP_DIR}/bin/activate
 
 install_requirements . dev-requirements requirements-dev
 install_requirements . extensions
@@ -45,5 +46,5 @@ installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1
 # Validate that the extension was installed correctly.
 if ! pip list | grep "$installed_name" > /dev/null; then echo "Unable to find the extension in the list"; exit 1; fi
 
-. $APP_DIR/scripts/process-config.sh
-. ${APP_DIR}/scripts/deactivate
+. $APP_DIR/bin/process-config.sh
+. ${APP_DIR}/bin/deactivate

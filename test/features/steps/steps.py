@@ -94,7 +94,7 @@ def request_reset(context):
 @step(u'I fill in "{name}" with "{value}" if present')
 def fill_in_field_if_present(context, name, value):
     context.execute_steps(u"""
-        When I execute the script "field = document.getElementById('field-{0}'); if (field) field.value = '{1}';"
+        When I execute the script "field = $('#field-{0}'); if (!field.length) field = $('#{0}'); if (!field.length) field = $('[name={0}]'); field.val('{1}'); field.keyup();"
     """.format(name, value))
 
 
@@ -162,6 +162,7 @@ def fill_in_default_resource_fields(context):
     context.execute_steps(u"""
         When I fill in "name" with "Test Resource"
         And I fill in "description" with "Test Resource Description"
+        And I fill in "size" with "1024" if present
     """)
 
 
@@ -170,7 +171,6 @@ def fill_in_default_link_resource_fields(context):
     context.execute_steps(u"""
         When I execute the script "$('#resource-edit [name=url]').val('https://example.com')"
         And I execute the script "document.getElementById('field-format').value='HTML'"
-        And I fill in "size" with "1024" if present
     """)
 
 
