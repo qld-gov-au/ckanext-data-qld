@@ -99,15 +99,16 @@ def _post(app, url, params, extra_environ, status=200):
 @pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
                          "mock_storage")
 class TestApiPrivacyAssessment:
-    """privacy_assessment_result must be visible via API only for organization
-    editors, admins and sysadmins.
+    """privacy_assessment_result and `request_privacy_assessment` field
+    must be visible via API only for organization editors, admins and sysadmins.
     """
 
     def test_excluded_for_anon(self, dataset_factory, resource_factory, app,
                                pkg_show_url):
 
         dataset = dataset_factory()
-        resource_factory(package_id=dataset["id"])
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment=const.YES)
 
         response = app.get(url=pkg_show_url,
                            params={"name_or_id": dataset["id"]},
@@ -115,13 +116,15 @@ class TestApiPrivacyAssessment:
                            extra_environ={"REMOTE_USER": ""})
         resource = response.json['result']['resources'][0]
 
+        assert const.FIELD_REQUEST_ASSESS not in resource
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_regular_user(self, dataset_factory, resource_factory,
                                        app, pkg_show_url, user_factory):
         user = user_factory()
         dataset = dataset_factory()
-        resource_factory(package_id=dataset["id"])
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment=const.YES)
 
         response = app.get(url=pkg_show_url,
                            params={"name_or_id": dataset["id"]},
@@ -129,6 +132,7 @@ class TestApiPrivacyAssessment:
                            extra_environ={"REMOTE_USER": str(user["name"])})
         resource = response.json['result']['resources'][0]
 
+        assert const.FIELD_REQUEST_ASSESS not in resource
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_member(self, dataset_factory, resource_factory, app,
@@ -140,7 +144,8 @@ class TestApiPrivacyAssessment:
         }])
 
         dataset = dataset_factory(owner_org=org["id"])
-        resource_factory(package_id=dataset["id"])
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment=const.YES)
 
         response = app.get(url=pkg_show_url,
                            params={"name_or_id": dataset["id"]},
@@ -149,6 +154,7 @@ class TestApiPrivacyAssessment:
 
         resource = response.json['result']['resources'][0]
 
+        assert const.FIELD_REQUEST_ASSESS not in resource
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_editor_and_admin_of_another_org(
@@ -167,7 +173,8 @@ class TestApiPrivacyAssessment:
         }])
 
         dataset = dataset_factory()
-        resource_factory(package_id=dataset["id"])
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment=const.YES)
 
         for user in [user1, user2]:
             response = app.get(
@@ -177,6 +184,7 @@ class TestApiPrivacyAssessment:
                 extra_environ={"REMOTE_USER": str(user['name'])})
             resource = response.json['result']['resources'][0]
 
+            assert const.FIELD_REQUEST_ASSESS not in resource
             assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_present_for_editor_and_admin(self, dataset_factory, user_factory,
@@ -192,7 +200,8 @@ class TestApiPrivacyAssessment:
         }])
 
         dataset = dataset_factory(owner_org=org["id"])
-        resource_factory(package_id=dataset["id"])
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment=const.YES)
 
         for user in [user1, user2]:
             response = app.get(
@@ -202,12 +211,14 @@ class TestApiPrivacyAssessment:
                 extra_environ={"REMOTE_USER": str(user['name'])})
             resource = response.json['result']['resources'][0]
 
+            assert const.FIELD_REQUEST_ASSESS in resource
             assert const.FIELD_ASSESS_RESULT in resource
 
     def test_present_for_sysadmin(self, dataset_factory, resource_factory, app,
                                   pkg_show_url, sysadmin):
         dataset = dataset_factory()
-        resource_factory(package_id=dataset["id"])
+        resource_factory(package_id=dataset["id"],
+                         request_privacy_assessment=const.YES)
 
         response = app.get(
             url=pkg_show_url,
@@ -216,6 +227,7 @@ class TestApiPrivacyAssessment:
             extra_environ={"REMOTE_USER": str(sysadmin['name'])})
         resource = response.json['result']['resources'][0]
 
+        assert const.FIELD_REQUEST_ASSESS in resource
         assert const.FIELD_ASSESS_RESULT in resource
 
 
