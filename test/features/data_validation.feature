@@ -1,11 +1,11 @@
 @config
 Feature: Data Validation
 
-    Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I can see the '</> JSON' button
+    Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I can see the 'JSON' button
        Given "<User>" as the persona
         When I log in
         And I open the new resource form for dataset "public-test-dataset"
-        Then I should see an element with xpath "//*[@id='resource-schema-buttons']//a[contains(string(), 'JSON')]"
+        Then I should see an element with xpath "//textarea[@name='schema_json']"
 
         Examples: Users
         | User              |
