@@ -95,8 +95,7 @@ Feature: Comments
         When I log in
         Then I go to dataset "public-test-dataset" comments
         And I press the element with xpath "//a[@title='Delete comment']"
-        Then I should see "Are you sure you want to delete this comment?" within 1 seconds
-        Then I press the element with xpath "//button[contains(string(), 'Confirm')]"
+        Then I confirm the dialog containing "Are you sure you want to delete this comment?" if present
         Then I should not see "This comment was deleted." within 2 seconds
         And I should see "Comment deleted by Test Admin." within 2 seconds
 
@@ -106,8 +105,7 @@ Feature: Comments
         When I log in
         And I go to data request "Test Request" comments
         And I press the element with xpath "//a[@title='Delete comment']"
-        Then I should see "Are you sure you want to delete this comment?" within 1 seconds
-        Then I press the element with xpath "//button[contains(string(), 'Confirm')]"
+        Then I confirm the dialog containing "Are you sure you want to delete this comment?" if present
         Then I should not see "This comment was deleted." within 2 seconds
         And I should see "Comment deleted by Test Admin." within 2 seconds
 

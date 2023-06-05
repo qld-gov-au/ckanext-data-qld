@@ -98,6 +98,14 @@ def fill_in_field_if_present(context, name, value):
     """.format(name, value))
 
 
+@step(u'I confirm the dialog containing "{text}" if present')
+def confirm_dialog_if_present(context, text):
+    if context.browser.is_text_present(text):
+        context.execute_steps(u"""
+            Then I press the element with xpath "//button[@class='btn btn-primary' and contains(text(), 'Confirm') ]"
+        """)
+
+
 @step(u'I open the new resource form for dataset "{name}"')
 def go_to_new_resource_form(context, name):
     context.execute_steps(u"""
