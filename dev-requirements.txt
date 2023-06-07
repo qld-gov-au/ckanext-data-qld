@@ -1,4 +1,4 @@
-behaving==2.0.0
+behaving==3.0.4
 Appium-Python-Client<=0.52
 ckanapi==4.3
 ckantoolkit>=0.0.4
