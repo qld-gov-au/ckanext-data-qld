@@ -140,8 +140,8 @@ commands:
         # no tag specified, probably running locally
         # Run reporting tests last so numbers are consistent
         (ahoy cli "behave -k ${*:-test/features} --tags=smoke" \
-         #&& ahoy cli "behave -k ${*:-test/features} --tags=-smoke --tags=-reporting" \
-         #&& ahoy cli "behave -k ${*:-test/features} --tags=reporting" \
+         && ahoy cli "behave -k ${*:-test/features} --tags=-smoke --tags=-reporting" \
+         && ahoy cli "behave -k ${*:-test/features} --tags=reporting" \
         ) || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       elif [ "$BEHAVE_TAG" = "authenticated" ]; then
         # run any tests that don't have a specific tag
