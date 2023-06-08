@@ -4,7 +4,6 @@ import ckantoolkit as tk
 
 from ckan import plugins
 
-from ckanext.xloader.interfaces import IXloader
 from ckanext.data_qld.tests.conftest import (DatasetFactory, ResourceFactory)
 import ckanext.resource_visibility.utils as utils
 
@@ -12,7 +11,6 @@ import ckanext.resource_visibility.utils as utils
 class DataQldTestPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer, inherit=True)
     plugins.implements(plugins.IActions)
-    plugins.implements(IXloader, inherit=True)
 
     def update_config(self, config):
         assert tk.asbool(tk.config.get("ckanext.data_qld.allow_bdd_test_plugin")),\
@@ -30,14 +28,6 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
 
         return {"{}".format(func.__name__): func for func in actions}
 
-    # IXloader
-
-    def can_upload(self, resource_id):
-        context = _make_context()
-        res_dict = tk.get_action("resource_show")(context, {"id": resource_id})
-
-        return tk.asbool(res_dict.get("_xloader"))
-
 
 @tk.side_effect_free
 def qld_test_create_dataset(context, data_dict):
@@ -53,8 +43,6 @@ def qld_test_purge_dataset(context, data_dict):
 
 @tk.side_effect_free
 def qld_test_create_resource_for_dataset(context, data_dict):
-    data_dict['_xloader'] = bool(data_dict.get("xloader"))
-
     return ResourceFactory(**data_dict)
 
 

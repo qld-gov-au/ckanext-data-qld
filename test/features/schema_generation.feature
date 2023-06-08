@@ -2,7 +2,7 @@ Feature: Schema Generation
     Enable worker with `ckan jobs clear && ckan jobs worker`, since these tests rely on background tasks
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario: GUI for creating a data schema but not yet generated
         Given "TestOrgEditor" as the persona
         When I log in
@@ -16,7 +16,7 @@ Feature: Schema Generation
         And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario: Data schema creation tool is triggered and data is suitable for generating a schema.
         Given "TestOrgEditor" as the persona
         When I log in
@@ -29,7 +29,7 @@ Feature: Schema Generation
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'Just now')]]"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario: GUI for creating/displaying a data schema where previously successfully generated
         Given "TestOrgEditor" as the persona
         When I log in
@@ -56,7 +56,7 @@ Feature: Schema Generation
         And I should see an element with xpath "//button[text()='Apply']"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario: System actions following the selection of the blank dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
@@ -72,7 +72,7 @@ Feature: Schema Generation
         And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Resource' and not(@selected)]"
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario: System actions following the selection of the set as dataset default dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
@@ -89,7 +89,7 @@ Feature: Schema Generation
 
 
     @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res::xloader=True
+    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
     Scenario: System actions following the selection of the validate only this resource dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
