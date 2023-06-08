@@ -278,11 +278,11 @@ def _parse_params(param_string):
 @step(u'I create a dataset with key-value parameters "{params}"')
 def create_dataset_from_params(context, params):
     context.execute_steps(u"""
-        Then I create a dataset with key-value parameters "{0}" and resource parameters "url=default"
+        Then I create a dataset and resource with key-value parameters "{0}" and "url=default"
     """.format(params))
 
 
-@step(u'I create a dataset with key-value parameters "{params}" and resource parameters "{resource_params}"')
+@step(u'I create a dataset and resource with key-value parameters "{params}" and "{resource_params}"')
 def create_dataset_and_resource_from_params(context, params, resource_params):
     context.execute_steps(u"""
         When I visit "/dataset/new"
