@@ -4,7 +4,7 @@ Feature: Dataset deletion
     Scenario: Sysadmin creates and deletes a dataset
         Given "SysAdmin" as the persona
         When I log in
-        And I create a dataset with name "dataset-deletion" and title "Dataset deletion"
+        And I create a dataset with key-value parameters "name=dataset-deletion::title=Dataset deletion"
         And I edit the "dataset-deletion" dataset
         Then I press the element with xpath "//a[@data-module='confirm-action']"
         Then I should see "Briefly describe the reason for deleting this dataset"
