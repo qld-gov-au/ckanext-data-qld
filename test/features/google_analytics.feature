@@ -1,4 +1,4 @@
-@google-analytics
+@google_analytics
 Feature: GoogleAnalytics
 
     @unauthenticated

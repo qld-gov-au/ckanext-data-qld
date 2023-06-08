@@ -282,6 +282,18 @@ def create_dataset_from_params(context, params):
             context.execute_steps("""
                 Then I execute the script "document.getElementById('field-license_id').value={0}"
             """.format(value))
+        elif key == "schema_json":
+            if value == "default_schema":
+                value = """
+                    {"fields": [
+                        {"format": "default", "name": "Game Number", "type": "integer"},
+                        {"format": "default", "name": "Game Length", "type": "integer"}
+                    ],
+                    "missingValues": ["Resource schema"]
+                    }
+                """
+            # Call function directly so we can properly quote our parameter
+            i_fill_in_field(context, "schema_json", value)
         else:
             context.execute_steps("""
                 Then I fill in "{0}" with "{1}" if present
@@ -363,34 +375,6 @@ def log_out(context):
 
 
 # ckanext-data-qld
-
-
-@step(u'I create a dataset with default schema and name "{name}"')
-def create_dataset_with_schema(context, name):
-    context.execute_steps(u"""
-        When I visit "/dataset/new"
-        And I fill in default dataset fields
-        And I fill in "title" with "{name}"
-        And I fill in "name" with "{name}" if present
-        And I select "monthly" from "update_frequency"
-        And I execute the script "$('a.btn[title*=JSON]:contains(JSON)').click();"
-    """.format(name=name))
-    # Call step function directly so we can properly quote our parameter
-    i_fill_in_field(context, "schema_json", """
-        {"fields": [
-            {"format": "default", "name": "Game Number", "type": "integer"},
-            {"format": "default", "name": "Game Length", "type": "integer"}
-        ],
-        "missingValues": ["Resource schema"]
-        }
-    """)
-    context.execute_steps(u"""
-        Then I press "Add Data"
-        And I should see "Add New Resource"
-        And I fill in default resource fields
-        And I fill in link resource fields
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
-    """)
 
 
 @step(u'I visit resource schema generation page')

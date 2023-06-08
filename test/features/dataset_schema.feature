@@ -29,7 +29,7 @@ Feature: Dataset Schema
     Scenario: New field visibility on dataset Additional info and API
         Given "SysAdmin" as the persona
         When I log in
-        And I create a dataset with default schema and name "package-with-schema"
+        And I create a dataset with key-value parameters "name=package-with-schema::schema_json=default_schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[text()="View Schema File"]"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="Field name 'validation_options' not in data"]"
         When I visit "api/action/package_show?id=package-with-schema"
