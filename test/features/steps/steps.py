@@ -43,7 +43,7 @@ def log_in(context):
     assert context.persona
     context.execute_steps(u"""
         When I go to homepage
-        And I resize the browser to 1024x2048
+        And I resize the browser to 1024x4096
         And I click the link with text that contains "Log in"
         And I log in directly
     """)
