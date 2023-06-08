@@ -2,6 +2,7 @@ from behave import step
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
+from behaving.web.steps.forms import i_fill_in_field  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
 import email
 import quopri
@@ -348,6 +349,35 @@ def log_out(context):
 
 
 # ckanext-data-qld
+
+
+@step(u'I create a dataset with default schema and name "{name}"')
+def create_dataset_with_schema(context, name):
+    context.execute_steps(u"""
+        When I visit "/dataset/new"
+        And I fill in default dataset fields
+        And I fill in "title" with "{name}"
+        And I fill in "name" with "{name}" if present
+        And I select "monthly" from "update_frequency"
+        And I execute the script "$('a.btn[title*=JSON]:contains(JSON)').click();"
+    """.format(name=name))
+    # Call step function directly so we can properly quote our parameter
+    i_fill_in_field(context, "schema_json", """
+        {"fields": [
+            {"format": "default", "name": "Game Number", "type": "integer"},
+            {"format": "default", "name": "Game Length", "type": "integer"}
+        ],
+        "missingValues": ["Resource schema"]
+        }
+    """)
+    context.execute_steps(u"""
+        Then I press "Add Data"
+        And I should see "Add New Resource"
+        And I fill in default resource fields
+        And I fill in link resource fields
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+    """)
+
 
 @step(u'I visit resource schema generation page')
 def resource_schema_generation(context):

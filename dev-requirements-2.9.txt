@@ -8,6 +8,7 @@ flake8==3.8.3
 mock
 pytest-ckan
 six>=1.13.0
+splinter>=0.13.0,<0.17
 xlrd==1.2.0
 python-magic==0.4.18
 progressbar==2.5
