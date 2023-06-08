@@ -266,23 +266,35 @@ def test_package_patch(context, package_id):
     assert '"success": true' in response.text
 
 
+# Parse a "key=value::key2=value2" parameter string and return an iterator of (key, value) pairs.
+def _parse_params(param_string):
+    params = {}
+    for param in param_string.split("::"):
+        entry = param.split("=", 1)
+        params[entry[0]] = entry[1] if len(entry) > 1 else ""
+    return six.iteritems(params)
+
+
 @step(u'I create a dataset with key-value parameters "{params}"')
 def create_dataset_from_params(context, params):
     context.execute_steps(u"""
         When I visit "/dataset/new"
         And I fill in default dataset fields
     """)
-    for param in params.split("::"):
-        key, value = param.split("=", 1)
+    for key, value in _parse_params(params):
         if key in ["owner_org", "update_frequency"]:
-            context.execute_steps("""
+            context.execute_steps(u"""
                 Then I select "{1}" from "{0}"
             """.format(key, value))
         elif key == "license_id":
-            context.execute_steps("""
+            context.execute_steps(u"""
                 Then I execute the script "document.getElementById('field-license_id').value={0}"
             """.format(value))
         elif key == "schema_json":
+            # Click the button to select manual JSON input if it exists
+            context.execute_steps(u"""
+                Then I execute the script "$('a.btn[title*=JSON]:contains(JSON)').click();"
+            """)
             if value == "default_schema":
                 value = """
                     {"fields": [
