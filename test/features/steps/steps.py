@@ -278,6 +278,13 @@ def _parse_params(param_string):
 @step(u'I create a dataset with key-value parameters "{params}"')
 def create_dataset_from_params(context, params):
     context.execute_steps(u"""
+        Then I create a dataset with key-value parameters "{0}" and resource parameters "url=default"
+    """.format(params))
+
+
+@step(u'I create a dataset with key-value parameters "{params}" and resource parameters "{resource_params}"')
+def create_dataset_and_resource_from_params(context, params, resource_params):
+    context.execute_steps(u"""
         When I visit "/dataset/new"
         And I fill in default dataset fields
     """)
@@ -307,37 +314,41 @@ def create_dataset_from_params(context, params):
             # Call function directly so we can properly quote our parameter
             i_fill_in_field(context, "schema_json", value)
         else:
-            context.execute_steps("""
+            context.execute_steps(u"""
                 Then I fill in "{0}" with "{1}" if present
             """.format(key, value))
     context.execute_steps(u"""
         Then I press "Add Data"
         And I should see "Add New Resource"
         And I fill in default resource fields
-        And I fill in link resource fields
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
     """)
-
-
-@step(u'I create a dataset with license {license} and resource file {file}')
-def create_dataset_json(context, license, file):
-    create_dataset(context, license, 'JSON', file)
-
-
-@step(u'I create a dataset with license {license} and {file_format} resource file {file}')
-def create_dataset(context, license, file_format, file):
-    assert context.persona
+    for key, value in _parse_params(resource_params):
+        if key == "url":
+            if value == "default":
+                context.execute_steps(u"""
+                    And I fill in link resource fields
+                """)
+            else:
+                context.execute_steps(u"""
+                    Then I execute the script "$('#resource-edit [name=url]').val('{0}')"
+                """.format(value))
+        elif key == "upload":
+            context.execute_steps(u"""
+                Then I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
+                And I attach the file {0} to "upload"
+            """.format(value))
+        elif key == "format":
+            context.execute_steps(u"""
+                Then I execute the script "document.getElementById('field-format').value={0}"
+            """.format(value))
+        else:
+            context.execute_steps(u"""
+                Then I fill in "{0}" with "{1}" if present
+            """.format(key, value))
     context.execute_steps(u"""
-        When I visit "/dataset/new"
-        And I fill in default dataset fields
-        And I execute the script "document.getElementById('field-license_id').value={license}"
-        And I press "Add Data"
-        Then I should see "Add New Resource"
-        Then I fill in default resource fields
-        And I upload "{file}" of type "{file_format}" to resource
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
-        Then I should see "Data and Resources"
-    """.format(license=license, file=file, file_format=file_format))
+        Then I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I should see "Data and Resources"
+    """)
 
 
 @step(u'I should receive a base64 email at "{address}" containing "{text}"')
