@@ -72,11 +72,10 @@ Feature: AdminReporting
         Then I should see "Dataset for reporting"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=de-identified-package-without-schema::default_data_schema=::owner_org=reporting-org::title=de-identified-package-without-schema::de_identified_data=YES
-    @fixture.create_resource_for_dataset_with_params::package_id=de-identified-package-without-schema
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify de-identified datasets without default data schema
         Given "ReportingOrgAdmin" as the persona
         When I log in
+        And I create a dataset with key-value parameters "name=de-identified-package-without-schema::title=de-identified-package-without-schema::schema_json=default_schema::owner_org=reporting-org::de_identified_data=YES"
         And I go to my reports page
         And I click the link with text that contains "Admin Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"

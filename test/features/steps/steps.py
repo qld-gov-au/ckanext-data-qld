@@ -275,6 +275,18 @@ def _parse_params(param_string):
     return six.iteritems(params)
 
 
+# Enter a JSON schema value
+# This can require JavaScript interaction, and doesn't fit well into
+# a step invocation due to all the double quotes.
+def _enter_manual_schema(context, schema_json):
+    # Click the button to select manual JSON input if it exists
+    context.execute_steps(u"""
+        Then I execute the script "$('a.btn[title*=JSON]:contains(JSON)').click();"
+    """)
+    # Call function directly so we can properly quote our parameter
+    i_fill_in_field(context, "schema_json", schema_json)
+
+
 @step(u'I create a dataset with key-value parameters "{params}"')
 def create_dataset_from_params(context, params):
     context.execute_steps(u"""
@@ -298,10 +310,6 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                 Then I execute the script "document.getElementById('field-license_id').value={0}"
             """.format(value))
         elif key == "schema_json":
-            # Click the button to select manual JSON input if it exists
-            context.execute_steps(u"""
-                Then I execute the script "$('a.btn[title*=JSON]:contains(JSON)').click();"
-            """)
             if value == "default_schema":
                 value = """
                     {"fields": [
@@ -311,8 +319,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                     "missingValues": ["Resource schema"]
                     }
                 """
-            # Call function directly so we can properly quote our parameter
-            i_fill_in_field(context, "schema_json", value)
+            _enter_manual_schema(value)
         else:
             context.execute_steps(u"""
                 Then I fill in "{0}" with "{1}" if present
@@ -333,6 +340,8 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                     Then I execute the script "$('#resource-edit [name=url]').val('{0}')"
                 """.format(value))
         elif key == "upload":
+            if value == "default":
+                value = "test_game_data.csv"
             context.execute_steps(u"""
                 Then I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
                 And I attach the file {0} to "upload"
@@ -341,6 +350,21 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
             context.execute_steps(u"""
                 Then I execute the script "document.getElementById('field-format').value={0}"
             """.format(value))
+        elif key == "schema":
+            if value == "default":
+                value = """{
+                    "fields": [{
+                        "format": "default",
+                        "name": "Game Number",
+                        "type": "integer"
+                    }, {
+                        "format": "default",
+                        "name": "Game Length",
+                        "type": "integer"
+                    }],
+                    "missingValues": ["Resource schema"]
+                }"""
+            _enter_manual_schema(value)
         else:
             context.execute_steps(u"""
                 Then I fill in "{0}" with "{1}" if present
