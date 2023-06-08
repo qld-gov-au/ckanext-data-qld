@@ -326,7 +326,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
         if key == "url":
             if value == "default":
                 context.execute_steps(u"""
-                    And I fill in link resource fields
+                    Then I fill in link resource fields
                 """)
             else:
                 context.execute_steps(u"""
