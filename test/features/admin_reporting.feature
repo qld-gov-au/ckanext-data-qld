@@ -90,11 +90,10 @@ Feature: AdminReporting
         Then I should see "de-identified-package-without-schema"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=package-with-pending-assessment-resource::owner_org=reporting-org
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-pending-assessment-resource::name=pending-assessment-resource::request_privacy_assessment=YES
     Scenario: Organisation admin views 'Pending privacy assessment' count in the admin report
         Given "ReportingOrgAdmin" as the persona
         When I log in
+        And I create a dataset and resource with key-value parameters "name=package-with-pending-assessment-resource::schema_json=default::owner_org=reporting-org" and "name=pending-assessment-resource::request_privacy_assessment=YES"
         And I visit "dashboard/reporting?report_type=admin&organisation=reporting-org"
         And I click the link with text that contains "Admin Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
