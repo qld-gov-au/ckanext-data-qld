@@ -1,51 +1,36 @@
 Feature: Resource Privacy Assessment Result
 
-    @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
-    Scenario: Add new resource metadata field 'Privacy assessment result' and display on the edit resource GUI page
+    Scenario: As a publisher, when I edit a dataset, I should see the read-only 'Privacy assessment result' field
         Given "TestOrgEditor" as the persona
         When I log in
-        And I go to dataset "package-with-csv-res"
+        And I edit the "public-test-dataset" dataset
 
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I press the element with xpath "//a[text()[contains(.,'Manage')]]"
-        And I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
+        Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
         And I should see an element with xpath "//input[@name='privacy_assessment_result' and @readonly]"
         And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[contains(translate(text(), 'PA', 'pa'),'privacy assessment')]"
 
-    @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
-    Scenario: API viewing of new resource metadata field `Privacy assessment result`
-        Given "TestOrgEditor" as the persona
-        When I log in
-        Then I visit "api/action/package_show?id=package-with-csv-res"
-        And I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
+        When I visit "api/action/package_show?id=public-test-dataset"
+        Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
 
-    @fixture.dataset_with_schema::name=package-with-csv-res::owner_org=test-organisation
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-csv-res
-    Scenario: Sysadmin can edit 'Privacy assessment result' in GUI
+    Scenario: As a Sysadmin, when I edit a dataset, I can edit the 'Privacy assessment result' field
         Given "SysAdmin" as the persona
         When I log in
-        Then I visit "api/action/package_show?id=package-with-csv-res"
-        And I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
+        And I create a dataset with key-value parameters "name=privacy-assessment-package"
+        And I visit "api/action/package_show?id=privacy-assessment-package"
+        Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
 
-        Then I go to dataset "package-with-csv-res"
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I press the element with xpath "//a[text()[contains(.,'Manage')]]"
-        And I should see an element with xpath "//input[@name='privacy_assessment_result']"
+        When I edit the "privacy-assessment-package" dataset
+        Then I should see an element with xpath "//input[@name='privacy_assessment_result']"
 
-        Then I fill in "privacy_assessment_result" with "New privacy_assessment_result"
+        When I fill in "privacy_assessment_result" with "New privacy_assessment_result"
         And I press the element with xpath "//button[@name="save"]"
         Then I should see "New privacy_assessment_result"
 
-    @fixture.dataset_with_schema::name=package-with-new-privacy-assessment::owner_org=test-organisation::author_email=test@gmail.com
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-new-privacy-assessment::name=pending-assessment-resource::request_privacy_assessment=YES
     Scenario: Email to dataset contact when result of requested privacy assessment is posted
         Given "SysAdmin" as the persona
         When I log in
-        And I go to dataset "package-with-new-privacy-assessment"
-        And I press the element with xpath "//li[@class="resource-item"]/a"
-        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
+        And I create a dataset and resource with key-value parameters "name=package-with-new-privacy-assessment::author_email=test@gmail.com" and "name=pending-assessment-resource::request_privacy_assessment=YES"
+        And I edit the "package-with-new-privacy-assessment" dataset
         And I fill in "privacy_assessment_result" with "New privacy_assessment_result"
         And I press the element with xpath "//button[@name="save"]"
         And I trigger notification about updated privacy assessment results
