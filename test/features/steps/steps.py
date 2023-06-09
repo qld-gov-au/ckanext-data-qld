@@ -348,7 +348,7 @@ def create_resource_from_params(context, resource_params):
             context.execute_steps(u"""
                 Then I execute the script "document.getElementById('field-format').value='{0}'"
             """.format(value))
-        elif key == "align_default_schema":
+        elif key in ["align_default_schema", "resource_visible"]:
             action = "check" if value and value.lower() in ["true", "t", "yes", "y"] else "uncheck"
             context.execute_steps(u"""
                 Then I {0} "{1}"
