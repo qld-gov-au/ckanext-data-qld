@@ -305,7 +305,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                 Then I execute the script "document.getElementById('field-license_id').value={0}"
             """.format(value))
         elif key == "schema_json":
-            if value == "default_schema":
+            if value == "default":
                 value = """
                     {"fields": [
                         {"format": "default", "name": "Game Number", "type": "integer"},

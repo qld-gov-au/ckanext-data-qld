@@ -4,7 +4,7 @@ Feature: Schema Generation
     Scenario: As a publisher, when I visit my resource, I can generate a validation schema for it
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=package-with-csv-res::schema_json=default_schema" and "upload=default::format=CSV"
+        And I create a dataset and resource with key-value parameters "name=package-with-csv-res::schema_json=default" and "upload=default::format=CSV"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
@@ -39,7 +39,7 @@ Feature: Schema Generation
     Scenario: System actions following the selection of the set as dataset default dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=apply-for-dataset-schema::schema_json=default_schema" and "upload=default::format=CSV"
+        And I create a dataset and resource with key-value parameters "name=apply-for-dataset-schema::schema_json=default" and "upload=default::format=CSV"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
@@ -54,7 +54,7 @@ Feature: Schema Generation
     Scenario: System actions following the selection of the validate only this resource dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=apply-for-resource-schema::schema_json=default_schema" and "upload=default::format=CSV"
+        And I create a dataset and resource with key-value parameters "name=apply-for-resource-schema::schema_json=default" and "upload=default::format=CSV"
         Then I press the element with xpath "//li[@class="resource-item"]/a"
         Then I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
