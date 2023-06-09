@@ -99,6 +99,13 @@ def fill_in_field_if_present(context, name, value):
     """.format(name, value))
 
 
+@step(u'I clear the URL field')
+def clear_url(context):
+    context.execute_steps(u"""
+        Then I execute the script "$('a.btn-remove-url:contains(Clear)').click();"
+    """)
+
+
 @step(u'I confirm the dialog containing "{text}" if present')
 def confirm_dialog_if_present(context, text):
     if context.browser.is_text_present(text):
@@ -326,22 +333,21 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
 def create_resource_from_params(context, resource_params):
     context.execute_steps(u"""
         Then I fill in default resource fields
+        And I fill in link resource fields
     """)
     for key, value in _parse_params(resource_params):
         if key == "url":
-            if value == "default":
+            if value != "default":
                 context.execute_steps(u"""
-                    Then I fill in link resource fields
-                """)
-            else:
-                context.execute_steps(u"""
-                    Then I execute the script "$('#resource-edit [name=url]').val('{0}')"
+                    Then I clear the URL field
+                    And I execute the script "$('#resource-edit [name=url]').val('{0}')"
                 """.format(value))
         elif key == "upload":
             if value == "default":
                 value = "test_game_data.csv"
             context.execute_steps(u"""
-                Then I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
+                Then I clear the URL field
+                And I execute the script "$('#resource-upload-button').click();"
                 And I attach the file "{0}" to "upload"
             """.format(value))
         elif key == "format":
