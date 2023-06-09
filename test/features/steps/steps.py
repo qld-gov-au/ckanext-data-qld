@@ -187,7 +187,7 @@ def fill_in_default_link_resource_fields(context):
 def upload_file_to_resource(context, file_name, file_format):
     context.execute_steps(u"""
         When I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
-        And I attach the file {file_name} to "upload"
+        And I attach the file "{file_name}" to "upload"
         # Don't quote the injected string since it can have trailing spaces
         And I execute the script "document.getElementById('field-format').value={file_format}"
     """.format(file_name=file_name, file_format=file_format))
@@ -344,7 +344,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                 value = "test_game_data.csv"
             context.execute_steps(u"""
                 Then I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
-                And I attach the file {0} to "upload"
+                And I attach the file "{0}" to "upload"
             """.format(value))
         elif key == "format":
             context.execute_steps(u"""
