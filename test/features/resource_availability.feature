@@ -82,7 +82,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
     Scenario: As an anonymous user, I can see resources without de-identified data
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=package-without-de-identified-data::de_identified_data=NO" and "name=visible-resource::governance_acknowledgement=NO::resource_visible=TRUE"
+        And I create a dataset and resource with key-value parameters "name=package-without-de-identified-data::de_identified_data=NO::private=False" and "name=visible-resource::governance_acknowledgement=NO::resource_visible=TRUE"
 
         When I log out
         And I go to dataset "package-without-de-identified-data"

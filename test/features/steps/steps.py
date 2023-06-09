@@ -296,7 +296,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
         And I fill in default dataset fields
     """)
     for key, value in _parse_params(params):
-        if key in ["owner_org", "update_frequency", "request_privacy_assessment"]:
+        if key in ["owner_org", "update_frequency", "request_privacy_assessment", "private"]:
             context.execute_steps(u"""
                 Then I select "{1}" from "{0}"
             """.format(key, value))
