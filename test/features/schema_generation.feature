@@ -18,7 +18,7 @@ Feature: Schema Generation
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'Just now')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Complete']"
-        And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'seconds ago')]]"
+        And I should see an element with xpath "//th[string()='Last updated']/following::td/span[contains(@class, 'date')]"
         And I should see an element with xpath "//th[string()='JSON data schema']/following::td[@class="with-textarea"]"
         And I should see an element with xpath "//table[contains(@class, 'table-schema')]/following::label[string()="Enable validation of resource/s using this data schema at the following level"]"
         And I should see an element with xpath "//table[contains(@class, 'table-schema')]/following::select[@id="field-apply_for"]"
