@@ -311,7 +311,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                         {"format": "default", "name": "Game Number", "type": "integer"},
                         {"format": "default", "name": "Game Length", "type": "integer"}
                     ],
-                    "missingValues": ["Resource schema"]
+                    "missingValues": ["Default schema"]
                     }
                 """
             _enter_manual_schema(context, value)
