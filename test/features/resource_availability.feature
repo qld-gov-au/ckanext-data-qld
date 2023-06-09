@@ -9,7 +9,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         Given "CKANUser" as the persona
         When I log in
-        And I go to dataset "package-with-invisible-resources"
+        And I go to dataset "package-with-invisible-resource"
         Then I should not see "invisible-resource"
 
     Scenario: As any user, I can see resources marked as visible and assessed
