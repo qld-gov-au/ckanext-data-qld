@@ -189,7 +189,7 @@ def upload_file_to_resource(context, file_name, file_format):
         When I execute the script "button = document.getElementById('resource-upload-button'); if (button) button.click();"
         And I attach the file "{file_name}" to "upload"
         # Don't quote the injected string since it can have trailing spaces
-        And I execute the script "document.getElementById('field-format').value={file_format}"
+        And I execute the script "document.getElementById('field-format').value='{file_format}'"
     """.format(file_name=file_name, file_format=file_format))
 
 
@@ -348,7 +348,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
             """.format(value))
         elif key == "format":
             context.execute_steps(u"""
-                Then I execute the script "document.getElementById('field-format').value={0}"
+                Then I execute the script "document.getElementById('field-format').value='{0}'"
             """.format(value))
         elif key == "schema":
             if value == "default":
