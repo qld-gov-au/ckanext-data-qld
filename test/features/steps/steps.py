@@ -319,7 +319,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                     "missingValues": ["Resource schema"]
                     }
                 """
-            _enter_manual_schema(value)
+            _enter_manual_schema(context, value)
         else:
             context.execute_steps(u"""
                 Then I fill in "{0}" with "{1}" if present
@@ -364,7 +364,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                     }],
                     "missingValues": ["Resource schema"]
                 }"""
-            _enter_manual_schema(value)
+            _enter_manual_schema(context, value)
         else:
             context.execute_steps(u"""
                 Then I fill in "{0}" with "{1}" if present
