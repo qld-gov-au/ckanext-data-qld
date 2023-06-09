@@ -1,5 +1,6 @@
 @dataset_schema
 Feature: Resource align_default_schema field
+
     Scenario: Create or edit resource in the GUI where default_data_schema is NULL, initial display and behaviour
         Given "TestOrgEditor" as the persona
         When I log in
@@ -36,15 +37,8 @@ Feature: Resource align_default_schema field
         And I should see an element with xpath "//div[@class="info-block " and text()=contains(.,"Alternatively, publishers can choose no alignment and may include a customised schema for this resource. Ticking this box and updating the resource will align the schemas, overwriting any existing data schema. The validation options, if any, will not be overwritten.")]"
         And field "align_default_schema" should not be required
 
-        Then I uncheck "align_default_schema"
-        And I attach the file "csv_resource.csv" to "upload"
-        And I fill in "name" with "Another resource"
-        And I fill in "description" with "description"
-        And I fill in "size" with "1024" if present
-
-        And I press the element with xpath "//button[@class="btn btn-primary" and contains(string(), 'Add')]"
-
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
+        When I create a resource with key-value parameters "align_default_schema=False::upload=csv_resource.csv::format=CSV"
+        And I press the element with xpath "//li[@class="resource-item"]/a"
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
 
     @fixture.dataset_with_schema::name=package-without-default-schema::owner_org=test-organisation

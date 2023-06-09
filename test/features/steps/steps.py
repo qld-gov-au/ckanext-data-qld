@@ -116,20 +116,6 @@ def go_to_new_resource_form(context, name):
     """.format(name=name))
 
 
-@step(u'I create a resource with name "{name}" and URL "{url}"')
-def add_resource(context, name, url):
-    context.execute_steps(u"""
-        When I log in
-        And I open the new resource form for dataset "test-dataset"
-        And I execute the script "$('#resource-edit [name=url]').val('{url}')"
-        And I fill in "name" with "{name}"
-        And I fill in "description" with "description"
-        And I fill in "size" with "1024" if present
-        And I execute the script "document.getElementById('field-format').value='HTML'"
-        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
-    """.format(name=name, url=url))
-
-
 @step(u'I fill in title with random text')
 def title_random_text(context):
     assert context.persona
@@ -180,6 +166,7 @@ def fill_in_default_link_resource_fields(context):
     context.execute_steps(u"""
         When I execute the script "$('#resource-edit [name=url]').val('https://example.com')"
         And I execute the script "document.getElementById('field-format').value='HTML'"
+        And I fill in "size" with "1024" if present
     """)
 
 
@@ -190,6 +177,7 @@ def upload_file_to_resource(context, file_name, file_format):
         And I attach the file "{file_name}" to "upload"
         # Don't quote the injected string since it can have trailing spaces
         And I execute the script "document.getElementById('field-format').value='{file_format}'"
+        And I fill in "size" with "1024" if present
     """.format(file_name=file_name, file_format=file_format))
 
 
@@ -301,7 +289,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
         And I fill in default dataset fields
     """)
     for key, value in _parse_params(params):
-        if key in ["owner_org", "update_frequency"]:
+        if key in ["owner_org", "update_frequency", "request_privacy_assessment"]:
             context.execute_steps(u"""
                 Then I select "{1}" from "{0}"
             """.format(key, value))
@@ -327,7 +315,17 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
     context.execute_steps(u"""
         Then I press "Add Data"
         And I should see "Add New Resource"
-        And I fill in default resource fields
+        And I create a resource with key-value parameters "{0}"
+        And I should see "Data and Resources"
+    """.format(resource_params))
+
+
+# Creates a resource using default values apart from the ones specified.
+# The browser should already be on the create/edit resource page.
+@step(u'I create a resource with key-value parameters "{resource_params}"')
+def create_resource_from_params(context, resource_params):
+    context.execute_steps(u"""
+        Then I fill in default resource fields
     """)
     for key, value in _parse_params(resource_params):
         if key == "url":
@@ -350,6 +348,11 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
             context.execute_steps(u"""
                 Then I execute the script "document.getElementById('field-format').value='{0}'"
             """.format(value))
+        elif key == "align_default_schema":
+            action = "check" if value and value.lower() in ["true", "t", "yes", "y"] else "uncheck"
+            context.execute_steps(u"""
+                Then I {0} "{1}"
+            """.format(action, key))
         elif key == "schema":
             if value == "default":
                 value = """{
@@ -371,7 +374,6 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
             """.format(key, value))
     context.execute_steps(u"""
         Then I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
-        And I should see "Data and Resources"
     """)
 
 

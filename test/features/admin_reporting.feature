@@ -21,7 +21,6 @@ Feature: AdminReporting
         And I click the link with text that contains "My Reports"
         Then I should not see an element with xpath "//a[contains(string(), 'Admin Report')]"
 
-
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify the de-identified datasets row exists
         Given "TestOrgAdmin" as the persona
         When I log in
