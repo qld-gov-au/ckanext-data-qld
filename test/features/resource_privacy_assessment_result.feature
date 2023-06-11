@@ -1,10 +1,11 @@
 Feature: Resource Privacy Assessment Result
 
-    Scenario: As a publisher, when I edit a dataset, I should see the read-only 'Privacy assessment result' field
+    Scenario: As a publisher, when I edit a resource, I should see the read-only 'Privacy assessment result' field
         Given "TestOrgEditor" as the persona
         When I log in
-        And I edit the "public-test-dataset" dataset
-
+        And I go to dataset "public-test-dataset"
+        And I go to the first resource in the dataset
+        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
         Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
         And I should see an element with xpath "//input[@name='privacy_assessment_result' and @readonly]"
         And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[contains(translate(text(), 'PA', 'pa'),'privacy assessment')]"
@@ -12,14 +13,16 @@ Feature: Resource Privacy Assessment Result
         When I visit "api/action/package_show?id=public-test-dataset"
         Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
 
-    Scenario: As a Sysadmin, when I edit a dataset, I can edit the 'Privacy assessment result' field
+    Scenario: As a Sysadmin, when I edit a resource, I can edit the 'Privacy assessment result' field
         Given "SysAdmin" as the persona
         When I log in
         And I create a dataset with key-value parameters "name=privacy-assessment-package"
         And I visit "api/action/package_show?id=privacy-assessment-package"
         Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
 
-        When I edit the "privacy-assessment-package" dataset
+        When I go to dataset "privacy-assessment-package"
+        And I go to the first resource in the dataset
+        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
         Then I should see an element with xpath "//input[@name='privacy_assessment_result']"
 
         When I fill in "privacy_assessment_result" with "New privacy_assessment_result"

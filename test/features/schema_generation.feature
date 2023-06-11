@@ -5,10 +5,10 @@ Feature: Schema Generation
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "name=package-with-csv-res::schema_json=default" and "upload=default::format=CSV"
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I visit resource schema generation page
+        And I go to the first resource in the dataset
+        And I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
-        And I should see an element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
+        Then I should see an element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I should see an element with xpath "//button[contains(@class, 'btn-generate')]/following::table[contains(@class, 'table-schema')]"
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Not generated']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
@@ -40,12 +40,12 @@ Feature: Schema Generation
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "name=apply-for-dataset-schema::schema_json=default" and "upload=default::format=CSV"
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I visit resource schema generation page
+        And I go to the first resource in the dataset
+        And I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
-        Then I select "dataset" from "apply_for"
+        And I select "dataset" from "apply_for"
         And I press the element with xpath "//button[text()='Apply']"
         And I go to dataset "apply-for-dataset-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[text()="View Schema File"]"
@@ -55,13 +55,12 @@ Feature: Schema Generation
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "name=apply-for-resource-schema::schema_json=default" and "upload=default::format=CSV"
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I visit resource schema generation page
+        And I go to the first resource in the dataset
+        And I visit resource schema generation page
         And I reload page every 3 seconds until I see an element with xpath "//ul[@class="nav nav-tabs"]/li[position()=2]/a[text()[contains(.,'Data Schema')]]" but not more than 6 times
         And I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
-        Then I select "resource" from "apply_for"
+        And I select "resource" from "apply_for"
         And I press the element with xpath "//button[text()='Apply']"
-
         And I press the element with xpath "//a[text()[contains(.,'View resource')]]"
         Then I should see an element with xpath "//th[text()="Data Schema"]/following::a[text()="View Schema File"]"

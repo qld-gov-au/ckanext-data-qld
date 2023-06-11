@@ -142,6 +142,13 @@ def go_to_dataset(context, name):
     when_i_visit_url(context, '/dataset/' + name)
 
 
+@step(u'I go to the first resource in the dataset')
+def go_to_first_resource(context):
+    context.execute_steps(u"""
+        Then I press the element with xpath "//li[@class="resource-item"]/a
+    """)
+
+
 @step(u'I edit the "{name}" dataset')
 def edit_dataset(context, name):
     when_i_visit_url(context, '/dataset/edit/{}'.format(name))

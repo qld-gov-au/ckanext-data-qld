@@ -8,9 +8,9 @@ Feature: Resource align_default_schema field
         Then I go to dataset "package-without-default-schema"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following-sibling::td[contains(text(),"Field name 'default_data_schema' not in data")]"
 
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
-        Then I press the element with xpath "//a[contains(text(),'Manage')]"
-        And I should not see "Align this data schema with the dataset default"
+        When I go to the first resource in the dataset
+        And I press the element with xpath "//a[contains(text(),'Manage')]"
+        Then I should not see "Align this data schema with the dataset default"
         And I should see "Upload"
         And I should see "Link"
         And I should see "JSON"
@@ -37,7 +37,7 @@ Feature: Resource align_default_schema field
         And field "align_default_schema" should not be required
 
         When I create a resource with key-value parameters "align_default_schema=False::upload=csv_resource.csv::format=CSV"
-        And I press the element with xpath "//li[@class="resource-item"]/a"
+        And I go to the first resource in the dataset
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
 
     Scenario: Edit a resource in the GUI where default schema exists and the existing schema value does not match the default
@@ -46,10 +46,10 @@ Feature: Resource align_default_schema field
         And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema=default"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
+        When I go to the first resource in the dataset
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
-        Then I click the link with text "View Schema File"
-        And I should see an element with xpath "//body[contains(text(), '"Resource schema"')]"
+        When I click the link with text "View Schema File"
+        Then I should see an element with xpath "//body[contains(text(), '"Resource schema"')]"
         Then I go back
 
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
@@ -67,7 +67,7 @@ Feature: Resource align_default_schema field
         And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema="
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
-        Then I press the element with xpath "//li[@class="resource-item"]/a"
+        When I go to the first resource in the dataset
         Then I should see an element with xpath "//th[text()='Aligned with default data schema']/following-sibling::td[text()='FALSE']"
         Then I press the element with xpath "//a[contains(text(),'Manage')]"
         And I should see "Align this data schema with the dataset default"
