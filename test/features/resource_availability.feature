@@ -27,7 +27,7 @@ Feature: Re-identification risk governance acknowledgement
     Scenario: As an unprivileged user, I can see de-identified resources marked as visible without a privacy assessment
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=de-identified-package-with-unassessed-resource::de_identified_data=YES" and "name=visible-resource::request_privacy_assessment=NO::governance_acknowledgement=YES::resource_visible=TRUE"
+        And I create a dataset and resource with key-value parameters "name=de-identified-package-with-unassessed-resource::de_identified_data=YES::private=False" and "name=visible-resource::request_privacy_assessment=NO::governance_acknowledgement=YES::resource_visible=TRUE"
 
         Given "CKANUser" as the persona
         When I log out
