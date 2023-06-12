@@ -34,7 +34,8 @@ Feature: Resource Privacy Assessment Result
         Given "SysAdmin" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "name=package-with-new-privacy-assessment::author_email=test@gmail.com" and "name=pending-assessment-resource::request_privacy_assessment=YES"
-        And I edit the "package-with-new-privacy-assessment" dataset
+        And I go to the first resource in the dataset
+        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
         And I fill in "privacy_assessment_result" with "New privacy_assessment_result"
         And I press the element with xpath "//button[@name="save"]"
         And I trigger notification about updated privacy assessment results
