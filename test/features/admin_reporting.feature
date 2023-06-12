@@ -74,7 +74,7 @@ Feature: AdminReporting
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify de-identified datasets without default data schema
         Given "ReportingOrgAdmin" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=de-identified-package-without-schema::title=de-identified-package-without-schema::schema_json=default::owner_org=Reporting Organisation::de_identified_data=YES"
+        And I create a dataset with key-value parameters "name=de-identified-package-without-schema::title=de-identified-package-without-schema::owner_org=Reporting Organisation::de_identified_data=YES"
         And I go to my reports page
         And I click the link with text that contains "Admin Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
