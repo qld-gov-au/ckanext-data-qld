@@ -15,7 +15,7 @@ Feature: Re-identification risk governance acknowledgement
     Scenario: As any user, I can see resources marked as visible and assessed
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=package-with-assessed-resource::de_identified_data=NO" and "name=visible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE"
+        And I create a dataset and resource with key-value parameters "name=package-with-assessed-resource::de_identified_data=NO::private=False" and "name=visible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE"
         Then I should see "visible-resource"
 
         Given "CKANUser" as the persona
