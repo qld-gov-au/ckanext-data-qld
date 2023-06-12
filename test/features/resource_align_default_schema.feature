@@ -43,7 +43,7 @@ Feature: Resource align_default_schema field
     Scenario: Edit a resource in the GUI where default schema exists and the existing schema value does not match the default
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema=default"
+        And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema=default::align_default_schema=False"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
         When I go to the first resource in the dataset
@@ -64,7 +64,7 @@ Feature: Resource align_default_schema field
     Scenario: Edit resource in the GUI where default schema exists and the existing schema value matches the default
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema="
+        And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema=::align_default_schema=False"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[contains(text(),"View Schema File")]"
 
         When I go to the first resource in the dataset
