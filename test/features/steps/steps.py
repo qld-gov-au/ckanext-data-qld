@@ -154,6 +154,14 @@ def edit_dataset(context, name):
     when_i_visit_url(context, '/dataset/edit/{}'.format(name))
 
 
+@step(u'I select the "{licence_id}" licence')
+def select_licence(context, licence_id):
+    # Licence requires special interaction due to fancy JavaScript
+    context.execute_steps(u"""
+        Then I execute the script "$('#field-license_id').val('{0}').trigger('change')"
+    """.format(licence_id))
+
+
 @step(u'I fill in default dataset fields')
 def fill_in_default_dataset_fields(context):
     context.execute_steps(u"""
@@ -161,7 +169,7 @@ def fill_in_default_dataset_fields(context):
         And I fill in "notes" with "Description"
         And I fill in "version" with "1.0"
         And I fill in "author_email" with "test@me.com"
-        And I execute the script "document.getElementById('field-license_id').value='other-open'"
+        And I select the "other-open" licence
         And I fill in "de_identified_data" with "NO" if present
     """)
 
@@ -314,7 +322,7 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
             """.format(key, value))
         elif key == "license_id":
             context.execute_steps(u"""
-                Then I execute the script "document.getElementById('field-license_id').value={0}"
+                Then I select the "{0}" licence
             """.format(value))
         elif key == "schema_json":
             if value == "default":
