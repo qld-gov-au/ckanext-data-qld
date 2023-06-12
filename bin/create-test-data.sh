@@ -107,7 +107,10 @@ curl -LsH "Authorization: ${API_KEY}" \
     --data '{"name": "public-test-dataset", "owner_org": "'"${TEST_ORG_ID}"'",
 "update_frequency": "monthly", "author_email": "admin@example.com", "version": "1.0",
 "license_id": "other-open", "data_driven_application": "NO", "security_classification": "PUBLIC",
-"notes": "public test", "de_identified_data": "NO"}' \
+"notes": "public test", "de_identified_data": "NO", "resources": [
+    {"name": "test-resource", "description": "Test resource description",
+     "url": "https://example.com", "format": "HTML", "size": 1024}
+]}' \
     ${CKAN_ACTION_URL}/package_create
 
 # Datasets need to be assigned to an organisation
