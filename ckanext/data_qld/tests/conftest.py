@@ -140,32 +140,19 @@ def _get_default_schema():
     return json.dumps(schema)
 
 
-class SysadminFactory(factories.Sysadmin):
-    password = "Password123!"
-
-
 @pytest.fixture
 def sysadmin():
-    return SysadminFactory()
-
-
-@pytest.fixture
-def sysadmin_factory():
-    return SysadminFactory
-
-
-class UserFactory(factories.User):
-    password = "Password123!"
+    return factories.Sysadmin()
 
 
 @pytest.fixture
 def user():
-    return UserFactory()
+    return factories.User()
 
 
 @pytest.fixture
 def user_factory():
-    return UserFactory
+    return factories.User
 
 
 @pytest.fixture
