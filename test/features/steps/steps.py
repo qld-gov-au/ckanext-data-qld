@@ -2,7 +2,6 @@ from behave import step
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
-from behaving.web.steps.forms import i_fill_in_field  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
 import email
 import quopri
@@ -16,6 +15,11 @@ import uuid
 import base64
 if not hasattr(base64, 'encodestring'):
     base64.encodestring = base64.encodebytes
+
+# Monkey-patch Behaving to handle function rename
+from behaving.web.steps import forms
+if not hasattr(forms, 'fill_in_elem_by_name'):
+    forms.fill_in_elem_by_name = forms.i_fill_in_field
 
 URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
                     (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
@@ -294,7 +298,7 @@ def _enter_manual_schema(context, schema_json):
         Then I execute the script "$('a.btn[title*=JSON]:contains(JSON)').click();"
     """)
     # Call function directly so we can properly quote our parameter
-    i_fill_in_field(context, "schema_json", schema_json)
+    forms.fill_in_elem_by_name(context, "schema_json", schema_json)
 
 
 @step(u'I create a dataset with key-value parameters "{params}"')
