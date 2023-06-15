@@ -9,10 +9,11 @@ Feature: Engagement Reporting
         And I click the link with text that contains "Engagement Report"
         Then I should see an element with id "organisation"
         And I should see an element with id "start_date"
-        And I fill in "start_date" with "01-01-2019"
-        And I should see an element with id "end_date"
-        And I fill in "end_date" with "01-01-2020"
-        When I press the element with xpath "//button[contains(string(), 'Show')]"
+        When I fill in "start_date" with "01-01-2019"
+        Then I should see an element with id "end_date"
+
+        When I fill in "end_date" with "01-01-2020"
+        And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see "Organisation: Test Organisation" within 1 seconds
         And I should see "01/01/2019 - 01/01/2020" within 1 seconds
 
@@ -31,7 +32,6 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='25' and position()=2]"
 
         When I create a datarequest
-
         And I go to my reports page
         And I click the link with text that contains "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
@@ -53,21 +53,18 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='0']"
 
-        Then I go to dataset "reporting-dataset"
+        When I go to dataset "reporting-dataset"
         And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
-
         And I go to dataset "reporting-dataset" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
-
         And I go to data request "Reporting Request" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
-
         And I go to data request "Reporting Request"
         And I press the element with xpath "//a[contains(string(), 'Close')]"
         And I select "To be released as open data at a later date" from "close_circumstance"
         And I fill in "approx_publishing_date" with "01/01/1970"
         And I press the element with xpath "//button[contains(@class, 'btn-danger') and @name='close' and contains(string(), 'Close data request')]"
-        And I should see an element with xpath "//i[contains(@class, 'icon-lock')]"
+        Then I should see an element with xpath "//i[contains(@class, 'icon-lock')]"
 
         When I go to my reports page
         And I click the link with text that contains "Engagement Report"

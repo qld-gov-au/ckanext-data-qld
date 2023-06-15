@@ -1,4 +1,4 @@
-@google-analytics
+@google_analytics
 Feature: GoogleAnalytics
 
     @unauthenticated
@@ -11,7 +11,7 @@ Feature: GoogleAnalytics
     Scenario: When viewing the HTML source code of a group, the appropriate metadata is visible
         Given "Unauthenticated" as the persona
         When I go to group page
-        And I resize the browser to 1024x2048
+        And I maximize the browser's window
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Groups']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland;' and @scheme='AGLSTERMS.GOLD']"
@@ -36,7 +36,7 @@ Feature: GoogleAnalytics
     Scenario: When viewing the HTML source code of an organisation, the appropriate metadata is visible
         Given "Unauthenticated" as the persona
         When I go to organisation page
-        And I resize the browser to 1024x2048
+        And I maximize the browser's window
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Organisations']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland;' and @scheme='AGLSTERMS.GOLD']"
@@ -60,7 +60,7 @@ Feature: GoogleAnalytics
     Scenario: When viewing the HTML source code of a resource, the appropriate metadata is visible
         Given "TestOrgEditor" as the persona
         When I go to Dataset page
-        And I resize the browser to 1024x2048
+        And I maximize the browser's window
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Datasets']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland;' and @scheme='AGLSTERMS.GOLD']"
@@ -70,7 +70,7 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
         When I log in
-        And I create a dataset with name "dcterms-testing" and title "DCTERMS testing"
+        And I create a dataset with key-value parameters "name=dcterms-testing::title=DCTERMS testing"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='DCTERMS testing']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"

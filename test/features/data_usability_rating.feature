@@ -4,9 +4,9 @@ Feature: Data usability rating
     Scenario Outline: As a publisher, when I create a resource with an open license, I can verify the openness score is correct
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset with license "other-open" and "<Format>" resource file "<Filename>"
-        Then I wait for 10 seconds
-        When I press the element with xpath "//ol[contains(@class, 'breadcrumb')]//a[starts-with(@href, '/dataset/')]"
+        And I create a dataset and resource with key-value parameters "license=other-open" and "format=<Format>::upload=<Filename>"
+        And I wait for 10 seconds
+        And I press the element with xpath "//ol[contains(@class, 'breadcrumb')]//a[starts-with(@href, '/dataset/')]"
         Then I should see "Data usability rating" within 2 seconds
         When I click the link with text that contains "Test Resource"
         Then I should see an element with xpath "//div[contains(@class, 'qa openness-<Score>')]"

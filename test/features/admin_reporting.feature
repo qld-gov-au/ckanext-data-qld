@@ -21,7 +21,6 @@ Feature: AdminReporting
         And I click the link with text that contains "My Reports"
         Then I should not see an element with xpath "//a[contains(string(), 'Admin Report')]"
 
-
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify the de-identified datasets row exists
         Given "TestOrgAdmin" as the persona
         When I log in
@@ -72,11 +71,10 @@ Feature: AdminReporting
         Then I should see "Dataset for reporting"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=de-identified-package-without-schema::default_data_schema=::owner_org=reporting-org::title=de-identified-package-without-schema::de_identified_data=YES
-    @fixture.create_resource_for_dataset_with_params::package_id=de-identified-package-without-schema
     Scenario: As an admin user of my organisation, when I view my admin report, I can verify de-identified datasets without default data schema
         Given "ReportingOrgAdmin" as the persona
         When I log in
+        And I create a dataset with key-value parameters "name=de-identified-package-without-schema::title=de-identified-package-without-schema::owner_org=Reporting Organisation::de_identified_data=YES"
         And I go to my reports page
         And I click the link with text that contains "Admin Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
@@ -92,11 +90,10 @@ Feature: AdminReporting
         Then I should see "de-identified-package-without-schema"
         And I should see "Data and Resources"
 
-    @fixture.dataset_with_schema::name=package-with-pending-assessment-resource::owner_org=reporting-org
-    @fixture.create_resource_for_dataset_with_params::package_id=package-with-pending-assessment-resource::name=pending-assessment-resource::request_privacy_assessment=YES
     Scenario: Organisation admin views 'Pending privacy assessment' count in the admin report
         Given "ReportingOrgAdmin" as the persona
         When I log in
+        And I create a dataset and resource with key-value parameters "name=package-with-pending-assessment-resource::schema_json=default::owner_org=Reporting Organisation" and "name=pending-assessment-resource::request_privacy_assessment=YES"
         And I visit "dashboard/reporting?report_type=admin&organisation=reporting-org"
         And I click the link with text that contains "Admin Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
@@ -109,5 +106,5 @@ Feature: AdminReporting
         And I should see "Reporting Organisation"
         And I should see "Total number of resources: 1"
         And I should see "pending-assessment-resource"
-        Then I click the link with text that contains "pending-assessment-resource"
-        And I should see an element with xpath "//th[text()='Request privacy assessment']/following-sibling::td[text()='YES']"
+        When I click the link with text that contains "pending-assessment-resource"
+        Then I should see an element with xpath "//th[text()='Request privacy assessment']/following-sibling::td[text()='YES']"
