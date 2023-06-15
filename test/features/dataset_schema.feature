@@ -31,6 +31,6 @@ Feature: Dataset Schema
         When I log in
         And I create a dataset with key-value parameters "name=package-with-schema::schema_json=default"
         Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[text()="View Schema File"]"
-        Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="Field name 'validation_options' not in data"]"
+        Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="[blank]"]"
         When I visit "api/action/package_show?id=package-with-schema"
         Then I should see an element with xpath "//body/*[contains(text(), '"default_data_schema":')]"
