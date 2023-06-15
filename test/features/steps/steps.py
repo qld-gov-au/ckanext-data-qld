@@ -3,6 +3,7 @@ from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
 from behaving.web.steps.url import when_i_visit_url
+import datetime
 import email
 import quopri
 import re
@@ -43,7 +44,7 @@ def log_in(context):
     assert context.persona
     context.execute_steps(u"""
         When I go to homepage
-        And I resize the browser to 1024x4096
+        And I maximize the browser's window
         And I click the link with text that contains "Log in"
         And I log in directly
     """)
