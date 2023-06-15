@@ -6,4 +6,4 @@ set -ex
 
 ahoy install-site
 echo "==> Run BDD tests"
-ahoy test-bdd || (ahoy logs; exit 1)
+ahoy test-bdd
