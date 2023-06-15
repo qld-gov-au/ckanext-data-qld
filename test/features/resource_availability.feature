@@ -8,7 +8,8 @@ Feature: Re-identification risk governance acknowledgement
         Then I should see "invisible-resource"
 
         Given "CKANUser" as the persona
-        When I log in
+        When I log out
+        And I log in
         And I go to dataset "package-with-invisible-resource"
         Then I should not see "invisible-resource"
 
