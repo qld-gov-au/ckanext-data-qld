@@ -17,3 +17,5 @@ Feature: Dataset deletion
         When I go to "/ckan-admin/trash"
         Then I should see "Dataset deletion"
         When I press the element with xpath "//form[contains(@id, 'form-purge-package')]//*[contains(text(), 'Purge')]"
+        And I confirm the dialog containing "Are you sure you want to purge datasets?" if present
+        Then I should see "datasets have been purged"
