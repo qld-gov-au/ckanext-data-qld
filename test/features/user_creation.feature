@@ -22,6 +22,7 @@ Feature: User creation
         And I should not see "The displayed name cannot contain certain words such as 'publisher', 'QLD Government' or similar. Please enter another display name."
 
     Scenario: Non logged-in user register to the site.
+        Given "Unauthenticated" as the persona
         When I go to register page
         Then I should see an element with xpath "//input[@name='fullname']"
         And I should see "Displayed name"

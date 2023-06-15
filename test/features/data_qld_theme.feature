@@ -63,10 +63,12 @@ Feature: Theme customisations
 
     @unauthenticated
     Scenario: Explore button does not exist on dataset detail page
+        Given "Unauthenticated" as the persona
         When I go to organisation page
         Then I should see "Organisations are Queensland Government departments, other agencies or legislative entities responsible for publishing open data on this portal."
 
     Scenario: Register user password must be 10 characters or longer
+        Given "Unauthenticated" as the persona
         When I go to register page
         And I fill in "name" with "name"
         And I fill in "fullname" with "fullname"
@@ -77,6 +79,7 @@ Feature: Theme customisations
         Then I should see "Password: Your password must be 10 characters or longer"
 
     Scenario: Register user password must contain at least one number, lowercase letter, capital letter, and symbol
+        Given "Unauthenticated" as the persona
         When I go to register page
         And I fill in "name" with "name"
         And I fill in "fullname" with "fullname"

@@ -140,6 +140,7 @@ Feature: User APIs
         Then I should see "Dashboard"
 
     Scenario: Register user password must be 10 characters or longer and contain number, lowercase, capital, and symbol
+        Given "Unauthenticated" as the persona
         When I go to register page
         And I fill in "name" with "name"
         And I fill in "fullname" with "fullname"
