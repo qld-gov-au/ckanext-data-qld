@@ -5,7 +5,7 @@ Feature: Re-identification risk governance acknowledgement
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "name=package-with-invisible-resource::de_identified_data=NO" and "name=invisible-resource::resource_visible=FALSE"
-        And I should see "invisible-resource"
+        Then I should see "invisible-resource"
 
         Given "CKANUser" as the persona
         When I log in
@@ -64,8 +64,8 @@ Feature: Re-identification risk governance acknowledgement
         Given "CKANUser" as the persona
         When I log out
         And I log in
-        Then I go to dataset "random_package"
-        And I should not see "invisible-resource"
+        And I go to dataset "random_package"
+        Then I should not see "invisible-resource"
 
     Scenario: As a publisher, when I edit a resource, I can set its visibility
         Given "TestOrgEditor" as the persona

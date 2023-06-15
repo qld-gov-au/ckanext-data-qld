@@ -24,7 +24,7 @@ Feature: Data Validation
         And I execute the script "document.getElementById('field-schema-upload').parentNode.parentNode.setAttribute('style', '')"
         And I attach the file "test-resource_schemea.json" to "schema_upload"
         And I press "Finish"
-        When I wait for 1 seconds
+        And I wait for 1 seconds
         And I click the link with text that contains "Test Resource"
         And I click the link with text that contains "View Schema File"
         Then I should see "Measure of the oblique fractal impedance at noon"

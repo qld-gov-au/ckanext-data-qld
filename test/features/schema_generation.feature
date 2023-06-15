@@ -13,26 +13,26 @@ Feature: Schema Generation
         And I should see an element with xpath "//th[string()='Status']/following::td[string()='Not generated']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
 
-        Then I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
+        When I press the element with xpath "//button[text()[contains(.,'Generate JSON data schema')]]"
         And I reload page every 3 seconds until I see an element with xpath "//th[string()='Status']/following::td[string()='Pending']" but not more than 6 times
-        And I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'Just now')]]"
-        And I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
-        And I should see an element with xpath "//th[string()='Status']/following::td[string()='Complete']"
+        Then I should see an element with xpath "//th[string()='Last updated']/following::td/span[text()[contains(.,'Just now')]]"
+        When I reload page every 3 seconds until I see an element with xpath "//button[text()='Apply']" but not more than 6 times
+        Then I should see an element with xpath "//th[string()='Status']/following::td[string()='Complete']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[contains(@class, 'date')]"
         And I should see an element with xpath "//th[string()='JSON data schema']/following::td[@class="with-textarea"]"
         And I should see an element with xpath "//table[contains(@class, 'table-schema')]/following::label[string()="Enable validation of resource/s using this data schema at the following level"]"
         And I should see an element with xpath "//table[contains(@class, 'table-schema')]/following::select[@id="field-apply_for"]"
-        Then I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
-        Then I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Dataset default' and not(@selected)]"
-        Then I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Resource' and not(@selected)]"
+        And I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
+        And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Dataset default' and not(@selected)]"
+        And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Resource' and not(@selected)]"
 
         And I should see an element with xpath "//div/following::p[text()[contains(.,'Leaving blank will NOT change any pre-existing validation for this dataset or resource.')]]"
         And I should see an element with xpath "//div/following::p[text()[contains(.,'Once applied as the "Dataset default", all dataset resources, when edited or added, will be validated against this data schema.')]]"
         And I should see an element with xpath "//div/following::p[text()[contains(.,'Once applied to only this "Resource", saved edits will be validated against this data schema unless otherwise overwritten (e.g. Dataset default set).')]]"
         And I should see an element with xpath "//button[text()='Apply']"
 
-        Then I press the element with xpath "//button[text()='Apply']"
-        And I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
+        When I press the element with xpath "//button[text()='Apply']"
+        Then I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
         And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Dataset default' and not(@selected)]"
         And I should see an element with xpath "//select[@id='field-apply_for']/option[text()='Resource' and not(@selected)]"
 

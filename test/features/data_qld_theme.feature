@@ -90,16 +90,16 @@ Feature: Theme customisations
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "license=other-open" and "format=CSV::upload=csv_resource.csv"
-        Then I wait for 10 seconds
+        And I wait for 10 seconds
         And I click the link with text that contains "Test Resource"
         Then I should see an element with xpath "//a[contains(text(), 'Data API')]"
         And I should see an element with xpath "//button[contains(@class, 'dropdown-toggle')]"
         And I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
         When I press the element with xpath "//button[contains(@class, 'dropdown-toggle')]"
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(string(), 'CSV')]"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(string(), 'TSV')]"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(string(), 'JSON')]"
-        Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(string(), 'XML')]"
+        And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(string(), 'TSV')]"
+        And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(string(), 'JSON')]"
+        And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(string(), 'XML')]"
 
     @unauthenticated
     Scenario: When I encounter a 'resource not found' error page, it has a custom message
