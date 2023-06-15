@@ -3,7 +3,7 @@
 import os
 
 from behaving import environment as benv
-from behaving.web.steps.browser import named_browser
+from splinter.browser import Browser
 
 # Path to the root of the project.
 ROOT_PATH = os.path.realpath(os.path.join(
@@ -103,11 +103,6 @@ def before_all(context):
     # Set base url for all relative links.
     context.base_url = BASE_URL
 
-    # Always use remote web driver.
-    context.remote_webdriver = 1
-    context.default_browser = 'chrome'
-    context.browser_args = {"command_executor": REMOTE_CHROME_URL}
-
     # Set the rest of the settings to default Behaving's settings.
     benv.before_all(context)
 
@@ -127,7 +122,12 @@ def after_feature(context, feature):
 def before_scenario(context, scenario):
     benv.before_scenario(context, scenario)
     # Always use remote browser.
-    named_browser(context, 'remote')
+    remote_browser = Browser(
+        driver_name="remote", browser="chrome",
+        command_executor=REMOTE_CHROME_URL
+    )
+    for persona_name in PERSONAS.keys():
+        context.browsers[persona_name] = remote_browser
     # Set personas.
     context.personas = PERSONAS
 
