@@ -1,7 +1,7 @@
 @resource_visibility
 Feature: Resource Privacy Assessment Result
 
-    Scenario: As a publisher, when I edit a resource, I should see the read-only 'Privacy assessment result' field
+    Scenario: Add new resource metadata field 'Privacy assessment result' and display on the edit resource GUI page
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset with key-value parameters "name=privacy-assessment-package"
@@ -9,7 +9,9 @@ Feature: Resource Privacy Assessment Result
         And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
         Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
         And I should see an element with xpath "//input[@name='privacy_assessment_result' and @readonly]"
-        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[contains(translate(text(), 'PA', 'pa'),'privacy assessment')]"
+        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[text()[contains(.,'Refer to the linked Privacy Assessment Report for details of the assessment.')]]"
+        And I should see "Refer to the linked Privacy Assessment Report for details of the assessment."
+        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::a[text()='here']"
 
         When I visit "api/action/package_show?id=privacy-assessment-package"
         Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
