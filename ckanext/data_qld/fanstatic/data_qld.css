@@ -563,3 +563,10 @@ hr.double-thickness {
 .form-group.control-medium .control-checkbox input {
     margin: 0;
 }
+
+/* resource read page */
+.module.module-resource .page-heading .dataset-private{
+    font-size: 12px;
+    bottom: 4px;
+    position: relative;
+}
