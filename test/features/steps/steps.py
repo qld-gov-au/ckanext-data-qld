@@ -43,10 +43,16 @@ def go_to_register_page(context):
 def log_in(context):
     context.execute_steps(u"""
         When I go to homepage
-        And I maximize the browser's window
+        And I expand the browser height
         And I click the link with text that contains "Log in"
         And I log in directly
     """)
+
+
+@when(u'I expand the browser height')
+def expand_height(context):
+    # Work around x=null bug in Selenium set_window_size
+    context.browser.driver.set_window_rect(x=0, y=0, width=1024, height=4096)
 
 
 @when(u'I log in directly')
