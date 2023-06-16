@@ -38,7 +38,7 @@ class TestValidationDefineCreateMode:
         mode = validation_settings.get_create_mode({}, resource)
         assert mode == validation_settings.ASYNC_MODE
 
-    @mock.patch("ckanext.data_qld.validation.is_api_call", lambda: False)
+    @mock.patch("ckanext.data_qld.utils.is_api_call", lambda: False)
     def test_get_create_mode_if_no_schema_and_de_identified_but_aligned(
             self, dataset_factory, resource_factory, sysadmin):
         """Validation must be in sync mode if we don't have a schema and dataset
@@ -87,7 +87,7 @@ class TestValidationDefineUpdateMode:
         mode = validation_settings.get_update_mode({}, resource)
         assert mode == validation_settings.ASYNC_MODE
 
-    @mock.patch("ckanext.data_qld.validation.is_api_call", lambda: False)
+    @mock.patch("ckanext.data_qld.utils.is_api_call", lambda: False)
     def test_get_update_mode_if_no_schema_and_de_identified_but_aligned(
             self, dataset_factory, resource_factory, sysadmin):
         """Validation must be in sync mode if we don't have a schema and dataset

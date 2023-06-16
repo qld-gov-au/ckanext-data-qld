@@ -298,8 +298,11 @@ def get_organisation_list_for_user(permission):
 
 
 def get_deidentified_count_from_date():
-    count_from = tk.config.get(
-        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
+    return tk.config.get(
+        REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM, "2022-11-01"
     )
 
+
+def get_deidentified_count_from_date_display():
+    count_from = get_deidentified_count_from_date()
     return tk.h.date_str_to_datetime(count_from).strftime("%d %B %Y")

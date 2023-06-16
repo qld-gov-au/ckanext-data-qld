@@ -2,7 +2,6 @@ import pytest
 
 import ckan.lib.navl.dictization_functions as df
 import ckan.model as model
-import ckan.tests.factories as factories
 
 from ckanext.resource_visibility.validators import privacy_assessment_result
 
@@ -33,8 +32,7 @@ class TestPrivacyAssessmentResultValidator:
 
         data = {key: value, res_id: resource["id"]}
 
-        errors = factories.validator_errors_dict()
-        errors[key] = []
+        errors = {key: []}
 
         with pytest.raises(df.StopOnError):
             privacy_assessment_result(key, data, errors, context)
@@ -54,8 +52,7 @@ class TestPrivacyAssessmentResultValidator:
         key = (u'resources', 0, u'privacy_assessment_result')
         res_id = (u'resources', 0, u'id')
 
-        errors = factories.validator_errors_dict()
-        errors[key] = []
+        errors = {key: []}
 
         data = {key: value, res_id: resource["id"]}
 
@@ -74,8 +71,7 @@ class TestPrivacyAssessmentResultValidator:
         key = (u'resources', 0, u'privacy_assessment_result')
         res_id = (u'resources', 0, u'id')
 
-        errors = factories.validator_errors_dict()
-        errors[key] = []
+        errors = {key: []}
 
         data = {key: value, res_id: resource["id"]}
 
@@ -98,8 +94,7 @@ class TestPrivacyAssessmentResultValidator:
 
         data = {key: value, res_id: resource["id"]}
 
-        errors = factories.validator_errors_dict()
-        errors[key] = []
+        errors = {key: []}
 
         privacy_assessment_result(key, data, errors, context)
 
@@ -116,7 +111,6 @@ class TestPrivacyAssessmentResultValidator:
 
         data = {key: value, res_id: resource["id"]}
 
-        errors = factories.validator_errors_dict()
-        errors[key] = []
+        errors = {key: []}
 
         privacy_assessment_result(key, data, errors, context)

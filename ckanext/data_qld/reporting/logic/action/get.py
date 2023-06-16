@@ -5,17 +5,12 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 import pytz
-from sqlalchemy import func, distinct, tuple_, and_
+from sqlalchemy import func, distinct, tuple_, and_, literal_column
 from sqlalchemy.orm import aliased
 from ckantoolkit import config, NotAuthorized, h
 
 from ckan import model
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
-from ckan.model.package import Package
-from ckan.model.group import Group
-from ckan.model.user import User
-from ckan.model.package_extra import PackageExtra
-from ckan.model.resource import Resource
 
 from ckanext.ytp.comments.model import Comment, CommentThread
 from ckanext.ytp.comments.notification_models import CommentNotificationRecipient
@@ -62,12 +57,12 @@ def organisation_followers(context, data_dict):
             )
             .filter(
                 _and_(
-                    Group.id == org_id,
+                    model.Group.id == org_id,
                     UserFollowingGroup.datetime >= utc_start_date,
                     UserFollowingGroup.datetime < utc_end_date,
                 )
             )
-            .join(Group, Group.id == UserFollowingGroup.object_id)
+            .join(model.Group, model.Group.id == UserFollowingGroup.object_id)
         ).scalar()
 
     except Exception as e:
@@ -94,13 +89,13 @@ def dataset_followers(context, data_dict):
             )
             .filter(
                 _and_(
-                    Package.owner_org == org_id,
-                    Package.state == ACTIVE_STATE,
+                    model.Package.owner_org == org_id,
+                    model.Package.state == ACTIVE_STATE,
                     UserFollowingDataset.datetime >= utc_start_date,
                     UserFollowingDataset.datetime < utc_end_date,
                 )
             )
-            .join(Package, Package.id == UserFollowingDataset.object_id)
+            .join(model.Package, model.Package.id == UserFollowingDataset.object_id)
         ).scalar()
 
     except Exception as e:
@@ -131,12 +126,12 @@ def dataset_comments(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id,
-                    Package.state == ACTIVE_STATE
+                    model.Package.owner_org == org_id,
+                    model.Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
-            .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
+            .join(model.Package, model.Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
         ).scalar()
 
     except Exception as e:
@@ -157,7 +152,8 @@ def datarequests(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest
@@ -188,7 +184,8 @@ def datarequest_comments(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 func.count(distinct(Comment.id))
@@ -224,7 +221,8 @@ def dataset_comment_followers(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 # We want to count a user each time they follow a comment thread, not just unique user IDs
@@ -237,13 +235,13 @@ def dataset_comment_followers(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id,
-                    Package.state == ACTIVE_STATE
+                    model.Package.owner_org == org_id,
+                    model.Package.state == ACTIVE_STATE
                 )
             )
             .join(CommentThread, CommentThread.id == CommentNotificationRecipient.thread_id)
             .join(Comment)
-            .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
+            .join(model.Package, model.Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
         ).scalar()
 
     except Exception as e:
@@ -266,7 +264,7 @@ def datasets_min_one_comment_follower(context, data_dict):
     try:
         return (
             _session_.query(
-                func.count(distinct(Package.id))
+                func.count(distinct(model.Package.id))
             )
             .filter(
                 _and_(
@@ -274,11 +272,11 @@ def datasets_min_one_comment_follower(context, data_dict):
                     Comment.state == ACTIVE_STATE,
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_end_date,
-                    Package.owner_org == org_id,
-                    Package.state == ACTIVE_STATE
+                    model.Package.owner_org == org_id,
+                    model.Package.state == ACTIVE_STATE
                 )
             )
-            .join(CommentThread, CommentThread.url == func.concat(DATASET_PREFIX, Package.name))
+            .join(CommentThread, CommentThread.url == func.concat(DATASET_PREFIX, model.Package.name))
             .join(CommentNotificationRecipient, CommentNotificationRecipient.thread_id == CommentThread.id)
             # Don't need JOIN ON clause - `comment` table has `comment_thread`.`id` FK
             .join(Comment)
@@ -302,7 +300,8 @@ def datarequests_min_one_comment_follower(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 func.count(distinct(db.DataRequest.id))
@@ -347,14 +346,14 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 Comment.parent_id,
                 Comment.creation_date.label("comment_creation_date"),
                 Comment.subject,
-                User.name.label('username'),
+                model.User.name.label('username'),
                 CommentThread.url,
-                Package.name.label("package_name"),
+                model.Package.name.label("package_name"),
                 comment_reply.parent_id,
                 comment_reply.creation_date.label(
                     "comment_reply_creation_date"),
                 comment_reply.comment,
-                Package.title
+                model.Package.title
             )
             .filter(
                 _and_(
@@ -363,14 +362,14 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                     Comment.creation_date >= utc_start_date,
                     Comment.creation_date < utc_reply_expected_by_date,
                     Comment.state == ACTIVE_STATE,
-                    Package.owner_org == org_id,
-                    Package.state == ACTIVE_STATE,
+                    model.Package.owner_org == org_id,
+                    model.Package.state == ACTIVE_STATE,
                     comment_reply.id.is_(None)
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
-            .join(User, Comment.user_id == User.id)
-            .join(Package, Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
+            .join(model.User, Comment.user_id == model.User.id)
+            .join(model.Package, model.Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id),
             )
@@ -410,14 +409,15 @@ def datarequests_no_replies_after_x_days(context, data_dict):
     comment_reply = aliased(Comment, name='comment_reply')
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         comments = (
             _session_.query(
                 Comment.id.label("comment_id"),
                 Comment.parent_id,
                 Comment.creation_date,
                 Comment.subject,
-                User.name.label('username'),
+                model.User.name.label('username'),
                 CommentThread.url,
                 db.DataRequest.id.label("datarequest_id"),
                 db.DataRequest.title,
@@ -438,7 +438,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 )
             )
             .join(CommentThread, CommentThread.id == Comment.thread_id)
-            .join(User, Comment.user_id == User.id)
+            .join(model.User, Comment.user_id == model.User.id)
             .join(db.DataRequest, db.DataRequest.id == _replace_(CommentThread.url, DATAREQUEST_PREFIX, ''))
             .outerjoin(
                 (comment_reply, Comment.id == comment_reply.parent_id)
@@ -478,7 +478,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest.id,
@@ -520,7 +521,8 @@ def datarequests_open_after_x_days(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest.id,
@@ -551,7 +553,8 @@ def datarequests_for_circumstance(context, data_dict):
     check_org_access(org_id, context=context)
 
     try:
-        db.init_db(model)
+        if not db.DataRequest:
+            db.init_db(model)
         return (
             _session_.query(
                 db.DataRequest
@@ -638,17 +641,17 @@ def de_identified_datasets(context, data_dict):
 
     try:
         query = (
-            _session_.query(Package)
+            _session_.query(model.Package)
             .join(model.PackageExtra)
-            .filter(Package.owner_org == org_id)
-            .filter(Package.state == ACTIVE_STATE)
-            .filter(PackageExtra.key == 'de_identified_data')
-            .filter(PackageExtra.value == 'YES')
-            .filter(PackageExtra.state == ACTIVE_STATE)
+            .filter(model.Package.owner_org == org_id)
+            .filter(model.Package.state == ACTIVE_STATE)
+            .filter(model.PackageExtra.key == 'de_identified_data')
+            .filter(model.PackageExtra.value == 'YES')
+            .filter(model.PackageExtra.state == ACTIVE_STATE)
         )
 
         if return_count_only:
-            datasets = query.count()
+            datasets = query_count(query)
         else:
             datasets = query.all()
 
@@ -670,42 +673,40 @@ def de_identified_datasets_no_schema(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     permission = data_dict.get('permission', 'admin')
 
-    count_from_default = config.get(
-        constants.REPORT_DEIDENTIFIED_NO_SCHEMA_COUNT_FROM
-    )
     count_from_date = h.date_str_to_datetime(
-        data_dict.get('count_from', count_from_default))
+        data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
     check_org_access(org_id, permission, context)
 
     extras = model.PackageExtra
     de_identified = aliased(extras)
-    data_schema = aliased(extras)
     data_last_updated = aliased(extras)
 
+    sub_query = _session_.query(extras.package_id).filter(
+        and_(
+            extras.key == 'default_data_schema',
+            extras.value != ''
+        ))
+
     query = (
-        _session_.query(Package)
+        _session_.query(model.Package)
         .join(de_identified)
-        .join(data_schema)
         .join(data_last_updated)
+        .filter(model.Package.id.notin_(sub_query))
         .filter(and_(
             de_identified.key == 'de_identified_data',
             de_identified.value == 'YES',
             de_identified.state == ACTIVE_STATE
         ))
         .filter(and_(
-            data_schema.key == 'default_data_schema',
-            data_schema.value == ''
-        ))
-        .filter(and_(
             data_last_updated.key == 'data_last_updated',
             data_last_updated.value > count_from_date.isoformat()
         ))
-        .filter(Package.owner_org == org_id)
-        .filter(Package.state == ACTIVE_STATE)
+        .filter(model.Package.owner_org == org_id)
+        .filter(model.Package.state == ACTIVE_STATE)
     )
 
-    return query.count() if return_count_only else query.all()
+    return query_count(query) if return_count_only else query.all()
 
 
 def overdue_datasets(context, data_dict):
@@ -725,17 +726,17 @@ def overdue_datasets(context, data_dict):
         today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
         query = (
-            _session_.query(Package)
+            _session_.query(model.Package)
             .join(model.PackageExtra)
-            .filter(Package.owner_org == org_id)
-            .filter(Package.state == ACTIVE_STATE)
-            .filter(PackageExtra.key == 'next_update_due')
-            .filter(PackageExtra.value <= today)
-            .filter(PackageExtra.state == ACTIVE_STATE)
+            .filter(model.Package.owner_org == org_id)
+            .filter(model.Package.state == ACTIVE_STATE)
+            .filter(model.PackageExtra.key == 'next_update_due')
+            .filter(model.PackageExtra.value <= today)
+            .filter(model.PackageExtra.state == ACTIVE_STATE)
         )
 
         if return_count_only:
-            datasets = query.count()
+            datasets = query_count(query)
         else:
             datasets = query.all()
         return datasets
@@ -755,16 +756,24 @@ def datasets_no_groups(context, data_dict):
     permission = data_dict.get('permission', 'admin')
     check_org_access(org_id, permission, context)
     try:
+        sub_query = (_session_.query(model.Package.id)
+                     .join(model.Member, model.Package.id == model.Member.table_id and model.Member.table_name == 'package')
+                     .join(model.Group, model.Group.id == model.Member.group_id)
+                     .filter(model.Member.state == ACTIVE_STATE)
+                     .filter(model.Package.owner_org == org_id)
+                     .filter(model.Package.state == ACTIVE_STATE)
+                     .filter(model.Group.type == 'group')
+                     .order_by(model.Package.title)
+                     )
+
         query = (
-            _session_.query(Package)
-            .filter(Package.owner_org == org_id)
-            .filter(Package.state == ACTIVE_STATE)
+            _session_.query(model.Package)
+            .filter(model.Package.owner_org == org_id)
+            .filter(model.Package.state == ACTIVE_STATE)
+            .filter(model.Package.id.notin_(sub_query))
         )
 
-        datasets = query.all()
-        no_groups = [dataset for dataset in datasets if len(
-            dataset.get_groups(group_type='group')) == 0]
-        return len(no_groups) if return_count_only else no_groups
+        return query_count(query) if return_count_only else query.all()
     except Exception as e:
         log.error(str(e))
 
@@ -781,16 +790,23 @@ def datasets_no_tags(context, data_dict):
     permission = data_dict.get('permission', 'admin')
     check_org_access(org_id, permission, context)
     try:
+        sub_query = (_session_.query(model.PackageTag.package_id)
+                     .join(model.Tag)
+                     .join(model.Package)
+                     .filter(model.PackageTag.tag_id == model.Tag.id)
+                     .filter(model.PackageTag.package_id == model.Package.id)
+                     .filter(model.Package.owner_org == org_id)
+                     .filter(model.PackageTag.state == ACTIVE_STATE)
+                     )
+
         query = (
-            _session_.query(Package)
-            .filter(Package.owner_org == org_id)
-            .filter(Package.state == ACTIVE_STATE)
+            _session_.query(model.Package)
+            .filter(model.Package.owner_org == org_id)
+            .filter(model.Package.state == ACTIVE_STATE)
+            .filter(model.Package.id.notin_(sub_query))
         )
 
-        datasets = query.all()
-        no_tags = [dataset for dataset in datasets if len(
-            dataset.get_tags()) == 0]
-        return len(no_tags) if return_count_only else no_tags
+        return query_count(query) if return_count_only else query.all()
     except Exception as e:
         log.error(str(e))
 
@@ -810,12 +826,31 @@ def datasets_pending_privacy_assessment(context, data_dict):
 
     ilike = '%"{}": "{}"%'.format(FIELD_REQUEST_ASSESS, YES)
     query = (
-        _session_.query(Resource)
-        .join(Package)
-        .filter(Package.owner_org == org_id)
-        .filter(Package.id == Resource.package_id)
-        .filter(Package.state == ACTIVE_STATE)
-        .filter(Resource.extras.ilike(ilike))
+        _session_.query(model.Resource)
+        .join(model.Package)
+        .filter(model.Package.owner_org == org_id)
+        .filter(model.Package.id == model.Resource.package_id)
+        .filter(model.Package.state == ACTIVE_STATE)
+        .filter(model.Resource.extras.ilike(ilike))
     )
 
-    return query.count() if return_count_only else query.all()
+    return query_count(query) if return_count_only else query.all()
+
+
+def query_count(query):
+    """
+    A SQL count that's more efficient than the default query.count()
+    SQL query then becomes:
+    SELECT count(1) AS count_1 FROM table;
+
+    source: https://datawookie.dev/blog/2021/01/sqlalchemy-efficient-counting/
+
+    **Could also look at https://docs.sqlalchemy.org/en/13/orm/tutorial.html#counting
+
+    :param query:
+    :return:
+    """
+    ONE = literal_column("1")
+    counter = query.statement.with_only_columns([func.count(ONE)])
+    counter = counter.order_by(None)
+    return query.session.execute(counter).scalar()

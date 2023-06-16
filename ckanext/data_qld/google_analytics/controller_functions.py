@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+import six
 
 from ckantoolkit import g, get_action, request
 
@@ -27,7 +28,7 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         data_dict = {
             "v": 1,
             "tid": plugin.GoogleAnalyticsPlugin.google_analytics_id,
-            "cid": hashlib.md5(user).hexdigest(),
+            "cid": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(),
             # customer id should be obfuscated
             "t": "event",
             "dh": request.environ['HTTP_HOST'],

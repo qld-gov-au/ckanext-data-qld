@@ -1,18 +1,18 @@
 # encoding: utf-8
 
 import logging
-import six
 
 from ckan import plugins
 
-from . import actions, auth_functions as auth, constants, converters, \
-    datarequest_auth_functions, helpers, validation
+from . import actions, auth_functions as auth, blueprints, click_cli, \
+    constants, converters, datarequest_auth_functions, helpers, validation
 import ckantoolkit as tk
 
 from ckanext.validation.interfaces import IDataValidation
 from ckanext.resource_visibility.constants import FIELD_DE_IDENTIFIED, YES
 
 from .dataset_deletion import helpers as dataset_deletion_helpers
+from .reporting import blueprints as reporting_blueprints
 from .reporting.helpers import helpers as reporting_helpers
 from .reporting.logic.action import get
 from .resource_freshness.helpers import helpers as resource_freshness_helpers
@@ -25,16 +25,11 @@ if ' qa' in tk.config.get('ckan.plugins', ''):
     import ckanext.qa.tasks as qa_tasks
     import os
 
-if helpers.is_ckan_29():
-    from .flask_plugin import MixinPlugin
-else:
-    from .pylons_plugin import MixinPlugin
-
 
 log = logging.getLogger(__name__)
 
 
-class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
+class DataQldPlugin(plugins.SingletonPlugin):
     """ Provide functions specific to the Queensland Government Open Data portal.
     """
     plugins.implements(plugins.IConfigurer)
@@ -45,6 +40,8 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.IResourceController, inherit=True)
     plugins.implements(IDataValidation, inherit=True)
+    plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IClick)
 
     if ' qa' in tk.config.get('ckan.plugins', ''):
         plugins.implements(IQA)
@@ -58,10 +55,11 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
 
     def update_config_schema(self, schema):
         ignore_missing = tk.get_validator('ignore_missing')
+        unicode_safe = tk.get_validator('unicode_safe')
         schema.update({
             # This is a custom configuration option
-            'ckanext.data_qld.resource_formats': [ignore_missing, six.text_type],
-            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, six.text_type],
+            'ckanext.data_qld.resource_formats': [ignore_missing, unicode_safe],
+            'ckanext.data_qld.datarequest_suggested_description': [ignore_missing, unicode_safe],
         })
         return schema
 
@@ -72,7 +70,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'data_qld_datarequest_suggested_description': helpers.datarequest_suggested_description,
             'get_closing_circumstance_list': reporting_helpers.get_closing_circumstance_list,
             'get_organisation_list': reporting_helpers.get_organisation_list,
-            'get_deidentified_count_from_date': reporting_helpers.get_deidentified_count_from_date,
+            'get_deidentified_count_from_date_display': reporting_helpers.get_deidentified_count_from_date_display,
             'data_qld_data_driven_application': helpers.data_driven_application,
             'data_qld_dataset_data_driven_application': helpers.dataset_data_driven_application,
             'data_qld_resource_formats': helpers.resource_formats,
@@ -82,7 +80,7 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'get_gtm_container_id': helpers.get_gtm_code,
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
-            'is_ckan_29': helpers.is_ckan_29,
+            'dashboard_index_route': helpers.dashboard_index_route,
             'is_datarequests_enabled': helpers.is_datarequests_enabled,
             'get_all_groups': helpers.get_all_groups,
             'is_request_for_resource': helpers.is_request_for_resource,
@@ -91,11 +89,12 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             'is_prod': helpers.is_prod,
             'comment_notification_recipients_enabled':
                 helpers.get_comment_notification_recipients_enabled,
-            'populate_revision': helpers.populate_revision,
             'unreplied_comments_x_days': helpers.unreplied_comments_x_days,
             'is_reporting_enabled': helpers.is_reporting_enabled,
             'members_sorted': helpers.members_sorted,
             'get_deletion_reason_template': helpers.get_deletion_reason_template,
+            'check_ckan_version': tk.check_ckan_version,
+            'is_apikey_enabled': helpers.is_apikey_enabled
         }
 
     # IValidators
@@ -284,6 +283,16 @@ class DataQldPlugin(MixinPlugin, plugins.SingletonPlugin):
             {'ignore_auth': True}, {u'id': pkg_id})
 
         return pkg_dict.get(FIELD_DE_IDENTIFIED) == YES
+
+    # IBlueprint
+
+    def get_blueprint(self):
+        return [blueprints.blueprint, reporting_blueprints.blueprint]
+
+    # IClick
+
+    def get_commands(self):
+        return click_cli.get_commands()
 
 
 class PlaceholderPlugin(plugins.SingletonPlugin):

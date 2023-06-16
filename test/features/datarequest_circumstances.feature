@@ -113,12 +113,11 @@ Feature: Datarequest-circumstances
         And I press the element with xpath "//a[contains(string(), 'Close')]"
         And I select "Open dataset already exists" from "close_circumstance"
         And I wait for 1 seconds
-        And I take a screenshot
         # Have to use JS to change the selected value as the behaving framework does not work with autocomplete dropdown
-        Then I execute the script "$('#field-accepted_dataset_id').val($('#field-accepted_dataset_id option:eq(1)').attr('value'))"
+        And I execute the script "$('#field-accepted_dataset_id').val($('#field-accepted_dataset_id option:eq(1)').attr('value'))"
         And I press the element with xpath "//button[contains(@class, 'btn-danger') and @name='close']"
         Then I should see "Accepted dataset" within 1 seconds
-        And I should see "data_request_dataset" within 1 seconds
+        And I should see "Dataset for data requests" within 1 seconds
 
         Examples: Users
         | User                  |

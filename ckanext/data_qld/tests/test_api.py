@@ -1,4 +1,4 @@
-import json
+# encoding: utf-8
 
 import pytest
 
@@ -8,7 +8,6 @@ from ckan.lib.helpers import url_for
 
 import ckanext.resource_visibility.constants as const
 
-from ckanext.data_qld.helpers import is_ckan_29
 from ckanext.data_qld.tests.conftest import _get_resource_schema
 from ckanext.data_qld.constants import FIELD_ALIGNMENT, FIELD_DEFAULT_SCHEMA
 
@@ -64,8 +63,8 @@ def res_patch_url():
 
 
 def _get_resource_read_url(package_id, resource_id):
-    controller = "resource" if is_ckan_29() else "package"
-    action = "read" if is_ckan_29() else "resource_read"
+    controller = "resource"
+    action = "read"
 
     return url_for(controller=controller,
                    action=action,
@@ -85,13 +84,8 @@ def _get_pkg_dict(app, url, package_id, user=None):
 
 
 def _post(app, url, params, extra_environ, status=200):
-    if is_ckan_29():
-        return app.post(url,
-                        json=params,
-                        status=status,
-                        extra_environ=extra_environ)
     return app.post(url,
-                    params=json.dumps(params),
+                    json=params,
                     status=status,
                     extra_environ=extra_environ)
 
@@ -120,8 +114,7 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_regular_user(self, dataset_factory, resource_factory,
-                                       app, pkg_show_url, user_factory):
-        user = user_factory()
+                                       app, pkg_show_url, user):
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          request_privacy_assessment=const.YES)
@@ -136,8 +129,7 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_member(self, dataset_factory, resource_factory, app,
-                                 pkg_show_url, user_factory):
-        user = user_factory()
+                                 pkg_show_url, user):
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "member"
@@ -291,8 +283,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 1
 
     def test_excluded_for_regular_user(self, dataset_factory, app,
-                                       pkg_show_url, user_factory):
-        user = user_factory()
+                                       pkg_show_url, user):
         dataset = dataset_factory()
 
         response = app.get(url=pkg_show_url,
@@ -305,8 +296,7 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
     def test_resource_page_not_accessible_for_regular_user_if_hidden(
-            self, app, dataset_factory, resource_factory, user_factory):
-        user = user_factory()
+            self, app, dataset_factory, resource_factory, user):
 
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
@@ -361,8 +351,7 @@ class TestResourceVisibility:
 
     def test_regular_user_different_conditions(self, dataset_factory,
                                                resource_factory, app,
-                                               pkg_show_url, user_factory):
-        user = user_factory()
+                                               pkg_show_url, user):
 
         # not resource_visible -> HIDE
         dataset = dataset_factory()
@@ -437,9 +426,7 @@ class TestSchemaAlignment:
 
     def test_update_and_patch_default_schema(self, dataset_factory, app,
                                              pkg_show_url, pkg_update_url,
-                                             pkg_patch_url, resource_factory,
-                                             user_factory):
-        user = user_factory()
+                                             pkg_patch_url, resource_factory, user):
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "editor"
@@ -476,12 +463,10 @@ class TestSchemaAlignment:
               extra_environ={"REMOTE_USER": str(user['name'])})
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
-        assert not pkg_dict['default_data_schema']
+        assert 'default_data_schema' not in pkg_dict
 
     def test_create_resource_with_custom_schema(self, dataset_factory,
-                                                resource_factory,
-                                                user_factory):
-        user = user_factory()
+                                                resource_factory, user):
         org = factories.Organization(users=[{
             "name": user["name"],
             "capacity": "editor"
@@ -507,11 +492,10 @@ class TestSchemaAlignment:
 
     def test_align_default_schema_visible_via_api(self, dataset_factory,
                                                   resource_factory, app,
-                                                  pkg_show_url, user_factory):
+                                                  pkg_show_url, user):
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
-        user = user_factory()
         pkg_dict = _get_pkg_dict(app, pkg_show_url, dataset["id"], user)
 
         assert FIELD_ALIGNMENT in pkg_dict['resources'][0]

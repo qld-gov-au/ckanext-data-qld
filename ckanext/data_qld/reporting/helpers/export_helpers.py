@@ -38,7 +38,7 @@ def csv_row_order_and_properties(report_config):
     for i in range(len(report_config) + 1):
         for key, settings in report_config.items():
             if settings['property'] == "de_identified_datasets_no_schema":
-                key = key.format(helpers.get_deidentified_count_from_date())
+                key = key.format(helpers.get_deidentified_count_from_date_display())
 
             if settings['order'] == i:
                 row_order.append(key)

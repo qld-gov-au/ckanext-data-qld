@@ -9,69 +9,62 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.6'
+          python-version: '3.x'
       - name: Install requirements
         run: pip install flake8 pycodestyle
       - name: Check syntax
-        run: flake8 .
+        run: flake8
 
   test:
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         ckan-version: [2.9, 2.9-py2]
+        behave-tag: [smoke, authenticated, unauthenticated]
 
-    name: Continuous Integration build on CKAN ${{ matrix.ckan-version }}
+    name: Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
     container: drevops/ci-builder
     env:
       CKAN_VERSION: ${{ matrix.ckan-version }}
+      BEHAVE_TAG: ${{ matrix.behave-tag }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         timeout-minutes: 2
 
-      # In this step, this action saves a list of existing images,
-      # the cache is created without them in the post run.
-      # It also restores the cache if it exists.
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
-
       - name: Build
-        run: .circleci/build.sh
+        run: bin/build.sh
         timeout-minutes: 15
 
-      - name: Test lint
-        run: .circleci/test-lint.sh
-        timeout-minutes: 30
-
-      - name: Test BDD
-        run: .circleci/test-bdd.sh
+      - name: Test ${{ matrix.behave-tag }} BDD
+        run: bin/test-bdd.sh
         timeout-minutes: 45
 
-      - name: Test
-        run: .circleci/test.sh
+      - name: Unit tests
+        if: ${{ matrix.behave-tag == 'smoke' }}
+        run: bin/test.sh
         timeout-minutes: 45
 
       - name: Retrieve logs
         if: always()
-        run: .circleci/get-logs.sh
+        run: bin/get-logs.sh
         timeout-minutes: 5
 
       - name: Retrieve screenshots
         if: always()
-        run: .circleci/process-artifacts.sh
+        run: bin/process-artifacts.sh
         timeout-minutes: 1
 
       - name: Upload screenshots
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: CKAN ${{ matrix.ckan-version }} screenshots
+          name: CKAN ${{ matrix.ckan-version }} ${{ matrix.behave-tag }} screenshots
           path: /tmp/artifacts/behave/screenshots
         timeout-minutes: 1

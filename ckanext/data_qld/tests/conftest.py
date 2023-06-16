@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import os
 import json
 import six
@@ -5,33 +7,20 @@ from datetime import datetime as dt
 
 import pytest
 import factory
-import ckantoolkit as tk
 from faker import Faker
+from werkzeug.datastructures import FileStorage as MockFileStorage
 
+from ckan import model
 import ckan.tests.helpers as helpers
 from ckan.tests import factories
 
 from ckan.lib import uploader
+from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
 from ckanext.ytp.comments.model import init_tables as ytp_init
 from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
-
-if tk.check_ckan_version('2.9'):
-    from werkzeug.datastructures import FileStorage as MockFileStorage
-else:
-    import cgi
-
-    class MockFileStorage(cgi.FieldStorage):
-
-        def __init__(self, fp, filename):
-
-            self.file = fp
-            self.filename = filename
-            self.name = u"upload"
-            self.list = None
-
 
 fake = Faker()
 
@@ -151,32 +140,19 @@ def _get_default_schema():
     return json.dumps(schema)
 
 
-class SysadminFactory(factories.Sysadmin):
-    password = "Password123!"
-
-
 @pytest.fixture
 def sysadmin():
-    return SysadminFactory()
-
-
-@pytest.fixture
-def sysadmin_factory():
-    return SysadminFactory
-
-
-class UserFactory(factories.User):
-    password = "Password123!"
+    return factories.Sysadmin()
 
 
 @pytest.fixture
 def user():
-    return UserFactory()
+    return factories.User()
 
 
 @pytest.fixture
 def user_factory():
-    return UserFactory
+    return factories.User
 
 
 @pytest.fixture
@@ -186,6 +162,7 @@ def clean_db(reset_db):
     archival_init()
     qa_init()
     ytp_init()
+    datarequest_db.init_db(model)
 
     if not is_validation_table_exist():
         validation_init()
@@ -199,7 +176,7 @@ def archival_init():
 @pytest.fixture
 def mock_storage(monkeypatch, ckan_config, tmpdir):
     monkeypatch.setitem(ckan_config, u'ckan.storage_path', str(tmpdir))
-    monkeypatch.setattr(uploader, u'_storage_path', str(tmpdir))
+    monkeypatch.setattr(uploader, u'get_storage_path', lambda: str(tmpdir))
 
 
 @pytest.fixture

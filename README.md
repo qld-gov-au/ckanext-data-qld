@@ -4,8 +4,6 @@ A custom CKAN extension for Data.Qld
 
 [![Tests](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml/badge.svg)](https://github.com/qld-gov-au/ckanext-data-qld/actions/workflows/test.yml)
 
-[![CircleCI](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop.svg?style=shield)](https://circleci.com/gh/qld-gov-au/ckanext-data-qld/tree/develop)
-
 ## Local environment setup
 - Make sure that you have latest versions of all required software installed:
   - [Docker](https://www.docker.com/)
@@ -143,6 +141,8 @@ A custom CKAN extension for Data.Qld for sending API requests to Google Analytic
         ckan.data_qld_googleanalytics.id = UA-1010101-1 # Relevant Google analytics ID
         ckan.data_qld_googleanalytics.collection_url = http://www.google-analytics.com/collect
 
+        # change when reporting starts from, default is 2022-11-01
+        ckanext.data_qld.reporting.de_identified_no_schema.count_from = 2045-01-01
 3. The file capture_api_actions.json is a dictionary of api actions to capture to send to google analytics
 
 a. The dictionary key is the name of the api_action from https://docs.ckan.org/en/2.8/api/index.html#action-api-reference

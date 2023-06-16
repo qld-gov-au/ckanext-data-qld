@@ -2,9 +2,8 @@
 ##
 # Run tests in CI.
 #
-set -e
+set -ex
 
-
+ahoy install-site
 echo "==> Run BDD tests"
 ahoy test-bdd
-#|| (ahoy logs; exit 1)

@@ -34,11 +34,7 @@
                 {% block resource_actions_inner %}
                 {% if h.check_access('package_update', {'id':pkg.id }) %}
                     <li>
-                    {% if h.is_ckan_29() %}
-                        {% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}
-                    {% else %}
-                        {% link_for _('Manage'), controller='package', action='resource_edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}
-                    {% endif %}
+                    {% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}
                     </li>
                 {% endif %}
                 {% if res.url and h.is_url(res.url) %}
@@ -53,7 +49,7 @@
                             <i class="fa fa-external-link"></i> {{ _('Go to resource') }}
                             {% else %}
                             <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
-                                {% if res.actual_size or res.size %}({{ res.actual_size or  h.format_resource_filesize(res.size) }}){% endif %}
+                                {% if res.actual_size or res.size %}({{ res.actual_size or h.format_resource_filesize(res.size) }}){% endif %}
                                 {% if res.format %}({{ res.format }}){% endif %}
                             {% endif %}
                         </a>
