@@ -95,7 +95,7 @@ Feature: Theme customisations
         And I create a dataset and resource with key-value parameters "license=other-open" and "format=CSV::upload=csv_resource.csv"
         And I wait for 10 seconds
         And I click the link with text that contains "Test Resource"
-        Then I should see an element with xpath "//a[contains(text(), 'Data API')]"
+        Then I should see an element with xpath "//a[contains(string(), 'Data API')]"
         And I should see an element with xpath "//button[contains(@class, 'dropdown-toggle')]"
         And I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
         When I press the element with xpath "//button[contains(@class, 'dropdown-toggle')]"

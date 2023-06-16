@@ -107,4 +107,4 @@ Feature: AdminReporting
         And I should see "Total number of resources: 1"
         And I should see "pending-assessment-resource"
         When I click the link with text that contains "pending-assessment-resource"
-        Then I should see an element with xpath "//th[text()='Request privacy assessment']/following-sibling::td[text()='YES']"
+        Then I should see an element with xpath "//th[string()='Request privacy assessment']/following-sibling::td[string()='YES']"

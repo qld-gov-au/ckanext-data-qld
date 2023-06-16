@@ -62,10 +62,10 @@ Feature: SchemaMetadata
 
         And I go to dataset "public-test-dataset"
         Then I should see "Contains de-identified data"
-        Then I should see an element with xpath "//th[contains(text(), 'Contains de-identified data')]/following-sibling::td[contains(text(), 'NO')]"
+        Then I should see an element with xpath "//th[contains(string(), 'Contains de-identified data')]/following-sibling::td[contains(string(), 'NO')]"
 
         When I go to "/api/3/action/package_show?id=public-test-dataset"
-        Then I should see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
+        Then I should see an element with xpath "//body/*[contains(string(), '"de_identified_data":')]"
 
         Examples: Users
             | User          |
@@ -77,17 +77,17 @@ Feature: SchemaMetadata
         Given "Unauthenticated" as the persona
         When I go to dataset "public-test-dataset"
         Then I should not see "Contains de-identified data"
-        And I should not see an element with xpath "//th[contains(text(), 'Contains de-identified data')]/following-sibling::td[contains(text(), 'NO')]"
+        And I should not see an element with xpath "//th[contains(string(), 'Contains de-identified data')]/following-sibling::td[contains(string(), 'NO')]"
 
         When I go to "/api/3/action/package_show?id=public-test-dataset"
-        Then I should not see an element with xpath "//body/*[contains(text(), '"de_identified_data":')]"
+        Then I should not see an element with xpath "//body/*[contains(string(), '"de_identified_data":')]"
 
     Scenario Outline: Check label of the Data schema validation options field
         Given "<User>" as the persona
         When I log in
         And I open the new resource form for dataset "public-test-dataset"
-        Then I should see an element with xpath "//label[text()='Data schema validation options']"
-        Then I should not see an element with xpath "//label[text()='Validation options']"
+        Then I should see an element with xpath "//label[string()='Data schema validation options']"
+        Then I should not see an element with xpath "//label[string()='Validation options']"
 
         Examples: Users
           | User          |

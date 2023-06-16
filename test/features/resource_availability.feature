@@ -77,8 +77,8 @@ Feature: Re-identification risk governance acknowledgement
         Then I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"
         And I should see an element with xpath "//select[@id="field-request_privacy_assessment"]//option[@value="" or @value="YES" or @value="NO"]"
 
-        When I press the element with xpath "//button[text()='Update Resource']"
-        Then I should see an element with xpath "//th[text()='Request privacy assessment']/following-sibling::td[not(text())]"
+        When I press the element with xpath "//button[string()='Update Resource']"
+        Then I should see an element with xpath "//th[string()='Request privacy assessment']/following-sibling::td[not(string())]"
 
     Scenario: As an anonymous user, I can see resources without de-identified data
         Given "TestOrgEditor" as the persona

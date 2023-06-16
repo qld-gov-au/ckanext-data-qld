@@ -115,7 +115,7 @@ def clear_url(context):
 def confirm_dialog_if_present(context, text):
     if context.browser.is_text_present(text):
         context.execute_steps(u"""
-            When I press the element with xpath "//button[@class='btn btn-primary' and contains(text(), 'Confirm') ]"
+            When I press the element with xpath "//button[@class='btn btn-primary' and contains(string(), 'Confirm') ]"
         """)
 
 
