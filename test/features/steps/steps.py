@@ -478,7 +478,7 @@ def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
 @when(u'I trigger notification about updated privacy assessment results')
 def i_trigger_notification_assessment_results(context):
     context.execute_steps(u"""
-        Given I visit "api/action/qld_test_trigger_notify_privacy_assessment_result"
+        When I visit "api/action/qld_test_trigger_notify_privacy_assessment_result"
     """)
 
 
