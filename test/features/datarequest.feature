@@ -2,16 +2,11 @@
 Feature: Data Request
 
     @unauthenticated
-    Scenario: Data Requests are accessible via the /datarequest URL
-        Given "Unauthenticated" as the persona
-        When I go to the data requests page
-        Then the browser's URL should contain "/datarequest"
-
-    @unauthenticated
     Scenario: When visiting the datarequests page as a non-logged in user, the 'Add data request' button is not visible
         Given "Unauthenticated" as the persona
         When I go to the data requests page
-        Then I should not see an element with xpath "//a[contains(string(), 'Add data request', 'i')]"
+        Then the browser's URL should contain "/datarequest"
+        And I should not see an element with xpath "//a[contains(translate(string(), 'DR', 'dr'), 'Add data request')]"
 
     Scenario: Data requests submitted without a description will produce an error message
         Given "SysAdmin" as the persona
