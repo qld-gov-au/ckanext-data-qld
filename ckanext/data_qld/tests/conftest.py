@@ -71,7 +71,7 @@ class ResourceFactory(factories.Resource):
     schema = factory.LazyAttribute(lambda _: _get_resource_schema())
 
     upload = factory.LazyAttribute(lambda _: _get_test_file())
-    format = "csv"
+    format = "CSV"
     url_type = "upload"
     url = None
 
