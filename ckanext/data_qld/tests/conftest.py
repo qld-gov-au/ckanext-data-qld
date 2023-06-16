@@ -17,7 +17,7 @@ from ckan.tests import factories
 from ckan.lib import uploader
 from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
-from ckanext.ytp.comments.model import init_tables as ytp_init
+from ckanext.ytp.comments import model as ytp_model
 from ckanext.validation.model import create_tables as validation_init
 from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
@@ -161,7 +161,7 @@ def clean_db(reset_db):
 
     archival_init()
     qa_init()
-    ytp_init()
+    ytp_model.init_tables()
     datarequest_db.init_db(model)
 
     if not is_validation_table_exist():
@@ -186,3 +186,92 @@ def do_not_validate(monkeypatch):
     monkeypatch.setattr(
         "ckanext.validation.utils.is_resource_could_be_validated",
         lambda a, b: False)
+
+
+class Comment(factory.Factory):
+    """A factory class for creating ytp comment. It must accept user_id and
+    package_name, because I don't want to create extra entities in database
+    during tests"""
+
+    class Meta:
+        model = ytp_model.Comment
+
+    user_id = None
+    entity_type = "dataset"
+    entity_name = None
+
+    subject = "comment-subject"
+    comment = "comment-text"
+
+    @classmethod
+    def _build(cls, target_class, *args, **kwargs):
+        raise NotImplementedError(".build() isn't supported in CKAN")
+
+    @classmethod
+    def _create(cls, target_class, *args, **kwargs):
+        if args:
+            assert False, "Positional args aren't supported, use keyword args."
+
+        kwargs["url"] = "/{}/{}".format(kwargs["entity_type"], kwargs["entity_name"])
+
+        return helpers.call_action(
+            "comment_create", context={"user": kwargs["user_id"], "ignore_auth": True}, **kwargs
+        )
+
+
+@pytest.fixture
+def comment_factory():
+    return Comment
+
+
+class DataRequest(factory.Factory):
+    """Datarequest factory"""
+
+    class Meta:
+        model = datarequest_db.DataRequest
+
+    id = factory.LazyAttribute(lambda _: fake.uuid4())
+    user_id = factory.LazyAttribute(lambda _: factories.User()["id"])
+    title = factory.LazyAttribute(lambda _: fake.sentence())
+    description = factory.LazyAttribute(lambda _: fake.sentence())
+    open_time = factory.LazyAttribute(lambda _: str(dt.utcnow()))
+    organization_id = factory.LazyAttribute(lambda _: factories.Organization()["id"])
+
+    @classmethod
+    def _build(cls, target_class, *args, **kwargs):
+        raise NotImplementedError(".build() isn't supported in CKAN")
+
+    @classmethod
+    def _create(cls, target_class, *args, **kwargs):
+        if args:
+            assert False, "Positional args aren't supported, use keyword args."
+
+        user_obj = model.Session.query(model.User).get(kwargs["user_id"])
+
+        return helpers.call_action(
+            "create_datarequest", context={"auth_user_obj": user_obj}, **kwargs
+        )
+
+
+@pytest.fixture
+def datarequest_factory():
+    return DataRequest
+
+# datarequests_table = sa.Table('datarequests', model.meta.metadata,
+#                               sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
+#                               sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
+#                               sa.Column('title', sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=True, default=u''),
+#                               sa.Column('description', sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=u''),
+#                               sa.Column('organization_id', sa.types.UnicodeText, primary_key=False, default=None),
+#                               sa.Column('open_time', sa.types.DateTime, primary_key=False, default=None),
+#                               sa.Column('accepted_dataset_id', sa.types.UnicodeText, primary_key=False, default=None),
+#                               sa.Column('close_time', sa.types.DateTime, primary_key=False, default=None),
+#                               sa.Column('closed', sa.types.Boolean, primary_key=False, default=False),
+#                               sa.Column('close_circumstance', sa.types.Unicode(constants.CLOSE_CIRCUMSTANCE_MAX_LENGTH), primary_key=False, default=u'')
+#                               if closing_circumstances_enabled else None,
+#                               sa.Column('approx_publishing_date', sa.types.DateTime, primary_key=False, default=None)
+#                               if closing_circumstances_enabled else None,
+#                               extend_existing=True,
+#                               )
+
+# model.meta.mapper(DataRequest, datarequests_table)
