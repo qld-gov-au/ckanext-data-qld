@@ -437,12 +437,17 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
 
 @when(u'I go to admin config page')
 def go_to_admin_config(context):
-    when_i_visit_url(context, '/ckan-admin/config')
+    context.execute_steps(u"""
+        When I visit "/ckan-admin/config"
+    """)
 
 
 @when(u'I log out')
 def log_out(context):
-    when_i_visit_url(context, '/user/logout')
+    context.execute_steps(u"""
+        When I visit "/user/_logout"
+        Then I should see "Log in"
+    """)
 
 
 # ckanext-data-qld
