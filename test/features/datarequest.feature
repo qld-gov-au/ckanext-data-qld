@@ -15,7 +15,8 @@ Feature: Data Request
 
     Scenario: Data requests submitted without a description will produce an error message
         Given "SysAdmin" as the persona
-        When I log in and go to the data requests page
+        When I log in
+        And I go to the data requests page
         And I click the link with text that contains "Add data request"
         And I fill in "title" with "Test data request"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
@@ -26,13 +27,15 @@ Feature: Data Request
 
     Scenario: Data request creator and Sysadmin can see a 'Close' button on the data request detail page for opened data requests
         Given "SysAdmin" as the persona
-        When I log in and go to the data requests page
+        When I log in
+        And I go to the data requests page containing "Test Request"
         And I press "Test Request"
         Then I should see an element with xpath "//a[contains(string(), 'Close')]"
 
     Scenario Outline: Non admin users cannot see a 'Close' button on the data request detail page for opened data requests
         Given "<User>" as the persona
-        When I log in and go to the data requests page
+        When I log in
+        And I go to the data requests page containing "Test Request"
         And I press "Test Request"
         Then I should not see an element with xpath "//a[contains(string(), 'Close')]"
 
@@ -46,13 +49,15 @@ Feature: Data Request
 
     Scenario: Creating a new data request will show the data request afterward
         Given "TestOrgEditor" as the persona
-        When I log in and create a datarequest
+        When I log in
+        And I create a datarequest
         Then I should see an element with xpath "//i[contains(@class, 'icon-unlock')]"
         And I should see an element with xpath "//a[contains(string(), 'Close')]"
 
     Scenario: Closing a data request will show the data request afterward
         Given "DataRequestOrgAdmin" as the persona
-        When I log in and create a datarequest
+        When I log in
+        And I create a datarequest
         And I press the element with xpath "//a[contains(string(), 'Close')]"
         And I select "Requestor initiated closure" from "close_circumstance"
         And I press the element with xpath "//button[contains(@class, 'btn-danger') and contains(string(), 'Close data request')]"
@@ -61,7 +66,8 @@ Feature: Data Request
 
     Scenario: As an org admin I can re-open a closed data request
         Given "DataRequestOrgAdmin" as the persona
-        When I log in and create a datarequest
+        When I log in
+        And I create a datarequest
         And I press the element with xpath "//a[contains(string(), 'Close')]"
         And I select "Requestor initiated closure" from "close_circumstance"
         And I press the element with xpath "//button[contains(@class, 'btn-danger') and contains(string(), 'Close data request')]"

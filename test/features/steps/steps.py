@@ -429,15 +429,6 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
     assert context.mail.user_messages(address, filter_contents)
 
 
-@when(u'I log in and go to admin config page')
-def log_in_go_to_admin_config(context):
-    assert context.persona
-    context.execute_steps(u"""
-        When I log in
-        And I go to admin config page
-    """)
-
-
 @when(u'I go to admin config page')
 def go_to_admin_config(context):
     when_i_visit_url(context, '/ckan-admin/config')
@@ -574,15 +565,6 @@ def lock_account(context):
 # ckanext-datarequests
 
 
-@when(u'I log in and go to the data requests page')
-def log_in_go_to_datarequest_page(context):
-    assert context.persona
-    context.execute_steps(u"""
-        When I log in
-        And I go to the data requests page
-    """)
-
-
 @when(u'I go to the data requests page containing "{keyword}"')
 def go_to_datarequest_page_search(context, keyword):
     when_i_visit_url(context, '/datarequest?q={}'.format(keyword))
@@ -602,18 +584,8 @@ def go_to_data_request(context, subject):
     """.format(subject))
 
 
-@when(u'I log in and create a datarequest')
-def log_in_create_a_datarequest(context):
-    assert context.persona
-    context.execute_steps(u"""
-        When I log in and go to the data requests page
-        And I create a datarequest
-    """)
-
-
 @when(u'I create a datarequest')
 def create_datarequest(context):
-
     assert context.persona
     context.execute_steps(u"""
         When I go to the data requests page
