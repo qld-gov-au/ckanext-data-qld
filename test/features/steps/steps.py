@@ -346,9 +346,9 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
             """.format(key, value))
     context.execute_steps(u"""
         When I press "Add Data"
-        And I should see "Add New Resource"
-        And I create a resource with key-value parameters "{0}"
-        And I should see "Data and Resources"
+        Then I should see "Add New Resource"
+        When I create a resource with key-value parameters "{0}"
+        Then I should see "Data and Resources"
     """.format(resource_params))
 
 
