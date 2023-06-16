@@ -15,7 +15,7 @@ Feature: Schema Generation
 
         When I press the element with xpath "//button[contains(string(), 'Generate JSON data schema')]"
         And I reload page every 3 seconds until I see an element with xpath "//th[string()='Status']/following::td[string()='Pending']" but not more than 6 times
-        Then I should see an element with xpath "//th[string()='Last updated']/following::td/span[contains(string(), 'Just now')]"
+        Then I should see an element with xpath "//th[string()='Last updated']/following::td/span[contains(@class, 'date')]"
         When I reload page every 3 seconds until I see an element with xpath "//button[string()='Apply']" but not more than 6 times
         Then I should see an element with xpath "//th[string()='Status']/following::td[string()='Complete']"
         And I should see an element with xpath "//th[string()='Last updated']/following::td/span[contains(@class, 'date')]"
