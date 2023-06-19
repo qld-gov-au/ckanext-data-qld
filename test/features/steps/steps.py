@@ -193,6 +193,13 @@ def select_licence(context, licence_id):
     """.format(licence_id))
 
 
+@when(u'I enter the resource URL "{url}"')
+def enter_resource_url(context, url):
+    context.execute_steps(u"""
+        When I execute the script "$('#resource-edit [name=url]').val('{0}')"
+    """.format(url))
+
+
 @when(u'I fill in default dataset fields')
 def fill_in_default_dataset_fields(context):
     context.execute_steps(u"""
@@ -217,7 +224,7 @@ def fill_in_default_resource_fields(context):
 @when(u'I fill in link resource fields')
 def fill_in_default_link_resource_fields(context):
     context.execute_steps(u"""
-        When I execute the script "$('#resource-edit [name=url]').val('https://example.com')"
+        When I enter the resource URL "https://example.com"
         And I execute the script "document.getElementById('field-format').value='HTML'"
         And I fill in "size" with "1024" if present
     """)

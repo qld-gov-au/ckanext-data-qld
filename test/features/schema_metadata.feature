@@ -17,7 +17,7 @@ Feature: SchemaMetadata
         Given "SysAdmin" as the persona
         When I log in
         And I open the new resource form for dataset "public-test-dataset"
-        And I execute the script "document.getElementById('field-image-url').value='https://example.com'"
+        And I enter the resource URL "https://example.com"
         And I press the element with xpath "//button[contains(string(), 'Add')]"
         Then I should see "Name: Missing value"
         And I should see "Description: Missing value"
