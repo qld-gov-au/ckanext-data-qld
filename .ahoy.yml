@@ -114,7 +114,7 @@ commands:
     cmd: |
       docker cp . $(docker-compose ps -q ckan):/srv/app/
       docker cp bin/ckan_cli $(docker-compose ps -q ckan):/usr/bin/
-      ahoy cli 'chmod -v u+x /usr/bin/ckan_cli $APP_DIR/bin/*; cp -v .docker/ckan.ini $CKAN_INI'
+      ahoy cli 'chmod -v u+x /usr/bin/ckan_cli $APP_DIR/bin/*; cp -v .docker/ckan.ini $CKAN_INI; $APP_DIR/bin/process-config.sh'
 
   test-unit:
     usage: Run unit tests.
