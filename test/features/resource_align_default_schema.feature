@@ -4,8 +4,8 @@ Feature: Resource align_default_schema field
     Scenario: Create or edit resource in the GUI where default_data_schema is NULL, initial display and behaviour
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=package-without-default-schema::schema_json" and "upload=default::format=CSV"
-        And I go to dataset "package-without-default-schema"
+        And I create a dataset and resource with key-value parameters "schema_json=" and "upload=default::format=CSV"
+        And I go to dataset "$last_generated_name"
         Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following-sibling::td[contains(string(), "Field name 'default_data_schema' not in data")]"
 
         When I go to the first resource in the dataset
@@ -15,7 +15,7 @@ Feature: Resource align_default_schema field
         And I should see "Link"
         And I should see "JSON"
 
-        When I open the new resource form for dataset "package-without-default-schema"
+        When I open the new resource form for dataset "$last_generated_name"
         Then I should not see "Align this data schema with the dataset default"
         And I should see "Upload"
         And I should see "Link"
@@ -25,10 +25,10 @@ Feature: Resource align_default_schema field
     Scenario: Create resource with schema not aligned to default schema
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=package-with-default-schema::schema_json=default"
+        And I create a dataset with key-value parameters "schema_json=default"
         Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following::a[contains(string(), "View Schema File")]"
 
-        When I open the new resource form for dataset "package-with-default-schema"
+        When I open the new resource form for dataset "$last_generated_name"
         Then I should see an element with xpath "//div[contains(@class,'schema-align')]/following-sibling::div[@class='image-upload']"
         And I should see an element with xpath "//input[@type='checkbox' and @name='align_default_schema' and @checked]/following-sibling::label[@for='field-align_default_schema' and contains(string(), 'Align this data schema with the dataset default')]"
         And I should see an element with xpath "//div[@class="info-block " and contains(string(), "This data schema value is not aligned with a default data schema. Aligning this resource’s data schema with the dataset’s default data schema (and overwriting any pre-existing schema) ensures consistent validation of data structure.")]"

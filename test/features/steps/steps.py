@@ -134,6 +134,7 @@ def title_random_text(context):
     context.execute_steps(u"""
         When I fill in "title" with "Test Title {0}"
         And I fill in "name" with "test-title-{0}" if present
+        And I set "last_generated_name" to "test-title-{0}"
     """.format(uuid.uuid4()))
 
 
@@ -302,20 +303,16 @@ def _enter_manual_schema(context, schema_json):
     forms.fill_in_elem_by_name(context, "schema_json", schema_json)
 
 
-@when(u'I create a dataset with key-value parameters "{params}"')
-def create_dataset_from_params(context, params):
-    context.execute_steps(u"""
-        When I create a dataset and resource with key-value parameters "{0}" and "url=default"
-    """.format(params))
-
-
-@when(u'I create a dataset and resource with key-value parameters "{params}" and "{resource_params}"')
-def create_dataset_and_resource_from_params(context, params, resource_params):
+def _create_dataset_from_params(context, params):
     context.execute_steps(u"""
         When I visit "/dataset/new"
         And I fill in default dataset fields
     """)
     for key, value in _parse_params(params):
+        if key == "name":
+            context.execute_steps(u"""
+                When I set "last_generated_name" to "{0}"
+            """.format(value))
         if key == "owner_org":
             # Owner org uses UUIDs as its values, so we need to rely on displayed text
             context.execute_steps(u"""
@@ -347,6 +344,21 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
     context.execute_steps(u"""
         When I press "Add Data"
         Then I should see "Add New Resource"
+    """.format(key, value))
+
+
+@when(u'I create a dataset with key-value parameters "{params}"')
+def create_dataset_from_params(context, params):
+    _create_dataset_from_params(context, params)
+    context.execute_steps(u"""
+        When I go to dataset "$last_generated_name"
+    """)
+
+
+@when(u'I create a dataset and resource with key-value parameters "{params}" and "{resource_params}"')
+def create_dataset_and_resource_from_params(context, params, resource_params):
+    _create_dataset_from_params(context, params)
+    context.execute_steps(u"""
         When I create a resource with key-value parameters "{0}"
         Then I should see "Data and Resources"
     """.format(resource_params))

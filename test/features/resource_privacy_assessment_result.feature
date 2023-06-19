@@ -4,7 +4,7 @@ Feature: Resource Privacy Assessment Result
     Scenario: As a publisher, when I edit a resource, I should see the read-only 'Privacy assessment result' field
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=privacy-assessment-package"
+        And I create a dataset and resource with key-value parameters "name=privacy-assessment-package" and "url=default"
         And I go to the first resource in the dataset
         And I press the element with xpath "//a[contains(string(), 'Manage')]"
         Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[string()='Privacy assessment result']"
@@ -17,7 +17,7 @@ Feature: Resource Privacy Assessment Result
     Scenario: As a Sysadmin, when I edit a resource, I can edit the 'Privacy assessment result' field
         Given "SysAdmin" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=edit-privacy-assessment-package"
+        And I create a dataset and resource with key-value parameters "name=edit-privacy-assessment-package" and "url=default"
         And I visit "api/action/package_show?id=edit-privacy-assessment-package"
         Then I should see an element with xpath "//body/*[contains(string(), '"privacy_assessment_result":')]"
 
