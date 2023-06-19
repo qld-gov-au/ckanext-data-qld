@@ -369,7 +369,7 @@ def _create_dataset_from_params(context, params):
     context.execute_steps(u"""
         When I press "Add Data"
         Then I should see "Add New Resource"
-    """.format(key, value))
+    """)
 
 
 @when(u'I create a dataset with key-value parameters "{params}"')
