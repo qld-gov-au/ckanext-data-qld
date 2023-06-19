@@ -111,12 +111,35 @@ def clear_url(context):
     """)
 
 
+@when(u'I click the Confirm button')
+def click_confirm_button(context):
+    context.execute_steps(u"""
+        When I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Confirm') ]"
+    """)
+
+
 @when(u'I confirm the dialog containing "{text}" if present')
 def confirm_dialog_if_present(context, text):
     if context.browser.is_text_present(text):
         context.execute_steps(u"""
-            When I press the element with xpath "//button[@class='btn btn-primary' and contains(string(), 'Confirm') ]"
+            When I click the Confirm button
         """)
+
+
+@when(u'I confirm dataset deletion')
+def confirm_dataset_deletion_dialog_if_present(context):
+    dialog_text = "Briefly describe the reason for deleting this dataset"
+    if context.browser.is_text_present(dialog_text):
+        context.execute_steps(u"""
+            Then I should see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"
+            When I fill in "deletion-reason" with "it should be longer than 10 characters" if present
+            Then I should not see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"
+        """)
+    # Press the Confirm button whether it is in a dialog or a page
+    context.execute_steps(u"""
+        When I click the Confirm button
+        Then I should see "Dataset has been deleted"
+    """)
 
 
 @when(u'I open the new resource form for dataset "{name}"')
@@ -157,7 +180,9 @@ def go_to_first_resource(context):
 
 @when(u'I edit the "{name}" dataset')
 def edit_dataset(context, name):
-    when_i_visit_url(context, '/dataset/edit/{}'.format(name))
+    context.execute_steps(u"""
+        When I visit "/dataset/edit/{0}"
+    """.format(name))
 
 
 @when(u'I select the "{licence_id}" licence')
