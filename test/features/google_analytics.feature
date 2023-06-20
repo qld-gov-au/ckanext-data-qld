@@ -20,8 +20,8 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I click the link with text that contains "Dave's books"
-        And I click the link with text that contains "About"
+        When I press "Dave's books"
+        And I press "About"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and contains(@content, 'Dave')]"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and contains(@content, 'c=AU; o=The State of Queensland; ou=Dave') and @scheme='AGLSTERMS.GOLD']"
@@ -45,8 +45,8 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I click the link with text that contains "Test Organisation"
-        And I click the link with text that contains "About"
+        When I press "Test Organisation"
+        And I press "About"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Test Organisation']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
@@ -82,7 +82,7 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I click the link with text that contains "Test Resource"
+        When I press "Test Resource"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Test Resource']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"

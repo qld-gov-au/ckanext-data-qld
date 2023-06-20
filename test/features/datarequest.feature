@@ -12,7 +12,7 @@ Feature: Data Request
         Given "SysAdmin" as the persona
         When I log in
         And I go to the data requests page
-        And I click the link with text that contains "Add data request"
+        And I press "Add data request"
         And I fill in "title" with "Test data request"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         Then I should see an element with the css selector "div.error-explanation.alert.alert-error" within 2 seconds

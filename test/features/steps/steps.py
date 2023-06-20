@@ -2,7 +2,6 @@ from behave import when, then
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
 from behaving.web.steps import *  # noqa: F401, F403
-from behaving.web.steps.url import when_i_visit_url
 import datetime
 import email
 import quopri
@@ -28,14 +27,16 @@ URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
 
 @when(u'I go to homepage')
 def go_to_home(context):
-    when_i_visit_url(context, '/')
+    context.execute_steps(u"""
+        When I visit "/"
+    """)
 
 
 @when(u'I go to register page')
 def go_to_register_page(context):
     context.execute_steps(u"""
         When I go to homepage
-        And I click the link with text that contains "Register"
+        And I press "Register"
     """)
 
 
@@ -44,7 +45,7 @@ def log_in(context):
     context.execute_steps(u"""
         When I go to homepage
         And I expand the browser height
-        And I click the link with text that contains "Log in"
+        And I press "Log in"
         And I log in directly
     """)
 
@@ -172,12 +173,16 @@ def title_random_text(context):
 
 @when(u'I go to dataset page')
 def go_to_dataset_page(context):
-    when_i_visit_url(context, '/dataset')
+    context.execute_steps(u"""
+        When I visit "/dataset"
+    """)
 
 
 @when(u'I go to dataset "{name}"')
 def go_to_dataset(context, name):
-    when_i_visit_url(context, '/dataset/' + name)
+    context.execute_steps(u"""
+        When I visit "/dataset/{0}"
+    """.format(name))
 
 
 @when(u'I go to the first resource in the dataset')
@@ -252,27 +257,37 @@ def upload_file_to_resource(context, file_name, file_format):
 
 @when(u'I go to group page')
 def go_to_group_page(context):
-    when_i_visit_url(context, '/group')
+    context.execute_steps(u"""
+        When I visit "/group"
+    """)
 
 
 @when(u'I go to organisation page')
 def go_to_organisation_page(context):
-    when_i_visit_url(context, '/organization')
+    context.execute_steps(u"""
+        When I visit "/organization"
+    """)
 
 
 @when(u'I search the autocomplete API for user "{username}"')
 def go_to_user_autocomplete(context, username):
-    when_i_visit_url(context, '/api/2/util/user/autocomplete?q={}'.format(username))
+    context.execute_steps(u"""
+        When I visit "/api/2/util/user/autocomplete?q={0}"
+    """.format(username))
 
 
 @when(u'I go to the user list API')
 def go_to_user_list(context):
-    when_i_visit_url(context, '/api/3/action/user_list')
+    context.execute_steps(u"""
+        When I visit "/api/3/action/user_list"
+    """)
 
 
 @when(u'I go to the "{user_id}" profile page')
 def go_to_user_profile(context, user_id):
-    when_i_visit_url(context, '/user/{}'.format(user_id))
+    context.execute_steps(u"""
+        When I visit "/user/{0}"
+    """.format(user_id))
 
 
 @when(u'I go to the dashboard')
@@ -291,21 +306,18 @@ def dashboard_datasets(context):
 
 @when(u'I go to the "{user_id}" user API')
 def go_to_user_show(context, user_id):
-    when_i_visit_url(context, '/api/3/action/user_show?id={}'.format(user_id))
+    context.execute_steps(u"""
+        When I visit "/api/3/action/user_show?id={0}"
+    """.format(user_id))
 
 
-@when(u'I view the "{group_id}" group API "{including}" users')
-def go_to_group_including_users(context, group_id, including):
-    when_i_visit_url(
-        context, r'/api/3/action/group_show?id={}&include_users={}'.format(
-            group_id, including in ['with', 'including']))
-
-
-@when(u'I view the "{organisation_id}" organisation API "{including}" users')
-def go_to_organisation_including_users(context, organisation_id, including):
-    when_i_visit_url(
-        context, r'/api/3/action/organization_show?id={}&include_users={}'.format(
-            organisation_id, including in ['with', 'including']))
+@when(u'I view the "{group_id}" {group_type} API "{including}" users')
+def go_to_group_including_users(context, group_id, group_type, including):
+    if group_type == "organisation":
+        group_type = "organization"
+    context.execute_steps(u"""
+        When I visit "/api/3/action/{1}_show?id={0}&include_users={2}"
+    """.format(group_id, group_type, including in ['with', 'including']))
 
 
 @then(u'I should be able to download via the element with xpath "{expression}"')
@@ -509,7 +521,9 @@ def log_out(context):
 @when(u'I visit resource schema generation page')
 def resource_schema_generation(context):
     path = urlparse(context.browser.url).path
-    when_i_visit_url(context, path + '/generate_schema')
+    context.execute_steps(u"""
+        When I visit "/{0}/generate_schema"
+    """.format(path))
 
 
 @when(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
@@ -559,7 +573,7 @@ def click_link_in_email(context, address):
 def go_to_dataset_comments(context, name):
     context.execute_steps(u"""
         When I go to dataset "%s"
-        And I click the link with text that contains "Comments"
+        And I press "Comments"
     """ % (name))
 
 
@@ -621,9 +635,13 @@ def submit_reply_with_comment(context, comment):
 
 @when(u'I lock my account')
 def lock_account(context):
-    when_i_visit_url(context, "/user/login")
+    context.execute_steps(u"""
+        When I visit "/user/login"
+    """)
     for x in range(11):
-        attempt_login(context, "incorrect password")
+        context.execute_steps(u"""
+            When I attempt to log in with password "incorrect password"
+        """)
 
 
 # ckanext-datarequests
@@ -631,12 +649,16 @@ def lock_account(context):
 
 @when(u'I go to the data requests page containing "{keyword}"')
 def go_to_datarequest_page_search(context, keyword):
-    when_i_visit_url(context, '/datarequest?q={}'.format(keyword))
+    context.execute_steps(u"""
+        When I visit "/datarequest?q={0}"
+    """.format(keyword))
 
 
 @when(u'I go to the data requests page')
 def go_to_datarequest_page(context):
-    when_i_visit_url(context, '/datarequest')
+    context.execute_steps(u"""
+        When I visit "/datarequest"
+    """)
 
 
 @when(u'I go to data request "{subject}"')
@@ -653,7 +675,7 @@ def create_datarequest(context):
     assert context.persona
     context.execute_steps(u"""
         When I go to the data requests page
-        And I click the link with text that contains "Add data request"
+        And I press "Add data request"
         And I fill in title with random text
         And I fill in "description" with "Test description"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
@@ -664,7 +686,7 @@ def create_datarequest(context):
 def go_to_data_request_comments(context, subject):
     context.execute_steps(u"""
         When I go to data request "%s"
-        And I click the link with text that contains "Comments"
+        And I press "Comments"
     """ % (subject))
 
 
@@ -673,4 +695,6 @@ def go_to_data_request_comments(context, subject):
 
 @when(u'I go to my reports page')
 def go_to_reporting_page(context):
-    when_i_visit_url(context, '/dashboard/reporting')
+    context.execute_steps(u"""
+        When I visit "/dashboard/reporting"
+    """)
