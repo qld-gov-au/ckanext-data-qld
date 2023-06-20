@@ -21,7 +21,6 @@ Feature: Resource align_default_schema field
         And I should see "Link"
         And I should see "JSON"
 
-
     Scenario: Create resource with schema not aligned to default schema
         Given "TestOrgEditor" as the persona
         When I log in
