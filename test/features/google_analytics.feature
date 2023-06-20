@@ -20,7 +20,9 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I press "Dave's books"
+        # Can't use 'I press' because the text contains an apostrophe
+        # See https://github.com/ggozad/behaving/issues/137
+        When I click the link with text that contains "Dave's books"
         And I press "About"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and contains(@content, 'Dave')]"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
