@@ -112,18 +112,11 @@ def clear_url(context):
     """)
 
 
-@when(u'I click the Confirm button')
-def click_confirm_button(context):
-    context.execute_steps(u"""
-        When I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Confirm') ]"
-    """)
-
-
 @when(u'I confirm the dialog containing "{text}" if present')
 def confirm_dialog_if_present(context, text):
     if context.browser.is_text_present(text):
         context.execute_steps(u"""
-            When I click the Confirm button
+            When I press the element with xpath "//*[@contains(@class, 'modal')]//button[contains(@class, 'btn-primary')]"
         """)
 
 
@@ -138,7 +131,7 @@ def confirm_dataset_deletion_dialog_if_present(context):
         """)
     # Press the Confirm button whether it is in a dialog or a page
     context.execute_steps(u"""
-        When I click the Confirm button
+        When I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Confirm') ]"
         Then I should see "Dataset has been deleted"
     """)
 
