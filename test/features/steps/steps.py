@@ -515,7 +515,7 @@ def log_out(context):
 def resource_schema_generation(context):
     path = urlparse(context.browser.url).path
     context.execute_steps(u"""
-        When I visit "/{0}/generate_schema"
+        When I visit "{0}/generate_schema"
     """.format(path))
 
 
