@@ -1,7 +1,3 @@
-from behave import when, then
-from behaving.personas.steps import *  # noqa: F401, F403
-from behaving.mail.steps import *  # noqa: F401, F403
-from behaving.web.steps import *  # noqa: F401, F403
 import datetime
 import email
 import quopri
@@ -10,6 +6,11 @@ import requests
 import six
 from six.moves.urllib.parse import urlparse
 import uuid
+
+from behave import when, then
+from behaving.personas.steps import *  # noqa: F401, F403
+from behaving.mail.steps import *  # noqa: F401, F403
+from behaving.web.steps import *  # noqa: F401, F403
 
 # Monkey-patch Selenium 3 to handle Python 3.9
 import base64

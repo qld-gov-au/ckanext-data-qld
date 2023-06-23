@@ -1,5 +1,5 @@
 @resource_visibility
-Feature: Re-identification risk governance acknowledgement
+Feature: Re-identification risk governance acknowledgement or Resource visibility
 
     Scenario: As a publisher, I can view hidden resources
         Given "TestOrgEditor" as the persona

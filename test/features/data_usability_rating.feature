@@ -5,7 +5,6 @@ Feature: Data usability rating
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "license=other-open" and "format=<Format>::upload=<Filename>"
-        And I wait for 10 seconds
         And I press the element with xpath "//ol[contains(@class, 'breadcrumb')]//a[starts-with(@href, '/dataset/')]"
         And I reload page every 3 seconds until I see an element with xpath "//div[contains(@class, 'qa') and contains(@class, 'openness-')]" but not more than 3 times
         Then I should see "Data usability rating"
