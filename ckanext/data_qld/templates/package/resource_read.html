@@ -122,7 +122,7 @@
 
         {% if res.schema %}
             {{ h.get_validation_badge(res)|safe }}
-            {% set type = 'asset' if h.is_ckan_29() else 'resource' %}
+            {% set type = 'asset' %}
             {% include 'validation/snippets/validation_style_' ~ type ~ '.html' %}
         {% endif %}
     </h1>
