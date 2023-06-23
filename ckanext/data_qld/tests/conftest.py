@@ -256,22 +256,3 @@ class DataRequest(factory.Factory):
 @pytest.fixture
 def datarequest_factory():
     return DataRequest
-
-# datarequests_table = sa.Table('datarequests', model.meta.metadata,
-#                               sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
-#                               sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
-#                               sa.Column('title', sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=True, default=u''),
-#                               sa.Column('description', sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=u''),
-#                               sa.Column('organization_id', sa.types.UnicodeText, primary_key=False, default=None),
-#                               sa.Column('open_time', sa.types.DateTime, primary_key=False, default=None),
-#                               sa.Column('accepted_dataset_id', sa.types.UnicodeText, primary_key=False, default=None),
-#                               sa.Column('close_time', sa.types.DateTime, primary_key=False, default=None),
-#                               sa.Column('closed', sa.types.Boolean, primary_key=False, default=False),
-#                               sa.Column('close_circumstance', sa.types.Unicode(constants.CLOSE_CIRCUMSTANCE_MAX_LENGTH), primary_key=False, default=u'')
-#                               if closing_circumstances_enabled else None,
-#                               sa.Column('approx_publishing_date', sa.types.DateTime, primary_key=False, default=None)
-#                               if closing_circumstances_enabled else None,
-#                               extend_existing=True,
-#                               )
-
-# model.meta.mapper(DataRequest, datarequests_table)
