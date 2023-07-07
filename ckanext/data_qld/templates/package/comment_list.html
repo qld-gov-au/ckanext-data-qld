@@ -38,6 +38,9 @@
             {% set unescaped_content = values.content.split('<br/>') %}
             <textarea name="comment" class="form-control" rows="3" cols="20">{% if not empty %}{% for line in unescaped_content %}{{ line | striptags }}{{'\n'}}{% endfor %}{% endif %}</textarea>
         </div>
+        {% if g.recaptcha_publickey %}
+            {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
+        {% endif %}
         <div class="form-actions">
             {% if action == "edit" %}
                 <input type="reset" class="btn btn-cancel" value="{{ _('Cancel') }}"/>
@@ -172,6 +175,9 @@
             <label for="comment"><span title="This field is required" class="control-required">*</span> {{ _('Comment') }}</label>
             <textarea name="comment" class="form-control" rows="4" placeholder="Add a new comment{% if content_type == 'dataset' %} or ask a question{% endif %}"></textarea>
         </div>
+        {% if g.recaptcha_publickey %}
+            {% snippet "user/snippets/recaptcha.html", public_key=g.recaptcha_publickey %}
+        {% endif %}
         <div class="form-actions">
             <input type="reset" class="btn" value="{{ _('Clear') }}"/>
             <input type="submit" class="btn btn-primary" value="{{ _('Save') }}"/>
