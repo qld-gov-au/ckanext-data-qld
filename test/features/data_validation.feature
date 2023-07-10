@@ -1,11 +1,11 @@
 @config
 Feature: Data Validation
 
-    Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I can see the '</> JSON' button
+    Scenario Outline: As a sysadmin, admin and editor user of the dataset organisation I can see the 'JSON' button
        Given "<User>" as the persona
         When I log in
         And I open the new resource form for dataset "public-test-dataset"
-        Then I should see an element with xpath "//*[@id='resource-schema-buttons']//a[contains(string(), 'JSON')]"
+        Then I should see an element with xpath "//textarea[@name='schema_json']"
 
         Examples: Users
         | User              |
@@ -24,7 +24,7 @@ Feature: Data Validation
         And I execute the script "document.getElementById('field-schema-upload').parentNode.parentNode.setAttribute('style', '')"
         And I attach the file "test-resource_schemea.json" to "schema_upload"
         And I press "Finish"
-        When I wait for 1 seconds
+        And I wait for 1 seconds
         And I click the link with text that contains "Test Resource"
         And I click the link with text that contains "View Schema File"
         Then I should see "Measure of the oblique fractal impedance at noon"

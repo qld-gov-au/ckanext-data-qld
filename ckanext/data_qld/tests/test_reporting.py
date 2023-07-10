@@ -6,7 +6,6 @@ from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.data_qld.reporting.helpers import helpers
-from ckanext.data_qld.tests.conftest import SysadminFactory
 
 
 @pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
@@ -101,8 +100,7 @@ class TestAdminReportDeIdentifiedNoSchema:
                          "mock_storage", "do_not_validate")
 class TestAdminReportCSVExport:
 
-    def test_as_regular_user(self, app, user_factory):
-        user = user_factory()
+    def test_as_regular_user(self, app, user):
         app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
         org_id = factories.Organization()["id"]
 
@@ -234,5 +232,5 @@ class TestAdminReportPendingPrivacyAssessment:
 
 
 def _make_context():
-    sysadmin = SysadminFactory()
+    sysadmin = factories.Sysadmin()
     return {"user": sysadmin["name"], "ignore_auth": True}
