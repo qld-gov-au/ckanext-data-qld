@@ -26,6 +26,16 @@ URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
                     (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
 
 
+@when(u'I take a debugging screenshot')
+def debug_screenshot(context):
+    """ Take a screenshot only if debugging is enabled in the persona.
+    """
+    if context.persona and context.persona.get('debug') == 'True':
+        context.execute_steps(u"""
+            Then I take a screenshot
+        """)
+
+
 @when(u'I go to homepage')
 def go_to_home(context):
     context.execute_steps(u"""
@@ -389,7 +399,8 @@ def _create_dataset_from_params(context, params):
                 When I fill in "{0}" with "{1}" if present
             """.format(key, value))
     context.execute_steps(u"""
-        When I press "Add Data"
+        When I take a debugging screenshot
+        And I press "Add Data"
         Then I should see "Add New Resource"
     """)
 
@@ -463,7 +474,9 @@ def create_resource_from_params(context, resource_params):
                 When I fill in "{0}" with "{1}" if present
             """.format(key, value))
     context.execute_steps(u"""
-        When I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        When I take a debugging screenshot
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I take a debugging screenshot
     """)
 
 
