@@ -10,8 +10,6 @@ from ckantoolkit import config
 
 from ckanext.datarequests import db, validator
 from ckanext.ytp.comments.model import CommentThread
-from ckanext.ytp.comments.util import get_comments_data_for_index
-from ckanext.ytp.cmments.actions import get_comment_thread
 
 from . import constants
 
@@ -472,6 +470,9 @@ def list_datarequests(original_action, context, data_dict):
 
 
 def _search_by_datarequest_comments(query):
+    from ckanext.ytp.comments.util import get_comments_data_for_index
+    from ckanext.ytp.cmments.actions import get_comment_thread
+
     threads = model.Session.query(CommentThread) \
         .filter(CommentThread.url.like("/datarequest/%")).all()
 
