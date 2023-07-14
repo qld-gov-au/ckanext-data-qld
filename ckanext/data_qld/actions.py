@@ -10,8 +10,10 @@ from ckantoolkit import config
 
 from ckanext.datarequests import db, validator
 from ckanext.ytp.comments.model import CommentThread
+from ckanext.ytp.comments.util import get_comments_data_for_index
+from ckanext.ytp.cmments.actions import get_comment_thread
 
-from . import constants, utils
+from . import constants
 
 log = logging.getLogger(__name__)
 
@@ -478,8 +480,8 @@ def _search_by_datarequest_comments(query):
     for thread in threads:
         content_type, entity_id = thread.url.strip("/").split("/")
 
-        thread_data = utils.get_comment_thread(entity_id, content_type)
-        comments_data = utils.get_comments_data_for_index(thread_data)
+        thread_data = get_comment_thread(entity_id, content_type)
+        comments_data = get_comments_data_for_index(thread_data)
 
         if query.lower() in comments_data.lower():
             datarequest_ids.append(entity_id)
