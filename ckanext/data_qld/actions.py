@@ -9,8 +9,9 @@ import ckantoolkit as tk
 from ckantoolkit import config
 
 from ckanext.datarequests import db, validator
+from ckanext.ytp.comments.model import CommentThread
 
-from . import constants
+from . import constants, utils
 
 log = logging.getLogger(__name__)
 
@@ -430,3 +431,61 @@ def open_datarequest(context, data_dict):
                    datarequest_dict, 'Data Request Opened Admins Email')
 
     return datarequest_dict
+
+
+@tk.chained_action
+def list_datarequests(original_action, context, data_dict):
+    """By default the ckanext-datarequest `list_datarequests` action searches
+    only inside datarequest title and description. We are altering it, to search
+    by a comments, related to the datarequest entity.
+
+    The comments are implemented via ckanext-ytp-comments
+    """
+    result = original_action(context, data_dict)
+
+    if not tk.h.ytp_comments_enabled():
+        return result
+
+    query = data_dict.get("q", "")
+    sort = data_dict.get("sort", "desc")
+
+    datarequest_ids = _search_by_datarequest_comments(query)
+    existing_ids = [dr["id"] for dr in result["result"]]
+
+    for datarequest_id in datarequest_ids:
+        if datarequest_id in existing_ids:
+            continue
+
+        try:
+            data = tk.get_action("show_datarequest")({}, {"id": datarequest_id})
+        except tk.ObjectNotFound:
+            continue
+
+        result["result"].append(data)
+
+    _sort_datarequests(result["result"], sort)
+    result["count"] = len(result["result"])
+
+    return result
+
+
+def _search_by_datarequest_comments(query):
+    threads = model.Session.query(CommentThread) \
+        .filter(CommentThread.url.like("/datarequest/%")).all()
+
+    datarequest_ids = []
+
+    for thread in threads:
+        content_type, entity_id = thread.url.strip("/").split("/")
+
+        thread_data = utils.get_comment_thread(entity_id, content_type)
+        comments_data = utils.get_comments_data_for_index(thread_data)
+
+        if query.lower() in comments_data.lower():
+            datarequest_ids.append(entity_id)
+
+    return datarequest_ids
+
+
+def _sort_datarequests(datarequests, sort):
+    datarequests.sort(key=lambda x: x["open_time"], reverse=sort == "desc")

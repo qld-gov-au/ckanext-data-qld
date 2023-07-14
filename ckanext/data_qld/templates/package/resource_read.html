@@ -110,11 +110,20 @@
 {% endblock %}
 
 {% block resource_read_title %}
-    <h1 class="page-heading">{{ h.resource_display_name(res)}}
-    {% if res.schema %}
-        {{ h.get_validation_badge(res)|safe }}
-        {% set type = 'asset' %}
-        {% include 'validation/snippets/validation_style_' ~ type ~ '.html' %}
-    {% endif %}
+    <h1 class="page-heading">
+        {% if res.qld_hidden %}
+            <span class="dataset-private label label-inverse">
+                <i class="fa fa-lock"></i>
+                {{ _("Hidden" )}}
+            </span>
+        {% endif %}
+
+        {{ h.resource_display_name(res)}}
+
+        {% if res.schema %}
+            {{ h.get_validation_badge(res)|safe }}
+            {% set type = 'asset' if h.is_ckan_29() else 'resource' %}
+            {% include 'validation/snippets/validation_style_' ~ type ~ '.html' %}
+        {% endif %}
     </h1>
 {% endblock %}

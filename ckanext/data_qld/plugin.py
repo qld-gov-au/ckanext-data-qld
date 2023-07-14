@@ -2,15 +2,16 @@
 
 import logging
 
-from ckan import plugins
-
-from . import actions, auth_functions as auth, blueprints, click_cli, \
-    constants, converters, datarequest_auth_functions, helpers, validation
 import ckantoolkit as tk
+
+from ckan import plugins
 
 from ckanext.validation.interfaces import IDataValidation
 from ckanext.resource_visibility.constants import FIELD_DE_IDENTIFIED, YES
 
+from . import actions, auth_functions as auth, blueprints, click_cli, constants, \
+    converters, datarequest_auth_functions, helpers, validation, utils
+from . import listeners  # type: ignore # noqa # side-effect # isort: skip
 from .dataset_deletion import helpers as dataset_deletion_helpers
 from .reporting import blueprints as reporting_blueprints
 from .reporting.helpers import helpers as reporting_helpers
@@ -133,6 +134,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.CREATE_DATAREQUEST: actions.create_datarequest,
             constants.UPDATE_DATAREQUEST: actions.update_datarequest,
             constants.CLOSE_DATAREQUEST: actions.close_datarequest,
+            constants.LIST_DATAREQUESTS: actions.list_datarequests,
             'organisation_followers': get.organisation_followers,
             'dataset_followers': get.dataset_followers,
             'dataset_comments': get.dataset_comments,
@@ -198,6 +200,15 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     def before_show(self, resource_dict):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
+
+    def before_index(self, pkg_dict):
+        """Index dataset comments to make them searchable via package_search"""
+        thread = utils.get_comment_thread(pkg_dict["name"], pkg_dict["type"])
+
+        if thread:
+            pkg_dict["extras_ytp_comments_idx"] = utils.get_comments_data_for_index(thread)
+
+        return pkg_dict
 
     def _check_file_upload(self, data_dict):
         # This method is to fix a bug that the ckanext-scheming creates for setting the file size of an uploaded
