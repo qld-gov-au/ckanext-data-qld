@@ -2,16 +2,15 @@
 
 import logging
 
-import ckantoolkit as tk
+from ckan import plugins
 
-from ckan import model, plugins
+from . import actions, auth_functions as auth, blueprints, click_cli, \
+    constants, converters, datarequest_auth_functions, helpers, validation
+import ckantoolkit as tk
 
 from ckanext.validation.interfaces import IDataValidation
 from ckanext.resource_visibility.constants import FIELD_DE_IDENTIFIED, YES
 
-from . import actions, auth_functions as auth, blueprints, click_cli, constants, \
-    converters, datarequest_auth_functions, helpers, validation, utils
-from . import listeners  # type: ignore # noqa # side-effect # isort: skip
 from .dataset_deletion import helpers as dataset_deletion_helpers
 from .reporting import blueprints as reporting_blueprints
 from .reporting.helpers import helpers as reporting_helpers
@@ -202,12 +201,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
         resource_freshness_helpers.process_nature_of_change(resource_dict)
 
     def before_index(self, pkg_dict):
-        """Index dataset comments to make them searchable via package_search"""
-        thread = utils.get_comment_thread(pkg_dict["name"], pkg_dict["type"])
-
-        if thread:
-            pkg_dict["extras_ytp_comments_idx"] = utils.get_comments_data_for_index(thread)
-
+        # Return untouched
         return pkg_dict
 
     def _check_file_upload(self, data_dict):
