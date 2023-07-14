@@ -4,7 +4,7 @@ import logging
 
 import ckantoolkit as tk
 
-from ckan import plugins
+from ckan import model, plugins
 
 from ckanext.validation.interfaces import IDataValidation
 from ckanext.resource_visibility.constants import FIELD_DE_IDENTIFIED, YES
