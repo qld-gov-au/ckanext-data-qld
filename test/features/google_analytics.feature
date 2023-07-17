@@ -11,7 +11,7 @@ Feature: GoogleAnalytics
     Scenario: When viewing the HTML source code of a group, the appropriate metadata is visible
         Given "Unauthenticated" as the persona
         When I go to group page
-        And I maximize the browser's window
+        And I expand the browser height
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Groups']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland;' and @scheme='AGLSTERMS.GOLD']"
@@ -20,8 +20,10 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
+        # Can't use 'I press' because the text contains an apostrophe
+        # See https://github.com/ggozad/behaving/issues/137
         When I click the link with text that contains "Dave's books"
-        And I click the link with text that contains "About"
+        And I press "About"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and contains(@content, 'Dave')]"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and contains(@content, 'c=AU; o=The State of Queensland; ou=Dave') and @scheme='AGLSTERMS.GOLD']"
@@ -36,7 +38,7 @@ Feature: GoogleAnalytics
     Scenario: When viewing the HTML source code of an organisation, the appropriate metadata is visible
         Given "Unauthenticated" as the persona
         When I go to organisation page
-        And I maximize the browser's window
+        And I expand the browser height
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Organisations']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland;' and @scheme='AGLSTERMS.GOLD']"
@@ -45,8 +47,8 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I click the link with text that contains "Test Organisation"
-        And I click the link with text that contains "About"
+        When I press "Test Organisation"
+        And I press "About"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Test Organisation']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
@@ -60,7 +62,7 @@ Feature: GoogleAnalytics
     Scenario: When viewing the HTML source code of a resource, the appropriate metadata is visible
         Given "TestOrgEditor" as the persona
         When I go to Dataset page
-        And I maximize the browser's window
+        And I expand the browser height
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Datasets']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland;' and @scheme='AGLSTERMS.GOLD']"
@@ -70,7 +72,7 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
         When I log in
-        And I create a dataset with key-value parameters "name=dcterms-testing::title=DCTERMS testing"
+        And I create a dataset and resource with key-value parameters "name=dcterms-testing::title=DCTERMS testing" and "url=default"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='DCTERMS testing']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"
@@ -82,7 +84,7 @@ Feature: GoogleAnalytics
         And I should see an element with xpath "//meta[@name='DCTERMS.type' and @content='Text' and @scheme='DCTERMS.DCMIType']"
         And I should see an element with xpath "//meta[@name='AGLSTERMS.documentType' and @content='index']"
 
-        When I click the link with text that contains "Test Resource"
+        When I press "Test Resource"
         Then I should see an element with xpath "//meta[@name='DCTERMS.title' and @content='Test Resource']"
         And I should see an element with xpath "//meta[@name='DCTERMS.publisher' and @content='corporateName=The State of Queensland; jurisdiction=Queensland' and @scheme='AGLSTERMS.AglsAgent']"
         And I should see an element with xpath "//meta[@name='DCTERMS.creator' and @content='c=AU; o=The State of Queensland; ou=Test Organisation' and @scheme='AGLSTERMS.GOLD']"

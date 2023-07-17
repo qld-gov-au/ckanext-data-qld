@@ -33,12 +33,21 @@ fi
 # BEGIN: Add sysadmin config values.
 # This needs to be done before closing datarequests as they require the below config values
 #
-echo "Adding ckan.datarequests.closing_circumstances:"
+echo "Adding sysadmin config:"
 
 curl -LsH "Authorization: ${API_KEY}" \
     --header "Content-Type: application/json" \
-    --data '{"ckan.datarequests.closing_circumstances":"Released as open data|nominate_dataset\nOpen dataset already exists|nominate_dataset\nPartially released|nominate_dataset\nTo be released as open data at a later date|nominate_approximate_date\nData openly available elsewhere\nNot suitable for release as open data\nRequested data not available/cannot be compiled\nRequestor initiated closure"}' \
+    --data '{
+        "ckan.comments.profanity_list": "",
+        "ckan.datarequests.closing_circumstances": "Released as open data|nominate_dataset\r\nOpen dataset already exists|nominate_dataset\r\nPartially released|nominate_dataset\r\nTo be released as open data at a later date|nominate_approximate_date\r\nData openly available elsewhere\r\nNot suitable for release as open data\r\nRequested data not available/cannot be compiled\r\nRequestor initiated closure",
+        "ckanext.data_qld.resource_formats": "CSV\r\nHTML\r\nJSON\r\nRDF\r\nTXT\r\nXLS",
+        "ckanext.data_qld.excluded_display_name_words": "gov"
+    }' \
     ${CKAN_ACTION_URL}/config_option_update
+
+##
+# END.
+#
 
 ##
 # BEGIN: Create a test organisation with test users for admin, editor and member
@@ -269,20 +278,5 @@ curl -LsH "Authorization: ${API_KEY}" \
 ##
 # END.
 #
-
-##
-# BEGIN: Add sysadmin config values.
-# This needs to be done before closing datarequests as they require the below config values
-#
-echo "Adding sysadmin config:"
-
-curl -LsH "Authorization: ${API_KEY}" \
-    --data '{
-        "ckan.comments.profanity_list": "",
-        "ckan.datarequests.closing_circumstances": "Released as open data|nominate_dataset\r\nOpen dataset already exists|nominate_dataset\r\nPartially released|nominate_dataset\r\nTo be released as open data at a later date|nominate_approximate_date\r\nData openly available elsewhere\r\nNot suitable for release as open data\r\nRequested data not available/cannot be compiled\r\nRequestor initiated closure",
-        "ckanext.data_qld.resource_formats": "CSV\r\nHTML\r\nJSON\r\nRDF\r\nTXT\r\nXLS",
-        "ckanext.data_qld.excluded_display_name_words": "gov"
-    }' \
-    ${CKAN_ACTION_URL}/config_option_update
 
 . ${APP_DIR}/bin/deactivate

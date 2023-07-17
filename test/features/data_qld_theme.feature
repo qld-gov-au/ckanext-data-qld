@@ -30,7 +30,7 @@ Feature: Theme customisations
         Given "SysAdmin" as the persona
         When I log in
         And I go to organisation page
-        And I click the link with text that contains "Add Organisation"
+        And I press "Add Organisation"
         Then I should see "Create an Organisation"
         When I execute the script "$('#field-name').val('Org without description')"
         And I execute the script "$('#field-url').val('org-without-description')"
@@ -43,7 +43,7 @@ Feature: Theme customisations
         Given "SysAdmin" as the persona
         When I log in
         And I go to organisation page
-        And I click the link with text that contains "Add Organisation"
+        And I press "Add Organisation"
         Then I should see "Create an Organisation"
         When I execute the script "$('#field-name').val('Org with description')"
         And I execute the script "$('#field-url').val('org-with-description')"
@@ -57,12 +57,11 @@ Feature: Theme customisations
     @unauthenticated
     Scenario: Explore button does not exist on dataset detail page
         Given "Unauthenticated" as the persona
-        When I go to dataset page
-        And I click the link with text that contains "public-test"
+        When I go to dataset "public-test-dataset"
         Then I should not see "Explore"
 
     @unauthenticated
-    Scenario: Explore button does not exist on dataset detail page
+    Scenario: As a member of the public, I should be able to see the help text on the organisation page
         Given "Unauthenticated" as the persona
         When I go to organisation page
         Then I should see "Organisations are Queensland Government departments, other agencies or legislative entities responsible for publishing open data on this portal."
@@ -89,13 +88,14 @@ Feature: Theme customisations
         And I press "Create Account"
         Then I should see "Password: Must contain at least one number, lowercase letter, capital letter, and symbol"
 
+    @OpenData
     Scenario: As a publisher, when I create a resource with an API entry, I can download it in various formats
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "license=other-open" and "format=CSV::upload=csv_resource.csv"
+        And I create a dataset and resource with key-value parameters "license=other-open::private=False" and "format=CSV::upload=csv_resource.csv"
         And I wait for 10 seconds
-        And I click the link with text that contains "Test Resource"
-        Then I should see an element with xpath "//a[contains(text(), 'Data API')]"
+        And I press "Test Resource"
+        Then I should see an element with xpath "//a[contains(string(), 'Data API')]"
         And I should see an element with xpath "//button[contains(@class, 'dropdown-toggle')]"
         And I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
         When I press the element with xpath "//button[contains(@class, 'dropdown-toggle')]"
