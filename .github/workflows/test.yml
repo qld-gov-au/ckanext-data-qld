@@ -7,6 +7,7 @@ on:
       - master
 
 jobs:
+  # Quick check so we don't waste minutes if there's a Flake8 error
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -21,6 +22,7 @@ jobs:
         run: flake8
 
   test:
+    needs: lint
     strategy:
       fail-fast: true
       matrix:
@@ -42,13 +44,13 @@ jobs:
         run: bin/build.sh
         timeout-minutes: 15
 
-      - name: Test ${{ matrix.behave-tag }} BDD
-        run: bin/test-bdd.sh
-        timeout-minutes: 45
-
       - name: Unit tests
         if: ${{ matrix.behave-tag == 'smoke' }}
         run: bin/test.sh
+        timeout-minutes: 10
+
+      - name: Test ${{ matrix.behave-tag }} BDD
+        run: bin/test-bdd.sh
         timeout-minutes: 45
 
       - name: Retrieve logs

@@ -1,12 +1,13 @@
 @reporting
+@OpenData
 Feature: Engagement Reporting
 
     Scenario Outline: As a user with admin or editor role capacity of an organisation, I can view 'My Reports' tab in the dashboard and show the engagement report with filters
         Given "<User>" as the persona
         When I log in
         And I visit "dashboard"
-        And I click the link with text that contains "My Reports"
-        And I click the link with text that contains "Engagement Report"
+        And I press "My Reports"
+        And I press "Engagement Report"
         Then I should see an element with id "organisation"
         And I should see an element with id "start_date"
         When I fill in "start_date" with "01-01-2019"
@@ -26,14 +27,14 @@ Feature: Engagement Reporting
         Given "DataRequestOrgAdmin" as the persona
         When I log in
         And I go to my reports page
-        And I click the link with text that contains "Engagement Report"
+        And I press "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
         And I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='25' and position()=2]"
 
         When I create a datarequest
         And I go to my reports page
-        And I click the link with text that contains "Engagement Report"
+        And I press "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-title') and string()='Data requests' and position()=1]"
         And I should see an element with xpath "//tr[@id='datarequests-total']/td[contains(@class, 'metric-data') and string()='26' and position()=2]"
@@ -42,7 +43,7 @@ Feature: Engagement Reporting
         Given "ReportingOrgAdmin" as the persona
         When I log in
         And I go to my reports page
-        And I click the link with text that contains "Engagement Report"
+        And I press "Engagement Report"
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
         And I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
@@ -67,7 +68,7 @@ Feature: Engagement Reporting
         Then I should see an element with xpath "//i[contains(@class, 'icon-lock')]"
 
         When I go to my reports page
-        And I click the link with text that contains "Engagement Report"
+        And I press "Engagement Report"
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
         And I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='1' and position()=2]"
         And I should see an element with xpath "//tr[@id='dataset-comments']/td[contains(@class, 'metric-title') and string()='Dataset comments' and position()=1]"
@@ -77,10 +78,10 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=1]/a[contains(@href, '/closed?') and contains(string(), 'To be released as open data at a later date')]"
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='1']"
 
-        When I click the link with text that contains "To be released as open data at a later date"
+        When I press "To be released as open data at a later date"
         Then I should see "Engagement Report: Data requests: Reporting"
         And I should see "Closed data requests - To be released as open data at a later date"
         And I should see "Reporting Request"
-        When I click the link with text that contains "Reporting Request"
+        When I press "Reporting Request"
         Then I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest') and contains(string(), 'Data requests')]"
         And I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/datarequest/') and contains(string(), 'Reporting Request')]"
