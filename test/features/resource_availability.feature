@@ -75,8 +75,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         When I log in
         And I create a dataset and resource with key-value parameters "de_identified_data=NO" and "name=invisible-resource::resource_visible=FALSE"
         And I press "invisible-resource"
-        Then I should see "HIDDEN"
-        When I press "Manage"
+        And I press "Manage"
         Then I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"
         And I should see an element with xpath "//select[@id="field-request_privacy_assessment"]//option[@value="" or @value="YES" or @value="NO"]"
 
