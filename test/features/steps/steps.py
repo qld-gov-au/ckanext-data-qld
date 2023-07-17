@@ -1,8 +1,3 @@
-from behave import when, then
-from behaving.personas.steps import *  # noqa: F401, F403
-from behaving.mail.steps import *  # noqa: F401, F403
-from behaving.web.steps import *  # noqa: F401, F403
-from behaving.web.steps.url import when_i_visit_url
 import datetime
 import email
 import quopri
@@ -11,6 +6,11 @@ import requests
 import six
 from six.moves.urllib.parse import urlparse
 import uuid
+
+from behave import when, then
+from behaving.personas.steps import *  # noqa: F401, F403
+from behaving.mail.steps import *  # noqa: F401, F403
+from behaving.web.steps import *  # noqa: F401, F403
 
 # Monkey-patch Selenium 3 to handle Python 3.9
 import base64
@@ -26,16 +26,28 @@ URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
                     (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
 
 
+@when(u'I take a debugging screenshot')
+def debug_screenshot(context):
+    """ Take a screenshot only if debugging is enabled in the persona.
+    """
+    if context.persona and context.persona.get('debug') == 'True':
+        context.execute_steps(u"""
+            Then I take a screenshot
+        """)
+
+
 @when(u'I go to homepage')
 def go_to_home(context):
-    when_i_visit_url(context, '/')
+    context.execute_steps(u"""
+        When I visit "/"
+    """)
 
 
 @when(u'I go to register page')
 def go_to_register_page(context):
     context.execute_steps(u"""
         When I go to homepage
-        And I click the link with text that contains "Register"
+        And I press "Register"
     """)
 
 
@@ -43,10 +55,16 @@ def go_to_register_page(context):
 def log_in(context):
     context.execute_steps(u"""
         When I go to homepage
-        And I maximize the browser's window
-        And I click the link with text that contains "Log in"
+        And I expand the browser height
+        And I press "Log in"
         And I log in directly
     """)
+
+
+@when(u'I expand the browser height')
+def expand_height(context):
+    # Work around x=null bug in Selenium set_window_size
+    context.browser.driver.set_window_rect(x=0, y=0, width=1024, height=4096)
 
 
 @when(u'I log in directly')
@@ -109,17 +127,42 @@ def clear_url(context):
 def confirm_dialog_if_present(context, text):
     if context.browser.is_text_present(text):
         context.execute_steps(u"""
-            When I press the element with xpath "//button[@class='btn btn-primary' and contains(text(), 'Confirm') ]"
+            When I press the element with xpath "//*[contains(@class, 'modal-dialog')]//button[contains(@class, 'btn-primary')]"
         """)
+
+
+@when(u'I confirm dataset deletion')
+def confirm_dataset_deletion_dialog_if_present(context):
+    dialog_text = "Briefly describe the reason for deleting this dataset"
+    if context.browser.is_text_present(dialog_text):
+        context.execute_steps(u"""
+            Then I should see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"
+            When I fill in "deletion-reason" with "it should be longer than 10 characters" if present
+            Then I should not see an element with xpath "//div[@class='modal-footer']//button[@class='btn btn-primary' and @disabled='disabled']"
+        """)
+    # Press the Confirm button whether it is in a dialog or a page
+    context.execute_steps(u"""
+        When I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Confirm') ]"
+        Then I should see "Dataset has been deleted"
+    """)
 
 
 @when(u'I open the new resource form for dataset "{name}"')
 def go_to_new_resource_form(context, name):
     context.execute_steps(u"""
-        When I edit the "{name}" dataset
-        And I click the link with text that contains "Resources"
-        And I click the link with text that contains "Add new resource"
-    """.format(name=name))
+        When I edit the "{0}" dataset
+    """.format(name))
+    if context.browser.is_element_present_by_xpath("//*[contains(@class, 'btn-primary') and contains(string(), 'Next:')]"):
+        # Draft dataset, proceed directly to resource form
+        context.execute_steps(u"""
+            When I press "Next:"
+        """)
+    else:
+        # Existing dataset, browse to the resource form
+        context.execute_steps(u"""
+            When I press "Resources"
+            And I press "Add new resource"
+        """)
 
 
 @when(u'I fill in title with random text')
@@ -128,17 +171,22 @@ def title_random_text(context):
     context.execute_steps(u"""
         When I fill in "title" with "Test Title {0}"
         And I fill in "name" with "test-title-{0}" if present
+        And I set "last_generated_name" to "test-title-{0}"
     """.format(uuid.uuid4()))
 
 
 @when(u'I go to dataset page')
 def go_to_dataset_page(context):
-    when_i_visit_url(context, '/dataset')
+    context.execute_steps(u"""
+        When I visit "/dataset"
+    """)
 
 
 @when(u'I go to dataset "{name}"')
 def go_to_dataset(context, name):
-    when_i_visit_url(context, '/dataset/' + name)
+    context.execute_steps(u"""
+        When I visit "/dataset/{0}"
+    """.format(name))
 
 
 @when(u'I go to the first resource in the dataset')
@@ -150,7 +198,9 @@ def go_to_first_resource(context):
 
 @when(u'I edit the "{name}" dataset')
 def edit_dataset(context, name):
-    when_i_visit_url(context, '/dataset/edit/{}'.format(name))
+    context.execute_steps(u"""
+        When I visit "/dataset/edit/{0}"
+    """.format(name))
 
 
 @when(u'I select the "{licence_id}" licence')
@@ -159,6 +209,13 @@ def select_licence(context, licence_id):
     context.execute_steps(u"""
         When I execute the script "$('#field-license_id').val('{0}').trigger('change')"
     """.format(licence_id))
+
+
+@when(u'I enter the resource URL "{url}"')
+def enter_resource_url(context, url):
+    context.execute_steps(u"""
+        When I execute the script "$('#resource-edit [name=url]').val('{0}')"
+    """.format(url))
 
 
 @when(u'I fill in default dataset fields')
@@ -185,7 +242,7 @@ def fill_in_default_resource_fields(context):
 @when(u'I fill in link resource fields')
 def fill_in_default_link_resource_fields(context):
     context.execute_steps(u"""
-        When I execute the script "$('#resource-edit [name=url]').val('https://example.com')"
+        When I enter the resource URL "https://example.com"
         And I execute the script "document.getElementById('field-format').value='HTML'"
         And I fill in "size" with "1024" if present
     """)
@@ -204,27 +261,37 @@ def upload_file_to_resource(context, file_name, file_format):
 
 @when(u'I go to group page')
 def go_to_group_page(context):
-    when_i_visit_url(context, '/group')
+    context.execute_steps(u"""
+        When I visit "/group"
+    """)
 
 
 @when(u'I go to organisation page')
 def go_to_organisation_page(context):
-    when_i_visit_url(context, '/organization')
+    context.execute_steps(u"""
+        When I visit "/organization"
+    """)
 
 
 @when(u'I search the autocomplete API for user "{username}"')
 def go_to_user_autocomplete(context, username):
-    when_i_visit_url(context, '/api/2/util/user/autocomplete?q={}'.format(username))
+    context.execute_steps(u"""
+        When I visit "/api/2/util/user/autocomplete?q={0}"
+    """.format(username))
 
 
 @when(u'I go to the user list API')
 def go_to_user_list(context):
-    when_i_visit_url(context, '/api/3/action/user_list')
+    context.execute_steps(u"""
+        When I visit "/api/3/action/user_list"
+    """)
 
 
 @when(u'I go to the "{user_id}" profile page')
 def go_to_user_profile(context, user_id):
-    when_i_visit_url(context, '/user/{}'.format(user_id))
+    context.execute_steps(u"""
+        When I visit "/user/{0}"
+    """.format(user_id))
 
 
 @when(u'I go to the dashboard')
@@ -243,21 +310,18 @@ def dashboard_datasets(context):
 
 @when(u'I go to the "{user_id}" user API')
 def go_to_user_show(context, user_id):
-    when_i_visit_url(context, '/api/3/action/user_show?id={}'.format(user_id))
+    context.execute_steps(u"""
+        When I visit "/api/3/action/user_show?id={0}"
+    """.format(user_id))
 
 
-@when(u'I view the "{group_id}" group API "{including}" users')
-def go_to_group_including_users(context, group_id, including):
-    when_i_visit_url(
-        context, r'/api/3/action/group_show?id={}&include_users={}'.format(
-            group_id, including in ['with', 'including']))
-
-
-@when(u'I view the "{organisation_id}" organisation API "{including}" users')
-def go_to_organisation_including_users(context, organisation_id, including):
-    when_i_visit_url(
-        context, r'/api/3/action/organization_show?id={}&include_users={}'.format(
-            organisation_id, including in ['with', 'including']))
+@when(u'I view the "{group_id}" {group_type} API "{including}" users')
+def go_to_group_including_users(context, group_id, group_type, including):
+    if group_type == "organisation":
+        group_type = "organization"
+    context.execute_steps(u"""
+        When I visit "/api/3/action/{1}_show?id={0}&include_users={2}"
+    """.format(group_id, group_type, including in ['with', 'including']))
 
 
 @then(u'I should be able to download via the element with xpath "{expression}"')
@@ -296,20 +360,16 @@ def _enter_manual_schema(context, schema_json):
     forms.fill_in_elem_by_name(context, "schema_json", schema_json)
 
 
-@when(u'I create a dataset with key-value parameters "{params}"')
-def create_dataset_from_params(context, params):
-    context.execute_steps(u"""
-        When I create a dataset and resource with key-value parameters "{0}" and "url=default"
-    """.format(params))
-
-
-@when(u'I create a dataset and resource with key-value parameters "{params}" and "{resource_params}"')
-def create_dataset_and_resource_from_params(context, params, resource_params):
+def _create_dataset_from_params(context, params):
     context.execute_steps(u"""
         When I visit "/dataset/new"
         And I fill in default dataset fields
     """)
     for key, value in _parse_params(params):
+        if key == "name":
+            context.execute_steps(u"""
+                When I set "last_generated_name" to "{0}"
+            """.format(value))
         if key == "owner_org":
             # Owner org uses UUIDs as its values, so we need to rely on displayed text
             context.execute_steps(u"""
@@ -339,11 +399,31 @@ def create_dataset_and_resource_from_params(context, params, resource_params):
                 When I fill in "{0}" with "{1}" if present
             """.format(key, value))
     context.execute_steps(u"""
-        When I press "Add Data"
-        And I should see "Add New Resource"
-        And I create a resource with key-value parameters "{0}"
-        And I should see "Data and Resources"
+        When I take a debugging screenshot
+        And I press "Add Data"
+        Then I should see "Add New Resource"
+    """)
+
+
+@when(u'I create a dataset with key-value parameters "{params}"')
+def create_dataset_from_params(context, params):
+    _create_dataset_from_params(context, params)
+    context.execute_steps(u"""
+        When I go to dataset "$last_generated_name"
+    """)
+
+
+@when(u'I create a dataset and resource with key-value parameters "{params}" and "{resource_params}"')
+def create_dataset_and_resource_from_params(context, params, resource_params):
+    _create_dataset_from_params(context, params)
+    context.execute_steps(u"""
+        When I create a resource with key-value parameters "{0}"
+        Then I should see "Data and Resources"
     """.format(resource_params))
+
+
+def _is_truthy(text):
+    return text and text.lower() in ["true", "t", "yes", "y"]
 
 
 # Creates a resource using default values apart from the ones specified.
@@ -373,11 +453,21 @@ def create_resource_from_params(context, resource_params):
             context.execute_steps(u"""
                 When I execute the script "document.getElementById('field-format').value='{0}'"
             """.format(value))
-        elif key in ["align_default_schema", "resource_visible"]:
-            action = "check" if value and value.lower() in ["true", "t", "yes", "y"] else "uncheck"
+        elif key in ["align_default_schema"]:
+            action = "check" if _is_truthy(value) else "uncheck"
             context.execute_steps(u"""
                 When I {0} "{1}"
             """.format(action, key))
+        elif key == "resource_visible":
+            option = "TRUE" if _is_truthy(value) else "FALSE"
+            context.execute_steps(u"""
+                When I select "{1}" from "{0}"
+            """.format(key, option))
+        elif key in ["governance_acknowledgement", "request_privacy_assessment"]:
+            option = "YES" if _is_truthy(value) else "NO"
+            context.execute_steps(u"""
+                When I select "{1}" from "{0}"
+            """.format(key, option))
         elif key == "schema":
             if value == "default":
                 value = """{
@@ -398,7 +488,9 @@ def create_resource_from_params(context, resource_params):
                 When I fill in "{0}" with "{1}" if present
             """.format(key, value))
     context.execute_steps(u"""
-        When I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        When I take a debugging screenshot
+        And I press the element with xpath "//form[contains(@class, 'resource-form')]//button[contains(@class, 'btn-primary')]"
+        And I take a debugging screenshot
     """)
 
 
@@ -429,23 +521,19 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
     assert context.mail.user_messages(address, filter_contents)
 
 
-@when(u'I log in and go to admin config page')
-def log_in_go_to_admin_config(context):
-    assert context.persona
-    context.execute_steps(u"""
-        When I log in
-        And I go to admin config page
-    """)
-
-
 @when(u'I go to admin config page')
 def go_to_admin_config(context):
-    when_i_visit_url(context, '/ckan-admin/config')
+    context.execute_steps(u"""
+        When I visit "/ckan-admin/config"
+    """)
 
 
 @when(u'I log out')
 def log_out(context):
-    when_i_visit_url(context, '/user/logout')
+    context.execute_steps(u"""
+        When I visit "/user/_logout"
+        Then I should see "Log in"
+    """)
 
 
 # ckanext-data-qld
@@ -454,7 +542,9 @@ def log_out(context):
 @when(u'I visit resource schema generation page')
 def resource_schema_generation(context):
     path = urlparse(context.browser.url).path
-    when_i_visit_url(context, path + '/generate_schema')
+    context.execute_steps(u"""
+        When I visit "{0}/generate_schema"
+    """.format(path))
 
 
 @when(u'I reload page every {seconds:d} seconds until I see an element with xpath "{xpath}" but not more than {reload_times:d} times')
@@ -476,7 +566,7 @@ def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
 @when(u'I trigger notification about updated privacy assessment results')
 def i_trigger_notification_assessment_results(context):
     context.execute_steps(u"""
-        Given I visit "api/action/qld_test_trigger_notify_privacy_assessment_result"
+        When I visit "api/action/qld_test_trigger_notify_privacy_assessment_result"
     """)
 
 
@@ -504,7 +594,7 @@ def click_link_in_email(context, address):
 def go_to_dataset_comments(context, name):
     context.execute_steps(u"""
         When I go to dataset "%s"
-        And I click the link with text that contains "Comments"
+        And I press "Comments"
     """ % (name))
 
 
@@ -566,31 +656,30 @@ def submit_reply_with_comment(context, comment):
 
 @when(u'I lock my account')
 def lock_account(context):
-    when_i_visit_url(context, "/user/login")
+    context.execute_steps(u"""
+        When I visit "/user/login"
+    """)
     for x in range(11):
-        attempt_login(context, "incorrect password")
+        context.execute_steps(u"""
+            When I attempt to log in with password "incorrect password"
+        """)
 
 
 # ckanext-datarequests
 
 
-@when(u'I log in and go to the data requests page')
-def log_in_go_to_datarequest_page(context):
-    assert context.persona
-    context.execute_steps(u"""
-        When I log in
-        And I go to the data requests page
-    """)
-
-
 @when(u'I go to the data requests page containing "{keyword}"')
 def go_to_datarequest_page_search(context, keyword):
-    when_i_visit_url(context, '/datarequest?q={}'.format(keyword))
+    context.execute_steps(u"""
+        When I visit "/datarequest?q={0}"
+    """.format(keyword))
 
 
 @when(u'I go to the data requests page')
 def go_to_datarequest_page(context):
-    when_i_visit_url(context, '/datarequest')
+    context.execute_steps(u"""
+        When I visit "/datarequest"
+    """)
 
 
 @when(u'I go to data request "{subject}"')
@@ -602,22 +691,12 @@ def go_to_data_request(context, subject):
     """.format(subject))
 
 
-@when(u'I log in and create a datarequest')
-def log_in_create_a_datarequest(context):
-    assert context.persona
-    context.execute_steps(u"""
-        When I log in and go to the data requests page
-        And I create a datarequest
-    """)
-
-
 @when(u'I create a datarequest')
 def create_datarequest(context):
-
     assert context.persona
     context.execute_steps(u"""
         When I go to the data requests page
-        And I click the link with text that contains "Add data request"
+        And I press "Add data request"
         And I fill in title with random text
         And I fill in "description" with "Test description"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
@@ -628,7 +707,7 @@ def create_datarequest(context):
 def go_to_data_request_comments(context, subject):
     context.execute_steps(u"""
         When I go to data request "%s"
-        And I click the link with text that contains "Comments"
+        And I press "Comments"
     """ % (subject))
 
 
@@ -637,4 +716,6 @@ def go_to_data_request_comments(context, subject):
 
 @when(u'I go to my reports page')
 def go_to_reporting_page(context):
-    when_i_visit_url(context, '/dashboard/reporting')
+    context.execute_steps(u"""
+        When I visit "/dashboard/reporting"
+    """)

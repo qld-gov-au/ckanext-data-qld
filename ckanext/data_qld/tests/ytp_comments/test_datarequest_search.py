@@ -9,7 +9,7 @@ class TestDataRequestCommentSearch:
     """
     We should be able to find a datarequest by related comment title/content
 
-    The mock prevent _send_mail from creating unnessesary background jobs
+    The mock prevent _send_mail from creating unnecessary background jobs
     """
     def test_search_by_comment(self, user, datarequest_factory, comment_factory):
         datarequest = datarequest_factory()

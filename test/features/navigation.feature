@@ -1,5 +1,6 @@
 Feature: Navigation
 
+    @OpenData
     @unauthenticated
     Scenario: Check for the presence of the 'Request data' link in header when visiting as a non-logged in user
         Given "Unauthenticated" as the persona
@@ -7,6 +8,7 @@ Feature: Navigation
         # Make the comparison case-insensitive
         Then I should see an element with xpath "//a[contains(translate(., 'RD', 'rd'), "request data")]"
 
+    @OpenData
     Scenario: Check for the presence of the 'Request data' link in header when visiting as a logged in user
         Given "SysAdmin" as the persona
         When I log in
