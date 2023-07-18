@@ -7,11 +7,11 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         When I log in
         And I create a dataset and resource with key-value parameters "name=package-with-invisible-resource::notes=Package with invisible resource::de_identified_data=NO::private=False" and "name=invisible-resource::resource_visible=FALSE"
         Then I should see "invisible-resource"
-        And I should see "Hidden"
+        And I should see "HIDDEN"
         When I press "invisible-resource"
         # Check that we made it to the resource page
         Then I should see "Resource visible"
-        And I should see "Hidden"
+        And I should see "HIDDEN"
 
         Given "CKANUser" as the persona
         When I log out
