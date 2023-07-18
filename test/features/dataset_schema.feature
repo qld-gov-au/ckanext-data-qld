@@ -24,8 +24,8 @@ Feature: Dataset Schema
 
         Examples: roles
         | User                 |
-        | DataRequestOrgAdmin  |
-        | DataRequestOrgEditor |
+        | TestOrgAdmin  |
+        | TestOrgEditor |
 
     Scenario: New field visibility on dataset Additional info and API
         Given "SysAdmin" as the persona
