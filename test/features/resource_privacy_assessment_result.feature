@@ -2,7 +2,7 @@
 @OpenData
 Feature: Resource Privacy Assessment Result
 
-    Scenario: Add new resource metadata field 'Privacy assessment result' and display on the edit resource GUI page
+    Scenario: As a publisher, when I edit a resource, I should see the read-only 'Privacy assessment result' field
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "name=privacy-assessment-package" and "url=default"
