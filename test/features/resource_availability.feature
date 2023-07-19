@@ -85,6 +85,8 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I press "Manage"
         Then I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"
         And I should see an element with xpath "//select[@id="field-request_privacy_assessment"]//option[@value="" or @value="YES" or @value="NO"]"
+        And I should see "Privacy risk assessment prior to public release might assist the publishing decision-making process"
+        And I should see an element with xpath "//a[contains(@href, 'download') and contains(string(), 'Privacy assessment guidance')]"
 
         When I press the element with xpath "//button[string()='Update Resource']"
         Then I should see an element with xpath "//th[string()='Request privacy assessment']/following-sibling::td[not(string())]"
