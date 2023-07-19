@@ -1,4 +1,5 @@
 @dataset_schema
+@OpenData
 Feature: Dataset Schema
 
     Scenario Outline: Add new dataset metadata fields for default data schema validation
@@ -6,7 +7,7 @@ Feature: Dataset Schema
         When I log in
         And I visit "/dataset/new"
 
-        Then I should see an element with xpath "//label[text()="Default data schema"]"
+        Then I should see an element with xpath "//label[string()="Default data schema"]"
         And I should see an element with xpath "//label[@for="field-de_identified_data"]/following::div[@id="resource-schema-buttons"]"
 
         And I should see an element with xpath "//input[@name='schema_upload']"
@@ -23,14 +24,14 @@ Feature: Dataset Schema
 
         Examples: roles
         | User                 |
-        | DataRequestOrgAdmin  |
-        | DataRequestOrgEditor |
+        | TestOrgAdmin  |
+        | TestOrgEditor |
 
     Scenario: New field visibility on dataset Additional info and API
         Given "SysAdmin" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=package-with-schema::schema_json=default"
-        Then I should see an element with xpath "//th[@class="dataset-label" and text()="Default data schema"]/following::a[text()="View Schema File"]"
-        Then I should see an element with xpath "//th[@class="dataset-label" and text()="Data schema validation options"]/following::td[@class="dataset-details" and text()="Field name 'validation_options' not in data"]"
-        When I visit "api/action/package_show?id=package-with-schema"
-        Then I should see an element with xpath "//body/*[contains(text(), '"default_data_schema":')]"
+        And I create a dataset and resource with key-value parameters "schema_json=default" and "url=default"
+        Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following::a[string()="View Schema File"]"
+        Then I should see an element with xpath "//th[@class="dataset-label" and string()="Data schema validation options"]/following::td[@class="dataset-details" and string()="[blank]"]"
+        When I visit "api/action/package_show?id=$last_generated_name"
+        Then I should see an element with xpath "//body/*[contains(string(), '"default_data_schema":')]"

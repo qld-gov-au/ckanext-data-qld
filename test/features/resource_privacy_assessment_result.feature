@@ -1,29 +1,30 @@
 @resource_visibility
+@OpenData
 Feature: Resource Privacy Assessment Result
 
     Scenario: As a publisher, when I edit a resource, I should see the read-only 'Privacy assessment result' field
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=privacy-assessment-package"
+        And I create a dataset and resource with key-value parameters "name=privacy-assessment-package" and "url=default"
         And I go to the first resource in the dataset
-        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
-        Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[text()='Privacy assessment result']"
+        And I press the element with xpath "//a[contains(string(), 'Manage')]"
+        Then I should see an element with xpath "//select[@name='request_privacy_assessment']/following::label[string()='Privacy assessment result']"
         And I should see an element with xpath "//input[@name='privacy_assessment_result' and @readonly]"
-        And I should see an element with xpath "//label[text()='Privacy assessment result']/following::span[contains(translate(text(), 'PA', 'pa'),'privacy assessment')]"
+        And I should see an element with xpath "//label[string()='Privacy assessment result']/following::span[contains(translate(string(), 'PA', 'pa'),'privacy assessment')]"
 
         When I visit "api/action/package_show?id=privacy-assessment-package"
-        Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
+        Then I should see an element with xpath "//body/*[contains(string(), '"privacy_assessment_result":')]"
 
     Scenario: As a Sysadmin, when I edit a resource, I can edit the 'Privacy assessment result' field
         Given "SysAdmin" as the persona
         When I log in
-        And I create a dataset with key-value parameters "name=edit-privacy-assessment-package"
+        And I create a dataset and resource with key-value parameters "name=edit-privacy-assessment-package" and "url=default"
         And I visit "api/action/package_show?id=edit-privacy-assessment-package"
-        Then I should see an element with xpath "//body/*[contains(text(), '"privacy_assessment_result":')]"
+        Then I should see an element with xpath "//body/*[contains(string(), '"privacy_assessment_result":')]"
 
         When I go to dataset "edit-privacy-assessment-package"
         And I go to the first resource in the dataset
-        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
+        And I press the element with xpath "//a[contains(string(), 'Manage')]"
         Then I should see an element with xpath "//input[@name='privacy_assessment_result']"
 
         When I fill in "privacy_assessment_result" with "New privacy_assessment_result"
@@ -35,7 +36,7 @@ Feature: Resource Privacy Assessment Result
         When I log in
         And I create a dataset and resource with key-value parameters "name=package-with-new-privacy-assessment::author_email=test@gmail.com" and "name=pending-assessment-resource::request_privacy_assessment=YES"
         And I go to the first resource in the dataset
-        And I press the element with xpath "//a[text()[contains(.,'Manage')]]"
+        And I press the element with xpath "//a[contains(string(), 'Manage')]"
         And I fill in "privacy_assessment_result" with "New privacy_assessment_result"
         And I press the element with xpath "//button[@name="save"]"
         And I trigger notification about updated privacy assessment results

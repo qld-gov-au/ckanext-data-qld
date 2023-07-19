@@ -1,5 +1,5 @@
 {% if not data[field.field_name] %}
-    Field name '{{field.field_name}}' not in data
+    [blank]
 {% else %}
     {% link_for _('View Schema File'), named_route='data_qld.show_package_schema', dataset_id=data['id'] %}
 {% endif %}

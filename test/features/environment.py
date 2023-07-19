@@ -16,7 +16,7 @@ BASE_URL = 'http://ckan:5000/'
 # URL of remote Chrome instance.
 REMOTE_CHROME_URL = 'http://chrome:4444/wd/hub'
 
-# @see .docker/bin/init.sh for credentials.
+# @see bin/init.sh for credentials.
 PERSONAS = {
     'SysAdmin': {
         'name': u'admin',
@@ -36,11 +36,6 @@ PERSONAS = {
     'Walker': {
         'name': u'walker',
         'email': u'walker@localhost',
-        'password': u'Password123!'
-    },
-    'Foodie': {
-        'name': u'foodie',
-        'email': u'foodie@localhost',
         'password': u'Password123!'
     },
     # This user will not be assigned to any organisations
@@ -74,21 +69,11 @@ PERSONAS = {
         'email': u'dr_editor@localhost',
         'password': u'Password123!'
     },
-    'DataRequestOrgMember': {
-        'name': u'dr_member',
-        'email': u'dr_member@localhost',
-        'password': u'Password123!'
-    },
     'ReportingOrgAdmin': {
         'name': u'report_admin',
         'email': u'report_admin@localhost',
         'password': u'Password123!'
     },
-    'ReportingOrgEditor': {
-        'name': u'report_editor',
-        'email': u'report_editor@localhost',
-        'password': u'Password123!'
-    }
 }
 
 
