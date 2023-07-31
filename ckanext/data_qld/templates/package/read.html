@@ -14,3 +14,12 @@
 
 <meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="index" />
 {% endblock %}
+
+{% block breadcrumb_content %}
+    {% set index_route_name = 'organization.index' %}
+    {% set org_route_name = 'organization.read' %}
+    <li>{% link_for _('Organizations'), named_route=index_route_name %}</li>
+    <li>{% link_for pkg.organization.title, named_route=org_route_name, id=pkg.organization.name %}</li>
+    {% set dataset_read_route = 'dataset.read' %}
+    <li class="active"><a href="{{ h.url_for(dataset_read_route, id=pkg.name) }}">{{ pkg.title }}</a></li>
+{% endblock %}
