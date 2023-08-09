@@ -1,14 +1,5 @@
 {% ckan_extends %}
 
-{% block breadcrumb_content %}
-    {% set index_route_name = 'organization.index' %}
-    {% set org_route_name = 'organization.read' %}
-    <li>{% link_for _('Organizations'), named_route=index_route_name %}</li>
-    <li>{% link_for pkg.organization.title, named_route=org_route_name, id=pkg.organization.name %}</li>
-    {% set dataset_read_route = 'dataset.read' %}
-    <li class="active"><a href="{{ h.url_for(dataset_read_route, id=pkg.name) }}">{{ pkg.title }}</a></li>
-{% endblock %}
-
 {% block package_notes %}
     <section>
       {{ h.qa_openness_stars_dataset_html(pkg) }}

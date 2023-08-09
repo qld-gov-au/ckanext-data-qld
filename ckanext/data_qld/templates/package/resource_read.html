@@ -20,6 +20,16 @@
 
 {% block subtitle %}{{ h.resource_display_name(res) }} - {{ h.dataset_display_name(c.package) }}{% endblock %}
 
+{% block breadcrumb_content %}
+    {% set index_route_name = 'organization.index' %}
+    {% set org_route_name = 'organization.read' %}
+    <li>{% link_for _('Organizations'), named_route=index_route_name %}</li>
+    <li>{% link_for pkg.organization.title, named_route=org_route_name, id=pkg.organization.name %}</li>
+    {% set dataset_read_route = 'dataset.read' %}
+    <li class="active"><a href="{{ h.url_for(dataset_read_route, id=pkg.name) }}">{{ pkg.title }}</a></li>
+    <li class="active"><a href="">{{ h.resource_display_name(res) }}</a></li>
+{% endblock %}
+
 {% block pre_primary %}
 {% endblock %}
 
@@ -110,11 +120,20 @@
 {% endblock %}
 
 {% block resource_read_title %}
-    <h1 class="page-heading">{{ h.resource_display_name(res)}}
-    {% if res.schema %}
-        {{ h.get_validation_badge(res)|safe }}
-        {% set type = 'asset' %}
-        {% include 'validation/snippets/validation_style_' ~ type ~ '.html' %}
-    {% endif %}
+    <h1 class="page-heading">
+        {% if res.qld_hidden %}
+            <span class="dataset-private label label-inverse">
+                <i class="fa fa-lock"></i>
+                {{ _("Hidden") }}
+            </span>
+        {% endif %}
+
+        {{ h.resource_display_name(res)}}
+
+        {% if res.schema %}
+            {{ h.get_validation_badge(res)|safe }}
+            {% set type = 'asset' %}
+            {% include 'validation/snippets/validation_style_' ~ type ~ '.html' %}
+        {% endif %}
     </h1>
 {% endblock %}

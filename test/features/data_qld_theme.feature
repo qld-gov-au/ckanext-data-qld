@@ -57,12 +57,11 @@ Feature: Theme customisations
     @unauthenticated
     Scenario: Explore button does not exist on dataset detail page
         Given "Unauthenticated" as the persona
-        When I go to dataset page
-        And I press "public-test"
+        When I go to dataset "public-test-dataset"
         Then I should not see "Explore"
 
     @unauthenticated
-    Scenario: Explore button does not exist on dataset detail page
+    Scenario: As a member of the public, I should be able to see the help text on the organisation page
         Given "Unauthenticated" as the persona
         When I go to organisation page
         Then I should see "Organisations are Queensland Government departments, other agencies or legislative entities responsible for publishing open data on this portal."
@@ -89,6 +88,7 @@ Feature: Theme customisations
         And I press "Create Account"
         Then I should see "Password: Must contain at least one number, lowercase letter, capital letter, and symbol"
 
+    @OpenData
     Scenario: As a publisher, when I create a resource with an API entry, I can download it in various formats
         Given "TestOrgEditor" as the persona
         When I log in

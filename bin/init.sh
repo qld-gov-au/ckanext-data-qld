@@ -7,7 +7,6 @@ set -e
 . ${APP_DIR}/bin/activate
 CLICK_ARGS="--yes" ckan_cli db clean
 ckan_cli db init
-ckan_cli db upgrade
 ckan_cli datastore set-permissions | psql "postgresql://datastore_write:pass@postgres-datastore/datastore_test" --set ON_ERROR_STOP=1
 
 # Initialise validation tables
@@ -15,7 +14,6 @@ ckan_cli validation init-db
 
 # Initialise the Comments database tables
 ckan_cli comments initdb
-ckan_cli comments updatedb
 ckan_cli comments init_notifications_db
 
 # Initialise the archiver database tables
@@ -33,9 +31,7 @@ if (ckan_cli datarequests --help); then
     # older Click expects underscore.
     if (ckan_cli datarequests init-db --help); then
         ckan_cli datarequests init-db
-        ckan_cli datarequests update-db
     else
         ckan_cli datarequests init_db
-        ckan_cli datarequests update_db
     fi
 fi

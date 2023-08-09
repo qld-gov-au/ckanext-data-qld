@@ -1,4 +1,5 @@
 @schema_metadata
+@OpenData
 Feature: SchemaMetadata
 
     Scenario: When a go to the dataset new page, the field field-author_email should not be visible

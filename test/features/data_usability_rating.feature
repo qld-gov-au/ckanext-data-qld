@@ -1,4 +1,5 @@
 @data_usability_rating
+@OpenData
 Feature: Data usability rating
 
     Scenario Outline: As a publisher, when I create a resource with an open license, I can verify the openness score is correct

@@ -12,7 +12,7 @@ class DataQldTestPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
 
     def update_config(self, config):
-        assert tk.asbool(tk.config.get("ckanext.data_qld.allow_bdd_test_plugin")),\
+        assert tk.asbool(tk.config.get("ckanext.data_qld.allow_bdd_test_plugin")), \
             'BDD test plugin is not allowed'
 
     # IActions

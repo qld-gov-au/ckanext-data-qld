@@ -1,4 +1,5 @@
 @datarequest
+@OpenData
 Feature: Data Request
 
     @unauthenticated
@@ -71,7 +72,6 @@ Feature: Data Request
         | User                  |
         | CKANUser              |
         | DataRequestOrgEditor  |
-        | DataRequestOrgMember  |
         | TestOrgEditor         |
         | TestOrgMember         |
 

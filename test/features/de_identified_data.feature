@@ -1,4 +1,5 @@
 @schema_metadata
+@OpenData
 Feature: De-identified data
 
     Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset new page, the field field-de_identified_data should be visible with the correct values

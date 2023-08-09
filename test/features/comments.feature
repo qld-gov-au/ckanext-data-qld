@@ -1,4 +1,5 @@
 @comments
+@OpenData
 Feature: Comments
 
     @unauthenticated

@@ -1,29 +1,36 @@
 @resource_visibility
+@OpenData
 Feature: Re-identification risk governance acknowledgement or Resource visibility
 
     Scenario: As a publisher, I can view hidden resources
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=package-with-invisible-resource::de_identified_data=NO" and "name=invisible-resource::resource_visible=FALSE"
+        And I create a dataset and resource with key-value parameters "name=package-with-invisible-resource::notes=Package with invisible resource::de_identified_data=NO::private=False" and "name=invisible-resource::resource_visible=FALSE"
         Then I should see "invisible-resource"
+        And I should see "HIDDEN"
+        When I press "invisible-resource"
+        # Check that we made it to the resource page
+        Then I should see "Resource visible"
+        And I should see "HIDDEN"
 
         Given "CKANUser" as the persona
         When I log out
         And I log in
         And I go to dataset "package-with-invisible-resource"
-        Then I should not see "invisible-resource"
+        Then I should see "Package with invisible resource"
+        And I should not see "invisible-resource"
 
-    Scenario: As any user, I can see resources marked as visible and assessed
+    Scenario: As an unprivileged user, I cannot see resources with privacy assessment requested and risk governance completed
         Given "TestOrgEditor" as the persona
         When I log in
-        And I create a dataset and resource with key-value parameters "name=package-with-assessed-resource::de_identified_data=NO::private=False" and "name=visible-resource::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE"
-        Then I should see "visible-resource"
+        And I create a dataset and resource with key-value parameters "name=package-with-assessed-resource::notes=Package with assessed resource::de_identified_data=NO::private=False" and "name=resource-for-assessment::request_privacy_assessment=YES::governance_acknowledgement=YES::resource_visible=TRUE"
+        Then I should see "resource-for-assessment"
 
         Given "CKANUser" as the persona
         When I log out
         And I log in
         And I go to dataset "package-with-assessed-resource"
-        Then I should see "visible-resource"
+        Then I should not see "resource-for-assessment"
 
     Scenario: As an unprivileged user, I can see de-identified resources marked as visible without a privacy assessment
         Given "TestOrgEditor" as the persona
@@ -72,10 +79,14 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "de_identified_data=NO" and "name=invisible-resource::resource_visible=FALSE"
+        And I should see "HIDDEN"
         And I press "invisible-resource"
+        And I should see "HIDDEN"
         And I press "Manage"
         Then I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"
         And I should see an element with xpath "//select[@id="field-request_privacy_assessment"]//option[@value="" or @value="YES" or @value="NO"]"
+        And I should see "Privacy risk assessment prior to public release might assist the publishing decision-making process"
+        And I should see an element with xpath "//a[contains(@href, 'download') and contains(string(), 'Privacy assessment guidance')]"
 
         When I press the element with xpath "//button[string()='Update Resource']"
         Then I should see an element with xpath "//th[string()='Request privacy assessment']/following-sibling::td[not(string())]"
@@ -87,4 +98,7 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
 
         When I log out
         And I go to dataset "package-without-de-identified-data"
-        Then I should see "visible-resource"
+        Then I should not see "HIDDEN"
+        And I should see "visible-resource"
+        And I click the link with text that contains "visible-resource"
+        And I should not see "HIDDEN"
