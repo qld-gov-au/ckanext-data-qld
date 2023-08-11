@@ -24,7 +24,7 @@ if [ "$CKAN_VERSION" = "2.10" ]; then
     PYTHON_VERSION=py3
     PYTHON="${PYTHON}3"
 else
-    CKAN_GIT_VERSION=ckan-2.9.9-qgov.2
+    CKAN_GIT_VERSION=ckan-2.9.9-qgov.3
     if [ "$CKAN_VERSION" = "2.9-py2" ]; then
         PYTHON_VERSION=py2
     else
