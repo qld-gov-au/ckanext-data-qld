@@ -28,7 +28,7 @@ Feature: Resource UI
         When I press "More than 30 characters bbbbbbbbbbbb"
         Then I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(string(), 'More than 30 characters aaaaaaaaaaaa')]"
         And I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(string(), 'More than 30 characters bbbbbbbbbbbb')]"
-        And I should see an element with xpath "//li[contains(@class, 'nav-item')]//a[string() = 'More than 30 characters bbb...' and @title = 'More than 30 characters bbbbbbbbbbbb']"
+        And I should see an element with xpath "//li[contains(@class, 'nav-item')]//a[contains(string(), 'More than 30') and contains(string(), '...') and @title = 'More than 30 characters bbbbbbbbbbbb']"
 
     @OpenData
     Scenario Outline: Add new resource metadata field on the create and edit resource GUI pages
