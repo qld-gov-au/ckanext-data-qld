@@ -9,7 +9,7 @@ import ckantoolkit as tk
 from ckantoolkit import config
 
 from ckanext.datarequests import db, validator
-from ckanext.ytp.comments.model import CommentThread
+from ckanext.ytp.comments.model import Comment, CommentThread
 
 from . import constants
 
@@ -447,6 +447,8 @@ def list_datarequests(original_action, context, data_dict):
         return result
 
     query = data_dict.get("q", "")
+    if not query:
+        return result
     sort = data_dict.get("sort", "desc")
 
     datarequest_ids = _search_by_datarequest_comments(query)
@@ -470,24 +472,15 @@ def list_datarequests(original_action, context, data_dict):
 
 
 def _search_by_datarequest_comments(query):
-    from ckanext.ytp.comments.helpers import get_comment_thread
-    from ckanext.ytp.comments.util import get_comments_data_for_index
+    search_pattern = '%{}%'.format(query)
+    threads = model.Session.query(CommentThread.url) \
+        .filter(CommentThread.url.like("/datarequest/%")) \
+        .join(Comment) \
+        .filter((Comment.subject.ilike(search_pattern))
+                | (Comment.comment.ilike(search_pattern))) \
+        .all()
 
-    threads = model.Session.query(CommentThread) \
-        .filter(CommentThread.url.like("/datarequest/%")).all()
-
-    datarequest_ids = []
-
-    for thread in threads:
-        content_type, entity_id = thread.url.strip("/").split("/")
-
-        thread_data = get_comment_thread(entity_id, content_type)
-        comments_data = get_comments_data_for_index(thread_data)
-
-        if query.lower() in comments_data.lower():
-            datarequest_ids.append(entity_id)
-
-    return datarequest_ids
+    return [thread.url.strip("/").split("/")[1] for thread in threads]
 
 
 def _sort_datarequests(datarequests, sort):
