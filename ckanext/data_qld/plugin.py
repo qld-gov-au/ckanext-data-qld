@@ -133,8 +133,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.CREATE_DATAREQUEST: actions.create_datarequest,
             constants.UPDATE_DATAREQUEST: actions.update_datarequest,
             constants.CLOSE_DATAREQUEST: actions.close_datarequest,
-            # TODO Fix poor performance of this action so we can enable it
-            # constants.LIST_DATAREQUESTS: actions.list_datarequests,
+            constants.LIST_DATAREQUESTS: actions.list_datarequests,
             'organisation_followers': get.organisation_followers,
             'dataset_followers': get.dataset_followers,
             'dataset_comments': get.dataset_comments,
