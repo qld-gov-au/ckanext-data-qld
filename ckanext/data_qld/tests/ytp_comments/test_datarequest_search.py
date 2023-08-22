@@ -23,16 +23,33 @@ class TestDataRequestCommentSearch:
             entity_name=datarequest["id"],
             entity_type="datarequest",
             subject="metallica",
-            comment="riverside"
+            comment="riverside qx"
         )
 
-        result = helpers.call_action("list_datarequests", q="riverside")
+        # Search by subject
+        result = helpers.call_action("list_datarequests", q="river")
         assert result["count"] == 1
         assert result["result"][0]["id"] == datarequest["id"]
 
-        result = helpers.call_action("list_datarequests", q="metallica")
+        # Search by comment body
+        result = helpers.call_action("list_datarequests", q="metal")
         assert result["count"] == 1
         assert result["result"][0]["id"] == datarequest["id"]
+
+        # Non-matching search
+        result = helpers.call_action("list_datarequests", q="foo")
+        assert result["count"] == 0
+        assert not result["result"]
+
+        # Leading and trailing whitespace is trimmed
+        result = helpers.call_action("list_datarequests", q=" metal ")
+        assert result["count"] == 1
+        assert result["result"][0]["id"] == datarequest["id"]
+
+        # Searches less than 3 characters treated as blank
+        result = helpers.call_action("list_datarequests", q=" qx ")
+        assert result["count"] == 0
+        assert not result["result"]
 
     def test_proper_sort(self, user, datarequest_factory, comment_factory):
         """We have to ensure, that we are preserving a proper sorting order,

@@ -446,8 +446,9 @@ def list_datarequests(original_action, context, data_dict):
     if not tk.h.ytp_comments_enabled():
         return result
 
-    query = data_dict.get("q", "")
-    if not query:
+    query = (data_dict.get("q") or "").strip()
+    print("Search query is: {}".format(query))
+    if len(query) < 3:
         return result
     sort = data_dict.get("sort", "desc")
 
