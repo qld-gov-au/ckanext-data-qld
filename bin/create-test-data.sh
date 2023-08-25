@@ -27,6 +27,8 @@ if [ "$API_KEY" = "None" ]; then
     echo "No API Key found on ${CKAN_USER_NAME}, generating API Token..."
     API_KEY=$(ckan_cli user token add "${CKAN_USER_NAME}" test_setup |tail -1 | tr -d '[:space:]')
 fi
+# Inject token into config for use by eg XLoader
+sed -i "s/{API_TOKEN}/$API_KEY/" $CKAN_INI
 
 ##
 # BEGIN: Add sysadmin config values.
