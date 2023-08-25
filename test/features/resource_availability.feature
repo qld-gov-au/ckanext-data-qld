@@ -79,10 +79,10 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "de_identified_data=NO" and "name=invisible-resource::resource_visible=FALSE"
-        And I should see "HIDDEN"
-        And I press "invisible-resource"
-        And I should see "HIDDEN"
-        And I press "Manage"
+        Then I should see "HIDDEN"
+        When I press "invisible-resource"
+        Then I should see "HIDDEN"
+        When I press "Manage"
         Then I should not see an element with xpath "//label[@for="field-request_privacy_assessment"]//*[@class="control-required"]"
         And I should see an element with xpath "//select[@id="field-request_privacy_assessment"]//option[@value="" or @value="YES" or @value="NO"]"
         And I should see "Privacy risk assessment prior to public release might assist the publishing decision-making process"
@@ -100,5 +100,5 @@ Feature: Re-identification risk governance acknowledgement or Resource visibilit
         And I go to dataset "package-without-de-identified-data"
         Then I should not see "HIDDEN"
         And I should see "visible-resource"
-        And I click the link with text that contains "visible-resource"
-        And I should not see "HIDDEN"
+        When I click the link with text that contains "visible-resource"
+        Then I should not see "HIDDEN"
