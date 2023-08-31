@@ -64,7 +64,7 @@ def log_in(context):
 @when(u'I expand the browser height')
 def expand_height(context):
     # Work around x=null bug in Selenium set_window_size
-    context.browser.driver.set_window_rect(x=0, y=0, width=1024, height=4096)
+    context.browser.driver.set_window_rect(x=0, y=0, width=1024, height=2048)
 
 
 @when(u'I log in directly')
