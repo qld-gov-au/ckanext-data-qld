@@ -32,7 +32,7 @@ def debug_screenshot(context):
     """
     if context.persona and context.persona.get('debug') == 'True':
         context.execute_steps(u"""
-            Then I take a screenshot
+            When I take a screenshot
         """)
 
 
@@ -193,6 +193,16 @@ def go_to_dataset(context, name):
 def go_to_first_resource(context):
     context.execute_steps(u"""
         When I press the element with xpath "//li[@class="resource-item"]/a"
+    """)
+
+
+@when(u'I show all the fields')
+def show_more_fields(context):
+    """
+    Click the 'Show more' link, if present, to reveal all the metadata.
+    """
+    context.execute_steps(u"""
+        When I execute the script "$('a.show-more').click()"
     """)
 
 
@@ -559,7 +569,7 @@ def reload_page_every_n_until_find(context, xpath, seconds=5, reload_times=5):
     assert False, 'Element with xpath "{}" was not found'.format(xpath)
 
 
-# ckanext-data-qld
+# ckanext-validation-schema-generator
 
 
 @when(u'I visit resource schema generation page')
@@ -568,6 +578,9 @@ def resource_schema_generation(context):
     context.execute_steps(u"""
         When I visit "{0}/generate_schema"
     """.format(path))
+
+
+# ckanext-data-qld
 
 
 @when(u'I trigger notification about updated privacy assessment results')
