@@ -127,8 +127,8 @@ def clear_url(context):
 def confirm_dialog_if_present(context, text):
     if context.browser.is_text_present(text):
         context.execute_steps(u"""
-            When I press the element with xpath "//*[contains(@class, 'modal-dialog')]//button[contains(@class, 'btn-primary')]"
-        """)
+            When I press the element with xpath "//div[contains(string(), '{0}')]/..//button[contains(@class, 'btn-primary')]"
+        """.format(text))
 
 
 @when(u'I confirm dataset deletion')
