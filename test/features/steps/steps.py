@@ -125,10 +125,17 @@ def clear_url(context):
 
 @when(u'I confirm the dialog containing "{text}" if present')
 def confirm_dialog_if_present(context, text):
-    if context.browser.is_text_present(text):
-        context.execute_steps(u"""
-            When I press the element with xpath "//div[contains(string(), '{0}')]/..//button[contains(@class, 'btn-primary')]"
-        """.format(text))
+    dialog_xpath = "//*[contains(@class, 'modal-dialog') and contains(string(), '{0}')]".format(text)
+    if context.browser.is_element_present_by_xpath(dialog_xpath):
+        parent_xpath = dialog_xpath
+    elif context.browser.is_text_present(text):
+        parent_xpath = "//div[contains(string(), '{0}')]/..".format(text)
+    else:
+        return
+    button_xpath = parent_xpath + "//button[contains(@class, 'btn-primary')]"
+    context.execute_steps(u"""
+        When I press the element with xpath "{0}"
+    """.format(button_xpath))
 
 
 @when(u'I confirm dataset deletion')
