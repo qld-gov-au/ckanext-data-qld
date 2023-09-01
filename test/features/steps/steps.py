@@ -384,6 +384,8 @@ def _create_dataset_from_params(context, params):
         When I visit "/dataset/new"
         And I fill in default dataset fields
     """)
+    if 'private' not in params:
+        params = params + "::private=False"
     for key, value in _parse_params(params):
         if key == "name":
             # 'name' doesn't need special input, but we want to remember it
