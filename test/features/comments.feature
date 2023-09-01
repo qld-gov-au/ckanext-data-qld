@@ -32,7 +32,8 @@ Feature: Comments
     Scenario: When a logged-in user submits a comment on a Data Request the comment should then be visible on the Comments tab of the Data Request
         Given "CKANUser" as the persona
         When I log in
-        And I go to data request "Test Request" comments
+        And I create a datarequest
+        And I go to data request "$last_generated_title" comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
         When I submit a comment with subject "Test subject" and comment "This is a test comment"
         Then I should see "This is a test comment" within 10 seconds
@@ -41,11 +42,12 @@ Feature: Comments
     Scenario: When a logged-in user submits a comment on a Data Request the email should contain title and comment
         Given "CKANUser" as the persona
         When I log in
-        And I go to data request "Test Request" comments
+        And I create a datarequest
+        And I go to data request "$last_generated_title" comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
-        When I submit a comment with subject "Test Request" and comment "This is a test data request comment"
+        When I submit a comment with subject "Testing Data Request comment" and comment "This is a test data request comment"
         And I wait for 5 seconds
-        Then I should receive a base64 email at "test_org_admin@localhost" containing both "Data request subject: Test Request" and "Comment: This is a test data request comment"
+        Then I should receive a base64 email at "test_org_admin@localhost" containing both "Data request subject: Testing Data Request comment" and "Comment: This is a test data request comment"
 
     @comment-add @comment-profane
     Scenario: When a logged-in user submits a comment containing profanity on a Dataset they should receive an error message and the comment will not appear
@@ -71,7 +73,8 @@ Feature: Comments
     Scenario: When a logged-in user submits a comment containing profanity on a Data Request they should receive an error message and the comment will not appear
         Given "CKANUser" as the persona
         When I log in
-        And I go to data request "Test Request" comments
+        And I create a datarequest
+        And I go to data request "$last_generated_title" comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
         When I submit a comment with subject "Test subject" and comment "He had sheep, and oxen, and he asses, and menservants, and maidservants, and she asses, and camels."
         Then I should see "Comment blocked due to profanity" within 5 seconds
@@ -86,14 +89,17 @@ Feature: Comments
         When I submit a comment with subject "Testing flags" and comment "Test"
         And I press the element with xpath "//a[contains(@class, 'flag-comment')][1]"
         And I confirm the dialog containing "comment has been flagged as inappropriate" if present
-        Then I should see "Reported" within 5 seconds
+        And I wait for 5 seconds
+        And I go to data request "$last_generated_title" comments
+        Then I should see "Reported"
         And I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-report @datarequest @email
     Scenario: When a logged-in user reports a comment on a Data Request the comment should be marked as reported and an email notification sent to the organisation admins
         Given "CKANUser" as the persona
         When I log in
-        And I go to data request "Test Request" comments
+        And I create a datarequest
+        And I go to data request "$last_generated_title" comments
         And I submit a comment with subject "Test reporting" and comment "Testing comment reporting"
         Then I should see "Testing comment reporting" within 10 seconds
 
@@ -130,7 +136,8 @@ Feature: Comments
     Scenario: When an admin visits a data request belonging to their organisation, they can delete a comment and should see deletion text for the user responsible.
         Given "TestOrgAdmin" as the persona
         When I log in
-        And I go to data request "Test Request" comments
+        And I create a datarequest
+        And I go to data request "$last_generated_title" comments
         And I press the element with xpath "//a[@title='Delete comment']"
         And I confirm the dialog containing "Are you sure you want to delete this comment?" if present
         Then I should not see "This comment was deleted." within 2 seconds

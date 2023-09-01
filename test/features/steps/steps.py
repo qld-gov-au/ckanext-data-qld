@@ -178,6 +178,7 @@ def title_random_text(context):
     context.execute_steps(u"""
         When I fill in "title" with "Test Title {0}"
         And I fill in "name" with "test-title-{0}" if present
+        And I set "last_generated_title" to "Test Title {0}"
         And I set "last_generated_name" to "test-title-{0}"
     """.format(uuid.uuid4()))
 
