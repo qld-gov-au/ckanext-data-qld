@@ -105,7 +105,9 @@ Feature: Comments
 
         When I press the element with xpath "//a[contains(@class, 'flag-comment')][1]"
         And I confirm the dialog containing "comment has been flagged as inappropriate" if present
-        Then I should see "Reported" within 5 seconds
+        And I wait for 5 seconds
+        And I go to data request "$last_generated_title" comments
+        Then I should see "Reported"
         And I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-reply

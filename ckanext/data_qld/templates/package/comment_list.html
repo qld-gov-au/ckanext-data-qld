@@ -80,7 +80,7 @@
                                 <i class="fa fa-flag"></i> Reported
                             </span>
                             {% if userobj and comment.flagged != True %}
-                                <a class="btn btn-primary btn-xs flag-comment" title="Flag comment as inappropriate" data-module="flag-comment" data-module-content="This comment has been flagged as inappropriate and will be reviewed by an administrator." data-module-comment_id="{{ comment.id }}">
+                                <a class="btn btn-primary btn-xs flag-comment" href="/comment/{{ comment.id }}/flag" title="Flag comment as inappropriate" data-module="flag-comment" data-module-content="This comment has been flagged as inappropriate and will be reviewed by an administrator." data-module-comment_id="{{ comment.id }}">
                                     <i class="fa fa-flag"></i> Report
                                 </a>
                             {% elif comment.flagged == True %}
