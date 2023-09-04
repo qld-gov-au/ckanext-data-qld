@@ -730,6 +730,7 @@ def create_datarequest(context):
         And I press "Add data request"
         And I fill in title with random text
         And I fill in "description" with "Test description"
+        And I execute the script "$('#field-organizations option:contains(\\'Test Organisation\\')').attr('selected', true)"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
     """)
 
