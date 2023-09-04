@@ -140,6 +140,7 @@ Feature: Comments
         When I log in
         And I create a datarequest
         And I go to data request "$last_generated_title" comments
+        When I submit a comment with subject "Testing deletion" and comment "Test"
         And I press the element with xpath "//a[@title='Delete comment']"
         And I confirm the dialog containing "Are you sure you want to delete this comment?" if present
         Then I should not see "This comment was deleted." within 2 seconds
