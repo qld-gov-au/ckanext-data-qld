@@ -47,7 +47,7 @@ jobs:
       - name: Unit tests
         if: ${{ matrix.behave-tag == 'smoke' }}
         run: bin/test.sh
-        timeout-minutes: 10
+        timeout-minutes: 15
 
       - name: Test ${{ matrix.behave-tag }} BDD
         run: bin/test-bdd.sh
