@@ -169,6 +169,7 @@ def go_to_new_resource_form(context, name):
         context.execute_steps(u"""
             When I press "Resources"
             And I press "Add new resource"
+            And I take a debugging screenshot
         """)
 
 
@@ -194,6 +195,7 @@ def go_to_dataset_page(context):
 def go_to_dataset(context, name):
     context.execute_steps(u"""
         When I visit "/dataset/{0}"
+        And I take a debugging screenshot
     """.format(name))
 
 
@@ -201,6 +203,7 @@ def go_to_dataset(context, name):
 def go_to_first_resource(context):
     context.execute_steps(u"""
         When I press the element with xpath "//li[@class="resource-item"]/a"
+        And I take a debugging screenshot
     """)
 
 
