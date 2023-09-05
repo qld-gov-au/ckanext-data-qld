@@ -377,6 +377,7 @@ def reveal_non_js_schema_fields(context):
         When I execute the script "$('#resource-schema-buttons ~ div.form-group').attr('style', '')"
     """)
 
+
 # Enter a JSON schema value
 # This can require JavaScript interaction, and doesn't fit well into
 # a step invocation due to all the double quotes.

@@ -80,7 +80,7 @@ Feature: Resource align_default_schema field
 
         # now default and resource schema are the same
         When I press "Manage"
-        Then I should not see "Align this data schema with the dataset default"
+        Then I should not see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
 
         # now default and resource schema are different
         When I execute the script "$('#field-schema-json ~ a.btn-remove-url').click()"
@@ -89,6 +89,7 @@ Feature: Resource align_default_schema field
         When I press the element with xpath "//button[string()='Update Resource']"
         And I press "Manage"
         Then I should see "Align this data schema with the dataset default"
+        And I should see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
 
         When I press the element with xpath "//button[string()='Update Resource']"
         And I click the link with text "View Schema File"
@@ -96,7 +97,8 @@ Feature: Resource align_default_schema field
 
         When I go back
         And I press "Manage"
-        Then I should see an element with xpath "//input[@type='checkbox' and @name='align_default_schema' and not(@checked)]/following-sibling::label[@for='field-align_default_schema' and contains(string(), 'Align this data schema with the dataset default')]"
+        Then I should see "Align this data schema with the dataset default"
+        And I should see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
 
         When I check "align_default_schema"
         And I press the element with xpath "//button[string()='Update Resource']"
