@@ -10,17 +10,20 @@ Feature: Resource align_default_schema field
         Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following-sibling::td[contains(string(), "[blank]")]"
 
         When I go to the first resource in the dataset
-        And I press the element with xpath "//a[contains(string(),'Manage')]"
+        And I press "Manage"
         Then I should not see "Align this data schema with the dataset default"
-        And I should see "Upload"
-        And I should see "Link"
-        And I should see "JSON"
+        And I should see an element with xpath "//div[@id='resource-schema-buttons']/label[contains(string(), 'Data Schema')]"
+        When I show the non-JavaScript schema fields
+        Then I should see "Upload Data Schema"
+        And I should see "Data Schema URL"
+        And I should see "Data Schema JSON definition"
 
         When I open the new resource form for dataset "$last_generated_name"
         Then I should not see "Align this data schema with the dataset default"
-        And I should see "Upload"
-        And I should see "Link"
-        And I should see "JSON"
+        When I show the non-JavaScript schema fields
+        Then I should see "Upload Data Schema"
+        And I should see "Data Schema URL"
+        And I should see "Data Schema JSON definition"
 
     Scenario: Create resource with schema not aligned to default schema
         Given "TestOrgEditor" as the persona
@@ -51,7 +54,7 @@ Feature: Resource align_default_schema field
         Then I should see an element with xpath "//body[contains(string(), '"Resource schema"')]"
 
         When I go back
-        And I press the element with xpath "//a[contains(string(), 'Manage')]"
+        And I press "Manage"
         Then I should see an element with xpath "//input[@type='checkbox' and @name='align_default_schema' and not(@checked)]/following-sibling::label[@for='field-align_default_schema' and contains(string(),'Align this data schema with the dataset default')]"
 
         When I check "align_default_schema"
@@ -68,7 +71,7 @@ Feature: Resource align_default_schema field
 
         When I go to the first resource in the dataset
         Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='FALSE']"
-        When I press the element with xpath "//a[contains(string(), 'Manage')]"
+        When I press "Manage"
         Then I should see "Align this data schema with the dataset default"
 
         When I execute the script "document.getElementById('field-schema').value='{"fields":[{"format": "default","name": "Game Number","type": "integer"},{"format": "default","name": "Game Length","type": "integer"}],"missingValues": ["Default schema"]}'"
@@ -76,15 +79,15 @@ Feature: Resource align_default_schema field
         Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='TRUE']"
 
         # now default and resource schema are the same
-        When I press the element with xpath "//a[contains(string(), 'Manage')]"
+        When I press "Manage"
         Then I should not see "Align this data schema with the dataset default"
 
         # now default and resource schema are different
-        When I press the element with xpath "//textarea[@id='field-schema-json']/preceding-sibling::a[string()='Clear']"
+        When I execute the script "$('#field-schema-json ~ a.btn-remove-url').click()"
         And I execute the script "document.getElementById('field-schema').value='{"fields":[{"format": "default","name": "Game Number","type": "integer"},{"format": "default","name": "Game Length","type": "integer"}], "missingValues": ["Resource schema"]}'"
 
         When I press the element with xpath "//button[string()='Update Resource']"
-        And I press the element with xpath "//a[contains(string(), 'Manage')]"
+        And I press "Manage"
         Then I should see "Align this data schema with the dataset default"
 
         When I press the element with xpath "//button[string()='Update Resource']"
@@ -92,7 +95,7 @@ Feature: Resource align_default_schema field
         Then I should see an element with xpath "//body[contains(string(), '"Resource schema"')]"
 
         When I go back
-        And I press the element with xpath "//a[contains(string(), 'Manage')]"
+        And I press "Manage"
         Then I should see an element with xpath "//input[@type='checkbox' and @name='align_default_schema' and not(@checked)]/following-sibling::label[@for='field-align_default_schema' and contains(string(), 'Align this data schema with the dataset default')]"
 
         When I check "align_default_schema"

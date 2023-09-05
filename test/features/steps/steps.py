@@ -368,6 +368,12 @@ def _parse_params(param_string):
     return six.iteritems(params)
 
 
+@when(u'I show the non-JavaScript schema fields')
+def reveal_non_js_schema_fields(context):
+    context.execute_steps(u"""
+        When I execute the script "$('#resource-schema-buttons ~ div.form-group').attr('style', '')"
+    """)
+
 # Enter a JSON schema value
 # This can require JavaScript interaction, and doesn't fit well into
 # a step invocation due to all the double quotes.
