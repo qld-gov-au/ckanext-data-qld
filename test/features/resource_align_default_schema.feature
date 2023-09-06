@@ -42,12 +42,14 @@ Feature: Resource align_default_schema field
         And I go to the first resource in the dataset
         Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='FALSE']"
 
-    Scenario: Edit a resource in the GUI where default schema exists and the existing schema value does not match the default
+    Scenario: Edit a resource in the GUI where default schema exists
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema=default::align_default_schema=False"
         Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following::a[contains(string(), "View Schema File")]"
 
+        # Default and resource schema are different
+
         When I go to the first resource in the dataset
         Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='FALSE']"
         When I click the link with text "View Schema File"
@@ -55,54 +57,22 @@ Feature: Resource align_default_schema field
 
         When I go back
         And I press "Manage"
-        Then I should see an element with xpath "//input[@type='checkbox' and @name='align_default_schema' and not(@checked)]/following-sibling::label[@for='field-align_default_schema' and contains(string(),'Align this data schema with the dataset default')]"
+        Then I should see "Align this data schema with the dataset default"
+        And I should see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
 
-        When I check "align_default_schema"
-        And I press the element with xpath "//button[string()='Update Resource']"
-        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='TRUE']"
+        When I set the resource schema to the dataset default
+        And I press "Update Resource"
+        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[translate(string(), 'true', 'TRUE')='TRUE']"
         When I click the link with text "View Schema File"
         Then I should see an element with xpath "//body[contains(string(), '"Default schema"')]"
-
-    Scenario: Edit resource in the GUI where default schema exists and the existing schema value matches the default
-        Given "TestOrgEditor" as the persona
-        When I log in
-        And I create a dataset and resource with key-value parameters "schema_json=default" and "name=another-resource::schema=::align_default_schema=False"
-        Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following::a[contains(string(), "View Schema File")]"
-
-        When I go to the first resource in the dataset
-        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='FALSE']"
-        When I press "Manage"
-        Then I should see "Align this data schema with the dataset default"
-
-        When I execute the script "document.getElementById('field-schema').value='{"fields":[{"format": "default","name": "Game Number","type": "integer"},{"format": "default","name": "Game Length","type": "integer"}],"missingValues": ["Default schema"]}'"
-        And I press the element with xpath "//button[string()='Update Resource']"
-        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='TRUE']"
 
         # now default and resource schema are the same
-        When I press "Manage"
-        Then I should not see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
-
-        # now default and resource schema are different
-        When I execute the script "$('#field-schema-json ~ a.btn-remove-url').click()"
-        And I execute the script "document.getElementById('field-schema').value='{"fields":[{"format": "default","name": "Game Number","type": "integer"},{"format": "default","name": "Game Length","type": "integer"}], "missingValues": ["Resource schema"]}'"
-
-        When I press the element with xpath "//button[string()='Update Resource']"
-        And I press "Manage"
-        Then I should see "Align this data schema with the dataset default"
-        And I should see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
-
-        When I press the element with xpath "//button[string()='Update Resource']"
-        And I click the link with text "View Schema File"
-        Then I should see an element with xpath "//body[contains(string(), '"Resource schema"')]"
 
         When I go back
         And I press "Manage"
         Then I should see "Align this data schema with the dataset default"
-        And I should see an element with xpath "//input[@name='align_default_schema' and not(@checked)]"
+        And I should see an element with xpath "//input[@name='align_default_schema' and @checked]"
 
-        When I check "align_default_schema"
-        And I press the element with xpath "//button[string()='Update Resource']"
-        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='TRUE']"
-
-        When I click the link with text "View Schema File"
-        Then I should see an element with xpath "//body[contains(string(), '"Default schema"')]"
+        When I execute the script "$('#field-schema-json ~ a.btn-remove-url').click()"
+        And I execute the script "$('#field-schema').val('{"fields": [{"format": "default", "name": "Game Number", "type": "integer"}, {"format": "default", "name": "Game Length", "type": "integer"}], "missingValues": ["Default schema"]}')"
+        And I press "Update Resource"

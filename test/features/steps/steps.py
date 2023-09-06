@@ -25,6 +25,24 @@ if not hasattr(forms, 'fill_in_elem_by_name'):
 URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
                     (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
 
+dataset_default_schema = """
+    {"fields": [
+        {"format": "default", "name": "Game Number", "type": "integer"},
+        {"format": "default", "name": "Game Length", "type": "integer"}
+    ],
+    "missingValues": ["Default schema"]
+    }
+"""
+
+resource_default_schema = """
+    {"fields": [
+        {"format": "default", "name": "Game Number", "type": "integer"},
+        {"format": "default", "name": "Game Length", "type": "integer"}
+    ],
+    "missingValues": ["Resource schema"]
+    }
+"""
+
 
 @when(u'I take a debugging screenshot')
 def debug_screenshot(context):
@@ -378,6 +396,11 @@ def reveal_non_js_schema_fields(context):
     """)
 
 
+@when(u'I set the resource schema to the dataset default')
+def set_resource_schema_to_dataset_default(context):
+    _enter_manual_schema(context, dataset_default_schema)
+
+
 # Enter a JSON schema value
 # This can require JavaScript interaction, and doesn't fit well into
 # a step invocation due to all the double quotes.
@@ -420,14 +443,7 @@ def _create_dataset_from_params(context, params):
             """.format(value))
         elif key == "schema_json":
             if value == "default":
-                value = """
-                    {"fields": [
-                        {"format": "default", "name": "Game Number", "type": "integer"},
-                        {"format": "default", "name": "Game Length", "type": "integer"}
-                    ],
-                    "missingValues": ["Default schema"]
-                    }
-                """
+                value = dataset_default_schema
             _enter_manual_schema(context, value)
         else:
             context.execute_steps(u"""
@@ -507,18 +523,7 @@ def create_resource_from_params(context, resource_params):
             """.format(key, option))
         elif key == "schema":
             if value == "default":
-                value = """{
-                    "fields": [{
-                        "format": "default",
-                        "name": "Game Number",
-                        "type": "integer"
-                    }, {
-                        "format": "default",
-                        "name": "Game Length",
-                        "type": "integer"
-                    }],
-                    "missingValues": ["Resource schema"]
-                }"""
+                value = resource_default_schema
             _enter_manual_schema(context, value)
         else:
             context.execute_steps(u"""

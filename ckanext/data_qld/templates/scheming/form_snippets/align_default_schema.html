@@ -5,16 +5,16 @@
 {% set error = errors[field.field_name] %}
 {% set is_required = h.scheming_field_required(field) %}
 {% set has_default_schema = pkg_dict.default_data_schema %}
-{% set is_visible = pkg_dict.default_data_schema != data["schema"] %}
+{% set is_aligned = pkg_dict.default_data_schema == data["schema"] %}
 {% set is_creating = not data["id"] %}
 
 {% if has_default_schema %}
-<div class="form-group control-medium schema-align {% if not is_visible %}hidden{% endif %}">
+<div class="form-group control-medium schema-align">
     <div class="control-checkbox">
         <input
             id="{{ field_id }}" type="checkbox"
-            value="{{ "false" if not pkg_dict.default_data_schema else "true" }}" name="{{ field.field_name }}"
-            {% if data[field.field_name] or is_creating %} checked{% endif %}
+            value="true" name="{{ field.field_name }}"
+            {% if is_aligned or is_creating %} checked{% endif %}
             {{ form.attributes(field.form_attrs if 'form_attrs' in field else {}) }}
         >
 
@@ -38,5 +38,5 @@
     {% endif %}
 </div>
 {% else %}
-<input type="hidden" name="{{ field.field_name }}" value="{{ not is_visible }}" />
+<input type="hidden" name="{{ field.field_name }}" value="false" />
 {% endif %}
