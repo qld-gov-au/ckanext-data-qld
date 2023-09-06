@@ -557,7 +557,7 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
         else:
             import base64
             decoded_payload = six.ensure_text(base64.b64decode(six.ensure_binary(payload_bytes)))
-        print('decoded_payload: ', decoded_payload)
+        print('Searching for', text, ' and ', text2, ' in decoded_payload: ', decoded_payload)
         return text in decoded_payload and (not text2 or text2 in decoded_payload)
 
     assert context.mail.user_messages(address, filter_contents)
