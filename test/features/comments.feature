@@ -47,7 +47,7 @@ Feature: Comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
         When I submit a comment with subject "Testing Data Request comment" and comment "This is a test data request comment"
         And I wait for 5 seconds
-        Then I should receive a base64 email at "dr_admin@localhost" containing both "Data request subject: Testing Data Request comment" and "Comment: This is a test data request comment"
+        Then I should receive a base64 email at "dr_admin@localhost" containing both "Data request subject: $last_generated_title" and "Comment: This is a test data request comment"
 
     @comment-add @comment-profane
     Scenario: When a logged-in user submits a comment containing profanity on a Dataset they should receive an error message and the comment will not appear
