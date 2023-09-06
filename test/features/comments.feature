@@ -47,7 +47,7 @@ Feature: Comments
         Then I should see an element with xpath "//h3[contains(string(), 'Add a comment')]"
         When I submit a comment with subject "Testing Data Request comment" and comment "This is a test data request comment"
         And I wait for 5 seconds
-        Then I should receive a base64 email at "test_org_admin@localhost" containing both "Data request subject: Testing Data Request comment" and "Comment: This is a test data request comment"
+        Then I should receive a base64 email at "dr_admin@localhost" containing both "Data request subject: Testing Data Request comment" and "Comment: This is a test data request comment"
 
     @comment-add @comment-profane
     Scenario: When a logged-in user submits a comment containing profanity on a Dataset they should receive an error message and the comment will not appear
@@ -108,7 +108,7 @@ Feature: Comments
         And I wait for 5 seconds
         And I go to data request "$last_generated_title" comments
         Then I should see "Reported"
-        And I should receive a base64 email at "test_org_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
+        And I should receive a base64 email at "dr_admin@localhost" containing "This comment has been flagged as inappropriate by a user"
 
     @comment-reply
     Scenario: When a logged-in user submits a reply comment on a Dataset, the comment should display within 10 seconds
@@ -136,7 +136,7 @@ Feature: Comments
 
     @comment-delete @datarequest
     Scenario: When an admin visits a data request belonging to their organisation, they can delete a comment and should see deletion text for the user responsible.
-        Given "TestOrgAdmin" as the persona
+        Given "DataRequestOrgAdmin" as the persona
         When I log in
         And I create a datarequest
         And I go to data request "$last_generated_title" comments
@@ -144,7 +144,7 @@ Feature: Comments
         And I press the element with xpath "//a[@title='Delete comment']"
         And I confirm the dialog containing "Are you sure you want to delete this comment?" if present
         Then I should not see "This comment was deleted." within 2 seconds
-        And I should see "Comment deleted by Test Admin." within 2 seconds
+        And I should see "Comment deleted by Data Request Admin." within 2 seconds
 
     @comment-tab
     @unauthenticated
