@@ -250,8 +250,7 @@ def is_request_for_resource():
 def set_external_resources():
     environment = config.get('ckan.site_url', '')
     if 'ckan' in environment:
-        # return '//staging.data.qld.gov.au'
-        return '/cicd'
+        return '//staging.data.qld.gov.au'
     else:
         return ''
 
