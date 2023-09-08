@@ -73,6 +73,16 @@ Feature: Resource align_default_schema field
         Then I should see "Align this data schema with the dataset default"
         And I should see an element with xpath "//input[@name='align_default_schema' and @checked]"
 
-        When I execute the script "$('#field-schema-json ~ a.btn-remove-url').click()"
-        And I execute the script "$('#field-schema').val('{"fields": [{"format": "default", "name": "Game Number", "type": "integer"}, {"format": "default", "name": "Game Length", "type": "integer"}], "missingValues": ["Default schema"]}')"
+        When I uncheck "align_default_schema"
+        And I execute the script "$('#field-schema-json ~ a.btn-remove-url').click()"
+        And I execute the script "$('#field-schema-json').val('{"fields": [{"format": "default", "name": "Foo", "type": "string"}], "missingValues": ["Baz"]}')"
+        And I take a debugging screenshot
         And I press "Update Resource"
+        And I click the link with text "View Schema File"
+        Then I should see an element with xpath "//body[contains(string(), '"Baz"')]"
+        When I go back
+        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[translate(string(), 'false', 'FALSE')='FALSE']"
+        When I press "Manage"
+        And I check "align_default_schema"
+        And I press "Update Resource"
+        Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[translate(string(), 'true', 'TRUE')='TRUE']"
