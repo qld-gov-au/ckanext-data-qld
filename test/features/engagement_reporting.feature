@@ -55,7 +55,9 @@ Feature: Engagement Reporting
         And I should see an element with xpath "//tr[contains(@class, 'closing-circumstance')]/td[position()=2]/a[contains(@href, '/closed?') and string()='0']"
 
         When I create a dataset and resource with key-value parameters "notes=Dataset for engagement reporting" and "url=default"
-        And I press the element with xpath "//a[@class='btn btn-success' and contains(string(), 'Follow')]"
+        And I take a debugging screenshot
+        And I press "Follow"
+        And I take a debugging screenshot
         And I go to dataset "$last_generated_name" comments
         And I submit a comment with subject "Test subject" and comment "This is a test comment"
         And I go to data request "Reporting Request" comments
