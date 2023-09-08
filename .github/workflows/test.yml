@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        ckan-version: [2.9, 2.9-py2]
+        ckan-version: ["2.10", 2.9, 2.9-py2]
         behave-tag: [smoke, authenticated, unauthenticated]
 
     name: Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
@@ -47,7 +47,7 @@ jobs:
       - name: Unit tests
         if: ${{ matrix.behave-tag == 'smoke' }}
         run: bin/test.sh
-        timeout-minutes: 10
+        timeout-minutes: 15
 
       - name: Test ${{ matrix.behave-tag }} BDD
         run: bin/test-bdd.sh

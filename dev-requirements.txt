@@ -7,6 +7,7 @@ Faker
 flake8==6.0.0
 mock
 pytest-ckan
+selenium<4.10
 six>=1.13.0
 xlrd==1.2.0
 python-magic==0.4.18

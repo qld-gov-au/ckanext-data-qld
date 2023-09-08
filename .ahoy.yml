@@ -126,7 +126,7 @@ commands:
     cmd: |
       docker cp . $(sh bin/docker-compose.sh ps -q ckan):/srv/app/
       docker cp bin/ckan_cli $(sh bin/docker-compose.sh ps -q ckan):/usr/bin/
-      ahoy cli 'chmod -v u+x /usr/bin/ckan_cli $APP_DIR/bin/*; cp -v .docker/ckan.ini $CKAN_INI'
+      ahoy cli 'chmod -v u+x /usr/bin/ckan_cli $APP_DIR/bin/*; cp -v .docker/ckan.ini $CKAN_INI; $APP_DIR/bin/process-config.sh'
 
   test-unit:
     usage: Run unit tests.
@@ -166,7 +166,7 @@ commands:
           [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       else
         # run tests with the specified tag
-        ahoy cli "behave -k ${*:-test/features} --tags=$BEHAVE_TAG --tags=-reporting" \
+        ahoy cli "behave -k ${*:-test/features} --tags=$BEHAVE_TAG" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       fi
       ahoy stop-mailmock
@@ -196,28 +196,28 @@ commands:
     usage: Starts default CKAN background job worker
     cmd: |
       ahoy title 'Starting default CKAN background job worker'
-      ahoy cli "ckan_cli jobs clear && \
-                ckan_cli jobs worker"
+      ahoy cli "ckan_cli jobs worker"
 
   start-ckan-job-worker-priority:
     usage: Starts CKAN background job worker for priority tasks
     cmd: |
       ahoy title 'Starting CKAN background job worker priority'
-      ahoy cli "ckan_cli jobs clear priority && \
-                ckan_cli jobs worker priority"
+      ahoy cli "ckan_cli jobs worker priority"
 
   start-ckan-job-worker-bulk:
     usage: Starts CKAN background job worker for low-priority tasks
     cmd: |
       ahoy title 'Starting CKAN background job worker bulk'
-      ahoy cli "ckan_cli jobs clear bulk && \
-                ckan_cli jobs worker bulk"
+      ahoy cli "ckan_cli jobs worker bulk"
 
   stop-ckan-job-workers:
     usage: Stops CKAN background job worker
     cmd: |
       ahoy title 'Stopping CKAN background job worker'
-      ahoy cli "pkill -f 'jobs worker'"
+      ahoy cli "ckan_cli jobs clear; \
+                ckan_cli jobs clear priority; \
+                ckan_cli jobs clear bulk;
+                (pgrep 'jobs worker' && pkill -f 'jobs worker') || true"
 
   # Utilities.
   title:
