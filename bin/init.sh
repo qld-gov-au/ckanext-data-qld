@@ -27,5 +27,11 @@ ckan_cli qa init
 
 # Initialise the data request tables if applicable
 if (ckan_cli datarequests --help); then
-    ckan_cli datarequests init_db
+    # Click 7+ expects hyphenated action names,
+    # older Click expects underscore.
+    if (ckan_cli datarequests init-db --help); then
+        ckan_cli datarequests init-db
+    else
+        ckan_cli datarequests init_db
+    fi
 fi

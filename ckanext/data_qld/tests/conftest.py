@@ -33,7 +33,7 @@ class OrganizationFactory(factories.Organization):
 class DatasetFactory(factories.Dataset):
     name = factory.LazyAttribute(
         lambda _: fake.slug() + "" + dt.now().strftime("%Y%m%d-%H%M%S"))
-    update_frequency = "monthly"
+    update_frequency = "non-regular"
     author_email = factory.LazyAttribute(lambda _: fake.email())
     version = "1.0"
     license_id = "other-open"
