@@ -214,9 +214,7 @@ commands:
     usage: Stops CKAN background job worker
     cmd: |
       ahoy title 'Stopping CKAN background job worker'
-      ahoy cli "ckan_cli jobs clear; \
-                ckan_cli jobs clear priority; \
-                ckan_cli jobs clear bulk;
+      ahoy cli "ckan_cli jobs clear;
                 (pgrep 'jobs worker' && pkill -f 'jobs worker') || true"
 
   # Utilities.
