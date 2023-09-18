@@ -5,6 +5,9 @@
 <meta name="DCTERMS.publisher" scheme="AGLSTERMS.AglsAgent" content="corporateName=The State of Queensland; jurisdiction=Queensland" />
 <meta name="DCTERMS.jurisdiction" scheme="AGLSTERMS.AglsJuri" content="Queensland" />
 <meta name="DCTERMS.type" scheme="DCTERMS.DCMIType" content="Text" />
+{% if not h.is_prod() %}
+<meta name="robots" content="noindex" />
+{% endif %}
 {% endblock %}
 
 {% block custom_styles %}
