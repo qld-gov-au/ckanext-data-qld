@@ -11,8 +11,6 @@
     {% endif %}
 {% endif %}
 
-{{ form.hidden('url_type', data.url_type) }}
-
 {%- set is_upload = (data.url_type == 'upload') -%}
 {{ form.image_upload(
     data,
