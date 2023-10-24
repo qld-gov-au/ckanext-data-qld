@@ -8,7 +8,7 @@ from ckan.lib import mailer
 import ckantoolkit as tk
 from ckantoolkit import config
 
-from ckanext.datarequests import db, validator
+from ckanext.datarequests import actions as datarequest_actions, db, validator
 from ckanext.ytp.comments.model import Comment, CommentThread
 
 from . import constants
@@ -180,10 +180,14 @@ def create_datarequest(original_action, context, data_dict):
     # Validate data
     validator.validate_datarequest(context, data_dict)
 
+    # Ensure account isn't creating requests too fast
+    creator = context['auth_user_obj']
+    datarequest_actions.throttle_datarequest(creator)
+
     # Store the data
     data_req = db.DataRequest()
     _undictize_datarequest_basic(data_req, data_dict)
-    data_req.user_id = context['auth_user_obj'].id
+    data_req.user_id = creator.id
     data_req.open_time = datetime.datetime.utcnow()
 
     session.add(data_req)
@@ -194,7 +198,7 @@ def create_datarequest(original_action, context, data_dict):
     if datarequest_dict['organization']:
         # Data QLD modification
         users = _get_admin_users_from_organisation(datarequest_dict)
-        users.discard(context['auth_user_obj'].id)
+        users.discard(creator.id)
         _send_mail(users, 'new_datarequest_organisation',
                    datarequest_dict, 'Data Request Created Email')
 
