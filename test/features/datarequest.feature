@@ -55,7 +55,7 @@ Feature: Data Request
         And I should see "Description cannot be empty" within 1 seconds
 
     Scenario: When a logged-in user submits a Data Request containing profanity they should receive an error message and the request will not be created
-        Given "CKANUser" as the persona
+        Given "TestOrgEditor" as the persona
         When I log in
         And I go to the data requests page
         And I press "Add Data Request"
