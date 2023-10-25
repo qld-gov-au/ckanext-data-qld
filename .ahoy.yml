@@ -159,7 +159,7 @@ commands:
         ) || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       elif [ "$BEHAVE_TAG" = "authenticated" ]; then
         # run any tests that don't have a specific tag
-        ahoy cli "behave -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-reporting" \
+        ahoy cli "behave -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-reporting" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
         # Run reporting tests last so numbers are consistent
         ahoy cli "behave -k ${*:-test/features} --tags=reporting" || \
