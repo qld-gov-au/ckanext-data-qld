@@ -58,7 +58,7 @@ Feature: Data Request
         Given "TestOrgEditor" as the persona
         When I log in
         And I go to the data requests page
-        And I press "Add Data Request"
+        And I press "Add data request"
         And I fill in title with random text
         And I fill in "description" with "He had sheep, and oxen, and he asses, and menservants, and maidservants, and she asses, and camels."
         And I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Create Data Request')]"
@@ -134,7 +134,7 @@ Feature: Data Request
         When I log in
         And I create a datarequest
         And I go to the data requests page
-        And I press "Add Data Request"
+        And I press "Add data request"
         And I fill in title with random text
         And I fill in "description" with "Test throttling"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
