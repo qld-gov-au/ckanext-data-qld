@@ -103,12 +103,13 @@ Feature: Data Request
         And I should not see an element with xpath "//a[contains(string(), 'Close')]"
 
     Scenario: Delete all data requests for a user
-        Given "TestOrgEditor" as the persona
+        # Use a different profile so we don't delete any other test requests
+        Given "TestOrgAdmin" as the persona
         When I log in
         And I create a datarequest
         And I create a datarequest
         And I create a datarequest
-        And I go to the "test_org_editor" profile page
+        And I go to the "test_org_admin" profile page
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
         Then I should see an element with xpath "//a[@title='Delete' and contains(@class, 'btn-danger')]"
         And I should not see an element with xpath "//a[contains(@class, 'btn-danger-serious')]"
@@ -116,7 +117,7 @@ Feature: Data Request
         Given "SysAdmin" as the persona
         When I log out
         And I log in
-        And I go to the "test_org_editor" profile page
+        And I go to the "test_org_admin" profile page
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
         And I should see an element with xpath "//a[@title='Delete' and contains(@class, 'btn-danger')]"
         And I should see an element with xpath "//a[contains(@title, 'Delete all') and contains(@class, 'btn-danger-serious')]"
@@ -125,7 +126,7 @@ Feature: Data Request
         And I confirm the dialog containing "Are you sure you want to" if present
         Then I should see an element with xpath "//div[contains(@class, 'alert') and contains(string(), 'Deleted') and contains(string(), 'data request(s)')]"
 
-        When I go to the "test_org_editor" profile page
+        When I go to the "test_org_admin" profile page
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
         Then I should see "No data requests found"
 
