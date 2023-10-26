@@ -747,6 +747,7 @@ def create_datarequest(context):
         And I fill in "description" with "Test description"
         And I execute the script "$('#field-organizations option:contains("Open Data Administration")').attr('selected', true)"
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I take a debugging screenshot
     """)
 
 

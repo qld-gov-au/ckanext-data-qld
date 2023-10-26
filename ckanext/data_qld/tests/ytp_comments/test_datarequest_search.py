@@ -4,7 +4,7 @@ from ckan.tests import helpers
 
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context")
-@mock.patch("ckanext.data_qld.actions._send_mail", lambda *args, **kwargs: None)
+@mock.patch("ckanext.datarequests.actions._send_mail", lambda *args, **kwargs: None)
 class TestDataRequestCommentSearch:
     """
     We should be able to find a datarequest by related comment title/content

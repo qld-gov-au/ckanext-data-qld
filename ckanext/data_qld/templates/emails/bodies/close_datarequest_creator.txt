@@ -1,5 +1,5 @@
-Your data request has been closed. 
+Your data request has been closed.
 
-{{ datarequest['dataset_url'] }}
+{{ datarequest['datarequest_url'] }}
 
 Do not reply to this email.

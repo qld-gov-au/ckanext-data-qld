@@ -48,10 +48,15 @@ class DataQldPlugin(plugins.SingletonPlugin):
 
     # IConfigurer
     def update_config(self, config_):
+        config_.update({
+            'ckanext.datarequests.notify_all_members': False,
+            'ckanext.datarequests.notify_on_update': True
+        })
         tk.add_template_directory(config_, 'templates')
         tk.add_public_directory(config_, 'public')
         tk.add_resource('fanstatic', 'data_qld_theme')
         tk.add_resource('reporting/fanstatic', 'data_qld_reporting')
+        actions.intercept()
 
     def update_config_schema(self, schema):
         ignore_missing = tk.get_validator('ignore_missing')
@@ -130,9 +135,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             constants.OPEN_DATAREQUEST: actions.open_datarequest,
-            constants.CREATE_DATAREQUEST: actions.create_datarequest,
-            constants.UPDATE_DATAREQUEST: actions.update_datarequest,
-            constants.CLOSE_DATAREQUEST: actions.close_datarequest,
             constants.LIST_DATAREQUESTS: actions.list_datarequests,
             'organisation_followers': get.organisation_followers,
             'dataset_followers': get.dataset_followers,

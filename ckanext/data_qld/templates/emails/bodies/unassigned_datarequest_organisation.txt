@@ -1,5 +1,5 @@
 A data request that was assigned to your organisation has been re-assigned to another organisation.
 
-{{ datarequest['dataset_url'] }}
+{{ datarequest['datarequest_url'] }}
 
 Do not reply to this email.

@@ -61,7 +61,7 @@ Feature: Data Request
         And I press "Add data request"
         And I fill in title with random text
         And I fill in "description" with "He had sheep, and oxen, and he asses, and menservants, and maidservants, and she asses, and camels."
-        And I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Create Data Request')]"
+        And I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Create data request')]"
         Then I should see "Blocked due to profanity" within 5 seconds
 
     Scenario: Data request creator and Sysadmin can see a 'Close' button on the data request detail page for opened data requests
@@ -110,7 +110,9 @@ Feature: Data Request
         And I create a datarequest
         And I create a datarequest
         And I go to the "test_org_admin" profile page
+        And I take a debugging screenshot
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
+        And I take a debugging screenshot
         Then I should see an element with xpath "//a[@title='Delete' and contains(@class, 'btn-danger')]"
         And I should not see an element with xpath "//a[contains(@class, 'btn-danger-serious')]"
 
@@ -118,12 +120,16 @@ Feature: Data Request
         When I log out
         And I log in
         And I go to the "test_org_admin" profile page
+        And I take a debugging screenshot
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
-        And I should see an element with xpath "//a[@title='Delete' and contains(@class, 'btn-danger')]"
+        And I take a debugging screenshot
+        Then I should see an element with xpath "//a[@title='Delete' and contains(@class, 'btn-danger')]"
         And I should see an element with xpath "//a[contains(@title, 'Delete all') and contains(@class, 'btn-danger-serious')]"
 
         When I press the element with xpath "//a[contains(@title, 'Delete all') and contains(@class, 'btn-danger-serious')][1]"
+        And I take a debugging screenshot
         And I confirm the dialog containing "Are you sure you want to" if present
+        And I take a debugging screenshot
         Then I should see an element with xpath "//div[contains(@class, 'alert') and contains(string(), 'Deleted') and contains(string(), 'data request(s)')]"
 
         When I go to the "test_org_admin" profile page
