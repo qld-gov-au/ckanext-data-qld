@@ -1,7 +1,7 @@
 A new data request has been added and assigned to your organisation.
 
 To action or 'Reply' to this data request, follow this link:
-{{ datarequest['dataset_url'] }}
+{{ datarequest['datarequest_url'] }}
 
 Data request subject: {{ datarequest['title']|striptags }}
 Description: {{ datarequest['description']|striptags }}

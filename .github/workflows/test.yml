@@ -27,7 +27,7 @@ jobs:
       fail-fast: true
       matrix:
         ckan-version: ["2.10", 2.9, 2.9-py2]
-        behave-tag: [smoke, authenticated, unauthenticated]
+        behave-tag: [smoke, unauthenticated, OpenData, authenticated]
 
     name: Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
