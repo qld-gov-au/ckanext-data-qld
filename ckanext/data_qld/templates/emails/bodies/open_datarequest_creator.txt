@@ -1,5 +1,5 @@
-Your data request has been re-opened. 
+Your data request has been re-opened.
 
-{{ datarequest['dataset_url'] }}
+{{ datarequest['datarequest_url'] }}
 
 Do not reply to this email.
