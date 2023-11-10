@@ -20,7 +20,7 @@ def filesize_converter(value, context):
     value = value.upper()
 
     # If the size is not all digits then get size converted into bytes
-    if re.search(r'^\d+$', value) is None:
+    if value and re.search(r'^\d+$', value) is None:
         value = filesize_bytes(value)
 
     return value
