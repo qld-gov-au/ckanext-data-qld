@@ -11,34 +11,34 @@ jQuery(document).ready(function () {
   }
 
   // Hide resource size element on loading of a resource edit form if the resource file was uploaded
-  if (jQuery('.image-upload[data-module="image-upload"]').data('module-is_upload') == true) {
+  if (jQuery('#resource-url-upload').prop('checked') === true) {
     jQuery('#field-size').parent().parent().hide();
   }
   // Show field-size element on loading of a resource edit form if the resource file was a url link
-  else if (jQuery('.image-upload[data-module="image-upload"]').data('module-is_url') == true) {
+  else {
     jQuery('#field-size').parent().parent().show();
   }
 
   // Hide the resource element if a file was selected to upload
-  jQuery('#field-image-upload').change(function () {
+  jQuery('#field-resource-upload').change(function () {
     jQuery('#field-size').parent().parent().fadeOut();
     show_nature_of_change()
   });
 
   // Show the resource element if a url link was entered
-  jQuery('#field-image-url').change(function () {
+  jQuery('#field-resource-url').change(function () {
     jQuery('#field-size').parent().parent().fadeIn();
     show_nature_of_change()
   });
 
-  // Insert field is required asterisk for labels 
-  jQuery('.control-label[for="field-image-upload"]').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
-  jQuery('.control-label[for="field-image-url"]').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
+  // Insert field is required asterisk for labels
+  jQuery('.control-label[for="field-resource-upload"]').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
+  jQuery('.control-label[for="field-resource-url"]').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
   jQuery('.control-label[for="field-nature_of_change"]').parent().prepend('<span title="This field is required" class="control-required">*</span> ')
 
   function show_nature_of_change() {
-    // Only show nature of change when editing a resource 
-    // id value will be null for new resource 
+    // Only show nature of change when editing a resource
+    // id value will be null for new resource
     // Dont show the field if the update_frequency for dataset is not in defined values
     if (jQuery('input[name="id"]').val().length > 0 && UPDATE_FREQUENCY in UPDATE_FREQUENCY_DAYS) {
       jQuery('#field-nature_of_change').val("");
