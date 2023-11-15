@@ -28,6 +28,7 @@ Feature: Engagement Reporting
         When I log in
         And I go to my reports page
         And I press "Engagement Report"
+        And I take a debugging screenshot
         And I press the element with xpath "//button[contains(string(), 'Show')]"
         Then I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-title') and string()='Dataset followers' and position()=1]"
         And I should see an element with xpath "//tr[@id='dataset-followers']/td[contains(@class, 'metric-data') and string()='0' and position()=2]"
