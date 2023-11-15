@@ -304,7 +304,8 @@ div.account-masthead .account ul.unstyled li {
   border: none;
 }
 
-div.account-masthead .account ul.unstyled li a {
+div.account-masthead .account ul.unstyled li a,
+div.account-masthead .account ul.unstyled li .btn-link {
   color: #ffffff;
   text-decoration: none;
   line-height: 1rem;
@@ -327,7 +328,9 @@ div.account-masthead .account ul.unstyled li a {
 }
 
 div.account-masthead .account ul.unstyled li a:hover,
-div.account-masthead .account ul.unstyled li a:focus {
+div.account-masthead .account ul.unstyled li a:focus,
+div.account-masthead .account ul.unstyled li .btn-link:hover,
+div.account-masthead .account ul.unstyled li .btn-link:focus {
   color: #ffffff;
   background-color: #007eb1;
 }
