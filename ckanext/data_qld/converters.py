@@ -12,6 +12,8 @@ def filesize_converter(value, context):
     :rtype: int
 
     """
+    if not value:
+        return None
     value = str(value)
     # remove whitespaces
     value = re.sub(' ', '', value)
