@@ -7,17 +7,13 @@ from ckanext.data_qld.converters import filesize_converter
 
 
 def test_filesize_converter():
-    test_cases = {'foo': 'FOO',
-                  'FOO': 'FOO',
-                  'foo,baz': 'FOOBAZ',
-                  ' , ': None,
+    test_cases = {' , ': None,
                   ' ': None,
                   '': None,
                   None: None,
-                  1024: '1 KiB',
-                  '1024': '1 KiB',
-                  '1024, ': '1 KiB',
-                  '1024a': '1024A',
+                  '2 kb': 2048,
+                  1024: 1024,
+                  '1024, ': 1024,
                   }
     for key, value in six.iteritems(test_cases):
         assert value == filesize_converter(key, {})
