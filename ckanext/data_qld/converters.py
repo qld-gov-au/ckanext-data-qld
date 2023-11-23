@@ -12,15 +12,21 @@ def filesize_converter(value, context):
     :rtype: int
 
     """
+    if not value:
+        return None
     value = str(value)
     # remove whitespaces
     value = re.sub(' ', '', value)
     # remove commas
     value = re.sub(',', '', value)
+    if not value:
+        return None
     value = value.upper()
 
     # If the size is not all digits then get size converted into bytes
-    if value and re.search(r'^\d+$', value) is None:
+    if re.search(r'^\d+$', value):
+        value = int(value)
+    else:
         value = filesize_bytes(value)
 
     return value
