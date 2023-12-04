@@ -15,7 +15,7 @@
             {%- set action = 'organization.read' if activity_type == 'changed organization' else 'group.read' -%}
         {%- endif -%}
     {%- endif -%}
-    {% if action and id %}{{name}} {% if activity_type %}({{ (activity_type|replace('organization', _('organization'))|replace('package', 'dataset')|capitalize).split().reverse()|join(' ') }}){% endif %} {% url_for action, id=id, _external=True %}{% endif %}
+    {% if action and id %}{{name}} {% if activity_type %}({{ (activity_type|replace('organization', _('organization'))|replace('package', 'dataset')|capitalize).split()|reverse|join(' ') }}){% endif %} {% url_for action, id=id, _external=True %}{% endif %}
 {% endfor %}
 
 {{ _('You can turn off these email notifications in your {site_title} preferences. To change your preferences, click on this link:').format(site_title=g.site_title if g else site_title) }}
