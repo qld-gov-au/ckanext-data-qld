@@ -1,6 +1,6 @@
-{%- set num = activities|length -%}
+{% set num = activities|length %}{{ ngettext("You have {num} new activity on your {site_title} dashboard", "You have {num} new activities on your {site_title} dashboard", num).format(site_title=g.site_title if g else site_title, num=num) }} {{ _('To view your dashboard, click on this link:') }}
 
-{{ ungettext("You have {num} new activity on your {site_title} dashboard", "You have {num} new activities on your {site_title} dashboard", num).format(site_title=g.site_title, num=num) }}:
+{% url_for 'activity.dashboard', _external=True %}
 
 {% for activity in activities -%}
     {%- set data = activity['data'] if activity['data'] else None -%}
@@ -15,12 +15,9 @@
             {%- set action = 'organization.read' if activity_type == 'changed organization' else 'group.read' -%}
         {%- endif -%}
     {%- endif -%}
-    {% if action and id %}{{name}} ({{ h.activity_type_nice(activity_type)|capitalize }}) {{ h.url_for(action, id=id, _external=True) }}{% if activity_type %}{% endif %}{% endif %}
+    {% if action and id %}{{name}} {% if activity_type %}({{ (activity_type|replace('organization', _('organization'))|replace('package', 'dataset')|capitalize).split()|reverse|join(' ') }}){% endif %} {% url_for action, id=id, _external=True %}{% endif %}
 {% endfor %}
-{{ _('To view your dashboard, click on this link:') }}
 
-{{ g.site_url + '/dashboard' }}
+{{ _('You can turn off these email notifications in your {site_title} preferences. To change your preferences, click on this link:').format(site_title=g.site_title if g else site_title) }}
 
-{{ _('You can turn off these email notifications in your {site_title} preferences. To change your preferences, click on this link:').format(site_title=g.site_title) }}
-
-{{ g.site_url + '/user/edit' }}
+{% url_for 'user.edit', _external=True %}
