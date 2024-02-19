@@ -118,10 +118,11 @@ curl -LsH "Authorization: ${API_KEY}" \
 "license_id": "other-open", "data_driven_application": "NO", "security_classification": "PUBLIC",
 "notes": "public test", "de_identified_data": "NO", "resources": [
     {"name": "test-resource", "description": "Test resource description",
-     "url": "https://example.com", "format": "HTML", "size": 1024}
+     "url": "https://example.com/foo", "format": "HTML", "size": 1024}
 ]}' \
     ${CKAN_ACTION_URL}/package_create
 
+ckan_cli archiver update-test public-test-dataset
 # Datasets need to be assigned to an organisation
 
 echo "Assigning test Datasets to Organisation..."

@@ -66,7 +66,9 @@ commands:
 
   logs:
     usage: Show Docker logs.
-    cmd: sh bin/docker-compose.sh logs "$@"
+    cmd: |
+        ahoy title "Output logs"
+        sh bin/docker-compose.sh logs "$@"
 
   pull:
     usage: Pull latest docker images.
@@ -149,7 +151,7 @@ commands:
       ahoy cli "rm -f test/screenshots/*"
       ahoy start-ckan-job-workers
       ahoy start-mailmock &
-      sleep 5 &&
+      sleep 5
       if [ "$BEHAVE_TAG" = "" ]; then
         # no tag specified, probably running locally
         (ahoy cli "behave -k ${*:-test/features} --tags=smoke" \
