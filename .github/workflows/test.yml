@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - name: Install requirements
@@ -37,7 +37,7 @@ jobs:
       BEHAVE_TAG: ${{ matrix.behave-tag }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         timeout-minutes: 2
 
       - name: Build
@@ -65,7 +65,7 @@ jobs:
 
       - name: Upload screenshots
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: CKAN ${{ matrix.ckan-version }} ${{ matrix.behave-tag }} screenshots
           path: /tmp/artifacts/behave/screenshots
