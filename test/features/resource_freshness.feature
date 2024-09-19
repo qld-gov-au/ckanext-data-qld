@@ -27,6 +27,32 @@ Feature: Resource freshness
             | TestOrgAdmin  |
             | TestOrgEditor |
 
+    Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset new page and select 'biennially' update frequency, then the text 'Next update due' should be visible
+        Given "<User>" as the persona
+        When I log in
+        And I go to "/dataset/new"
+        And I select "biennially" from "update_frequency"
+        Then I should see "Next update due"
+
+        Examples: Users
+            | User          |
+            | SysAdmin      |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
+
+    Scenario Outline: An editor, admin or sysadmin user, when I go to the dataset new page and select 'quadrennially' update frequency, then the text 'Next update due' should be visible
+        Given "<User>" as the persona
+        When I log in
+        And I go to "/dataset/new"
+        And I select "quadrennially" from "update_frequency"
+        Then I should see "Next update due"
+
+        Examples: Users
+            | User          |
+            | SysAdmin      |
+            | TestOrgAdmin  |
+            | TestOrgEditor |
+
     Scenario Outline: As a user with editing privileges, when I set a 'monthly' update frequently, I should still be able to update the dataset via the API
         Given "<User>" as the persona
         When I log in
