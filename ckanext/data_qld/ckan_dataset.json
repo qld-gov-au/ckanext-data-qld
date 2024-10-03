@@ -173,6 +173,14 @@
                     "label": "Annually"
                 },
                 {
+                    "value": "biennially",
+                    "label": "Biennially"
+                },
+                {
+                    "value": "quadrennially",
+                    "label": "Quadrennially"
+                },
+                {
                     "value": "non-regular",
                     "label": "Non-regular"
                 },
