@@ -13,4 +13,5 @@ xlrd==1.2.0
 python-magic==0.4.18
 progressbar==2.5
 
+typer<0.11 # We still need Click 7 for now
 pika>=1.1.0,<1.3.0 # resolve harvester conflict
