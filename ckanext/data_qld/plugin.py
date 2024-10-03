@@ -19,11 +19,14 @@ from .resource_freshness.helpers import helpers as resource_freshness_helpers
 from .resource_freshness import validation as resource_freshness_validator
 from .resource_freshness.logic.actions import get as resource_freshness_get_actions
 
-if ' qa' in tk.config.get('ckan.plugins', ''):
+try:
     from ckanext.qa.interfaces import IQA
     import ckanext.qa.lib as qa_lib
     import ckanext.qa.tasks as qa_tasks
     import os
+    qa_present = True
+except ImportError:
+    qa_present = False
 
 
 log = logging.getLogger(__name__)
@@ -43,7 +46,7 @@ class DataQldPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IClick)
 
-    if ' qa' in tk.config.get('ckan.plugins', ''):
+    if qa_present:
         plugins.implements(IQA)
 
     # IConfigurer
