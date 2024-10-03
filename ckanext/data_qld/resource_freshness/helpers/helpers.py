@@ -14,11 +14,14 @@ from itertools import groupby
 
 log = logging.getLogger(__name__)
 
+# Also update ckanext-data-qld/ckanext/data_qld/ckan_dataset.json
 update_frequencies = {
     "monthly": 30,
     "quarterly": 91,
     "half-yearly": 182,
-    "annually": 365
+    "annually": 365,
+    "biennially": 730,
+    "quadrennially": 1460
 }
 
 
