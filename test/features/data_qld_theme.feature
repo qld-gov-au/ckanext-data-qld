@@ -129,3 +129,10 @@ Feature: Theme customisations
         When I go to "/robots.txt"
         Then I should see "Disallow: /"
         And I should not see "Allow:"
+
+    @unauthenticated
+    Scenario: When I go to the home page, I can see Visualisations and News and Case Studies in the navbar
+        Given "Unauthenticated" as the persona
+        When I go to homepage
+        Then I should see an element with xpath "//a[string()='Visualisations']"
+        And I should see an element with xpath "//a[string()='News and Case Studies']"
