@@ -159,9 +159,12 @@ commands:
         ) || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       elif [ "$BEHAVE_TAG" = "authenticated" ]; then
         # run any tests that don't have a specific tag
-        ahoy cli "behave -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData" \
+        ahoy cli "behave -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-multi_plugin" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       else
+        if [ "$BEHAVE_TAG" != "multi_plugin" ]; then
+            BEHAVE_TAG="$BEHAVE_TAG --tags=-multi_plugin"
+        fi
         # run tests with the specified tag
         ahoy cli "behave -k ${*:-test/features} --tags=$BEHAVE_TAG" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
