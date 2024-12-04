@@ -3,7 +3,7 @@
 import logging
 import json
 
-from ckantoolkit import _, abort, c, check_access, g, get_action, \
+from ckantoolkit import _, abort, check_access, g, get_action, \
     redirect_to, NotAuthorized, ObjectNotFound, url_for, \
     ValidationError, render
 
@@ -38,17 +38,17 @@ def open_datarequest(id):
     context = _get_context()
 
     # Basic initialization
-    c.datarequest = {}
+    datarequest = {}
     try:
         check_access(OPEN_DATAREQUEST, context, data_dict)
-        c.datarequest = get_action(SHOW_DATAREQUEST)(context, data_dict)
+        datarequest = get_action(SHOW_DATAREQUEST)(context, data_dict)
 
-        if c.datarequest.get('closed', False) is False:
+        if datarequest.get('closed', False) is False:
             return abort(403, _('This data request is already open'))
         else:
             data_dict = {}
             data_dict['id'] = id
-            data_dict['organization_id'] = c.datarequest.get('organization_id')
+            data_dict['organization_id'] = datarequest.get('organization_id')
 
             get_action(OPEN_DATAREQUEST)(context, data_dict)
             return redirect_to(url_for('datarequest.show', id=data_dict['id']))

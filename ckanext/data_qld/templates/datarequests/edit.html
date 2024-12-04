@@ -1,16 +1,20 @@
 {% ckan_extends %}
+{% set datarequest = datarequest or c.datarequest %}
+{% set errors = errors or c.errors %}
+{% set errors_summary = errors_summary or c.errors_summary %}
+{% set original_title = original_title or c.original_title %}
 
 {% block subtitle %}{{ _('Edit data request') }}{% endblock %}
 
 {% block breadcrumb_content %}
   <li>{% link_for _('Data requests'), named_route='datarequest.index' %}</li>
-  <li>{% link_for c.original_title|truncate(30), named_route='datarequest.show', id=c.datarequest.get('id') %}</li>
+  <li>{% link_for original_title|truncate(30), named_route='datarequest.show', id=datarequest.get('id') %}</li>
   <li class="active"><a href="">{{ _('Edit data request') }}</a></li>
 {% endblock %}
 
 {% block primary_content_inner %}
   <h1 class="{% block page_heading_class %}page-heading{% endblock %}">{% block page_heading %}{{ _('Edit data request') }}{% endblock %}</h1>
-  {% snippet "datarequests/snippets/edit_datarequest_form.html", data=c.datarequest, errors=c.errors, errors_summary=c.errors_summary, offering=c.offering %}
+  {% snippet "datarequests/snippets/edit_datarequest_form.html", data=datarequest, errors=errors, errors_summary=errors_summary %}
 {% endblock %}
 
 {% block page_header %}{% endblock %}

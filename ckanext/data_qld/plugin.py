@@ -90,7 +90,6 @@ class DataQldPlugin(plugins.SingletonPlugin):
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
             'dashboard_index_route': helpers.dashboard_index_route,
             'is_datarequests_enabled': helpers.is_datarequests_enabled,
-            'get_all_groups': helpers.get_all_groups,
             'is_request_for_resource': helpers.is_request_for_resource,
             'set_background_image_class': helpers.set_background_image_class,
             'set_external_resources': helpers.set_external_resources,
