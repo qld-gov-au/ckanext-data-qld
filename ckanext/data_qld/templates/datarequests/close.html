@@ -1,16 +1,23 @@
 {% ckan_extends %}
+{#
+Handle either old Pylons-style global variables, or newer template parameters.
+#}
+{% set datasets = datasets or c.datasets %}
+{% set datarequest = datarequest or c.datarequest %}
+{% set errors = errors or c.errors %}
+{% set errors_summary = errors_summary or c.errors_summary %}
 
 {% block subtitle %}{{ _('Close data request') }}{% endblock %}
 
 {% block breadcrumb_content %}
   <li>{% link_for _('Data requests'), named_route='datarequest.index' %}</li>
-  <li>{% link_for c.datarequest.get('title')|truncate(30), named_route='datarequest.show', id=c.datarequest.get('id') %}</li>
+  <li>{% link_for datarequest.get('title')|truncate(30), named_route='datarequest.show', id=datarequest.get('id') %}</li>
   <li class="active"><a href="">{{ _('Close data request') }}</a></li>
 {% endblock %}
 
 {% block primary_content_inner %}
   <h1 class="{% block page_heading_class %}page-heading{% endblock %}">{% block page_heading %}{{ _('Close data request') }}{% endblock %}</h1>
-  {% snippet "datarequests/snippets/close_datarequest_form.html", datarequest=c.datarequest, datasets=c.datasets, errors=c.errors, errors_summary=c.errors_summary  %}
+  {% snippet "datarequests/snippets/close_datarequest_form.html", datarequest=datarequest, datasets=datasets, errors=errors, errors_summary=errors_summary  %}
 {% endblock %}
 
 {% block page_header %}{% endblock %}
