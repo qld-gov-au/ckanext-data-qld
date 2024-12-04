@@ -8,6 +8,9 @@
 
 
 {% block primary_content_inner %}
+  {#
+  Handle either old Pylons-style global variables, or newer template parameters.
+  #}
   {% set datarequest = datarequest or c.datarequest %}
   {% set userobj = userobj or c.userobj %}
   {% snippet "package/comment_list.html", content_type='datarequest', pkg_id=datarequest.id, pkg_name=datarequest.id, userobj=userobj %}

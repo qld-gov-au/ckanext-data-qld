@@ -1,4 +1,7 @@
 {% ckan_extends %}
+{#
+Handle either old Pylons-style global variables, or newer template parameters.
+#}
 {% set datasets = datasets or c.datasets %}
 {% set datarequest = datarequest or c.datarequest %}
 {% set errors = errors or c.errors %}
