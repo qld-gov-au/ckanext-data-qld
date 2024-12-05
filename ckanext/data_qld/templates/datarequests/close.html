@@ -2,10 +2,12 @@
 {#
 Handle either old Pylons-style global variables, or newer template parameters.
 #}
-{% set datasets = datasets or c.datasets %}
-{% set datarequest = datarequest or c.datarequest %}
-{% set errors = errors or c.errors %}
-{% set errors_summary = errors_summary or c.errors_summary %}
+{% if datarequest is not defined %}
+    {% set datarequest = c.datarequest %}
+    {% set datasets = c.datasets %}
+    {% set errors = c.errors %}
+    {% set errors_summary = c.errors_summary %}
+{% endif %}
 
 {% block subtitle %}{{ _('Close data request') }}{% endblock %}
 
