@@ -9,7 +9,7 @@
     <p>
         {{ _('Generated') }}: {{ h.report__render_datetime(report_date, '%d/%m/%Y %H:%M') }}
     </p>
-    {% if c.userobj.sysadmin %}
+    {% if g.userobj.sysadmin %}
     <div class="panel panel-info" style="width=700px">
         <div class="panel-heading"><strong>{% trans %}Refresh report{% endtrans %}</strong></div>
         <div class="panel-body">
