@@ -40,7 +40,7 @@
     {%- do exclude_fields.append('governance_acknowledgement') -%}
   {%- endif -%}
 
-  {% if not h.resource_visibility_has_user_permission_for_org(pkg['owner_org'], c.userobj, 'create_dataset') %}
+  {% if not h.resource_visibility_has_user_permission_for_org(pkg['owner_org'], g.userobj, 'create_dataset') %}
     {%- do exclude_fields.append('request_privacy_assessment') -%}
     {%- do exclude_fields.append('privacy_assessment_result') -%}
   {% endif %}

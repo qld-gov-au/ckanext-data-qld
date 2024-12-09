@@ -6,7 +6,7 @@ from six import text_type
 
 from ckan import model
 from ckan.lib import uploader
-from ckantoolkit import _, c, g, h, abort, asbool, check_ckan_version, \
+from ckantoolkit import _, g, h, abort, asbool, check_ckan_version, \
     config, get_action, get_endpoint, ObjectNotFound, render, request, \
     aslist
 
@@ -205,16 +205,6 @@ def dashboard_index_route():
         else:
             return 'dashboard.datasets'
     return 'dashboard.index'
-
-
-def get_all_groups():
-    groups = get_action('group_list')(
-        data_dict={'include_dataset_count': False, 'all_fields': True})
-    pkg_group_ids = set(group['id'] for group
-                        in c.pkg_dict.get('groups', []))
-    return [[group['id'], group['display_name']]
-            for group in groups if
-            group['id'] not in pkg_group_ids]
 
 
 def get_comment_notification_recipients_enabled():
