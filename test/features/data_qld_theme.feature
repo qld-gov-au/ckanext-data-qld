@@ -105,6 +105,17 @@ Feature: Theme customisations
         And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(string(), 'XML')]"
 
     @unauthenticated
+    @OpenData
+    Scenario: Open Data - Menu items are present and correct
+        Given "Unauthenticated" as the persona
+        When I go to dataset page
+        Then I should see an element with xpath "//li[contains(@class, 'active')]/a[contains(string(), 'Data') and (@href='/dataset' or @href='/dataset/')]"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Visualisations') and @href='/visualisations']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'News and Case Studies') and @href='/news-and-case-studies']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Standards and guidance') and @href='/article/standards-and-guidance']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Contact') and @href='/article/contact']"
+
+    @unauthenticated
     Scenario: When I encounter a 'resource not found' error page, it has a custom message
         Given "Unauthenticated" as the persona
         When I go to "/dataset/nonexistent/resource/nonexistent"
@@ -129,10 +140,3 @@ Feature: Theme customisations
         When I go to "/robots.txt"
         Then I should see "Disallow: /"
         And I should not see "Allow:"
-
-    @unauthenticated
-    Scenario: When I go to the home page, I can see Visualisations and News and Case Studies in the navbar
-        Given "Unauthenticated" as the persona
-        When I go to homepage
-        Then I should see an element with xpath "//a[string()='Visualisations']"
-        And I should see an element with xpath "//a[string()='News and Case Studies']"

@@ -28,6 +28,12 @@ jobs:
       matrix:
         ckan-version: ["2.10", 2.9]
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
+        experimental: [false]
+        include:
+          - ckan-version: '2.11'
+            experimental: true
+          - ckan-version: 'master'
+            experimental: true  #master is unstable, good to know if we are compatible or not
 
     name: Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
@@ -42,34 +48,48 @@ jobs:
         run: echo HOME=/root >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v4
+        continue-on-error: ${{ matrix.experimental }}
         timeout-minutes: 2
 
       - name: Build
+        continue-on-error: ${{ matrix.experimental }}
         run: bin/build.sh
         timeout-minutes: 15
 
       - name: Unit tests
+        continue-on-error: ${{ matrix.experimental }}
         if: ${{ matrix.behave-tag == 'smoke' }}
         run: bin/test.sh
         timeout-minutes: 15
 
       - name: Test ${{ matrix.behave-tag }} BDD
+        continue-on-error: ${{ matrix.experimental }}
         run: bin/test-bdd.sh
         timeout-minutes: 45
 
       - name: Retrieve logs
         if: always()
-        run: bin/get-logs.sh
+        run: ahoy logs
+        continue-on-error: ${{ matrix.experimental }}
         timeout-minutes: 1
 
-      - name: Retrieve screenshots
+      - name: Retrieve results
         if: always()
         run: bin/process-artifacts.sh
+        continue-on-error: ${{ matrix.experimental }}
         timeout-minutes: 1
 
+      - name: Test Summary
+        uses: test-summary/action@v2
+        continue-on-error: ${{ matrix.experimental }}
+        with:
+          paths: "/tmp/artifacts/junit/*.xml"
+        if: always()
+
       - name: Upload screenshots
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: ${{ matrix.experimental }}
         with:
           name: CKAN ${{ matrix.ckan-version }} ${{ matrix.behave-tag }} screenshots
           path: /tmp/artifacts/behave/screenshots

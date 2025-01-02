@@ -14,23 +14,18 @@ sed -i -e "s/##//" docker-compose.yml
 # Pull the latest images.
 ahoy pull
 
-PYTHON=python
+PYTHON=python3
+PYTHON_VERSION=py3
 
 CKAN_GIT_VERSION=$CKAN_VERSION
 CKAN_GIT_ORG=qld-gov-au
 
-if [ "$CKAN_VERSION" = "2.10" ]; then
+if [ "$CKAN_VERSION" = "2.11" ]; then
+    CKAN_GIT_VERSION=ckan-2.11.1
+elif [ "$CKAN_VERSION" = "2.10" ]; then
     CKAN_GIT_VERSION=ckan-2.10.5-qgov.4
-    PYTHON_VERSION=py3
-    PYTHON="${PYTHON}3"
 else
     CKAN_GIT_VERSION=ckan-2.9.9-qgov.3
-    if [ "$CKAN_VERSION" = "2.9-py2" ]; then
-        PYTHON_VERSION=py2
-    else
-        PYTHON_VERSION=py3
-        PYTHON="${PYTHON}3"
-    fi
 fi
 
 sed "s|{CKAN_VERSION}|$CKAN_VERSION|g" .docker/Dockerfile-template.ckan \
