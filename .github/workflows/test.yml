@@ -24,15 +24,18 @@ jobs:
   test:
     needs: lint
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         ckan-version: ["2.10", 2.9]
+        solr-version: ["8"]
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
         experimental: [false]
         include:
           - ckan-version: '2.11'
+            solr-version: "9"
             experimental: true
           - ckan-version: 'master'
+            solr-version: "9"
             experimental: true  #master is unstable, good to know if we are compatible or not
 
     name: Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
@@ -40,6 +43,7 @@ jobs:
     container: drevops/ci-runner:23.12.0
     env:
       CKAN_VERSION: ${{ matrix.ckan-version }}
+      SOLR_VERSION: ${{ matrix.solr-version }}
       BEHAVE_TAG: ${{ matrix.behave-tag }}
 
     steps:
@@ -52,32 +56,32 @@ jobs:
         timeout-minutes: 2
 
       - name: Build
-        continue-on-error: ${{ matrix.experimental }}
         run: bin/build.sh
         timeout-minutes: 15
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Unit tests
-        continue-on-error: ${{ matrix.experimental }}
         if: ${{ matrix.behave-tag == 'smoke' }}
         run: bin/test.sh
         timeout-minutes: 15
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Test ${{ matrix.behave-tag }} BDD
-        continue-on-error: ${{ matrix.experimental }}
         run: bin/test-bdd.sh
         timeout-minutes: 45
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Retrieve logs
         if: always()
         run: ahoy logs
-        continue-on-error: ${{ matrix.experimental }}
         timeout-minutes: 1
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Retrieve results
         if: always()
         run: bin/process-artifacts.sh
-        continue-on-error: ${{ matrix.experimental }}
         timeout-minutes: 1
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Test Summary
         uses: test-summary/action@v2
@@ -89,8 +93,8 @@ jobs:
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
-        continue-on-error: ${{ matrix.experimental }}
         with:
           name: CKAN ${{ matrix.ckan-version }} ${{ matrix.behave-tag }} screenshots
           path: /tmp/artifacts/behave/screenshots
         timeout-minutes: 1
+        continue-on-error: ${{ matrix.experimental }}
