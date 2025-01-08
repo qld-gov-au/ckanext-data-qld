@@ -19,7 +19,6 @@ from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
 from ckanext.ytp.comments import model as ytp_model
 from ckanext.validation.model import create_tables as validation_init
-from ckanext.validation.model import tables_exist as is_validation_table_exist
 from ckanext.archiver import utils as archiver_utils
 
 fake = Faker()
@@ -164,8 +163,7 @@ def clean_db(reset_db):
     ytp_model.init_tables()
     datarequest_db.init_db(model)
 
-    if not is_validation_table_exist():
-        validation_init()
+    validation_init()
 
 
 def archival_init():
