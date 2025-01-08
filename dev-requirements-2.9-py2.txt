@@ -5,6 +5,7 @@ ckanapi==4.3
 ckantoolkit>=0.0.4
 factory-boy
 faker==3.0.1
+jinja2==2.10.1
 pytest-factoryboy
 flake8==3.8.3
 mock

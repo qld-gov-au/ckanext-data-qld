@@ -5,6 +5,7 @@ ckantoolkit>=0.0.4
 factory-boy
 Faker
 flake8==3.8.3
+jinja2==2.10.1
 mock
 pytest-ckan
 six>=1.13.0
