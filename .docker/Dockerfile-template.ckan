@@ -23,7 +23,7 @@ COPY bin/ckan_cli /usr/bin/
 
 RUN chmod +x "${APP_DIR}"/bin/*.sh /usr/bin/ckan_cli
 
-ENV DOCKERIZE_VERSION=v0.9.1
+ENV DOCKERIZE_VERSION=v0.6.1
 RUN wget -O - https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
         | tar -C /usr/local/bin -xzvf -
 
