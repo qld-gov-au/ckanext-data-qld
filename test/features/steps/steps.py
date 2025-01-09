@@ -272,6 +272,13 @@ def edit_dataset(context, name):
     """.format(name))
 
 
+@when(u'I press the resource edit button')
+def press_edit_resource(context):
+    context.execute_steps(u"""
+        When I press the element with xpath "//div[contains(@class, 'action')]//a[contains(@href, '/resource/') and contains(@href, '/edit')]"
+    """)
+
+
 @when(u'I select the "{licence_id}" licence')
 def select_licence(context, licence_id):
     # Licence requires special interaction due to fancy JavaScript
