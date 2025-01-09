@@ -41,8 +41,6 @@ install_requirements . extensions
 for extension in . `ls -d $SRC_DIR/ckanext-*`; do
     install_requirements $extension requirements pip-requirements
 done
-# force version that declares itself to be incompatible but actually works
-pip install click==7.1.2
 pip install -e .
 installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1|")
 
