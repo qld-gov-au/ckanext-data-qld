@@ -50,7 +50,7 @@ Feature: Resource align_default_schema field
 
         # Default and resource schema are different
 
-        When I press "another-name"
+        When I press "another-resource"
         Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='FALSE']"
         When I click the link with text "View Schema File"
         Then I should see an element with xpath "//body[contains(string(), '"Resource schema"')]"
