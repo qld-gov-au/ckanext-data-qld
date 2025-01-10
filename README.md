@@ -164,9 +164,9 @@ These fields are now part of the dataset schema via the `scheming` extension (re
 
 The legacy field values need to be migrated to their schema counterparts.
 
-The `ckanext-data-qld` extension contains a paster command for doing this (ref.: https://github.com/qld-gov-au/ckanext-data-qld/blob/develop/ckanext/data_qld/commands.py)
+The `ckanext-data-qld` extension contains a Click command for doing this (ref.: https://github.com/qld-gov-au/ckanext-data-qld/blob/develop/ckanext/data_qld/commands.py)
 
-*Note: This paster command was designed to be run once for initial migration of legacy extra fields, so isn't idempotent.
+*Note: This command was designed to be run once for initial migration of legacy extra fields, so isn't idempotent.
 If migration command is run multiple times there should not be any issues, but it is not recommended to be used again once the site is live*
 
 To run the command:
@@ -177,20 +177,20 @@ To run the command:
 
 2. Run the following command:
 
-        paster --plugin=ckanext-data-qld migrate_extras -c /path/to/ini_file.ini
+        ckan -c /path/to/ini_file.ini data_qld migrate_extras
 
 3. Rebuild the Solr index:
 
-        paster --plugin=ckan search-index rebuild -c /PATH/TO/YOUR_INI_FILE.ini
+        ckan -c /PATH/TO/YOUR_INI_FILE.ini search-index rebuild
 
 This will iterate through each of the datasets in CKAN and copy the *"Security classification"* and *"Used in data-driven application"* extra field values to the dataset schema fields security_classification and data_driven_application respectively.
 
 # Demoting Publishers to Editor role
 *Note: The following assumes that a dump of production data has been imported into the CKAN database and any necessary database schema updates have been performed (ref.: https://docs.ckan.org/en/2.8/maintaining/database-management.html#upgrading).*
 
-There is a paster command to set the role for any users with names starting with `publisher-` from admin to editor where necessary.
+There is a Click command to set the role for any users with names starting with `publisher-` from admin to editor where necessary.
 
-*Note: This paster command was designed to be run once. If run multiple times there should not be any issues, as it will not re-assign users who are already assigned the editor role - but it is not designed to be idempotent*
+*Note: This command was designed to be run once. If run multiple times there should not be any issues, as it will not re-assign users who are already assigned the editor role - but it is not designed to be idempotent*
 
 To run the command:
 
@@ -200,7 +200,7 @@ To run the command:
 
 2. Run the following command:
 
-        paster --plugin=ckanext-data-qld demote_publishers -c /etc/ckan/default/development.ini
+        ckan -c /etc/ckan/default/development.ini data_qld demote_publishers
 
 # Data.Qld Engagement Reporting Plugin
 
