@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ckan-version: ["2.10", 2.9]
+        ckan-version: ["2.10"]
         solr-version: ["8"]
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
         experimental: [false]
