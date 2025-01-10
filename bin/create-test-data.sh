@@ -111,7 +111,7 @@ api_call '{"name": "public-test-dataset", "owner_org": "'"${TEST_ORG_ID}"'",
 ]}' package_create
 
 # Populate Archiver data for test dataset
-ckan_cli archiver update-test public-test-dataset
+ckan_cli archiver update_test public-test-dataset
 # Datasets need to be assigned to an organisation
 
 echo "Assigning test Datasets to Organisation..."
