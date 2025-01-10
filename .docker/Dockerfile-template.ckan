@@ -24,6 +24,7 @@ COPY bin/ckan_cli /usr/bin/
 RUN chmod +x "${APP_DIR}"/bin/*.sh /usr/bin/ckan_cli
 
 RUN which ps || apt-get install -y procps
+RUN which psql || apt-get install -y postgresql-client
 
 # Install setuptools conditionally
 RUN if [ "$CKAN_VERSION" = "2.9" ]; then \
