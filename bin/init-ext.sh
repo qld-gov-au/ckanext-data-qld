@@ -12,21 +12,21 @@ install_requirements () {
     for filename_pattern in "$@"; do
         filename="$PROJECT_DIR/${filename_pattern}-$CKAN_VERSION.txt"
         if [ -f "$filename" ]; then
-            pip install --upgrade --upgrade-strategy only-if-needed -r "$filename"
+            pip install --upgrade-strategy only-if-needed -r "$filename"
             return 0
         fi
     done
     for filename_pattern in "$@"; do
         filename="$PROJECT_DIR/${filename_pattern}-$PYTHON_VERSION.txt"
         if [ -f "$filename" ]; then
-            pip install --upgrade --upgrade-strategy only-if-needed -r "$filename"
+            pip install --upgrade-strategy only-if-needed -r "$filename"
             return 0
         fi
     done
     for filename_pattern in "$@"; do
         filename="$PROJECT_DIR/$filename_pattern.txt"
         if [ -f "$filename" ]; then
-            pip install --upgrade --upgrade-strategy only-if-needed -r "$filename"
+            pip install --upgrade-strategy only-if-needed -r "$filename"
             return 0
         fi
     done
