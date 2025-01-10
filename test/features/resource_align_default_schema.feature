@@ -38,8 +38,8 @@ Feature: Resource align_default_schema field
         And I should see an element with xpath "//div[@class="info-block " and contains(string(), "Alternatively, publishers can choose no alignment and may include a customised schema for this resource. Ticking this box and updating the resource will align the schemas, overwriting any existing data schema. The validation options, if any, will not be overwritten.")]"
         And field "align_default_schema" should not be required
 
-        When I create a resource with key-value parameters "name=Resource not aligned with default schema::align_default_schema=False::upload=csv_resource.csv::format=CSV"
-        And I press "Resource not aligned with default schema"
+        When I create a resource with key-value parameters "name=Unaligned resource::align_default_schema=False::upload=csv_resource.csv::format=CSV"
+        And I press "Unaligned resource"
         Then I should see an element with xpath "//th[string()='Aligned with default data schema']/following-sibling::td[string()='FALSE']"
 
     Scenario: Edit a resource in the GUI where default schema exists
