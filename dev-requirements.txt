@@ -14,7 +14,7 @@ pytest-ckan
 python-magic==0.4.18
 requests>=2.32.0 # not directly required, pinned by Snyk to avoid a vulnerability
 selenium<4.10
-six>=1.13.0
+six
 typer<0.11 # We still need Click 7 for now
 urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
 xlrd==1.2.0
