@@ -1,4 +1,4 @@
-FROM ckan/ckan-dev:{CKAN_VERSION}
+FROM openknowledge/ckan-dev:{CKAN_VERSION}
 
 # swap between root and unprivileged user
 ARG ORIGINAL_USER
