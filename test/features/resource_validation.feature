@@ -72,8 +72,8 @@ Feature: Resource validation
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         Then I should see "Test valid CSV"
         When I click the link with text that contains "Test valid CSV"
-        Then I should see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']"
-        And I should see a validation timestamp
+        And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']" but not more than 10 times
+        Then I should see a validation timestamp
 
     Scenario: As an editor, I can update a resource with a valid CSV and see a success status
         Given "TestOrgEditor" as the persona
@@ -91,8 +91,8 @@ Feature: Resource validation
         And I upload schema file "test_schema.json" to resource
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         And I click the link with text that contains "Test valid CSV update"
-        Then I should see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']"
-        And I should see a validation timestamp
+        And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']" but not more than 10 times
+        Then I should see a validation timestamp
 
     Scenario: As an editor, I can update a resource with an invalid CSV and see a validation error
         Given "TestOrgEditor" as the persona
