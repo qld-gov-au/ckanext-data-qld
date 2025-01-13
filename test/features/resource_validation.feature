@@ -72,9 +72,7 @@ Feature: Resource validation
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         Then I should see "Test valid CSV"
         When I click the link with text that contains "Test valid CSV"
-        Then I should see "Validation status"
-        And I should see "success"
-        And I should not see "failure"
+        Then I should see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']"
         And I should see a validation timestamp
 
     Scenario: As an editor, I can update a resource with a valid CSV and see a success status
@@ -93,9 +91,7 @@ Feature: Resource validation
         And I upload schema file "test_schema.json" to resource
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         And I click the link with text that contains "Test valid CSV update"
-        Then I should see "Validation status"
-        And I should see "success"
-        And I should not see "failure"
+        Then I should see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']"
         And I should see a validation timestamp
 
     Scenario: As an editor, I can update a resource with an invalid CSV and see a validation error
