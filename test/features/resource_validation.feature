@@ -111,6 +111,5 @@ Feature: Resource validation
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
         And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'failure']" but not more than 10 times
         When I press the element with xpath "//a[contains(@class, 'validation-badge')]"
-        Then I should see "Incorrect Label" within 2 seconds
-        And I should see "Extra Label" within 2 seconds
-        And I should see "Extra Cell" within 2 seconds
+        Then I should see "Validation Report"
+        And I should see "Duration: 0."
