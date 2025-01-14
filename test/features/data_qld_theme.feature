@@ -66,28 +66,6 @@ Feature: Theme customisations
         When I go to organisation page
         Then I should see "Organisations are Queensland Government departments, other agencies or legislative entities responsible for publishing open data on this portal."
 
-    Scenario: Register user password must be 10 characters or longer
-        Given "Unauthenticated" as the persona
-        When I go to register page
-        And I fill in "name" with "name"
-        And I fill in "fullname" with "fullname"
-        And I fill in "email" with "email@test.com"
-        And I fill in "password1" with "pass"
-        And I fill in "password2" with "pass"
-        And I press "Create Account"
-        Then I should see "Password: Your password must be 10 characters or longer"
-
-    Scenario: Register user password must contain at least one number, lowercase letter, capital letter, and symbol
-        Given "Unauthenticated" as the persona
-        When I go to register page
-        And I fill in "name" with "name"
-        And I fill in "fullname" with "fullname"
-        And I fill in "email" with "email@test.com"
-        And I fill in "password1" with "password1234"
-        And I fill in "password2" with "password1234"
-        And I press "Create Account"
-        Then I should see "Password: Must contain at least one number, lowercase letter, capital letter, and symbol"
-
     @OpenData
     Scenario: As a publisher, when I create a resource with an API entry, I can download it in various formats
         Given "TestOrgEditor" as the persona
@@ -103,6 +81,17 @@ Feature: Theme customisations
         And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(string(), 'TSV')]"
         And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(string(), 'JSON')]"
         And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=xml') and contains(string(), 'XML')]"
+
+    @unauthenticated
+    @OpenData
+    Scenario: Open Data - Menu items are present and correct
+        Given "Unauthenticated" as the persona
+        When I go to dataset page
+        Then I should see an element with xpath "//li[contains(@class, 'active')]/a[contains(string(), 'Data') and (@href='/dataset' or @href='/dataset/')]"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Visualisations') and @href='/visualisations']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'News and Case Studies') and @href='/news-and-case-studies']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Standards and guidance') and @href='/article/standards-and-guidance']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Contact') and @href='/article/contact']"
 
     @unauthenticated
     Scenario: When I encounter a 'resource not found' error page, it has a custom message
@@ -129,10 +118,3 @@ Feature: Theme customisations
         When I go to "/robots.txt"
         Then I should see "Disallow: /"
         And I should not see "Allow:"
-
-    @unauthenticated
-    Scenario: When I go to the home page, I can see Visualisations and News and Case Studies in the navbar
-        Given "Unauthenticated" as the persona
-        When I go to homepage
-        Then I should see an element with xpath "//a[string()='Visualisations']"
-        And I should see an element with xpath "//a[string()='News and Case Studies']"

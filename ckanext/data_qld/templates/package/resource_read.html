@@ -140,7 +140,7 @@
         {% if res.schema %}
             {{ h.get_validation_badge(res)|safe }}
             {% set type = 'asset' %}
-            {% include 'validation/snippets/validation_style_' ~ type ~ '.html' %}
+            {% include 'validation/snippets/validation_report_' ~ type ~ '.html' %}
         {% endif %}
     </h1>
 {% endblock %}
