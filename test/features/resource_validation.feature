@@ -109,10 +109,8 @@ Feature: Resource validation
         And I press the resource edit button
         And I upload "invalid.csv" of type "CSV" to resource
         And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
-        Then I should see "The form contains invalid entries"
-        And I should see "There are validation issues with this file"
-        When I click the link with text that contains "report"
-        Then I should see "Data Validation Report"
-        And I should see "Incorrect Label"
-        And I should see "Extra Label"
-        And I should see "Extra Cell"
+        And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'failure']" but not more than 10 times
+        When I press the element with xpath "//a[contains(@class, 'validation-badge')]"
+        Then I should see "Incorrect Label" within 2 seconds
+        And I should see "Extra Label" within 2 seconds
+        And I should see "Extra Cell" within 2 seconds
