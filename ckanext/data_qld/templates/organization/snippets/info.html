@@ -1,0 +1,16 @@
+{% ckan_extends %}
+
+{% block image %}{% endblock %}
+
+{% block description %}
+  {% if organization.description %}
+    <p class="description">
+      {{ h.markdown_extract(organization.description, 180) }}
+    </p>
+    <p class="read-more">
+      {% link_for _('read more'), named_route=organization.type ~ '.about', id=organization.name %}
+    </p>
+  {% endif %}
+{% endblock %}
+
+{% block package_openness %}{% endblock %}
