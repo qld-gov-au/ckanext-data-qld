@@ -11,5 +11,5 @@
 -e git+https://github.com/qld-gov-au/ckanext-validation.git@develop#egg=ckanext-validation
 -e git+https://github.com/qld-gov-au/ckanext-xloader.git@1.2.0-qgov.1#egg=ckanext-xloader
 -e git+https://github.com/qld-gov-au/ckanext-ytp-comments.git@2.5.0#egg=ckanext-ytp-comments
--e git+https://github.com/qld-gov-au/ckanext-resource-visibility.git@2.1.1#egg=ckanext-resource-visibility
+-e git+https://github.com/qld-gov-au/ckanext-resource-visibility.git@2.1.2#egg=ckanext-resource-visibility
 -e git+https://github.com/qld-gov-au/ckanext-validation-schema-generator.git@2.0.0#egg=ckanext-validation-schema-generator
