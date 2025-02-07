@@ -22,7 +22,7 @@ CKAN_GIT_ORG=qld-gov-au
 SOLR_VERSION=9
 
 if [ "$CKAN_VERSION" = "2.11" ]; then
-    CKAN_GIT_VERSION=ckan-2.11.1
+    CKAN_GIT_VERSION=ckan-2.11.2-qgov.1
 elif [ "$CKAN_VERSION" = "2.10" ]; then
     CKAN_GIT_VERSION=ckan-2.10.5-qgov.5
     SOLR_VERSION=8
