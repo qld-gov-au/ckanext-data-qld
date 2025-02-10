@@ -1,9 +1,10 @@
 # encoding: utf-8
 
 import ckan.authz as authz
-from ckantoolkit import _
+from ckantoolkit import _, auth_allow_anonymous_access
 
 
+@auth_allow_anonymous_access
 def has_user_permission_for_some_org(context, data_dict):
     user = context.get('user', '')
     permission = data_dict.get('permission', '')
@@ -14,6 +15,7 @@ def has_user_permission_for_some_org(context, data_dict):
                 'msg': _('User {0} has no {1} permission for any organisation'.format(user, permission))}
 
 
+@auth_allow_anonymous_access
 def has_user_permission_for_org(context, data_dict):
     user = context.get('user', '')
     org_id = data_dict.get('org_id', '')
