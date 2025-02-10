@@ -26,12 +26,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ckan-version: ['2.10']
+        ckan-version: ['2.11', '2.10']
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
         experimental: [false]
         include:
-          - ckan-version: '2.11'
-            experimental: true
           - ckan-version: 'master'
             experimental: true  #master is unstable, good to know if we are compatible or not
 
