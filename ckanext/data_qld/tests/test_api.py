@@ -75,7 +75,7 @@ def _get_resource_read_url(package_id, resource_id):
 def _get_pkg_dict(app, url, package_id, user=None):
     response = app.get(
         url=url,
-        params={"name_or_id": package_id},
+        params={"id": package_id},
         status=200,
         extra_environ={"REMOTE_USER": str(user["name"]) if user else ""},
     )
@@ -105,7 +105,7 @@ class TestApiPrivacyAssessment:
                          request_privacy_assessment=const.YES)
 
         response = app.get(url=pkg_show_url,
-                           params={"name_or_id": dataset["id"]},
+                           params={"id": dataset["id"]},
                            status=200,
                            extra_environ={"REMOTE_USER": ""})
         resource = response.json['result']['resources'][0]
@@ -120,7 +120,7 @@ class TestApiPrivacyAssessment:
                          request_privacy_assessment=const.YES)
 
         response = app.get(url=pkg_show_url,
-                           params={"name_or_id": dataset["id"]},
+                           params={"id": dataset["id"]},
                            status=200,
                            extra_environ={"REMOTE_USER": str(user["name"])})
         resource = response.json['result']['resources'][0]
@@ -140,7 +140,7 @@ class TestApiPrivacyAssessment:
                          request_privacy_assessment=const.YES)
 
         response = app.get(url=pkg_show_url,
-                           params={"name_or_id": dataset["id"]},
+                           params={"id": dataset["id"]},
                            status=200,
                            extra_environ={"REMOTE_USER": str(user['name'])})
 
@@ -171,7 +171,7 @@ class TestApiPrivacyAssessment:
         for user in [user1, user2]:
             response = app.get(
                 url=pkg_show_url,
-                params={"name_or_id": dataset["id"]},
+                params={"id": dataset["id"]},
                 status=200,
                 extra_environ={"REMOTE_USER": str(user['name'])})
             resource = response.json['result']['resources'][0]
@@ -198,7 +198,7 @@ class TestApiPrivacyAssessment:
         for user in [user1, user2]:
             response = app.get(
                 url=pkg_show_url,
-                params={"name_or_id": dataset["id"]},
+                params={"id": dataset["id"]},
                 status=200,
                 extra_environ={"REMOTE_USER": str(user['name'])})
             resource = response.json['result']['resources'][0]
@@ -214,7 +214,7 @@ class TestApiPrivacyAssessment:
 
         response = app.get(
             url=pkg_show_url,
-            params={"name_or_id": dataset["id"]},
+            params={"id": dataset["id"]},
             status=200,
             extra_environ={"REMOTE_USER": str(sysadmin['name'])})
         resource = response.json['result']['resources'][0]
@@ -258,7 +258,7 @@ class TestResourceVisibility:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           params={"name_or_id": dataset["id"]},
+                           params={"id": dataset["id"]},
                            status=200,
                            extra_environ={"REMOTE_USER": ""})
         pkg_dict = response.json['result']
@@ -274,7 +274,7 @@ class TestResourceVisibility:
         resource_factory(package_id=dataset["id"])
 
         response = app.get(url=pkg_show_url,
-                           params={"name_or_id": dataset["id"]},
+                           params={"id": dataset["id"]},
                            status=200,
                            extra_environ={"REMOTE_USER": ""})
         pkg_dict = response.json['result']
@@ -287,7 +287,7 @@ class TestResourceVisibility:
         dataset = dataset_factory()
 
         response = app.get(url=pkg_show_url,
-                           params={"name_or_id": dataset["id"]},
+                           params={"id": dataset["id"]},
                            status=200,
                            extra_environ={"REMOTE_USER": str(user["name"])})
         pkg_dict = response.json['result']
@@ -325,7 +325,7 @@ class TestResourceVisibility:
         for user in [user1, user2]:
             response = app.get(
                 url=pkg_show_url,
-                params={"name_or_id": dataset["id"]},
+                params={"id": dataset["id"]},
                 status=200,
                 extra_environ={"REMOTE_USER": str(user['name'])})
             pkg_dict = response.json['result']
@@ -341,7 +341,7 @@ class TestResourceVisibility:
 
         response = app.get(
             url=pkg_show_url,
-            params={"name_or_id": dataset["id"]},
+            params={"id": dataset["id"]},
             status=200,
             extra_environ={"REMOTE_USER": str(sysadmin['name'])})
         pkg_dict = response.json['result']
