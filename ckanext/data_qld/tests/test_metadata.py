@@ -56,8 +56,8 @@ class TestCreateData:
         assert dataset["default_data_schema"]
         assert not dataset['schema_upload']
 
-    def test_json_schema(self, dataset_factory):
-        dataset = dataset_factory()
+    def test_json_schema(self, dataset_factory, dataset_schema):
+        dataset = dataset_factory(default_data_schema=dataset_schema)
 
         assert dataset["default_data_schema"]
         assert not dataset['schema_upload']
