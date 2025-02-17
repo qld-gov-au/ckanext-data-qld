@@ -1,9 +1,22 @@
 # encoding: utf-8
 
+import flask_babel
 import re
 
 import ckan.lib.formatters as formatters
-from ckantoolkit import Invalid
+from ckantoolkit import config, Invalid
+
+GET_LOCALE = flask_babel.get_locale
+
+
+def _get_locale_wrapper() -> str:
+    """ Fall back to the configured default locale if none is present,
+    typically because we're outside a Flask context (eg in batch jobs).
+    """
+    return GET_LOCALE() or config.get('ckan.locale_default')
+
+
+flask_babel.get_locale = _get_locale_wrapper
 
 
 def filesize_converter(value, context):

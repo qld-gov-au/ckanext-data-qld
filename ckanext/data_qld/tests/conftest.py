@@ -15,6 +15,8 @@ import ckan.tests.helpers as helpers
 from ckan.tests import factories
 
 from ckan.lib import uploader
+from ckan.plugins.toolkit import check_ckan_version
+
 from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
 from ckanext.ytp.comments import model as ytp_model
@@ -76,14 +78,6 @@ class ResourceFactory(factories.Resource):
 
     package_id = factory.LazyAttribute(lambda _: DatasetFactory()["id"])
 
-    @classmethod
-    def _create(cls, target_class, *args, **kwargs):
-        if args:
-            assert False, "Positional args aren't supported, use keyword args."
-
-        kwargs.setdefault("context", {})
-        return helpers.call_action("resource_create", **kwargs)
-
 
 @pytest.fixture
 def resource_factory():
@@ -141,22 +135,24 @@ def _get_default_schema():
 
 @pytest.fixture
 def sysadmin():
-    return factories.Sysadmin()
+    return factories.SysadminWithToken()
 
 
 @pytest.fixture
 def user():
-    return factories.User()
+    return factories.UserWithToken()
 
 
 @pytest.fixture
 def user_factory():
-    return factories.User
+    return factories.UserWithToken
 
 
 @pytest.fixture
-def clean_db(reset_db):
+def clean_db(reset_db, migrate_db_for):
     reset_db()
+    if check_ckan_version('2.11'):
+        migrate_db_for('activity')
 
     archival_init()
     qa_init()

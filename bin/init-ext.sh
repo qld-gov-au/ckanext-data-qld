@@ -33,9 +33,6 @@ install_requirements () {
 }
 
 . "${APP_DIR}"/bin/activate
-if [ "$CKAN_VERSION" = "2.9" ]; then
-    pip install "setuptools>=44.1.0,<71"
-fi
 install_requirements . dev-requirements requirements-dev
 install_requirements . extensions
 for extension in . `ls -d $SRC_DIR/ckanext-*`; do
