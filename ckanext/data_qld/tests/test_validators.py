@@ -2,12 +2,16 @@ import pytest
 
 import ckan.lib.navl.dictization_functions as df
 import ckan.model as model
+from ckan.tests import factories
 
 from ckanext.resource_visibility.validators import privacy_assessment_result
 
 
-def _make_context():
-    return {"model": model, "session": model.Session}
+def _make_context(user=None):
+    if user:
+        return {"model": model, "session": model.Session, "user": user['name']}
+    else:
+        return {"model": model, "session": model.Session}
 
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage",
@@ -17,10 +21,10 @@ class TestPrivacyAssessmentResultValidator:
     Test that only sysadmin is able to edit a resource
     '''
 
-    def test_non_sysadmins_restricted_to_edit(self, user, dataset_factory,
+    def test_non_sysadmins_restricted_to_edit(self, dataset_factory,
                                               resource_factory):
-        context = _make_context()
-        context['user'] = user['name']
+        user = factories.User()
+        context = _make_context(user)
 
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
@@ -40,9 +44,9 @@ class TestPrivacyAssessmentResultValidator:
         assert "You are not allowed to edit this field." in errors[key]
 
     def test_non_sysadmins_restricted_to_edit_if_value_didnt_change(
-            self, user, dataset_factory, resource_factory):
-        context = _make_context()
-        context['user'] = user['name']
+            self, dataset_factory, resource_factory):
+        user = factories.User()
+        context = _make_context(user)
 
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
@@ -58,10 +62,10 @@ class TestPrivacyAssessmentResultValidator:
 
         privacy_assessment_result(key, data, errors, context)
 
-    def test_non_sysadmins_cannot_empty_field(self, user, dataset_factory,
+    def test_non_sysadmins_cannot_empty_field(self, dataset_factory,
                                               resource_factory):
-        context = _make_context()
-        context['user'] = user['name']
+        user = factories.User()
+        context = _make_context(user)
 
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
@@ -80,10 +84,10 @@ class TestPrivacyAssessmentResultValidator:
 
         assert "You are not allowed to edit this field." in errors[key]
 
-    def test_sysadmins_allowed(self, sysadmin, dataset_factory,
+    def test_sysadmins_allowed(self, dataset_factory,
                                resource_factory):
-        context = _make_context()
-        context['user'] = sysadmin['name']
+        sysadmin = factories.Sysadmin()
+        context = _make_context(sysadmin)
 
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"])

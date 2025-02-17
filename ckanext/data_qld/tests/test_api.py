@@ -9,7 +9,6 @@ from ckan.plugins import toolkit as tk
 
 from ckanext.resource_visibility import constants as const
 
-from ckanext.data_qld.tests.conftest import _get_resource_schema
 from ckanext.data_qld.constants import FIELD_ALIGNMENT, FIELD_DEFAULT_SCHEMA
 
 
@@ -44,8 +43,8 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_REQUEST_ASSESS not in resource
         assert const.FIELD_ASSESS_RESULT not in resource
 
-    def test_excluded_for_regular_user(self, dataset_factory, resource_factory,
-                                       user):
+    def test_excluded_for_regular_user(self, dataset_factory, resource_factory):
+        user = factories.User()
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          request_privacy_assessment=const.YES)
@@ -56,7 +55,8 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_REQUEST_ASSESS not in resource
         assert const.FIELD_ASSESS_RESULT not in resource
 
-    def test_excluded_for_member(self, dataset_factory, resource_factory, user):
+    def test_excluded_for_member(self, dataset_factory, resource_factory):
+        user = factories.User()
         org = factories.Organization(users=[{
             "name": user["id"],
             "capacity": "member"
@@ -74,11 +74,11 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT not in resource
 
     def test_excluded_for_editor_and_admin_of_another_org(
-            self, dataset_factory, user_factory, resource_factory):
+            self, dataset_factory, resource_factory):
         """An editor or administrator of an organization must have a special
         permission only within that organization and not in others."""
-        user1 = user_factory()
-        user2 = user_factory()
+        user1 = factories.User()
+        user2 = factories.User()
         factories.Organization(users=[{
             "name": user1["id"],
             "capacity": "editor"
@@ -98,10 +98,9 @@ class TestApiPrivacyAssessment:
             assert const.FIELD_REQUEST_ASSESS not in resource
             assert const.FIELD_ASSESS_RESULT not in resource
 
-    def test_present_for_editor_and_admin(self, dataset_factory, user_factory,
-                                          resource_factory):
-        user1 = user_factory()
-        user2 = user_factory()
+    def test_present_for_editor_and_admin(self, dataset_factory, resource_factory):
+        user1 = factories.User()
+        user2 = factories.User()
         org = factories.Organization(users=[{
             "name": user1["id"],
             "capacity": "editor"
@@ -121,8 +120,8 @@ class TestApiPrivacyAssessment:
             assert const.FIELD_REQUEST_ASSESS in resource
             assert const.FIELD_ASSESS_RESULT in resource
 
-    def test_present_for_sysadmin(self, dataset_factory, resource_factory,
-                                  sysadmin):
+    def test_present_for_sysadmin(self, dataset_factory, resource_factory):
+        sysadmin = factories.Sysadmin()
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"],
                          request_privacy_assessment=const.YES)
@@ -181,7 +180,8 @@ class TestResourceVisibility:
         assert pkg_dict["resources"]
         assert pkg_dict["num_resources"] == 1
 
-    def test_excluded_for_regular_user(self, dataset_factory, user):
+    def test_excluded_for_regular_user(self, dataset_factory):
+        user = factories.User()
         dataset = dataset_factory()
 
         pkg_dict = _get_pkg_dict(dataset['id'], user)
@@ -190,7 +190,8 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 0
 
     def test_resource_page_not_accessible_for_regular_user_if_hidden(
-            self, dataset_factory, resource_factory, user):
+            self, dataset_factory, resource_factory):
+        user = factories.User()
         dataset = dataset_factory()
         resource = resource_factory(package_id=dataset["id"],
                                     resource_visible="FALSE")
@@ -201,11 +202,9 @@ class TestResourceVisibility:
                 data_dict={"id": resource['id']}
             )
 
-    def test_visible_for_editor_or_admin(self, dataset_factory,
-                                         resource_factory,
-                                         user_factory):
-        user1 = user_factory()
-        user2 = user_factory()
+    def test_visible_for_editor_or_admin(self, dataset_factory, resource_factory):
+        user1 = factories.User()
+        user2 = factories.User()
         org = factories.Organization(users=[{
             "name": user1["id"],
             "capacity": "editor"
@@ -223,8 +222,8 @@ class TestResourceVisibility:
             assert len(pkg_dict["resources"]) == 1
             assert pkg_dict["num_resources"] == 1
 
-    def test_visible_for_sysadmin(self, dataset_factory, resource_factory,
-                                  sysadmin):
+    def test_visible_for_sysadmin(self, dataset_factory, resource_factory):
+        sysadmin = factories.Sysadmin()
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
@@ -235,8 +234,8 @@ class TestResourceVisibility:
         assert pkg_dict["num_resources"] == 2
 
     def test_regular_user_different_conditions(self, dataset_factory,
-                                               resource_factory, user):
-
+                                               resource_factory):
+        user = factories.User()
         # not resource_visible -> HIDE
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"], resource_visible="FALSE")
@@ -309,7 +308,8 @@ class TestResourceVisibility:
 class TestSchemaAlignment:
 
     def test_update_and_patch_default_schema(self, dataset_factory,
-                                             resource_factory, user):
+                                             resource_factory):
+        user = factories.User()
         org = factories.Organization(users=[{
             "name": user["id"],
             "capacity": "editor"
@@ -341,7 +341,8 @@ class TestSchemaAlignment:
         assert 'default_data_schema' not in pkg_dict
 
     def test_create_resource_with_custom_schema(self, dataset_factory,
-                                                resource_factory, user):
+                                                resource_factory):
+        user = factories.User()
         org = factories.Organization(users=[{
             "name": user["id"],
             "capacity": "editor"
@@ -366,7 +367,8 @@ class TestSchemaAlignment:
         assert resource['schema'] == schema
 
     def test_align_default_schema_visible_via_api(self, dataset_factory,
-                                                  resource_factory, user):
+                                                  resource_factory):
+        user = factories.User()
         dataset = dataset_factory()
         resource_factory(package_id=dataset["id"])
 
@@ -380,29 +382,30 @@ class TestSchemaAlignment:
 class TestDefaultSchemaAlignment:
 
     def test_update_default_schema_triggers_alignment_check(
-            self, dataset_factory, resource_factory, sysadmin):
+            self, dataset_factory, resource_factory, resource_schema):
         """Update of a default_schema must trigger check of schemas alignment"""
+        user = factories.User()
         dataset = dataset_factory()
-        resource = resource_factory(package_id=dataset["id"])
+        resource = resource_factory(package_id=dataset["id"], schema=resource_schema)
 
         assert not resource[FIELD_ALIGNMENT]
 
         call_action("package_patch",
-                    {"user": sysadmin['name']},
+                    {"user": user['name']},
                     id=dataset["id"],
-                    default_data_schema=_get_resource_schema())
+                    default_data_schema=resource_schema)
 
         resource = call_action("resource_show", id=resource["id"])
         assert resource[FIELD_ALIGNMENT]
 
-    def test_set_empty_default_schema(self, dataset_factory, resource_factory, sysadmin):
-        schema = _get_resource_schema()
-        dataset = dataset_factory(**{FIELD_DEFAULT_SCHEMA: schema})
-        resource = resource_factory(package_id=dataset["id"])
+    def test_set_empty_default_schema(self, dataset_factory, resource_factory, resource_schema):
+        user = factories.User()
+        dataset = dataset_factory(**{FIELD_DEFAULT_SCHEMA: resource_schema})
+        resource = resource_factory(package_id=dataset["id"], schema=resource_schema)
 
         assert resource[FIELD_ALIGNMENT]
 
-        call_action("package_patch", {"user": sysadmin['name']},
+        call_action("package_patch", {"user": user['name']},
                     id=dataset["id"], default_data_schema="")
 
         resource = call_action("resource_show", id=resource["id"])
