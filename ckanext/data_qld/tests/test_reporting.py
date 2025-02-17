@@ -100,7 +100,7 @@ class TestAdminReportDeIdentifiedNoSchema:
                          "mock_storage", "do_not_validate")
 class TestAdminReportCSVExport:
 
-    def test_as_regular_user(self, app, user):
+    def test_as_regular_user_is_unauthorised(self, app, user):
         app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
         org_id = factories.Organization()["id"]
 

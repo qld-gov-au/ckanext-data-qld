@@ -53,6 +53,7 @@ def get_username():
     if 'user' in dir(tk.g):
         return tk.g.user
     elif tk.current_user:
+        # CKAN is moving toward replacing 'g.user' with 'current_user'
         return tk.current_user.name
     else:
         return None
@@ -264,6 +265,7 @@ def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max
 def gather_admin_metrics(org_id, permission):
     """Collect admin statistics metrics for the provided organisation"""
 
+    # get the current authentication info for our API calls
     context = {'auth_user_obj': tk.current_user, 'user': tk.current_user.name}
 
     data_dict = {
