@@ -52,6 +52,9 @@ def get_username():
     # 'g' is not a regular data structure so we can't use 'hasattr'
     if 'user' in dir(tk.g):
         return tk.g.user
+    elif tk.current_user:
+        # CKAN is moving toward replacing 'g.user' with 'current_user'
+        return tk.current_user.name
     else:
         return None
 
