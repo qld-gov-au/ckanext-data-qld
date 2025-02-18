@@ -9,6 +9,7 @@ from ckan.plugins import toolkit as tk
 
 from ckanext.resource_visibility import constants as const
 
+from ckanext.data_qld.tests.conftest import _get_resource_schema
 from ckanext.data_qld.constants import FIELD_ALIGNMENT, FIELD_DEFAULT_SCHEMA
 
 
@@ -382,26 +383,27 @@ class TestSchemaAlignment:
 class TestDefaultSchemaAlignment:
 
     def test_update_default_schema_triggers_alignment_check(
-            self, dataset_factory, resource_factory, resource_schema):
+            self, dataset_factory, resource_factory):
         """Update of a default_schema must trigger check of schemas alignment"""
         user = factories.User()
         dataset = dataset_factory()
-        resource = resource_factory(package_id=dataset["id"], schema=resource_schema)
+        resource = resource_factory(package_id=dataset["id"])
 
         assert not resource[FIELD_ALIGNMENT]
 
         call_action("package_patch",
                     {"user": user['name']},
                     id=dataset["id"],
-                    default_data_schema=resource_schema)
+                    default_data_schema=_get_resource_schema())
 
         resource = call_action("resource_show", id=resource["id"])
         assert resource[FIELD_ALIGNMENT]
 
-    def test_set_empty_default_schema(self, dataset_factory, resource_factory, resource_schema):
+    def test_set_empty_default_schema(self, dataset_factory, resource_factory):
+        schema = _get_resource_schema()
         user = factories.User()
-        dataset = dataset_factory(**{FIELD_DEFAULT_SCHEMA: resource_schema})
-        resource = resource_factory(package_id=dataset["id"], schema=resource_schema)
+        dataset = dataset_factory(**{FIELD_DEFAULT_SCHEMA: schema})
+        resource = resource_factory(package_id=dataset["id"])
 
         assert resource[FIELD_ALIGNMENT]
 
