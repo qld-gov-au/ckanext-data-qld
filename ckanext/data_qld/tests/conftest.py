@@ -11,10 +11,11 @@ from faker import Faker
 from werkzeug.datastructures import FileStorage as MockFileStorage
 
 from ckan import model
-import ckan.tests.helpers as helpers
-from ckan.tests import factories
+from ckan.tests import factories, helpers
 
 from ckan.lib import uploader
+from ckan.plugins.toolkit import check_ckan_version
+
 from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
 from ckanext.ytp.comments import model as ytp_model
@@ -155,8 +156,10 @@ def user_factory():
 
 
 @pytest.fixture
-def clean_db(reset_db):
+def clean_db(reset_db, migrate_db_for):
     reset_db()
+    if check_ckan_version('2.11'):
+        migrate_db_for('activity')
 
     archival_init()
     qa_init()
