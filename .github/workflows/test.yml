@@ -55,7 +55,7 @@ jobs:
         continue-on-error: ${{ matrix.experimental }}
 
       - name: Unit tests
-        if: ${{ matrix.behave-tag == 'smoke' }}
+        if: ${{ matrix.behave-tag == 'smoke' || matrix.behave-tag == '' }}
         run: bin/test.sh
         timeout-minutes: 15
         continue-on-error: ${{ matrix.experimental }}

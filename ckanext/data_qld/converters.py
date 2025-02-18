@@ -10,6 +10,9 @@ GET_LOCALE = flask_babel.get_locale
 
 
 def _get_locale_wrapper() -> str:
+    """ Fall back to the configured default locale if none is present,
+    typically because we're outside a Flask context (eg in batch jobs).
+    """
     return GET_LOCALE() or config.get('ckan.locale_default')
 
 
