@@ -1,11 +1,11 @@
 # encoding: utf-8
 
-import ckantoolkit as toolkit
+import ckantoolkit as tk
 
 from . import constants, helpers
 
 
-@toolkit.chained_auth_function
+@tk.chained_auth_function
 def update_datarequest(next_auth, context, data_dict):
     # Users part of the default data request organisation or selected organisation who have admin/editor access
     # If Auth returns false call the next_auth function in the chain to check their access
@@ -15,7 +15,7 @@ def update_datarequest(next_auth, context, data_dict):
         return next_auth(context, data_dict)
 
 
-@toolkit.chained_auth_function
+@tk.chained_auth_function
 def close_datarequest(next_auth, context, data_dict):
     # Users part of the default data request organisation or selected organisation who have admin access.
     # If Auth returns false, call the next_auth function in the chain to check their access.
@@ -55,7 +55,7 @@ def user_has_datarequest_admin_access(datarequest_id, include_editor_access, con
     # User has admin/editor access so check if they are a member of the default_organisation_id or datarequest_organisation_id
     elif user_has_access:
         default_organisation_id = helpers.datarequest_default_organisation_id()
-        datarequest_organisation_id = toolkit.get_action(constants.SHOW_DATAREQUEST)(
+        datarequest_organisation_id = tk.get_action(constants.SHOW_DATAREQUEST)(
             context, {'id': datarequest_id}).get('organization_id')
         for organisation in organisation_list:
             print('organisation.id: s%', organisation.id)

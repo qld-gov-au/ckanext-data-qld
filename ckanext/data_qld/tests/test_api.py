@@ -5,7 +5,7 @@ import pytest
 from ckan import model
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
-from ckan.plugins import toolkit as tk
+import ckantoolkit as tk
 
 from ckanext.resource_visibility import constants as const
 

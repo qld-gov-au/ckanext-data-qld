@@ -14,7 +14,7 @@ from ckan import model
 from ckan.tests import factories, helpers
 
 from ckan.lib import uploader
-from ckan.plugins.toolkit import check_ckan_version
+from ckantoolkit import check_ckan_version
 
 from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init

@@ -1,7 +1,7 @@
 import pytest
 
 import ckan.model as model
-import ckan.plugins.toolkit as tk
+import ckantoolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
