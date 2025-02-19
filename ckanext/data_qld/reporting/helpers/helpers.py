@@ -265,6 +265,9 @@ def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max
 def gather_admin_metrics(org_id, permission):
     """Collect admin statistics metrics for the provided organisation"""
 
+    # get the current authentication info for our API calls
+    context = {'auth_user_obj': tk.current_user, 'user': tk.current_user.name}
+
     data_dict = {
         'org_id': org_id,
         'return_count_only': True,
@@ -272,12 +275,12 @@ def gather_admin_metrics(org_id, permission):
     }
 
     return {
-        'de_identified_datasets': tk.get_action('de_identified_datasets')({}, data_dict),
-        'de_identified_datasets_no_schema': tk.get_action('de_identified_datasets_no_schema')({}, data_dict),
-        'overdue_datasets': tk.get_action('overdue_datasets')({}, data_dict),
-        'datasets_no_groups': tk.get_action('datasets_no_groups')({}, data_dict),
-        'datasets_no_tags': tk.get_action('datasets_no_tags')({}, data_dict),
-        'pending_privacy_assessment': tk.get_action('datasets_pending_privacy_assessment')({}, data_dict),
+        'de_identified_datasets': tk.get_action('de_identified_datasets')(context, data_dict),
+        'de_identified_datasets_no_schema': tk.get_action('de_identified_datasets_no_schema')(context, data_dict),
+        'overdue_datasets': tk.get_action('overdue_datasets')(context, data_dict),
+        'datasets_no_groups': tk.get_action('datasets_no_groups')(context, data_dict),
+        'datasets_no_tags': tk.get_action('datasets_no_tags')(context, data_dict),
+        'pending_privacy_assessment': tk.get_action('datasets_pending_privacy_assessment')(context, data_dict),
     }
 
 

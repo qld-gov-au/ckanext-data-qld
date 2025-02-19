@@ -105,6 +105,7 @@ class TestAdminReportCSVExport:
         app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
         org_id = factories.Organization()["id"]
 
+        tk.current_user = model.User.get(user['id'])
         with pytest.raises(tk.NotAuthorized):
             helpers.gather_admin_metrics(org_id, "admin")
 
@@ -123,6 +124,7 @@ class TestAdminReportCSVExport:
                         id=dataset["id"],
                         notes="test")
 
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["datasets_no_groups"] == 3
@@ -147,6 +149,7 @@ class TestAdminReportCSVExport:
                                       de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
 
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["de_identified_datasets_no_schema"] == 0
@@ -179,6 +182,7 @@ class TestAdminReportCSVExport:
             value=count_from, key="data_last_updated")
         model.Session.commit()
 
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result[u"de_identified_datasets_no_schema"] == pkg_counter
