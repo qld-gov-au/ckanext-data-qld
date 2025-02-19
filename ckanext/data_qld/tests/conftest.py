@@ -77,14 +77,6 @@ class ResourceFactory(factories.Resource):
 
     package_id = factory.LazyAttribute(lambda _: DatasetFactory()["id"])
 
-    @classmethod
-    def _create(cls, target_class, *args, **kwargs):
-        if args:
-            assert False, "Positional args aren't supported, use keyword args."
-
-        kwargs.setdefault("context", {})
-        return helpers.call_action("resource_create", **kwargs)
-
 
 @pytest.fixture
 def resource_factory():
