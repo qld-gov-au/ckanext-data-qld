@@ -9,7 +9,7 @@ from datetime import datetime
 
 import six
 
-from ckan.plugins.toolkit import abort, config
+from ckantoolkit import abort, config
 
 from ckanext.data_qld.reporting.helpers import helpers
 

@@ -5,7 +5,7 @@ import pytest
 from ckan import model
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
-from ckan.plugins import toolkit as tk
+import ckantoolkit as tk
 
 from ckanext.resource_visibility import constants as const
 
@@ -25,7 +25,7 @@ def _get_pkg_dict(package_id, user=None):
     )
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage")
 class TestApiPrivacyAssessment:
     """privacy_assessment_result and `request_privacy_assessment` field
@@ -133,7 +133,7 @@ class TestApiPrivacyAssessment:
         assert const.FIELD_ASSESS_RESULT in resource
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage")
 class TestResourceVisibility:
     """We have a custom logic for resource visibility
@@ -377,7 +377,7 @@ class TestSchemaAlignment:
         assert FIELD_ALIGNMENT in pkg_dict['resources'][0]
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage")
 class TestDefaultSchemaAlignment:
 

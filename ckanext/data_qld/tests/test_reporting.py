@@ -1,14 +1,14 @@
 import pytest
 
 import ckan.model as model
-import ckan.plugins.toolkit as tk
+import ckantoolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.data_qld.reporting.helpers import helpers
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportDeIdentifiedNoSchema:
 
@@ -96,7 +96,7 @@ class TestAdminReportDeIdentifiedNoSchema:
         assert counter == 0
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportCSVExport:
 
@@ -124,7 +124,7 @@ class TestAdminReportCSVExport:
                         id=dataset["id"],
                         notes="test")
 
-        tk.current_user = model.Sysadmin.get(sysadmin['id'])
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["datasets_no_groups"] == 3
@@ -149,7 +149,7 @@ class TestAdminReportCSVExport:
                                       de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
 
-        tk.current_user = model.Sysadmin.get(sysadmin['id'])
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["de_identified_datasets_no_schema"] == 0
@@ -182,13 +182,13 @@ class TestAdminReportCSVExport:
             value=count_from, key="data_last_updated")
         model.Session.commit()
 
-        tk.current_user = model.Sysadmin.get(sysadmin['id'])
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result[u"de_identified_datasets_no_schema"] == pkg_counter
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportPendingPrivacyAssessment:
 

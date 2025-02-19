@@ -1,17 +1,20 @@
 # encoding: utf-8
 
+import os
 import json
+import six
 from datetime import datetime as dt
 
 import pytest
 import factory
 from faker import Faker
+from werkzeug.datastructures import FileStorage as MockFileStorage
 
 from ckan import model
 from ckan.tests import factories, helpers
 
 from ckan.lib import uploader
-from ckan.plugins.toolkit import check_ckan_version
+from ckantoolkit import check_ckan_version
 
 from ckanext.datarequests import db as datarequest_db
 from ckanext.qa.cli.commands import init_db as qa_init
@@ -37,7 +40,13 @@ class DatasetFactory(factories.Dataset):
     data_driven_application = "NO"
     security_classification = "PUBLIC"
     de_identified_data = "NO"
-    owner_org = factory.LazyAttribute(lambda _: factories.Organization()["id"])
+    owner_org = factory.LazyAttribute(lambda _: OrganizationFactory()["id"])
+    validation_options = ""
+    validation_status = ""
+    validation_timestamp = ""
+    default_data_schema = factory.LazyAttribute(lambda _: _get_default_schema())
+    schema_upload = ""
+    schema_json = ""
 
 
 @pytest.fixture
@@ -51,12 +60,22 @@ def dataset():
 
 
 class ResourceFactory(factories.Resource):
-    """ Provide some necessary defaults to ensure that eg we use a valid format
-    """
-    privacy_assessment_result = "Foo"
+    id = factory.LazyAttribute(lambda _: fake.uuid4())
+    description = factory.LazyAttribute(lambda _: fake.sentence())
+    name = factory.LazyAttribute(
+        lambda _: fake.slug() + "" + dt.now().strftime("%Y%m%d-%H%M%S"))
+    privacy_assessment_result = factory.LazyAttribute(
+        lambda _: fake.sentence())
+    last_modified = factory.LazyAttribute(lambda _: str(dt.now()))
     resource_visible = "TRUE"
-    schema = ""
+    schema = factory.LazyAttribute(lambda _: _get_resource_schema())
+
+    upload = factory.LazyAttribute(lambda _: _get_test_file())
     format = "CSV"
+    url_type = "upload"
+    url = None
+
+    package_id = factory.LazyAttribute(lambda _: DatasetFactory()["id"])
 
 
 @pytest.fixture
@@ -65,7 +84,27 @@ def resource_factory():
 
 
 @pytest.fixture
+def resource():
+    return ResourceFactory()
+
+
+def _get_test_file():
+    file_path = os.path.join(os.path.dirname(__file__), 'data/test.csv')
+
+    with open(file_path) as file:
+        test_file = six.BytesIO()
+        test_file.write(six.ensure_binary(file.read()))
+        test_file.seek(0)
+
+        return MockFileStorage(test_file, "test.csv")
+
+
+@pytest.fixture
 def resource_schema():
+    return _get_resource_schema()
+
+
+def _get_resource_schema():
     schema = {
         "fields": [{
             "format": "default",
@@ -84,6 +123,10 @@ def resource_schema():
 
 @pytest.fixture
 def dataset_schema():
+    return _get_default_schema()
+
+
+def _get_default_schema():
     schema = {
         "fields": [{
             "format": "default",
