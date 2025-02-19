@@ -1,5 +1,6 @@
 import pytest
 
+from ckan.tests import factories
 from ckan.tests.helpers import call_action
 from ckan.lib.helpers import url_for
 
@@ -21,13 +22,15 @@ class TestPrivacyAssessmentResultTracking:
         assert not data
 
     def test_updating_tracked(self, dataset_factory, resource_factory):
+        user = factories.User()
         dataset = dataset_factory(author_email=self.maintainer)
         resource = resource_factory(package_id=dataset["id"])
 
         data = get_updated_privacy_assessment_result()
         assert not data
 
-        call_action("resource_patch", {"ignore_auth": True},
+        call_action("resource_patch",
+                    {"user": user['name']},
                     id=resource["id"],
                     privacy_assessment_result=self.assess_result)
 
@@ -50,10 +53,12 @@ class TestPrivacyAssessmentResultTracking:
         assert tracked_data["url"] == resource_external_url
 
     def test_clean_updated_stack(self, dataset_factory, resource_factory):
+        user = factories.User()
         dataset = dataset_factory(author_email=self.maintainer)
         resource = resource_factory(package_id=dataset["id"])
 
-        call_action("resource_patch", {"ignore_auth": True},
+        call_action("resource_patch",
+                    {"user": user['name']},
                     id=resource["id"],
                     privacy_assessment_result=self.assess_result)
 
