@@ -99,6 +99,11 @@ def _get_test_file():
         return MockFileStorage(test_file, "test.csv")
 
 
+@pytest.fixture
+def resource_schema():
+    return _get_resource_schema()
+
+
 def _get_resource_schema():
     schema = {
         "fields": [{
@@ -116,6 +121,11 @@ def _get_resource_schema():
     return json.dumps(schema)
 
 
+@pytest.fixture
+def dataset_schema():
+    return _get_default_schema()
+
+
 def _get_default_schema():
     schema = {
         "fields": [{
@@ -130,21 +140,6 @@ def _get_default_schema():
         "missingValues": ["Default schema"]
     }
     return json.dumps(schema)
-
-
-@pytest.fixture
-def sysadmin():
-    return factories.Sysadmin()
-
-
-@pytest.fixture
-def user():
-    return factories.User()
-
-
-@pytest.fixture
-def user_factory():
-    return factories.User
 
 
 @pytest.fixture
