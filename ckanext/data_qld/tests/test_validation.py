@@ -25,7 +25,7 @@ class TestValidationDefineCreateMode:
         """Validation must be in async mode if we don't have a schema and dataset
         is de_identified"""
         dataset = dataset_factory(de_identified_data="YES")
-        resource = resource_factory(package_id=dataset["id"])
+        resource = resource_factory(package_id=dataset["id"], schema=None)
 
         mode = validation_settings.get_create_mode({}, resource)
         assert mode == validation_settings.ASYNC_MODE
@@ -74,7 +74,7 @@ class TestValidationDefineUpdateMode:
         """Validation must be in async mode if we don't have a schema and dataset
         is de_identified"""
         dataset = dataset_factory(de_identified_data="YES")
-        resource = resource_factory(package_id=dataset["id"])
+        resource = resource_factory(package_id=dataset["id"], schema=None)
 
         mode = validation_settings.get_update_mode({}, resource)
         assert mode == validation_settings.ASYNC_MODE
