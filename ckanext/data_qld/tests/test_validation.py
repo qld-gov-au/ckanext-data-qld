@@ -25,7 +25,7 @@ class TestValidationDefineCreateMode:
         """Validation must be in async mode if we don't have a schema and dataset
         is de_identified"""
         dataset = dataset_factory(de_identified_data="YES")
-        resource = resource_factory(package_id=dataset["id"], schema=None)
+        resource = resource_factory(package_id=dataset["id"])
 
         mode = validation_settings.get_create_mode({}, resource)
         assert mode == validation_settings.ASYNC_MODE
@@ -48,9 +48,8 @@ class TestValidationDefineCreateMode:
         sysadmin = factories.Sysadmin()
         dataset = dataset_factory(de_identified_data="YES")
         resource = resource_factory(package_id=dataset["id"],
-                                    schema=None,
                                     align_default_schema=1,
-                                    context={"ignore_auth": False, "user": sysadmin["name"]})
+                                    context={"user": sysadmin["name"]})
 
         mode = validation_settings.get_create_mode({}, resource)
         assert mode == validation_settings.SYNC_MODE
@@ -75,7 +74,7 @@ class TestValidationDefineUpdateMode:
         """Validation must be in async mode if we don't have a schema and dataset
         is de_identified"""
         dataset = dataset_factory(de_identified_data="YES")
-        resource = resource_factory(package_id=dataset["id"], schema=None)
+        resource = resource_factory(package_id=dataset["id"])
 
         mode = validation_settings.get_update_mode({}, resource)
         assert mode == validation_settings.ASYNC_MODE
@@ -98,9 +97,8 @@ class TestValidationDefineUpdateMode:
         sysadmin = factories.Sysadmin()
         dataset = dataset_factory(de_identified_data="YES")
         resource = resource_factory(package_id=dataset["id"],
-                                    schema=None,
                                     align_default_schema=1,
-                                    context={"ignore_auth": False, "user": sysadmin["name"]})
+                                    context={"user": sysadmin["name"]})
 
         mode = validation_settings.get_update_mode({}, resource)
         assert mode == validation_settings.SYNC_MODE

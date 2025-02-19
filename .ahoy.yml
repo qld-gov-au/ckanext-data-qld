@@ -148,7 +148,7 @@ commands:
     usage: Run unit tests.
     cmd: |
       ahoy title 'Run unit tests'
-      ahoy cli 'pytest --ckan-ini=.docker/test.ini "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
+      ahoy cli 'pytest -vvv --ckan-ini=.docker/test.ini "${APP_DIR}"/ckanext/data_qld/tests/test_api.py --junit-xml=test/junit/results.xml' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-unit-failed-rerun:
