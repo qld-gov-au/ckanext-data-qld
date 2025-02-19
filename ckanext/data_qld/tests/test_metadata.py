@@ -8,7 +8,7 @@ from ckan.tests import factories
 import ckan.logic as logic
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage")
 class TestCreateData:
 

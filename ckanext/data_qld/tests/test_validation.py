@@ -6,7 +6,7 @@ from ckan.tests import factories
 import ckanext.validation.settings as validation_settings
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db", "mock_storage")
+@pytest.mark.usefixtures("with_plugins", "with_request_context", "mock_storage")
 @pytest.mark.ckan_config(validation_settings.ASYNC_CREATE_KEY, True)
 class TestValidationDefineCreateMode:
 
@@ -56,7 +56,7 @@ class TestValidationDefineCreateMode:
         assert mode == validation_settings.SYNC_MODE
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db", "mock_storage")
+@pytest.mark.usefixtures("with_plugins", "with_request_context", "mock_storage")
 @pytest.mark.ckan_config(validation_settings.ASYNC_UPDATE_KEY, True)
 class TestValidationDefineUpdateMode:
 

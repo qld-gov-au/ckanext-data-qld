@@ -8,7 +8,7 @@ from ckan.tests.helpers import call_action
 from ckanext.data_qld.reporting.helpers import helpers
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportDeIdentifiedNoSchema:
 
@@ -96,7 +96,7 @@ class TestAdminReportDeIdentifiedNoSchema:
         assert counter == 0
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportCSVExport:
 
@@ -188,7 +188,7 @@ class TestAdminReportCSVExport:
         assert result[u"de_identified_datasets_no_schema"] == pkg_counter
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportPendingPrivacyAssessment:
 

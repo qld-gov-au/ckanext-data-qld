@@ -14,7 +14,7 @@ def _make_context(user=None):
         return {"model": model, "session": model.Session}
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context", "mock_storage",
+@pytest.mark.usefixtures("with_plugins", "with_request_context", "mock_storage",
                          "do_not_validate")
 class TestPrivacyAssessmentResultValidator:
     '''
