@@ -4,11 +4,12 @@ import logging
 
 from ckan import plugins
 
-from . import actions, auth_functions as auth, blueprints, click_cli, \
+from . import actions, blueprints, click_cli, \
     constants, converters, datarequest_auth_functions, helpers, validation
 import ckantoolkit as tk
 
 from ckanext.validation.interfaces import IDataValidation
+from ckanext.resource_visibility import auth_functions as visibility_auth_functions
 from ckanext.resource_visibility.constants import FIELD_DE_IDENTIFIED, YES
 
 from .dataset_deletion import helpers as dataset_deletion_helpers
@@ -129,8 +130,8 @@ class DataQldPlugin(plugins.SingletonPlugin):
             constants.UPDATE_DATAREQUEST_ORGANISATION: datarequest_auth_functions.update_datarequest_organisation,
             constants.CLOSE_DATAREQUEST: datarequest_auth_functions.close_datarequest,
             constants.OPEN_DATAREQUEST: datarequest_auth_functions.open_datarequest,
-            'has_user_permission_for_some_org': auth.has_user_permission_for_some_org,
-            'has_user_permission_for_org': auth.has_user_permission_for_org
+            'has_user_permission_for_some_org': visibility_auth_functions.has_user_permission_for_some_org,
+            'has_user_permission_for_org': visibility_auth_functions.has_user_permission_for_org
         }
 
     # IActions

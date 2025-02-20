@@ -1,7 +1,7 @@
 import json
 from six import string_types
 
-import ckan.plugins.toolkit as tk
+import ckantoolkit as tk
 from ckan.lib.uploader import _get_underlying_file
 
 import ckanext.scheming.helpers as sh

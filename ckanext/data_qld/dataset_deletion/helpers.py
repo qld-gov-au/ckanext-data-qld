@@ -23,7 +23,7 @@ def add_deletion_of_dataset_reason(context, data_dict):
     else:
         # UI Controller/View will only send the id in the data_dict
         # Retrieve value from request params
-        deletion_reason = request.params.get('deletion_reason')
+        deletion_reason = request.args.get('deletion_reason')
 
     if not deletion_reason:
         if is_api_request:

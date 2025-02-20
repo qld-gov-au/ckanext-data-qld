@@ -4,6 +4,14 @@
 #
 set -ex
 
+install_requirements_file () {
+    if [ "$TOOL" = "uv" ]; then
+        uv pip install --system -r "$1"
+    else
+        pip install -r "$1"
+    fi
+}
+
 install_requirements () {
     PROJECT_DIR=$1
     shift
@@ -12,34 +20,31 @@ install_requirements () {
     for filename_pattern in "$@"; do
         filename="$PROJECT_DIR/${filename_pattern}-$CKAN_VERSION.txt"
         if [ -f "$filename" ]; then
-            pip install --upgrade-strategy only-if-needed -r "$filename"
+            install_requirements_file "$filename"
             return 0
         fi
     done
     for filename_pattern in "$@"; do
         filename="$PROJECT_DIR/${filename_pattern}-$PYTHON_VERSION.txt"
         if [ -f "$filename" ]; then
-            pip install --upgrade-strategy only-if-needed -r "$filename"
+            install_requirements_file "$filename"
             return 0
         fi
     done
     for filename_pattern in "$@"; do
         filename="$PROJECT_DIR/$filename_pattern.txt"
         if [ -f "$filename" ]; then
-            pip install --upgrade-strategy only-if-needed -r "$filename"
+            install_requirements_file "$filename"
             return 0
         fi
     done
 }
 
 . "${APP_DIR}"/bin/activate
-if [ "$CKAN_VERSION" = "2.9" ]; then
-    pip install "setuptools>=44.1.0,<71"
-fi
 install_requirements . dev-requirements requirements-dev
 install_requirements . extensions
 for extension in . `ls -d $SRC_DIR/ckanext-*`; do
-    install_requirements $extension requirements pip-requirements
+    TOOL=uv install_requirements $extension requirements pip-requirements
 done
 pip install -e .
 installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1|")

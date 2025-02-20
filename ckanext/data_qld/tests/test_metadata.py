@@ -8,7 +8,7 @@ from ckan.tests import factories
 import ckan.logic as logic
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage")
 class TestCreateData:
 
@@ -56,8 +56,8 @@ class TestCreateData:
         assert dataset["default_data_schema"]
         assert not dataset['schema_upload']
 
-    def test_json_schema(self, dataset_factory):
-        dataset = dataset_factory()
+    def test_json_schema(self, dataset_factory, dataset_schema):
+        dataset = dataset_factory(default_data_schema=dataset_schema)
 
         assert dataset["default_data_schema"]
         assert not dataset['schema_upload']

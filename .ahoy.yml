@@ -152,10 +152,10 @@ commands:
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-unit-failed-rerun:
-    usage: Run unit tests.
+    usage: Re-run only the unit tests that failed.
     cmd: |
       ahoy title 'Re-run unit tests'
-      ahoy cli 'pytest --lf --ckan-ini=.docker/test.ini "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
+      ahoy cli 'pytest -vvv --lf --ckan-ini=.docker/test.ini "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:
@@ -177,8 +177,8 @@ commands:
         ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-multi_plugin" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       else
-        if [ "$BEHAVE_TAG" != "multi_plugin" ]; then
-            BEHAVE_TAG="$BEHAVE_TAG --tags=-multi_plugin"
+        if [ "$BEHAVE_TAG" != "" ] && [ "$BEHAVE_TAG" != "multi_plugin" ]; then
+          BEHAVE_TAG="$BEHAVE_TAG --tags=-multi_plugin"
         fi
         # run tests with the specified tag
         ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=$BEHAVE_TAG" \

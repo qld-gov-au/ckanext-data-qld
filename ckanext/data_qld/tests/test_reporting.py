@@ -1,14 +1,14 @@
 import pytest
 
 import ckan.model as model
-import ckan.plugins.toolkit as tk
+import ckantoolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.data_qld.reporting.helpers import helpers
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportDeIdentifiedNoSchema:
 
@@ -96,19 +96,21 @@ class TestAdminReportDeIdentifiedNoSchema:
         assert counter == 0
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportCSVExport:
 
-    def test_as_regular_user(self, app, user):
+    def test_as_regular_user_is_unauthorised(self, app):
+        user = factories.User()
         app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
         org_id = factories.Organization()["id"]
 
+        tk.current_user = model.User.get(user['id'])
         with pytest.raises(tk.NotAuthorized):
             helpers.gather_admin_metrics(org_id, "admin")
 
-    def test_as_sysadmin(self, app, dataset_factory, resource_factory,
-                         sysadmin):
+    def test_as_sysadmin(self, app, dataset_factory, resource_factory):
+        sysadmin = factories.Sysadmin()
         app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
         org_id = factories.Organization()["id"]
 
@@ -122,6 +124,7 @@ class TestAdminReportCSVExport:
                         id=dataset["id"],
                         notes="test")
 
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["datasets_no_groups"] == 3
@@ -135,8 +138,8 @@ class TestAdminReportCSVExport:
         u"ckanext.data_qld.reporting.de_identified_no_schema.count_from",
         u"2045-01-01")
     def test_set_de_identified_count_from_in_future(self, app, dataset_factory,
-                                                    resource_factory,
-                                                    sysadmin):
+                                                    resource_factory):
+        sysadmin = factories.Sysadmin()
         app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
         org_id = factories.Organization()["id"]
 
@@ -146,6 +149,7 @@ class TestAdminReportCSVExport:
                                       de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
 
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result["de_identified_datasets_no_schema"] == 0
@@ -161,8 +165,9 @@ class TestAdminReportCSVExport:
             ("2022-12-01T00:59", 0),
         ],
     )
-    def test_de_identified_parametrize(self, app, dataset_factory, sysadmin,
+    def test_de_identified_parametrize(self, app, dataset_factory,
                                        count_from, pkg_counter):
+        sysadmin = factories.Sysadmin()
         app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
         org_id = factories.Organization()["id"]
 
@@ -177,12 +182,13 @@ class TestAdminReportCSVExport:
             value=count_from, key="data_last_updated")
         model.Session.commit()
 
+        tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
 
         assert result[u"de_identified_datasets_no_schema"] == pkg_counter
 
 
-@pytest.mark.usefixtures("with_plugins", "with_request_context", "clean_db",
+@pytest.mark.usefixtures("with_plugins", "with_request_context",
                          "mock_storage", "do_not_validate")
 class TestAdminReportPendingPrivacyAssessment:
 

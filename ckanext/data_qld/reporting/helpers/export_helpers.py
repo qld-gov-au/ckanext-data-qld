@@ -9,7 +9,7 @@ from datetime import datetime
 
 import six
 
-from ckan.plugins.toolkit import abort, config
+from ckantoolkit import abort, config
 
 from ckanext.data_qld.reporting.helpers import helpers
 
@@ -112,7 +112,7 @@ def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, ro
 
 def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows, permission):
     """
-    Add admin eporting metrics for a specific organisation to the CSV data
+    Add admin reporting metrics for a specific organisation to the CSV data
     :param org:
     :param csv_header_row:
     :param row_properties:

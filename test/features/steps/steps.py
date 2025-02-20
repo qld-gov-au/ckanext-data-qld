@@ -89,7 +89,7 @@ def log_in(context):
 @when(u'I expand the browser height')
 def expand_height(context):
     # Work around x=null bug in Selenium set_window_size
-    context.browser.driver.set_window_rect(x=0, y=0, width=1024, height=3072)
+    context.browser.driver.set_window_rect(x=0, y=0, width=1366, height=3072)
 
 
 @when(u'I log in directly')
@@ -133,6 +133,27 @@ def request_reset(context):
         And I fill in "user" with "$name"
         And I press the element with xpath "//button[contains(string(), 'Request Reset')]"
     """)
+
+
+@then(u'I should see a search facet for "{title}" truncated to "{truncated_title}"')
+def truncated_facet_visible(context, title, truncated_title):
+    context.execute_steps(u"""
+        Then I should see an element with xpath "//li[contains(@class, 'nav-item')]//a[contains(string(), '{truncated_title}') and contains(string(), '...') and (contains(@title, '{title}') or contains(@data-bs-title, '{title}'))]"
+    """.format(title=title, truncated_title=truncated_title))
+
+
+@then(u'I should see an active search facet for "{title}" truncated to "{truncated_title}"')
+def active_truncated_facet_visible(context, title, truncated_title):
+    context.execute_steps(u"""
+        Then I should see an element with xpath "//li[contains(@class, 'nav-item') and contains(@class, 'active')]//a[contains(string(), '{truncated_title}') and contains(string(), '...') and (contains(@title, '{title}') or contains(@data-bs-title, '{title}'))]"
+    """.format(title=title, truncated_title=truncated_title))
+
+
+@when(u'I press the search facet pointing to "{title}"')
+def press_search_facet(context, title):
+    context.execute_steps(u"""
+        When I press the element with xpath "//li[contains(@class, 'nav-item')]//a[contains(@title, '{0}') or contains(@data-bs-title, '{0}')]"
+    """.format(title))
 
 
 @when(u'I fill in "{name}" with "{value}" if present')
@@ -301,7 +322,7 @@ def enter_resource_url(context, url):
     if url != "default":
         context.execute_steps(u"""
             When I clear the URL field
-            When I execute the script "$('#resource-edit [name=url]').val('{0}')"
+            And I execute the script "$('#resource-edit [name=url]').val('{0}')"
         """.format(url))
 
 
@@ -770,7 +791,7 @@ def lock_account(context):
     for x in range(11):
         context.execute_steps(u"""
             When I attempt to log in with password "incorrect password"
-            Then I should see "Bad username or password or reCAPTCHA."
+            Then I should see "Bad username or password."
         """)
 
 

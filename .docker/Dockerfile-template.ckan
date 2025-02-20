@@ -7,7 +7,6 @@ RUN ORIGINAL_USER=$(id -un)
 ARG SITE_URL=http://ckan:5000/
 ENV PYTHON_VERSION={PYTHON_VERSION}
 ENV CKAN_VERSION={CKAN_VERSION}
-ENV SOLR_VERSION={SOLR_VERSION}
 ENV CKAN_SITE_URL="${SITE_URL}"
 ENV PYTHON={PYTHON}
 
@@ -25,11 +24,7 @@ RUN chmod +x "${APP_DIR}"/bin/*.sh /usr/bin/ckan_cli
 
 RUN which ps || apt-get install -y procps
 RUN which psql || apt-get install -y postgresql-client
-
-# Install setuptools conditionally
-RUN if [ "$CKAN_VERSION" = "2.9" ]; then \
-        pip install "setuptools>=44.1.0,<71"; \
-    fi
+RUN pip install uv
 
 # Install CKAN.
 
