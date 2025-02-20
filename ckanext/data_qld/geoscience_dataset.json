@@ -1,0 +1,277 @@
+{
+  "scheming_version": 1,
+  "dataset_type": "geoscience",
+  "about": "A Geoscience harvester dataset schema",
+  "about_url": "http://github.com/ckan/ckanext-scheming",
+  "dataset_fields": [
+    {
+      "field_name": "title",
+      "label": "Title",
+      "preset": "data_qld_title",
+      "form_placeholder": "eg. A descriptive title"
+    },
+    {
+      "field_name": "name",
+      "label": "URL",
+      "preset": "dataset_slug",
+      "form_placeholder": "eg. my-dataset"
+    },
+    {
+      "field_name": "notes",
+      "label": "Description",
+      "form_snippet": "markdown.html",
+      "form_placeholder": "eg. Some useful notes about the data",
+      "required": true
+    },
+    {
+      "field_name": "tag_string",
+      "label": "Tags",
+      "preset": "tag_string_autocomplete",
+      "form_placeholder": "eg. economy, mental health, government"
+    },
+    {
+      "field_name": "license_id",
+      "label": "License",
+      "form_snippet": "license.html",
+      "help_text": "License definitions and additional information can be found at http://opendefinition.org/",
+      "required": true
+    },
+    {
+      "field_name": "owner_org",
+      "label": "Organization",
+      "preset": "dataset_organization"
+    },
+    {
+      "field_name": "data_last_updated",
+      "label": "Data last updated",
+      "form_snippet": null,
+      "display_snippet": "date.html",
+      "validators": "ignore_empty"
+    },
+    {
+      "field_name": "url",
+      "label": "Source",
+      "form_placeholder": "http://example.com/dataset.json",
+      "display_property": "foaf:homepage",
+      "display_snippet": "link.html"
+    },
+    {
+      "field_name": "version",
+      "label": "Version",
+      "validators": "scheming_required unicode_safe package_version_validator",
+      "form_placeholder": "1.0",
+      "required": true
+    },
+    {
+      "field_name": "author",
+      "label": "Author",
+      "form_placeholder": "Joe Bloggs",
+      "display_property": "dc:creator",
+      "display_snippet": null,
+      "form_snippet": null
+    },
+    {
+      "field_name": "author_email",
+      "label": "Email",
+      "form_placeholder": "joe@example.com",
+      "display_property": "dc:creator",
+      "display_snippet": "email.html",
+      "display_email_name_field": "author",
+      "required": true
+    },
+    {
+      "field_name": "maintainer",
+      "label": "Maintainer",
+      "form_placeholder": "Joe Bloggs",
+      "display_property": "dc:contributor",
+      "display_snippet": null,
+      "form_snippet": null
+    },
+    {
+      "field_name": "maintainer_email",
+      "label": "Maintainer Email",
+      "form_placeholder": "joe@example.com",
+      "display_property": "dc:contributor",
+      "display_email_name_field": "maintainer",
+      "display_snippet": null,
+      "form_snippet": null
+    },
+    {
+      "field_name": "security_classification",
+      "label": "Security Classification",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "PUBLIC",
+          "label": "PUBLIC"
+        },
+        {
+          "value": "UNCLASSIFIED",
+          "label": "UNCLASSIFIED"
+        }
+      ]
+    },
+    {
+      "field_name": "data_driven_application",
+      "label": "Used in data driven application",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ],
+      "help_text": "WARNING - This field identifies a critical dataset/resources used by external applications via API. To prevent accidental deletion, use caution when editing."
+    },
+    {
+      "field_name": "update_frequency",
+      "label": "Update Frequency",
+      "preset": "select",
+      "required": true,
+      "choices": [
+        {
+          "value": "near-realtime",
+          "label": "Near-realtime"
+        },
+        {
+          "value": "hourly",
+          "label": "Hourly"
+        },
+        {
+          "value": "daily",
+          "label": "Daily"
+        },
+        {
+          "value": "weekly",
+          "label": "Weekly"
+        },
+        {
+          "value": "fortnightly",
+          "label": "Fortnightly"
+        },
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "quarterly",
+          "label": "Quarterly"
+        },
+        {
+          "value": "half-yearly",
+          "label": "Half-yearly"
+        },
+        {
+          "value": "annually",
+          "label": "Annually"
+        },
+        {
+          "value": "non-regular",
+          "label": "Non-regular"
+        },
+        {
+          "value": "not-updated",
+          "label": "Not updated"
+        }
+      ]
+    },
+    {
+      "field_name": "next_update_due",
+      "label": "Next update due",
+      "form_snippet": "next_update_due.html",
+      "display_snippet": "date.html",
+      "validators": "ignore_empty convert_to_json_if_date"
+    },
+    {
+      "field_name": "de_identified_data",
+      "label": "Contains de-identified data",
+      "preset": "select",
+      "required": true,
+      "form_include_blank_choice": true,
+      "choices": [
+        {
+          "value": "NO",
+          "label": "NO"
+        },
+        {
+          "value": "YES",
+          "label": "YES"
+        }
+      ]
+    },
+    {
+      "field_name": "deletion_reason",
+      "label": "Deletion reason",
+      "form_snippet": null,
+      "display_snippet": null,
+      "create_validators": "ignore"
+    },
+    {
+      "field_name": "extra:access_rights",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "extra:theme",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "survey_type",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "survey_method",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "survey_resolution",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "earth_science_data_category",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "status",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "borehole_sub_purpose",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "borehole_class",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    },
+    {
+      "field_name": "borehole_purpose",
+      "form_snippet": null,
+      "display_snippet": null,
+      "validators": "ignore_missing unicode_safe"
+    }
+  ],
+  "resource_fields": []
+}

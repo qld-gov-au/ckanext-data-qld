@@ -1,0 +1,12 @@
+{% ckan_extends %}
+
+{% block resource_list %}
+
+{% if pkg.type == 'geoscience' %}
+<!-- No resources for geoscience datasets -->
+<p class="empty">This dataset was harvested</p>
+{% else %}
+    {{ super() }}
+{% endif %}
+
+{% endblock %}
