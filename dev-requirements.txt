@@ -8,7 +8,6 @@ Faker
 flake8==6.0.0
 idna>=3.7 # not directly required, pinned by Snyk to avoid a vulnerability
 mock
-pika>=1.1.0,<1.3.0 # resolve harvester conflict
 progressbar==2.5
 pytest-ckan
 python-magic==0.4.18
@@ -19,3 +18,5 @@ typer<0.11 # We still need Click 7 for now
 urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
 xlrd==1.2.0
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
+
+-e git+https://github.com/ckan/ckanext-harvest.git@v1.6.1#egg=ckanext-harvest

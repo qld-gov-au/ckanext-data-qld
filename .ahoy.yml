@@ -177,7 +177,7 @@ commands:
         ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-multi_plugin" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       else
-        if [ "$BEHAVE_TAG" != "" ] && [ "$BEHAVE_TAG" != "multi_plugin" ]; then
+        if [ "$BEHAVE_TAG" = "smoke" ] || [ "$BEHAVE_TAG" = "unauthenticated" ] || [ "$BEHAVE_TAG" = "OpenData" ] || [ "$BEHAVE_TAG" = "authenticated" ]; then
           BEHAVE_TAG="$BEHAVE_TAG --tags=-multi_plugin"
         fi
         # run tests with the specified tag
