@@ -4,6 +4,8 @@ import datetime
 import re
 from six import text_type
 
+import jinja2
+
 from ckan import model
 from ckan.lib import uploader
 from ckantoolkit import _, g, h, abort, asbool, check_ckan_version, \
@@ -438,7 +440,7 @@ def custom_label_function(facet_field, facet_item):
         elif facet_item['name'] == 'geoscience':
             return 'geoscience.data.qld.gov.au'
 
-    return facet_item['display_name']
+    return jinja2.filters.do_truncate(None, s=facet_item['display_name'], length=22, leeway=5)
 
 
 # based on
