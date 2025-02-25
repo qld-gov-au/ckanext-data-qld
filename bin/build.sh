@@ -26,6 +26,8 @@ if [ "$CKAN_VERSION" = "2.11" ]; then
 elif [ "$CKAN_VERSION" = "2.10" ]; then
     CKAN_GIT_VERSION=ckan-2.10.7-qgov.1
     SOLR_VERSION=8
+elif [ "$CKAN_VERSION" = "master" ]; then
+    CKAN_GIT_ORG=ckan
 fi
 
 sed "s|{CKAN_VERSION}|$CKAN_VERSION|g" .docker/Dockerfile-template.ckan \
