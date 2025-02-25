@@ -26,6 +26,7 @@ Feature: Data Request
     Scenario: User data request page is accessible via the user profile
         Given "CKANUser" as the persona
         When I log in
+        And I create a datarequest
         And I go to the "ckan_user" profile page
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
         Then the browser's URL should contain "/user/datarequest"
