@@ -95,6 +95,19 @@ def open_datarequest(context, data_dict):
 
 
 @tk.chained_action
+@tk.auth_allow_anonymous_access
+def package_search(original_action, context, data_dict):
+    search_results = original_action(context, data_dict)
+    if 'dataset_type' in search_results['search_facets']:
+        for item in search_results['search_facets']['dataset_type']['items']:
+            if item.get('name') == 'dataset':
+                item['display_name'] = 'data.qld.gov.au'
+            elif item.get('name') == 'geoscience':
+                item['display_name'] = 'geoscience.data.qld.gov.au'
+    return search_results
+
+
+@tk.chained_action
 def list_datarequests(original_action, context, data_dict):
     """By default the ckanext-datarequest `list_datarequests` action searches
     only inside datarequest title and description. We are altering it, to search

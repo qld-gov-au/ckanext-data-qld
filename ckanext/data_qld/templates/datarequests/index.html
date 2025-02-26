@@ -31,7 +31,6 @@
     </div>
   </section>
   {% for facet in facet_titles %}
-    {% set title = facet_titles[facet] if facet != 'state' else 'Status' %}
-    {{ h.snippet('snippets/facet_list.html', title=title, name=facet) }}
+    {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
   {% endfor %}
 {% endblock %}

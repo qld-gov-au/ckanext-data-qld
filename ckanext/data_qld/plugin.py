@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-from collections import OrderedDict
 import datetime
 import logging
 import six
@@ -111,8 +110,6 @@ class DataQldPlugin(CKANHarvester):
             'get_deletion_reason_template': helpers.get_deletion_reason_template,
             'check_ckan_version': tk.check_ckan_version,
             'is_apikey_enabled': helpers.is_apikey_enabled,
-            'data_qld_geoscience_custom_label_function': helpers.custom_label_function,
-            'data_qld_geoscience_custom_label_function_list_dict_filter': helpers.custom_label_function_list_dict_filter,
         }
 
     # IValidators
@@ -149,6 +146,7 @@ class DataQldPlugin(CKANHarvester):
         return {
             constants.OPEN_DATAREQUEST: actions.open_datarequest,
             constants.LIST_DATAREQUESTS: actions.list_datarequests,
+            'package_search': actions.package_search,
             'organisation_followers': get.organisation_followers,
             'dataset_followers': get.dataset_followers,
             'dataset_comments': get.dataset_comments,
@@ -316,10 +314,9 @@ class DataQldPlugin(CKANHarvester):
 
     # IFacets
     def dataset_facets(self, facets_dict, package_type):
-        new_facets_dict = OrderedDict()
-        new_facets_dict['dataset_type'] = tk._('Data Portals')
-
-        return OrderedDict(list(new_facets_dict.items()) + list(facets_dict.items()))
+        facets_dict['dataset_type'] = tk._('Data Portals')
+        facets_dict.move_to_end('dataset_type', last=False)
+        return facets_dict
 
     # CKANHarvester
     config = None
