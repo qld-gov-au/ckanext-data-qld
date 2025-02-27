@@ -30,8 +30,5 @@
       {% endblock %}
     </div>
   </section>
-  {% for facet in facet_titles %}
-    {% set title = facet_titles[facet] if facet != 'state' else 'Status' %}
-    {{ h.snippet('snippets/facet_list.html', title=title, name=facet) }}
-  {% endfor %}
+  {{ super () }}
 {% endblock %}
