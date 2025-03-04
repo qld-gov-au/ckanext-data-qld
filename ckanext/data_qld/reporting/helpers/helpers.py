@@ -27,16 +27,21 @@ def check_user_access(permission, context=None):
     )
 
 
-def check_user_org_access(org_id, permission='create_dataset', context=None):
-    data_dict = {
-        'org_id': org_id,
-        'permission': permission
-    }
-    tk.check_access(
-        'has_user_permission_for_org',
-        context or get_context(),
-        data_dict
-    )
+def check_user_org_access(org_ids, permission='create_dataset', context=None):
+    if not context:
+        context = get_context()
+    if not isinstance(org_ids, list):
+        org_ids = [org_ids]
+    for org_id in org_ids:
+        data_dict = {
+            'org_id': org_id,
+            'permission': permission
+        }
+        tk.check_access(
+            'has_user_permission_for_org',
+            context,
+            data_dict
+        )
 
 
 def get_context():

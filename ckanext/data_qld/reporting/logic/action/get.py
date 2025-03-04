@@ -37,6 +37,33 @@ DATASET_PREFIX = '/dataset/'
 DATASET_LIKE = DATASET_PREFIX + '%'
 
 
+def _authorised_orgs(data_dict, context):
+    """
+    Retrieve the organisation ID(s), check that the current user
+    has the specified level of privileges in the org (default 'admin'),
+    and return the organisation ID(s) as a list.
+    """
+    org_id = data_dict.get('org_id', [])
+    permission = data_dict.get('permission', 'admin')
+    check_org_access(org_id, permission, context=context)
+    return org_id if isinstance(org_id, list) else [org_id]
+
+
+def _grouped_query_result(query, org_id, return_count_only):
+    if return_count_only:
+        if len(org_id) > 1:
+            query.group_by(model.Package.owner_org)
+        return query_count(query)
+    else:
+        return query.all()
+
+
+def _active_package_query(org_id):
+    return _session_.query(model.Package) \
+        .filter(model.Package.owner_org.in_(org_id)) \
+        .filter(model.Package.state == ACTIVE_STATE)
+
+
 def organisation_followers(context, data_dict):
     """
     Return the number of followers for an organisation
@@ -634,28 +661,19 @@ def de_identified_datasets(context, data_dict):
     :param data_dict:
     :return:
     """
-    org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission, context)
+    org_id = _authorised_orgs(data_dict, context)
 
     try:
         query = (
-            _session_.query(model.Package)
+            _active_package_query(org_id)
             .join(model.PackageExtra)
-            .filter(model.Package.owner_org == org_id)
-            .filter(model.Package.state == ACTIVE_STATE)
             .filter(model.PackageExtra.key == 'de_identified_data')
             .filter(model.PackageExtra.value == 'YES')
             .filter(model.PackageExtra.state == ACTIVE_STATE)
         )
 
-        if return_count_only:
-            datasets = query_count(query)
-        else:
-            datasets = query.all()
-
-        return datasets
+        return _grouped_query_result(query, org_id, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -669,14 +687,12 @@ def de_identified_datasets_no_schema(context, data_dict):
     :param data_dict:
     :return:
     """
-    org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    permission = data_dict.get('permission', 'admin')
 
     count_from_date = h.date_str_to_datetime(
         data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
-    check_org_access(org_id, permission, context)
+    org_id = _authorised_orgs(data_dict, context)
 
     extras = model.PackageExtra
     de_identified = aliased(extras)
@@ -689,7 +705,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         ))
 
     query = (
-        _session_.query(model.Package)
+        _active_package_query(org_id)
         .join(de_identified)
         .join(data_last_updated)
         .filter(model.Package.id.notin_(sub_query))
@@ -702,11 +718,9 @@ def de_identified_datasets_no_schema(context, data_dict):
             data_last_updated.key == 'data_last_updated',
             data_last_updated.value > count_from_date.isoformat()
         ))
-        .filter(model.Package.owner_org == org_id)
-        .filter(model.Package.state == ACTIVE_STATE)
     )
 
-    return query_count(query) if return_count_only else query.all()
+    return _grouped_query_result(query, org_id, return_count_only)
 
 
 def overdue_datasets(context, data_dict):
@@ -716,30 +730,22 @@ def overdue_datasets(context, data_dict):
     :param data_dict:
     :return:
     """
-    org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission, context)
+    org_id = _authorised_orgs(data_dict, context)
 
     try:
         # next_update_due is stored as display timezone without timezone as isoformat
         today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
         query = (
-            _session_.query(model.Package)
+            _active_package_query(org_id)
             .join(model.PackageExtra)
-            .filter(model.Package.owner_org == org_id)
-            .filter(model.Package.state == ACTIVE_STATE)
             .filter(model.PackageExtra.key == 'next_update_due')
             .filter(model.PackageExtra.value <= today)
             .filter(model.PackageExtra.state == ACTIVE_STATE)
         )
 
-        if return_count_only:
-            datasets = query_count(query)
-        else:
-            datasets = query.all()
-        return datasets
+        return _grouped_query_result(query, org_id, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -751,29 +757,25 @@ def datasets_no_groups(context, data_dict):
     :param data_dict:
     :return:
     """
-    org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission, context)
+    org_id = _authorised_orgs(data_dict, context)
     try:
         sub_query = (_session_.query(model.Package.id)
                      .join(model.Member, model.Package.id == model.Member.table_id and model.Member.table_name == 'package')
                      .join(model.Group, model.Group.id == model.Member.group_id)
                      .filter(model.Member.state == ACTIVE_STATE)
-                     .filter(model.Package.owner_org == org_id)
+                     .filter(model.Package.owner_org.in_(org_id))
                      .filter(model.Package.state == ACTIVE_STATE)
                      .filter(model.Group.type == 'group')
                      .order_by(model.Package.title)
                      )
 
         query = (
-            _session_.query(model.Package)
-            .filter(model.Package.owner_org == org_id)
-            .filter(model.Package.state == ACTIVE_STATE)
+            _active_package_query(org_id)
             .filter(model.Package.id.notin_(sub_query))
         )
 
-        return query_count(query) if return_count_only else query.all()
+        return _grouped_query_result(query, org_id, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -785,28 +787,24 @@ def datasets_no_tags(context, data_dict):
     :param data_dict:
     :return:
     """
-    org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission, context)
+    org_id = _authorised_orgs(data_dict, context)
     try:
         sub_query = (_session_.query(model.PackageTag.package_id)
                      .join(model.Tag)
                      .join(model.Package)
                      .filter(model.PackageTag.tag_id == model.Tag.id)
                      .filter(model.PackageTag.package_id == model.Package.id)
-                     .filter(model.Package.owner_org == org_id)
+                     .filter(model.Package.owner_org.in_(org_id))
                      .filter(model.PackageTag.state == ACTIVE_STATE)
                      )
 
         query = (
-            _session_.query(model.Package)
-            .filter(model.Package.owner_org == org_id)
-            .filter(model.Package.state == ACTIVE_STATE)
+            _active_package_query(org_id)
             .filter(model.Package.id.notin_(sub_query))
         )
 
-        return query_count(query) if return_count_only else query.all()
+        return _grouped_query_result(query, org_id, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -819,22 +817,20 @@ def datasets_pending_privacy_assessment(context, data_dict):
     :param data_dict:
     :return:
     """
-    org_id = data_dict.get('org_id', None)
     return_count_only = data_dict.get('return_count_only', False)
-    permission = data_dict.get('permission', 'admin')
-    check_org_access(org_id, permission, context)
+    org_id = _authorised_orgs(data_dict, context)
 
     ilike = '%"{}": "{}"%'.format(FIELD_REQUEST_ASSESS, YES)
     query = (
         _session_.query(model.Resource)
         .join(model.Package)
-        .filter(model.Package.owner_org == org_id)
+        .filter(model.Package.owner_org.in_(org_id))
         .filter(model.Package.id == model.Resource.package_id)
         .filter(model.Package.state == ACTIVE_STATE)
         .filter(model.Resource.extras.ilike(ilike))
     )
 
-    return query_count(query) if return_count_only else query.all()
+    return _grouped_query_result(query, org_id, return_count_only)
 
 
 def query_count(query):
