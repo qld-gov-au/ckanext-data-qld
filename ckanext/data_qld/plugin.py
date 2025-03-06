@@ -166,7 +166,7 @@ class DataQldPlugin(CKANHarvester):
             'overdue_datasets': get.overdue_datasets,
             'datasets_no_groups': get.datasets_no_groups,
             'datasets_no_tags': get.datasets_no_tags,
-            'datasets_pending_privacy_assessment': get.datasets_pending_privacy_assessment,
+            'resources_pending_privacy_assessment': get.resources_pending_privacy_assessment,
             'data_qld_get_dataset_due_to_publishing': resource_freshness_get_actions.dataset_due_to_publishing,
             'data_qld_get_dataset_overdue': resource_freshness_get_actions.dataset_overdue,
             'data_qld_process_dataset_due_to_publishing': resource_freshness_get_actions.process_dataset_due_to_publishing,

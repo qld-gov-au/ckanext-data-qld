@@ -112,28 +112,33 @@ def engagement_csv_add_org_metrics(org, start_date, end_date, csv_header_row, ro
 
 def admin_csv_add_org_metrics(org, csv_header_row, row_properties, dict_csv_rows, permission):
     """
-    Add admin reporting metrics for a specific organisation to the CSV data
+    Add admin reporting metrics for specific organisation(s) to the CSV data
     :param org:
     :param csv_header_row:
     :param row_properties:
     :param dict_csv_rows:
     :return:
     """
-    metrics = helpers.gather_admin_metrics(org.get('id', ''), permission)
+    if isinstance(org, list):
+        org.sort(key=lambda x: x.get('title', ''))
+    else:
+        org = [org]
+    org_ids = [x.get('id', '') for x in org]
+    csv_header_row.extend([x.get('title', '') for x in org])
+    all_metrics = helpers.gather_admin_metrics(org_ids, permission)
 
-    csv_header_row.append(org.get('title', ''))
-
-    for key, settings in row_properties.items():
-        if settings['type'] not in ['complex', 'length']:
-            metric_value = metrics.get(settings['property'], '-')
-            dict_csv_rows[key].append(str(int(metric_value)))
-        elif settings['type'] == 'length':
-            metric_value = len(metrics.get(settings['property'], {}))
-            dict_csv_rows[key].append(str(int(metric_value)))
-        elif settings['type'] == 'complex':
-            metric_value = metrics.get(settings['property'], {})[
-                settings['element']]
-            dict_csv_rows[key].append(str(int(metric_value)))
+    for org_id, metrics in all_metrics.items():
+        for key, settings in row_properties.items():
+            if settings['type'] not in ['complex', 'length']:
+                metric_value = metrics.get(settings['property'], '-')
+                dict_csv_rows[key].append(str(int(metric_value)))
+            elif settings['type'] == 'length':
+                metric_value = len(metrics.get(settings['property'], {}))
+                dict_csv_rows[key].append(str(int(metric_value)))
+            elif settings['type'] == 'complex':
+                metric_value = metrics.get(settings['property'], {})[
+                    settings['element']]
+                dict_csv_rows[key].append(str(int(metric_value)))
 
 
 def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):

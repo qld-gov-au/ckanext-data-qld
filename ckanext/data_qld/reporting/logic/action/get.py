@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 import pytz
-from sqlalchemy import func, distinct, tuple_, and_, literal_column
+from sqlalchemy import func, distinct, tuple_, and_
 from sqlalchemy.orm import aliased
 from ckantoolkit import config, NotAuthorized, h
 
@@ -43,25 +43,31 @@ def _authorised_orgs(data_dict, context):
     has the specified level of privileges in the org (default 'admin'),
     and return the organisation ID(s) as a list.
     """
-    org_id = data_dict.get('org_id', [])
+    org_id = data_dict.get('org_id', None)
     permission = data_dict.get('permission', 'admin')
     check_org_access(org_id, permission, context=context)
-    return org_id if isinstance(org_id, list) else [org_id]
-
-
-def _grouped_query_result(query, org_id, return_count_only):
-    if return_count_only:
-        if len(org_id) > 1:
-            query.group_by(model.Package.owner_org)
-        return query_count(query)
+    # handle single-org syntax just in case
+    if isinstance(org_id, list):
+        return org_id, True
     else:
-        return query.all()
+        return [org_id], False
 
 
-def _active_package_query(org_id):
-    return _session_.query(model.Package) \
-        .filter(model.Package.owner_org.in_(org_id)) \
+def _active_package_query(org_id, is_org_list, return_count_only):
+    """
+    Assembles a partial query object, setting common filters.
+    """
+    if return_count_only and is_org_list:
+        query = _session_.query(model.Package.owner_org, func.count(model.Package.id)) \
+            .group_by(model.Package.owner_org)
+    else:
+        query = _session_.query(model.Package)
+    return query.filter(model.Package.owner_org.in_(org_id)) \
         .filter(model.Package.state == ACTIVE_STATE)
+
+
+def _query_result(query, is_org_list, return_count_only):
+    return query.count() if return_count_only and not is_org_list else query.all()
 
 
 def organisation_followers(context, data_dict):
@@ -662,18 +668,18 @@ def de_identified_datasets(context, data_dict):
     :return:
     """
     return_count_only = data_dict.get('return_count_only', False)
-    org_id = _authorised_orgs(data_dict, context)
+    org_id, is_org_list = _authorised_orgs(data_dict, context)
 
     try:
         query = (
-            _active_package_query(org_id)
+            _active_package_query(org_id, is_org_list, return_count_only)
             .join(model.PackageExtra)
             .filter(model.PackageExtra.key == 'de_identified_data')
             .filter(model.PackageExtra.value == 'YES')
             .filter(model.PackageExtra.state == ACTIVE_STATE)
         )
 
-        return _grouped_query_result(query, org_id, return_count_only)
+        return _query_result(query, is_org_list, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -692,7 +698,7 @@ def de_identified_datasets_no_schema(context, data_dict):
     count_from_date = h.date_str_to_datetime(
         data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
-    org_id = _authorised_orgs(data_dict, context)
+    org_id, is_org_list = _authorised_orgs(data_dict, context)
 
     extras = model.PackageExtra
     de_identified = aliased(extras)
@@ -705,7 +711,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         ))
 
     query = (
-        _active_package_query(org_id)
+        _active_package_query(org_id, is_org_list, return_count_only)
         .join(de_identified)
         .join(data_last_updated)
         .filter(model.Package.id.notin_(sub_query))
@@ -720,7 +726,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         ))
     )
 
-    return _grouped_query_result(query, org_id, return_count_only)
+    return _query_result(query, is_org_list, return_count_only)
 
 
 def overdue_datasets(context, data_dict):
@@ -731,21 +737,21 @@ def overdue_datasets(context, data_dict):
     :return:
     """
     return_count_only = data_dict.get('return_count_only', False)
-    org_id = _authorised_orgs(data_dict, context)
+    org_id, is_org_list = _authorised_orgs(data_dict, context)
 
     try:
         # next_update_due is stored as display timezone without timezone as isoformat
         today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
         query = (
-            _active_package_query(org_id)
+            _active_package_query(org_id, is_org_list, return_count_only)
             .join(model.PackageExtra)
             .filter(model.PackageExtra.key == 'next_update_due')
             .filter(model.PackageExtra.value <= today)
             .filter(model.PackageExtra.state == ACTIVE_STATE)
         )
 
-        return _grouped_query_result(query, org_id, return_count_only)
+        return _query_result(query, is_org_list, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -758,7 +764,7 @@ def datasets_no_groups(context, data_dict):
     :return:
     """
     return_count_only = data_dict.get('return_count_only', False)
-    org_id = _authorised_orgs(data_dict, context)
+    org_id, is_org_list = _authorised_orgs(data_dict, context)
     try:
         sub_query = (_session_.query(model.Package.id)
                      .join(model.Member, model.Package.id == model.Member.table_id and model.Member.table_name == 'package')
@@ -771,11 +777,11 @@ def datasets_no_groups(context, data_dict):
                      )
 
         query = (
-            _active_package_query(org_id)
+            _active_package_query(org_id, is_org_list, return_count_only)
             .filter(model.Package.id.notin_(sub_query))
         )
 
-        return _grouped_query_result(query, org_id, return_count_only)
+        return _query_result(query, is_org_list, return_count_only)
     except Exception as e:
         log.error(str(e))
 
@@ -788,7 +794,7 @@ def datasets_no_tags(context, data_dict):
     :return:
     """
     return_count_only = data_dict.get('return_count_only', False)
-    org_id = _authorised_orgs(data_dict, context)
+    org_id, is_org_list = _authorised_orgs(data_dict, context)
     try:
         sub_query = (_session_.query(model.PackageTag.package_id)
                      .join(model.Tag)
@@ -800,16 +806,16 @@ def datasets_no_tags(context, data_dict):
                      )
 
         query = (
-            _active_package_query(org_id)
+            _active_package_query(org_id, is_org_list, return_count_only)
             .filter(model.Package.id.notin_(sub_query))
         )
 
-        return _grouped_query_result(query, org_id, return_count_only)
+        return _query_result(query, is_org_list, return_count_only)
     except Exception as e:
         log.error(str(e))
 
 
-def datasets_pending_privacy_assessment(context, data_dict):
+def resources_pending_privacy_assessment(context, data_dict):
     """
     Returns the datasets that have resource with pending privacy_assessment
 
@@ -818,35 +824,20 @@ def datasets_pending_privacy_assessment(context, data_dict):
     :return:
     """
     return_count_only = data_dict.get('return_count_only', False)
-    org_id = _authorised_orgs(data_dict, context)
+    org_id, is_org_list = _authorised_orgs(data_dict, context)
 
     ilike = '%"{}": "{}"%'.format(FIELD_REQUEST_ASSESS, YES)
+    if return_count_only and is_org_list:
+        query = _session_.query(model.Package.owner_org, func.count(model.Package.id)) \
+            .join(model.Resource) \
+            .group_by(model.Package.owner_org)
+    else:
+        query = _session_.query(model.Resource).join(model.Package)
     query = (
-        _session_.query(model.Resource)
-        .join(model.Package)
-        .filter(model.Package.owner_org.in_(org_id))
+        query.filter(model.Package.owner_org.in_(org_id))
         .filter(model.Package.id == model.Resource.package_id)
         .filter(model.Package.state == ACTIVE_STATE)
         .filter(model.Resource.extras.ilike(ilike))
     )
 
-    return _grouped_query_result(query, org_id, return_count_only)
-
-
-def query_count(query):
-    """
-    A SQL count that's more efficient than the default query.count()
-    SQL query then becomes:
-    SELECT count(1) AS count_1 FROM table;
-
-    source: https://datawookie.dev/blog/2021/01/sqlalchemy-efficient-counting/
-
-    **Could also look at https://docs.sqlalchemy.org/en/13/orm/tutorial.html#counting
-
-    :param query:
-    :return:
-    """
-    ONE = literal_column("1")
-    counter = query.statement.with_only_columns([func.count(ONE)])
-    counter = counter.order_by(None)
-    return query.session.execute(counter).scalar()
+    return _query_result(query, is_org_list, return_count_only)

@@ -279,14 +279,45 @@ def gather_admin_metrics(org_id, permission):
         'permission': permission
     }
 
-    return {
-        'de_identified_datasets': tk.get_action('de_identified_datasets')(context, data_dict),
-        'de_identified_datasets_no_schema': tk.get_action('de_identified_datasets_no_schema')(context, data_dict),
-        'overdue_datasets': tk.get_action('overdue_datasets')(context, data_dict),
-        'datasets_no_groups': tk.get_action('datasets_no_groups')(context, data_dict),
-        'datasets_no_tags': tk.get_action('datasets_no_tags')(context, data_dict),
-        'pending_privacy_assessment': tk.get_action('datasets_pending_privacy_assessment')(context, data_dict),
-    }
+    de_identified_datasets = tk.get_action('de_identified_datasets')(context, data_dict)
+    de_identified_datasets_no_schema = tk.get_action('de_identified_datasets_no_schema')(context, data_dict)
+    overdue_datasets = tk.get_action('overdue_datasets')(context, data_dict)
+    datasets_no_groups = tk.get_action('datasets_no_groups')(context, data_dict)
+    datasets_no_tags = tk.get_action('datasets_no_tags')(context, data_dict)
+    pending_privacy_assessment = tk.get_action('resources_pending_privacy_assessment')(context, data_dict)
+
+    if isinstance(org_id, list):
+        metrics = {}
+        for org in org_id:
+            metrics[org] = {
+                'de_identified_datasets': 0,
+                'de_identified_datasets_no_schema': 0,
+                'overdue_datasets': 0,
+                'datasets_no_groups': 0,
+                'datasets_no_tags': 0,
+                'pending_privacy_assessment': 0,
+            }
+
+        def _add_metric(metric_list, key):
+            for row in metric_list:
+                metrics[row[0]][key] = row[1]
+
+        _add_metric(de_identified_datasets, 'de_identified_datasets')
+        _add_metric(de_identified_datasets_no_schema, 'de_identified_datasets_no_schema')
+        _add_metric(overdue_datasets, 'overdue_datasets')
+        _add_metric(datasets_no_groups, 'datasets_no_groups')
+        _add_metric(datasets_no_tags, 'datasets_no_tags')
+        _add_metric(pending_privacy_assessment, 'pending_privacy_assessment')
+    else:
+        metrics = {
+            'de_identified_datasets': de_identified_datasets,
+            'de_identified_datasets_no_schema': de_identified_datasets_no_schema,
+            'overdue_datasets': overdue_datasets,
+            'datasets_no_groups': datasets_no_groups,
+            'datasets_no_tags': datasets_no_tags,
+            'pending_privacy_assessment': pending_privacy_assessment,
+        }
+    return metrics
 
 
 def get_organisation_list(permission):
