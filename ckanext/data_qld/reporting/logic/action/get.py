@@ -704,8 +704,9 @@ def de_identified_datasets_no_schema(context, data_dict):
     de_identified = aliased(extras)
     data_last_updated = aliased(extras)
 
-    sub_query = _session_.query(extras.package_id).filter(
+    sub_query = _session_.query(extras).filter(
         and_(
+            extras.package_id == model.Package.id,
             extras.key == 'default_data_schema',
             extras.value != ''
         ))
@@ -714,7 +715,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         _active_package_query(org_id, is_org_list, return_count_only)
         .join(de_identified)
         .join(data_last_updated)
-        .filter(model.Package.id.notin_(sub_query))
+        .filter(~sub_query.exists())
         .filter(and_(
             de_identified.key == 'de_identified_data',
             de_identified.value == 'YES',
@@ -766,19 +767,17 @@ def datasets_no_groups(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     org_id, is_org_list = _authorised_orgs(data_dict, context)
     try:
-        sub_query = (_session_.query(model.Package.id)
-                     .join(model.Member, model.Package.id == model.Member.table_id and model.Member.table_name == 'package')
-                     .join(model.Group, model.Group.id == model.Member.group_id)
+        sub_query = (_session_.query(model.Group.id)
+                     .join(model.Member, model.Group.id == model.Member.group_id)
+                     .filter(model.Member.table_name == 'package')
                      .filter(model.Member.state == ACTIVE_STATE)
-                     .filter(model.Package.owner_org.in_(org_id))
-                     .filter(model.Package.state == ACTIVE_STATE)
+                     .filter(model.Package.id == model.Member.table_id)
                      .filter(model.Group.type == 'group')
-                     .order_by(model.Package.title)
                      )
 
         query = (
             _active_package_query(org_id, is_org_list, return_count_only)
-            .filter(model.Package.id.notin_(sub_query))
+            .filter(~sub_query.exists())
         )
 
         return _query_result(query, is_org_list, return_count_only)
@@ -798,16 +797,14 @@ def datasets_no_tags(context, data_dict):
     try:
         sub_query = (_session_.query(model.PackageTag.package_id)
                      .join(model.Tag)
-                     .join(model.Package)
                      .filter(model.PackageTag.tag_id == model.Tag.id)
                      .filter(model.PackageTag.package_id == model.Package.id)
-                     .filter(model.Package.owner_org.in_(org_id))
                      .filter(model.PackageTag.state == ACTIVE_STATE)
                      )
 
         query = (
             _active_package_query(org_id, is_org_list, return_count_only)
-            .filter(model.Package.id.notin_(sub_query))
+            .filter(~sub_query.exists())
         )
 
         return _query_result(query, is_org_list, return_count_only)
