@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import pytest
 
 import ckan.model as model
@@ -134,15 +136,15 @@ class TestAdminReportCSVExport:
         assert result["overdue_datasets"] == 0
         assert result["pending_privacy_assessment"] == 0
 
-    def test_as_org_admin(self, app, dataset_factory, resource_factory):
+    def test_as_org_admin(self, app, dataset_factory, resource_factory, dataset_schema):
         user = factories.User()
         org = factories.Organization(users=[{
             "name": user["id"],
             "capacity": "admin"
         }])
 
-        for _ in range(3):
-            dataset = dataset_factory(default_data_schema="",
+        for index in range(3):
+            dataset = dataset_factory(default_data_schema="" if index == 2 else dataset_schema,
                                       owner_org=org["id"],
                                       de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
@@ -157,7 +159,7 @@ class TestAdminReportCSVExport:
         assert result["datasets_no_groups"] == 3
         assert result["datasets_no_tags"] == 3
         assert result["de_identified_datasets"] == 3
-        assert result["de_identified_datasets_no_schema"] == 3
+        assert result["de_identified_datasets_no_schema"] == 1
         assert result["overdue_datasets"] == 0
         assert result["pending_privacy_assessment"] == 0
 
@@ -167,7 +169,7 @@ class TestAdminReportCSVExport:
             org_title = f'"{org_title}"'
         assert result_csv == f"""Criteria,{org_title}
 De-Identified Datasets,3
-De-identified datasets without default data schema (post-01 January 2022),3
+De-identified datasets without default data schema (post-01 January 2022),1
 Overdue Datasets,0
 Datasets not added to group/s,3
 Datasets with no tags,3
@@ -188,8 +190,8 @@ Pending privacy assessment,0
         ], key=lambda x: x["title"])
         org_ids = [x["id"] for x in orgs]
 
-        for _ in range(3):
-            dataset = dataset_factory(default_data_schema="",
+        for index in range(3):
+            dataset = dataset_factory(default_data_schema="" if index == 2 else dataset_schema,
                                       owner_org=org_ids[0],
                                       de_identified_data="YES")
             resource_factory(package_id=dataset["id"])
@@ -198,8 +200,8 @@ Pending privacy assessment,0
                         id=dataset["id"],
                         notes="test")
 
-            dataset = dataset_factory(default_data_schema=dataset_schema,
-                                      owner_org=org_ids[1],
+            dataset = dataset_factory(owner_org=org_ids[1],
+                                      tags=[{"name": "unit-test"}] if index == 2 else [],
                                       de_identified_data="NO")
             resource_factory(package_id=dataset["id"],
                              request_privacy_assessment="YES")
@@ -211,27 +213,35 @@ Pending privacy assessment,0
         tk.current_user = model.User.get(user['id'])
         result = helpers.gather_admin_metrics(org_ids, "admin")
 
-        assert result[org_ids[0]]["datasets_no_groups"] == 3
-        assert result[org_ids[0]]["datasets_no_tags"] == 3
-        assert result[org_ids[0]]["de_identified_datasets"] == 3
-        assert result[org_ids[0]]["de_identified_datasets_no_schema"] == 3
-        assert result[org_ids[0]]["overdue_datasets"] == 0
-        assert result[org_ids[0]]["pending_privacy_assessment"] == 0
-        assert result[org_ids[1]]["datasets_no_groups"] == 3
-        assert result[org_ids[1]]["datasets_no_tags"] == 3
-        assert result[org_ids[1]]["de_identified_datasets"] == 0
-        assert result[org_ids[1]]["de_identified_datasets_no_schema"] == 0
-        assert result[org_ids[1]]["overdue_datasets"] == 0
-        assert result[org_ids[1]]["pending_privacy_assessment"] == 3
+        expected_result = {
+            org_ids[0]: {
+                "datasets_no_groups": 3,
+                "datasets_no_tags": 3,
+                "de_identified_datasets": 3,
+                "de_identified_datasets_no_schema": 1,
+                "overdue_datasets": 0,
+                "pending_privacy_assessment": 0
+            },
+            org_ids[1]: {
+                "datasets_no_groups": 3,
+                "datasets_no_tags": 2,
+                "de_identified_datasets": 0,
+                "de_identified_datasets_no_schema": 0,
+                "overdue_datasets": 0,
+                "pending_privacy_assessment": 3
+            }
+        }
+
+        assert result == expected_result
 
         result_csv, headers = controller_functions._export_admin_report(constants.REPORT_TYPE_ADMIN, "admin")
         org_titles = [f'"{x["title"]}"' if "," in x["title"] else x["title"] for x in orgs]
         assert result_csv == f"""Criteria,{org_titles[0]},{org_titles[1]}
 De-Identified Datasets,3,0
-De-identified datasets without default data schema (post-01 January 2022),3,0
+De-identified datasets without default data schema (post-01 January 2022),1,0
 Overdue Datasets,0,0
 Datasets not added to group/s,3,3
-Datasets with no tags,3,3
+Datasets with no tags,3,2
 Pending privacy assessment,0,3
 """
 
