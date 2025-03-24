@@ -148,6 +148,7 @@ def clean_db(reset_db, migrate_db_for):
     if check_ckan_version('2.11'):
         migrate_db_for('activity')
 
+    # should loop through all plugins and run the migrate_db_for ## plugins = aslist(config.get('ckan.plugins')) + find_system_plugins() ##
     archival_init()
     qa_init()
     ytp_model.init_tables()

@@ -96,6 +96,7 @@ def open_datarequest(context, data_dict):
 
 @tk.chained_action
 @tk.auth_allow_anonymous_access
+@tk.side_effect_free
 def package_search(original_action, context, data_dict):
     search_results = original_action(context, data_dict)
     if 'dataset_type' in search_results['search_facets']:
