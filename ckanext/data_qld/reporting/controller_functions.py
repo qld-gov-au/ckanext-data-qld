@@ -13,7 +13,6 @@ from .constants import (
     REPORT_TYPES,
     REPORT_TYPE_ADMIN,
     REPORT_TYPE_ENGAGEMENT
-
 )
 
 
@@ -207,14 +206,13 @@ def _export_admin_report(report_type, report_permission):
         dict_csv_rows[key] = []
 
     # Gather all the metrics for each organisation
-    for organisation in reporting_helpers.get_organisation_list_for_user(report_permission):
-        export_helpers.admin_csv_add_org_metrics(
-            organisation,
-            csv_header_row,
-            row_properties,
-            dict_csv_rows,
-            report_permission
-        )
+    export_helpers.admin_csv_add_org_metrics(
+        reporting_helpers.get_organisation_list_for_user(report_permission),
+        csv_header_row,
+        row_properties,
+        dict_csv_rows,
+        report_permission
+    )
 
     return export_helpers.output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type)
 
@@ -336,7 +334,7 @@ def datasets(org_id, metric):
                 'permission': report_permission
             })
             resources = get_action(
-                'datasets_pending_privacy_assessment')({}, data_dict)
+                'resources_pending_privacy_assessment')({}, data_dict)
             data_dict.update({
                 'resources': resources
             })
