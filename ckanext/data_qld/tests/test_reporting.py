@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import pytest
 
 import ckan.model as model
@@ -5,6 +7,7 @@ import ckantoolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
+from ckanext.data_qld.reporting import constants, controller_functions
 from ckanext.data_qld.reporting.helpers import helpers
 
 
@@ -111,7 +114,6 @@ class TestAdminReportCSVExport:
 
     def test_as_sysadmin(self, app, dataset_factory, resource_factory):
         sysadmin = factories.Sysadmin()
-        app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
@@ -133,6 +135,115 @@ class TestAdminReportCSVExport:
         assert result["de_identified_datasets_no_schema"] == 3
         assert result["overdue_datasets"] == 0
         assert result["pending_privacy_assessment"] == 0
+
+    def test_as_org_admin(self, app, dataset_factory, resource_factory, dataset_schema):
+        user = factories.User()
+        org = factories.Organization(users=[{
+            "name": user["id"],
+            "capacity": "admin"
+        }])
+
+        for index in range(3):
+            dataset = dataset_factory(default_data_schema="" if index == 2 else dataset_schema,
+                                      owner_org=org["id"],
+                                      de_identified_data="YES")
+            resource_factory(package_id=dataset["id"])
+            call_action("package_patch",
+                        context=_make_context(),
+                        id=dataset["id"],
+                        notes="test")
+
+        tk.current_user = model.User.get(user['id'])
+        result = helpers.gather_admin_metrics(org["id"], "admin")
+
+        assert result["datasets_no_groups"] == 3
+        assert result["datasets_no_tags"] == 3
+        assert result["de_identified_datasets"] == 3
+        assert result["de_identified_datasets_no_schema"] == 1
+        assert result["overdue_datasets"] == 0
+        assert result["pending_privacy_assessment"] == 0
+
+        result_csv, headers = controller_functions._export_admin_report(constants.REPORT_TYPE_ADMIN, "admin")
+        org_title = org["title"]
+        if "," in org_title:
+            org_title = f'"{org_title}"'
+        assert result_csv == f"""Criteria,{org_title}
+De-Identified Datasets,3
+De-identified datasets without default data schema (post-01 January 2022),1
+Overdue Datasets,0
+Datasets not added to group/s,3
+Datasets with no tags,3
+Pending privacy assessment,0
+"""
+
+    def test_multiple_orgs(self, app, dataset_factory, resource_factory, dataset_schema):
+        user = factories.User()
+        orgs = sorted([
+            factories.Organization(users=[{
+                "name": user["id"],
+                "capacity": "admin"
+            }]),
+            factories.Organization(users=[{
+                "name": user["id"],
+                "capacity": "admin"
+            }])
+        ], key=lambda x: x["title"])
+        org_ids = [x["id"] for x in orgs]
+
+        for index in range(3):
+            dataset = dataset_factory(default_data_schema="" if index == 2 else dataset_schema,
+                                      owner_org=org_ids[0],
+                                      de_identified_data="YES")
+            resource_factory(package_id=dataset["id"])
+            call_action("package_patch",
+                        context=_make_context(),
+                        id=dataset["id"],
+                        notes="test")
+
+            dataset = dataset_factory(owner_org=org_ids[1],
+                                      tags=[{"name": "unit-test"}] if index == 2 else [],
+                                      de_identified_data="NO")
+            resource_factory(package_id=dataset["id"],
+                             request_privacy_assessment="YES")
+            call_action("package_patch",
+                        context=_make_context(),
+                        id=dataset["id"],
+                        notes="test")
+
+        tk.current_user = model.User.get(user['id'])
+        result = helpers.gather_admin_metrics(org_ids, "admin")
+
+        expected_result = {
+            org_ids[0]: {
+                "datasets_no_groups": 3,
+                "datasets_no_tags": 3,
+                "de_identified_datasets": 3,
+                "de_identified_datasets_no_schema": 1,
+                "overdue_datasets": 0,
+                "pending_privacy_assessment": 0
+            },
+            org_ids[1]: {
+                "datasets_no_groups": 3,
+                "datasets_no_tags": 2,
+                "de_identified_datasets": 0,
+                "de_identified_datasets_no_schema": 0,
+                "overdue_datasets": 0,
+                "pending_privacy_assessment": 3
+            }
+        }
+
+        assert result == expected_result
+
+        result_csv, headers = controller_functions._export_admin_report(constants.REPORT_TYPE_ADMIN, "admin")
+        org_titles = [f'"{x["title"]}"' if "," in x["title"] else x["title"] for x in orgs]
+        assert result_csv == f"""Criteria,{org_titles[0]},{org_titles[1]}
+De-Identified Datasets,3,0
+De-identified datasets without default data schema (post-01 January 2022),1,0
+Overdue Datasets,0,0
+Datasets not added to group/s,3,3
+Datasets with no tags,3,2
+Pending privacy assessment,0,3
+"""
 
     @pytest.mark.ckan_config(
         u"ckanext.data_qld.reporting.de_identified_no_schema.count_from",
@@ -197,7 +308,7 @@ class TestAdminReportPendingPrivacyAssessment:
         resource_factory(package_id=dataset["id"],
                          request_privacy_assessment="YES")
 
-        counter = call_action("datasets_pending_privacy_assessment",
+        counter = call_action("resources_pending_privacy_assessment",
                               _make_context(),
                               org_id=dataset["owner_org"],
                               return_count_only=True)
@@ -205,7 +316,7 @@ class TestAdminReportPendingPrivacyAssessment:
         assert counter == 1
 
     def test_without_pending_resource(self):
-        counter = call_action("datasets_pending_privacy_assessment",
+        counter = call_action("resources_pending_privacy_assessment",
                               _make_context(),
                               org_id=factories.Organization()["id"],
                               return_count_only=True)
@@ -219,7 +330,7 @@ class TestAdminReportPendingPrivacyAssessment:
             resource_factory(package_id=dataset["id"],
                              request_privacy_assessment="YES")
 
-        counter = call_action("datasets_pending_privacy_assessment",
+        counter = call_action("resources_pending_privacy_assessment",
                               _make_context(),
                               org_id=dataset["owner_org"],
                               return_count_only=True)
@@ -230,7 +341,7 @@ class TestAdminReportPendingPrivacyAssessment:
         dataset = dataset_factory(default_data_schema="")
         resource_factory(package_id=dataset["id"])
 
-        counter = call_action("datasets_pending_privacy_assessment",
+        counter = call_action("resources_pending_privacy_assessment",
                               _make_context(),
                               return_count_only=True)
 
