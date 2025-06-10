@@ -19,7 +19,6 @@ Feature: Theme customisations
         When I visit "/api/3/action/package_search?q=a"
         Then I should see "/api/3/action/help_show?name=package_search", "success": true, "result":"
 
-
     @unauthenticated
     Scenario: Lato font is implemented on homepage
         Given "Unauthenticated" as the persona
