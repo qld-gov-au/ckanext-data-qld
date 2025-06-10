@@ -1,7 +1,6 @@
 {% ckan_extends %}
 
 {% set pkg = c.pkg_dict or pkg_dict %}
-{% set is_ckan_2_10 = h.check_ckan_version('2.10') %}
 
 {% block meta %}
 {{ super() }}
@@ -46,6 +45,7 @@ so we move the resource from 'pre_primary' to 'primary_content'.
   {% endblock %}
 {% endblock %}
 
+{# Customise appearance of some buttons #}
 {% block resource_actions %}
   <ul>
   {% block resource_actions_inner %}
@@ -56,7 +56,7 @@ so we move the resource from 'pre_primary' to 'primary_content'.
           <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }} resource-btn" href="{{ res.url }}">
             {% if res.resource_type in ('listing', 'service') %}
               <i class="fa fa-eye"></i> {{ _('View') }}
-            {% elif  res.resource_type == 'api' %}
+            {% elif res.resource_type == 'api' %}
               <i class="fa fa-key"></i> {{ _('API Endpoint') }}
             {% elif (not res.has_views or not res.can_be_previewed) and not res.url_type == 'upload' %}
               <i class="fa fa-external-link"></i> {{ _('Go to resource') }}
