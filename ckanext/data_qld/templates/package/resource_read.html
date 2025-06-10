@@ -31,72 +31,52 @@
     <li class="active"><a href="">{{ h.resource_display_name(res) }}</a></li>
 {% endblock %}
 
+{#
+We want the sidebar next to the resource, not underneath,
+so we move the resource from 'pre_primary' to 'primary_content'.
+#}
 {% block pre_primary %}
 {% endblock %}
-
 {% block primary_content %}
   {% block resource %}
-    <section class="module module-resource">
-      {% block resource_inner %}
-        <div class="module-content">
-          <div class="actions">
-            {% block resource_actions %}
-            <ul>
-              {% block resource_actions_inner %}
-                {% if is_ckan_2_10 %}
-                    {% block action_manage %}{{ super() }}{% endblock %}
-                {% else %}
-                    {% if h.check_access('package_update', {'id':pkg.id }) %}
-                        <li>
-                        {% link_for _('Manage'), named_route=pkg.type ~ '_resource.edit', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='wrench' %}
-                        </li>
-                    {% endif %}
-                {% endif %}
-                {% if res.url and h.is_url(res.url) %}
-                  <li>
-                    <div class="btn-group">
-                      <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }} resource-btn" href="{{ res.url }}">
-                        {% if res.resource_type in ('listing', 'service') %}
-                          <i class="fa fa-eye"></i> {{ _('View') }}
-                        {% elif  res.resource_type == 'api' %}
-                          <i class="fa fa-key"></i> {{ _('API Endpoint') }}
-                        {% elif (not res.has_views or not res.can_be_previewed) and not res.url_type == 'upload' %}
-                          <i class="fa fa-external-link"></i> {{ _('Go to resource') }}
-                        {% else %}
-                          <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
-                              {% if res.actual_size or res.size %}({{ res.actual_size or h.format_resource_filesize(res.size) }}){% endif %}
-                              {% if res.format %}({{ res.format }}){% endif %}
-                        {% endif %}
-                      </a>
-                      {% block download_resource_button %}
-                        {{ super() }}
-                      {% endblock %}
-                    </div>
-                  </li>
-                {% endif %}
-                {% if res.datastore_active %}
-                  <li>{% snippet 'package/snippets/data_api_button.html', resource=res %}</li>
-                {% endif %}
-              {% endblock %}
-            </ul>
-            {% endblock %}
-          </div>
-        </div>
-        {% block resource_content %}
-          {{ super() }}
-        {% endblock %}
-        {% block data_preview %}
-          {% if res.datastore_active %}
-            {{ super() }}
-          {% endif %}
-        {% endblock %}
-      {% endblock %}
-    </section>
+    {{ super() }}
   {% endblock %}
-
   {% block resource_additional_information_inner %}
     {{ super() }}
   {% endblock %}
+{% endblock %}
+
+{% block resource_actions %}
+  <ul>
+  {% block resource_actions_inner %}
+    {% block action_manage %}{{ super() }}{% endblock action_manage %}
+    {% if res.url and h.is_url(res.url) %}
+      <li>
+        <div class="btn-group">
+          <a class="btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }} resource-btn" href="{{ res.url }}">
+            {% if res.resource_type in ('listing', 'service') %}
+              <i class="fa fa-eye"></i> {{ _('View') }}
+            {% elif  res.resource_type == 'api' %}
+              <i class="fa fa-key"></i> {{ _('API Endpoint') }}
+            {% elif (not res.has_views or not res.can_be_previewed) and not res.url_type == 'upload' %}
+              <i class="fa fa-external-link"></i> {{ _('Go to resource') }}
+            {% else %}
+              <i class="fa fa-arrow-circle-o-down"></i> {{ _('Download') }}
+                  {% if res.actual_size or res.size %}({{ res.actual_size or h.format_resource_filesize(res.size) }}){% endif %}
+                  {% if res.format %}({{ res.format }}){% endif %}
+            {% endif %}
+          </a>
+          {% block download_resource_button %}
+            {{ super() }}
+          {% endblock %}
+        </div>
+      </li>
+    {% endif %}
+    {% if res.datastore_active %}
+      <li>{% snippet 'package/snippets/data_api_button.html', resource=res %}</li>
+    {% endif %}
+  {% endblock %}
+</ul>
 {% endblock %}
 
 {% block resource_read_title %}
