@@ -72,9 +72,6 @@ so we move the resource from 'pre_primary' to 'primary_content'.
         </div>
       </li>
     {% endif %}
-    {% if res.datastore_active %}
-      <li>{% snippet 'package/snippets/data_api_button.html', resource=res %}</li>
-    {% endif %}
   {% endblock %}
 </ul>
 {% endblock %}
