@@ -26,17 +26,14 @@ def _alter_sql(sql_query):
 def _post_analytics(user, request_event_action, request_event_label, request_dict={}):
     if plugin.GoogleAnalyticsPlugin.google_analytics_id:
         data_dict = {
-            "v": 1,
-            "tid": plugin.GoogleAnalyticsPlugin.google_analytics_id,
-            "cid": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(),
-            # customer id should be obfuscated
-            "t": "event",
-            "dh": request.environ['HTTP_HOST'],
-            "dp": request.environ['PATH_INFO'],
-            "dr": request.environ.get('HTTP_REFERER', ''),
-            "ec": request.environ['HTTP_HOST'] + " CKAN API Request",
-            "ea": request_event_action,
-            "el": request_event_label
+            "client_id": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(),
+            "events": [{
+                "name": request.environ['HTTP_HOST'] + " CKAN API Request",
+                "params": {
+                    "action": request_event_action,
+                    "label": request_event_label
+                }
+            }]
         }
         plugin.GoogleAnalyticsPlugin.analytics_queue.put(data_dict)
 
