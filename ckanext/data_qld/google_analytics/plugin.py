@@ -32,7 +32,7 @@ class AnalyticsPostThread(threading.Thread):
         while True:
             # Get host from the queue.
             data_dict = self.queue.get()
-            log.debug("Sending API event to Google Analytics: " + data_dict['ea'])
+            log.debug("Sending API event to Google Analytics: %s", data_dict['events'][0]['params']['action'])
 
             # Send analytics data.
             try:
