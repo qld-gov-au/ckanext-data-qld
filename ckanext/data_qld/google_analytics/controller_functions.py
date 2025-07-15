@@ -28,8 +28,11 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         data_dict = {
             "client_id": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(),
             "events": [{
-                "name": request.environ['HTTP_HOST'] + " CKAN API Request",
+                "name": "data_qld_api_call",
                 "params": {
+                    "page_location": f"https://{request.environ['HTTP_HOST']}{request.environ['PATH_INFO']}",
+                    "page_referrer": request.environ.get('HTTP_REFERER', ''),
+                    "event_category": request.environ['HTTP_HOST'] + " CKAN API Request",
                     "action": request_event_action,
                     "label": request_event_label
                 }
