@@ -24,14 +24,15 @@ class AnalyticsPostThread(threading.Thread):
                                             'https://www.google-analytics.com/mp/collect')
 
     def run(self):
-        # User-Agent must be present, GA might ignore a custom UA.
         headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
         }
         while True:
             # Get host from the queue.
             data_dict = self.queue.get()
+            # User-Agent must be present
+            # GA might ignore a custom UA so fall back to imitating Firefox
+            headers['User-Agent'] = data_dict.pop('user_agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0')
             log.debug("Sending API event to Google Analytics: %s", data_dict['events'][0]['params']['action'])
 
             # Send analytics data.

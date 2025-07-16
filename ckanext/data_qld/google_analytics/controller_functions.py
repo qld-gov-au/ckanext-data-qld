@@ -36,6 +36,7 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         else:
             cid = hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()
         data_dict = {
+            "user_agent": request.headers.get('User-Agent'),
             "client_id": cid,
             "events": [{
                 "name": "data_qld_api_call",
