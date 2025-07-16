@@ -20,8 +20,12 @@ class AnalyticsPostThread(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
-        self.ga_collection_url = config.get('ckanext.data_qld_googleanalytics.ga4_collection_url',
-                                            'https://www.google-analytics.com/mp/collect')
+        self.ga_collection_url = "{}?api_secret={}&measurement_id={}".format(
+            config.get('ckanext.data_qld_googleanalytics.ga4_collection_url',
+                       'https://www.google-analytics.com/mp/collect'),
+            config.get('ckanext.data_qld_googleanalytics.Ga4ApiSecret', ''),
+            GoogleAnalyticsPlugin.google_analytics_id
+        )
 
     def run(self):
         headers = {
