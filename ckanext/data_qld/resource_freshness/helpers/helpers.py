@@ -141,8 +141,8 @@ def group_dataset_by_contact_email(datasets):
 def send_email_dataset_notification(datasets_by_contacts, action_type):
     for contact in datasets_by_contacts:
         try:
-            log.info("Preparing email data for {0} notification to {1}".format(
-                action_type, contact.get('email')))
+            log.info("Preparing email data for %s notification to %s",
+                     action_type, contact.get('email'))
             datasets = []
             for contact_dataset in contact.get('datasets', {}):
                 date = datetime.strptime(
@@ -165,17 +165,17 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
                         [contact.get('email'), contact.get('email'),
                          site_title, site_url, subject, body],
                         title=action_type)
-            log.info("Added email to job worker default queue for {0} notification to {1}".format(
-                action_type, contact.get('email')))
+            log.info("Added email to job worker default queue for %s notification to %s",
+                     action_type, contact.get('email'))
         except Exception as e:
-            log.error("Error sending {0} notification to {1}".format(
-                action_type, contact.get('email')))
+            log.error("Error sending %s notification to %s",
+                      action_type, contact.get('email'))
             log.error(str(e))
 
 
 def process_email_notification_for_dataset_due_to_publishing():
     action_type = 'send_email_dataset_due_to_publishing_notification'
-    log.info('Started {0}'.format(action_type))
+    log.info('Started %s', action_type)
     results = get_action('data_qld_get_dataset_due_to_publishing')(
         {}, {}).get('results', [])
     if results:
@@ -186,10 +186,10 @@ def process_email_notification_for_dataset_due_to_publishing():
 
 def process_email_notification_for_dataset_overdue():
     action_type = 'send_email_dataset_overdue_notification'
-    log.info('Started {0}'.format(action_type))
+    log.info('Started %s', action_type)
     results = get_action('data_qld_get_dataset_overdue')(
         {}, {}).get('results', [])
     if results:
         datasets_by_contacts = group_dataset_by_contact_email(results)
         send_email_dataset_notification(datasets_by_contacts, action_type)
-    log.info('Finished {0}'.format(action_type))
+    log.info('Finished %s', action_type)

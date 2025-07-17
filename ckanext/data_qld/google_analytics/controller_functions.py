@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+import re
 import six
 
 from ckantoolkit import g, get_action, request
@@ -9,6 +10,8 @@ from ckantoolkit import g, get_action, request
 from . import plugin
 
 log = logging.getLogger('ckanext.googleanalytics')
+
+GA_COOKIE_FORMAT = re.compile(r'\b_ga=GA\d+[.]\d+[.](\d+[.]\d+)')
 
 
 def _alter_sql(sql_query):
@@ -25,18 +28,26 @@ def _alter_sql(sql_query):
 
 def _post_analytics(user, request_event_action, request_event_label, request_dict={}):
     if plugin.GoogleAnalyticsPlugin.google_analytics_id:
+        # retrieve GA client ID from the browser if available
+        cookie_header = request.environ.get('HTTP_COOKIE', '')
+        match = GA_COOKIE_FORMAT.search(cookie_header)
+        if match:
+            cid = match.group(1)
+        else:
+            cid = hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()
         data_dict = {
-            "v": 1,
-            "tid": plugin.GoogleAnalyticsPlugin.google_analytics_id,
-            "cid": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(),
-            # customer id should be obfuscated
-            "t": "event",
-            "dh": request.environ['HTTP_HOST'],
-            "dp": request.environ['PATH_INFO'],
-            "dr": request.environ.get('HTTP_REFERER', ''),
-            "ec": request.environ['HTTP_HOST'] + " CKAN API Request",
-            "ea": request_event_action,
-            "el": request_event_label
+            "user_agent": request.headers.get('User-Agent'),
+            "client_id": cid,
+            "events": [{
+                "name": "data_qld_api_call",
+                "params": {
+                    "page_location": f"https://{request.environ['HTTP_HOST']}{request.environ['PATH_INFO']}",
+                    "page_referrer": request.environ.get('HTTP_REFERER', ''),
+                    "event_category": request.environ['HTTP_HOST'] + " CKAN API Request",
+                    "action": request_event_action,
+                    "label": request_event_label
+                }
+            }]
         }
         plugin.GoogleAnalyticsPlugin.analytics_queue.put(data_dict)
 

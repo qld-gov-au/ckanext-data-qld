@@ -1,12 +1,11 @@
 # encoding: utf-8
 
-from six.moves import queue as Queue
+import queue as Queue
 import json
 import logging
 from os import path
 import requests
 import threading
-from six.moves.urllib.parse import urlencode
 
 import ckan.plugins as p
 from ckantoolkit import config
@@ -21,24 +20,28 @@ class AnalyticsPostThread(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
-        self.ga_collection_url = config.get('ckan.data_qld_googleanalytics.collection_url',
-                                            'https://www.google-analytics.com/collect')
+        self.ga_collection_url = "{}?api_secret={}&measurement_id={}".format(
+            config.get('ckanext.data_qld_googleanalytics.ga4_collection_url',
+                       'https://www.google-analytics.com/mp/collect'),
+            config.get('ckanext.data_qld_googleanalytics.Ga4ApiSecret', ''),
+            GoogleAnalyticsPlugin.google_analytics_id
+        )
 
     def run(self):
-        # User-Agent must be present, GA might ignore a custom UA.
         headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
+            'Content-Type': 'application/json',
         }
         while True:
             # Get host from the queue.
             data_dict = self.queue.get()
-            log.debug("Sending API event to Google Analytics: " + data_dict['ea'])
+            # User-Agent must be present
+            # GA might ignore a custom UA so fall back to imitating Firefox
+            headers['User-Agent'] = data_dict.pop('user_agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0')
+            log.debug("Sending API event to Google Analytics: %s", data_dict['events'][0]['params']['action'])
 
             # Send analytics data.
             try:
-                data = urlencode(data_dict)
-                requests.post(self.ga_collection_url, data=data, headers=headers, timeout=5)
+                requests.post(self.ga_collection_url, json=data_dict, headers=headers, timeout=5)
                 self.queue.task_done()
             except requests.exceptions.RequestException:
                 # If error occurred while posting - dont try again or attempt to fix  - just discard from the queue.
@@ -67,7 +70,7 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
             GoogleAnalyticsPlugin.capture_api_actions = json.load(json_file)
 
         # Get google_analytics_id from config file
-        GoogleAnalyticsPlugin.google_analytics_id = config.get('ckan.data_qld_googleanalytics.id')
+        GoogleAnalyticsPlugin.google_analytics_id = config.get('ckanext.data_qld_googleanalytics.Ga4Id')
 
         # spawn a pool of 5 threads, and pass them queue instance
         for i in range(5):
