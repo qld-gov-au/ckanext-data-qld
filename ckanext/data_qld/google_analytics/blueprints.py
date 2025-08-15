@@ -18,4 +18,5 @@ blueprint = flask.Blueprint(
 )
 
 blueprint.add_url_rule(u'/action/<api_action>', view_func=action, methods=('GET', 'POST'))
-blueprint.add_url_rule(u'/<ver>/action/<api_action>', view_func=action, methods=('GET', 'POST'))
+blueprint.add_url_rule(u'/<int(min=3, max={0}):ver>/action/<api_action>'.format(core_api.API_MAX_VERSION),
+                       view_func=action, methods=('GET', 'POST'))
