@@ -169,19 +169,19 @@ commands:
       JUNIT_OUTPUT="--junit --junit-directory=test/junit/"
       if [ "$BEHAVE_TAG" = "" ]; then
         # no tag specified, probably running locally
-        (ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=smoke" \
-         && ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=-smoke"
+        (ahoy cli "behave $JUNIT_OUTPUT --no-skipped ${*:-test/features} --tags=smoke" \
+         && ahoy cli "behave $JUNIT_OUTPUT --no-skipped ${*:-test/features} --tags=-smoke"
         ) || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       elif [ "$BEHAVE_TAG" = "authenticated" ]; then
         # run any tests that don't have a specific tag
-        ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-multi_plugin" \
+        ahoy cli "behave $JUNIT_OUTPUT --no-skipped ${*:-test/features} --tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-multi_plugin" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       else
         if [ "$BEHAVE_TAG" = "smoke" ] || [ "$BEHAVE_TAG" = "unauthenticated" ] || [ "$BEHAVE_TAG" = "OpenData" ] || [ "$BEHAVE_TAG" = "authenticated" ]; then
           BEHAVE_TAG="$BEHAVE_TAG --tags=-multi_plugin"
         fi
         # run tests with the specified tag
-        ahoy cli "behave $JUNIT_OUTPUT -k ${*:-test/features} --tags=$BEHAVE_TAG" \
+        ahoy cli "behave $JUNIT_OUTPUT --no-skipped ${*:-test/features} --tags=$BEHAVE_TAG" \
           || [ "${ALLOW_BDD_FAIL:-0}" -eq 1 ]
       fi
       ahoy stop-mailmock
