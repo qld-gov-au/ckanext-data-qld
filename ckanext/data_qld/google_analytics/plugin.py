@@ -37,7 +37,9 @@ class AnalyticsPostThread(threading.Thread):
             # User-Agent must be present
             # GA might ignore a custom UA so fall back to imitating Firefox
             headers['User-Agent'] = data_dict.pop('user_agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0')
-            log.debug("Sending API event to Google Analytics: %s", data_dict['events'][0]['params']['action'])
+            log.info("Sending API event to Google Analytics: %s", data_dict['events'][1]['params']['action'])
+            # Logger should be set to info in prod unless tracing required
+            log.debug("DEBUG Sending API event to Google Analytics: url: %s payload: %s headers: %s", self.ga_collection_url, data_dict, headers)
 
             # Send analytics data.
             try:
