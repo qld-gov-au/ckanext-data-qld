@@ -161,8 +161,7 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
             b'Content-Type': b'text/csv; charset=utf-8',
             b'Content-Disposition': six.ensure_binary("attachment;filename=%s" % filename)
         }
-    except Exception as e:
-        log.error('Error creating %s report CSV export file: %s',
-                  report_type, filepath)
-        log.error(str(e))
+    except Exception:
+        log.exception('Error creating %s report CSV export file: %s',
+                      report_type, filepath)
         return abort(500, 'Unable to export report file')
