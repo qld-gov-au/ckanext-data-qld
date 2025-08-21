@@ -100,16 +100,16 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         # https://developers.google.com/analytics/devguides/collection/ga4/user-id?client_type=gtag
         if user:
             """Hash username to safe user_id (avoid PII)."""
-            user_id = hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()
+            user_id = {"user_id": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()}
         else:
-            user_id = None
+            user_id = {}
 
         page_location = _safe_param(f"https://{request.environ['HTTP_HOST']}{request.environ['PATH_INFO']}", 1000)
         referrer = _safe_param(request.environ.get('HTTP_REFERER', ''), 420)
         data_dict = {
             "user_agent": request.headers.get('User-Agent'),
             "client_id": cid,
-            "user_id": user_id,
+            **user_id,
             "events": [
                 {
                     "name": "page_view",
