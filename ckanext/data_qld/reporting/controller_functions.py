@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 def _valid_report_type(report_type):
     if report_type not in REPORT_TYPES:
         msg = _('Report type {0} not valid').format(report_type)
-        log.warn(msg)
+        log.warning(msg)
         return abort(404, msg)
 
 
@@ -87,11 +87,11 @@ def index():
             extra_vars=extra_vars
         )
     # Exception raised from get_action('organization_show')
-    except ObjectNotFound as e:
-        log.warn(e)
+    except ObjectNotFound:
+        log.warning('Organisation %s not found', org_id, exc_info=True)
         return abort(404, _('Organisation %s not found') % org_id)
-    except NotAuthorized as e:  # Exception raised from check_user_access
-        log.warn(e)
+    except NotAuthorized:  # Exception raised from check_user_access
+        log.warning('NotAuthorized', exc_info=True)
         organisation = request_helper.get_first_query_param('organisation')
         if organisation:
             msg = 'You are not authorised to view the {0} report for organisation {1}'.format(
@@ -110,8 +110,8 @@ def export():
 
     try:
         reporting_helpers.check_user_access(report_permission)
-    except NotAuthorized as e:  # Exception raised from check_user_access
-        log.warn(e)
+    except NotAuthorized:  # Exception raised from check_user_access
+        log.warning('You are not authorised to export the %s report', report_type, exc_info=True)
         return abort(403, _('You are not authorised to export the {0} report'.format(report_type)))
 
     error = _valid_report_type(report_type)
@@ -344,11 +344,11 @@ def datasets(org_id, metric):
             extra_vars=data_dict
         )
     # Exception raised from get_validator('group_id_exists')
-    except Invalid as e:
-        log.warn(e)
+    except Invalid:
+        log.warning('Organisation %s not found', org_id, exc_info=True)
         return abort(404, _('Organisation %s not found') % org_id)
-    except NotAuthorized as e:  # Exception raised from check_user_access
-        log.warn(e)
+    except NotAuthorized:  # Exception raised from check_user_access
+        log.warning('You are not authorised to view the dataset %s report for organisation %s', report_type, org_id, exc_info=True)
         return abort(403, _('You are not authorised to view the dataset {0} report for organisation {1}'.format(report_type, org_id)))
 
 
@@ -442,9 +442,9 @@ def datarequests(org_id, metric):
             extra_vars=data_dict
         )
     # Exception raised from get_validator('group_id_exists')
-    except Invalid as e:
-        log.warn(e)
+    except Invalid:
+        log.warning('Organisation %s not found', org_id, exc_info=True)
         return abort(404, _('Organisation %s not found') % org_id)
-    except NotAuthorized as e:  # Exception raised from check_user_access
-        log.warn(e)
+    except NotAuthorized:  # Exception raised from check_user_access
+        log.warning('You are not authorised to view the datarequest %s report for organisation %s', report_type, org_id, exc_info=True)
         return abort(403, _('You are not authorised to view the datarequest {0} report for organisation {1}'.format(report_type, org_id)))

@@ -332,10 +332,8 @@ def get_organisation_list(permission):
 def get_organisation_list_for_user(permission):
     try:
         return tk.get_action('organization_list_for_user')(get_context(), {'permission': permission})
-    except Exception as e:
-        log.error(
-            '*** Failed to retrieve organization_list_for_user {0}'.format(get_username()))
-        log.error(e)
+    except Exception:
+        log.exception('*** Failed to retrieve organization_list_for_user %s', get_username())
         return []
 
 

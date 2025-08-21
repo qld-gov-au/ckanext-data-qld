@@ -51,3 +51,12 @@ resource_file_upload-js:
   extra:
     preload:
       - vendor/jquery
+
+ga4_dataLayer_logout-js:
+  contents:
+    - ga4_dataLayer_logout.js
+  filters: rjsmin
+  output: data_qld_theme/%(version)s_ga4_dataLayer_logout.js
+  extra:
+    preload:
+      - base/main
