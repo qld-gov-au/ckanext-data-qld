@@ -60,3 +60,12 @@ ga4_dataLayer_logout-js:
   extra:
     preload:
       - base/main
+
+ga4_dataLayer_login-js:
+  contents:
+    - ga4_dataLayer_login.js
+  filters: rjsmin
+  output: data_qld_theme/%(version)s_ga4_dataLayer_login.js
+  extra:
+    preload:
+      - base/main

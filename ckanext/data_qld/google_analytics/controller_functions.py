@@ -1,11 +1,10 @@
 # encoding: utf-8
 
+from datetime import datetime, timedelta, timezone
 import hashlib
 import logging
 import re
 import six
-import time
-import random
 
 from ckantoolkit import g, get_action, request
 
@@ -14,6 +13,7 @@ from . import plugin
 log = logging.getLogger('ckanext.googleanalytics')
 
 GA_COOKIE_FORMAT = re.compile(r'\b_ga=GA\d+[.]\d+[.](\d+[.]\d+)')
+GMT_PLUS_10 = timezone(timedelta(hours=10))
 
 
 def _alter_sql(sql_query):
@@ -86,6 +86,35 @@ def _split_param(value: str, base_key: str) -> dict:
     return params
 
 
+def make_daily_client_id(environ: dict) -> str:
+    # Get IP (prefer X-Forwarded-For if present)
+    ip = environ.get("HTTP_X_FORWARDED_FOR")
+    if not ip:
+        ip = environ.get("REMOTE_ADDR", "0.0.0.0")
+
+    # Get User-Agent
+    ua = environ.get("HTTP_USER_AGENT", "missing")
+
+    # Mix IP + UA
+    identity_str = f"{ip}|{ua}"
+
+    # Hash into a stable int
+    id_hash = int(hashlib.md5(identity_str.encode()).hexdigest(), 16) % 2147483647
+
+    day_timestamp = getStartOfDayInt()
+
+    return f"{id_hash}.{day_timestamp}"
+
+
+def getStartOfDayInt():
+    # Truncate time to start of current day in GMT+10
+    now_local = datetime.now(GMT_PLUS_10)
+    start_of_day = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
+    # Convert that midnight (GMT+10) to a Unix timestamp
+    day_timestamp = int(start_of_day.timestamp())
+    return day_timestamp
+
+
 def _post_analytics(user, request_event_action, request_event_label, request_dict={}):
     if plugin.GoogleAnalyticsPlugin.google_analytics_id:
         # retrieve GA client ID from the browser if available
@@ -95,7 +124,12 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
             cid = match.group(1)
         else:
             # Fallback: generate "digits.digits" format
-            cid = f"{random.randint(1000000000, 2147483647)}.{int(time.time())}"
+            if user:
+                day_timestamp = getStartOfDayInt()
+                """Hash username (avoid PII)."""
+                cid = f"{(hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(), 16) % 2147483647}.{day_timestamp}"
+            else:
+                cid = make_daily_client_id()
 
         # https://developers.google.com/analytics/devguides/collection/ga4/user-id?client_type=gtag
         if user:
@@ -109,13 +143,14 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         data_dict = {
             "user_agent": request.headers.get('User-Agent'),
             "client_id": cid,
-            **user_id,
+            **user_id,  # Only used when GA4 user_id tracking is enabled (future state)
             "events": [
                 {
                     "name": "page_view",
                     "params": {
-                        "page_location": page_location,  # other events after this will inherit this
-                        "page_referrer": referrer  # other events after  inherit this
+                        "page_location": page_location,
+                        "page_referrer": referrer,
+                        "page_title": _safe_param(request_event_label, 300)
                     }
                 },
                 {
@@ -123,7 +158,10 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
                     "params": {
                         "event_category": request.environ['HTTP_HOST'] + " CKAN API Request",  # Legacy UA that is now a custom dimensions
                         **_split_param(request_event_action, "action"),
-                        **_split_param(request_event_label, "label")
+                        **_split_param(request_event_label, "label"),
+                        "page_location": page_location,
+                        "page_referrer": referrer,
+                        "logged_in": "yes" if user else "no",
                     }
                 }
             ]
