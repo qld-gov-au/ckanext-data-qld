@@ -2,3 +2,6 @@
 dataLayer.push({
 'user_id': null
 });
+dataLayer.push({
+  'event': 'logged_out'
+});
