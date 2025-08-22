@@ -86,14 +86,16 @@ def _split_param(value: str, base_key: str) -> dict:
     return params
 
 
-def make_daily_client_id(environ: dict) -> str:
+def make_daily_client_id() -> str:
     # Get IP (prefer X-Forwarded-For if present)
-    ip = environ.get("HTTP_X_FORWARDED_FOR")
-    if not ip:
-        ip = environ.get("REMOTE_ADDR", "0.0.0.0")
+    ip = request.environ.get("HTTP_X_FORWARDED_FOR")
+    if ip:
+        ip = ip.split(",")[0].strip()
+    else:
+        ip = request.environ.get("REMOTE_ADDR", "0.0.0.0")
 
     # Get User-Agent
-    ua = environ.get("HTTP_USER_AGENT", "missing")
+    ua = request.environ.get("HTTP_USER_AGENT", "missing")
 
     # Mix IP + UA
     identity_str = f"{ip}|{ua}"
