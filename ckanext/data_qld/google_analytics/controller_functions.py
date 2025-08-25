@@ -154,12 +154,13 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         city = request.headers.get("CloudFront-Viewer-City")
         if city:
             geo_context["city"] = city
-        country_region = request.headers.get("CloudFront-Viewer-Country-Region")
-        if country_region:
-            geo_context["region_id"] = country_region
+
         country = request.headers.get("CloudFront-Viewer-Country")
         if country:
             geo_context["country_id"] = country
+        country_region = request.headers.get("CloudFront-Viewer-Country-Region")
+        if country_region and country:
+            geo_context["region_id"] = f"{country}-{country_region}"
         if request.headers.get("CloudFront-Is-Mobile-Viewer") == "true":
             device_category = "mobile"
         elif request.headers.get("CloudFront-Is-Tablet-Viewer") == "true":
