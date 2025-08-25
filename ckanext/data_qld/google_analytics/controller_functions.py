@@ -146,7 +146,7 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
             user_id = {}
             app_user_id = {}
 
-        page_location = _safe_param(f"https://{request.environ['HTTP_HOST']}{request.environ['PATH_INFO']}", 1000)
+        page_location = _safe_param(f"{request.url}", 1000)
         referrer = _safe_param(request.environ.get('HTTP_REFERER', ''), 420)
 
         # CloudFront geo headers
