@@ -109,12 +109,15 @@ def make_daily_client_id() -> str:
 
 
 def getStartOfDayInt():
-    # Truncate time to start of current day in GMT+10
     now_local = datetime.now(GMT_PLUS_10)
     start_of_day = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
-    # Convert that midnight (GMT+10) to a Unix timestamp
-    day_timestamp = int(start_of_day.timestamp())
-    return day_timestamp
+    return int(start_of_day.timestamp())
+
+
+def getStartOfHourInt():
+    now_local = datetime.now(GMT_PLUS_10)
+    start_of_hour = now_local.replace(minute=0, second=0, microsecond=0)
+    return int(start_of_hour.timestamp())
 
 
 def _post_analytics(user, request_event_action, request_event_label, request_dict={}):
@@ -129,41 +132,77 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
             if user:
                 day_timestamp = getStartOfDayInt()
                 """Hash username (avoid PII)."""
-                cid = f"{(hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(), 16) % 2147483647}.{day_timestamp}"
+                cid = f"{int(hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(), 16) % 2147483647}.{day_timestamp}"
             else:
                 cid = make_daily_client_id()
 
         # https://developers.google.com/analytics/devguides/collection/ga4/user-id?client_type=gtag
+        # https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=firebase#payload_geo_info
         if user:
-            """Hash username to safe user_id (avoid PII)."""
+            # Hash username to safe user_id (avoid PII).
             user_id = {"user_id": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()}
+            app_user_id = {"app_user_id": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()}
         else:
             user_id = {}
+            app_user_id = {}
 
-        page_location = _safe_param(f"https://{request.environ['HTTP_HOST']}{request.environ['PATH_INFO']}", 1000)
+        page_location = _safe_param(f"{request.url}", 1000)
         referrer = _safe_param(request.environ.get('HTTP_REFERER', ''), 420)
+
+        # CloudFront geo headers
+        geo_context = {}
+        city = request.headers.get("CloudFront-Viewer-City")
+        if city:
+            geo_context["city"] = city
+
+        country = request.headers.get("CloudFront-Viewer-Country")
+        if country:
+            geo_context["country_id"] = country
+        country_region = request.headers.get("CloudFront-Viewer-Country-Region")
+        if country_region and country:
+            geo_context["region_id"] = f"{country}-{country_region}"
+        if request.headers.get("CloudFront-Is-Mobile-Viewer") == "true":
+            device_category = "mobile"
+        elif request.headers.get("CloudFront-Is-Tablet-Viewer") == "true":
+            device_category = "tablet"
+        elif request.headers.get("CloudFront-Is-Desktop-Viewer") == "true":
+            device_category = "desktop"
+        else:
+            device_category = "desktop"
         data_dict = {
             "user_agent": request.headers.get('User-Agent'),
             "client_id": cid,
             **user_id,  # Only used when GA4 user_id tracking is enabled (future state)
+            "user_location": {
+                **geo_context
+            },
+            "device": {
+                "category": device_category
+            },
             "events": [
                 {
                     "name": "page_view",
                     "params": {
+                        "session_id": getStartOfHourInt(),  # Group sessions by the hour for a client_id
                         "page_location": page_location,
                         "page_referrer": referrer,
-                        "page_title": _safe_param(request_event_label, 300)
+                        "page_title": _safe_param(request_event_label, 300),
+                        "engagement_time_msec": 1,
+                        "logged_in": "yes" if user else "no",  # custom dimension
+                        **app_user_id  # custom dimension: based off GTM/GA4 'angulartics user id'
                     }
                 },
                 {
                     "name": "ckan_api_call",
                     "params": {
+                        "session_id": getStartOfHourInt(),  # Group sessions by the hour for a client_id
                         "event_category": request.environ['HTTP_HOST'] + " CKAN API Request",  # Legacy UA that is now a custom dimensions
-                        **_split_param(request_event_action, "action"),
-                        **_split_param(request_event_label, "label"),
+                        **_split_param(request_event_action, "action"),  # custom dimension
+                        **_split_param(request_event_label, "label"),  # custom dimension
                         "page_location": page_location,
                         "page_referrer": referrer,
-                        "logged_in": "yes" if user else "no",
+                        "logged_in": "yes" if user else "no",  # custom dimension
+                        **app_user_id  # custom dimension: based off GTM/GA4 'angulartics user id'
                     }
                 }
             ]

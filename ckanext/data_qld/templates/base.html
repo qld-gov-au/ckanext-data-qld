@@ -27,7 +27,9 @@ Add only if user is logged in #}
 /* notify GA4 that client is logged in */
 window.dataLayer = window.dataLayer || [];
 dataLayer.push({
-    'user_id': '{{ h.get_gtm_user_id() }}'
+    'user_id': '{{ h.get_gtm_user_id() }}',
+    'userId': '{{ h.get_gtm_user_id() }}',  // Used in some parts - user_id is primary
+    'app_user_id': '{{ h.get_gtm_user_id() }}' // Used in some parts - user_id is primary
 });
 </script>
 {% endif %}
