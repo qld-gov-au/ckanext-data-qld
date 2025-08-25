@@ -137,6 +137,7 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
                 cid = make_daily_client_id()
 
         # https://developers.google.com/analytics/devguides/collection/ga4/user-id?client_type=gtag
+        # https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=firebase#payload_geo_info
         if user:
             # Hash username to safe user_id (avoid PII).
             user_id = {"user_id": hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest()}
@@ -149,42 +150,44 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
         referrer = _safe_param(request.environ.get('HTTP_REFERER', ''), 420)
 
         # CloudFront geo headers
-        city = request.headers.get("CloudFront-Viewer-City")
-        country = request.headers.get("CloudFront-Viewer-Country-Name")
-        region = request.headers.get("CloudFront-Viewer-Country-Region-Name")
-
         geo_context = {}
+        city = request.headers.get("CloudFront-Viewer-City")
         if city:
             geo_context["city"] = city
+        country_region = request.headers.get("CloudFront-Viewer-Country-Region")
+        if country_region:
+            geo_context["region_id"] = country_region
+        country = request.headers.get("CloudFront-Viewer-Country")
         if country:
-            geo_context["country"] = country
-        if region:
-            geo_context["region"] = region
+            geo_context["country_id"] = country
         if request.headers.get("CloudFront-Is-Mobile-Viewer") == "true":
-            geo_context["device_type"] = "mobile"
+            device_category = "mobile"
         elif request.headers.get("CloudFront-Is-Tablet-Viewer") == "true":
-            geo_context["device_type"] = "tablet"
+            device_category = "tablet"
         elif request.headers.get("CloudFront-Is-Desktop-Viewer") == "true":
-            geo_context["device_type"] = "desktop"
-
-        """
-        GTM / GA4 emulation, which usually goes page_view, custom_event
-        """
+            device_category = "desktop"
+        else:
+            device_category = "desktop"
         data_dict = {
             "user_agent": request.headers.get('User-Agent'),
             "client_id": cid,
             **user_id,  # Only used when GA4 user_id tracking is enabled (future state)
+            "user_location": {
+                **geo_context
+            },
+            "device": {
+                "category": device_category
+            },
             "events": [
                 {
                     "name": "page_view",
                     "params": {
+                        "session_id": getStartOfHourInt(),  # Group sessions by the hour for a client_id
                         "page_location": page_location,
                         "page_referrer": referrer,
                         "page_title": _safe_param(request_event_label, 300),
                         "engagement_time_msec": 1,
-                        "session_id": getStartOfHourInt(),  # Group sessions by the hour for a client_id
                         "logged_in": "yes" if user else "no",  # custom dimension
-                        **geo_context,  # Inject Cloudfront GEO Context where available
                         **app_user_id  # custom dimension: based off GTM/GA4 'angulartics user id'
                     }
                 },
@@ -203,7 +206,6 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
                 }
             ]
         }
-
         plugin.GoogleAnalyticsPlugin.analytics_queue.put(data_dict)
 
 
