@@ -132,7 +132,7 @@ def _post_analytics(user, request_event_action, request_event_label, request_dic
             if user:
                 day_timestamp = getStartOfDayInt()
                 """Hash username (avoid PII)."""
-                cid = f"{(hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(), 16) % 2147483647}.{day_timestamp}"
+                cid = f"{int(hashlib.md5(six.ensure_binary(user, encoding='utf-8')).hexdigest(), 16) % 2147483647}.{day_timestamp}"
             else:
                 cid = make_daily_client_id()
 
