@@ -1,5 +1,11 @@
 {% ckan_extends %}
 
+{% block head_extras %}
+{{ super() }}
+{# normal visits to this page is post login #}
+{% asset 'data_qld_theme/ga4_dataLayer_login-js' %}
+{% endblock %}
+
 {% block page_header %}
 <header class="module-content page-header hug">
   <div class="content_action">

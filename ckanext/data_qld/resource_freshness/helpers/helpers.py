@@ -131,9 +131,8 @@ def group_dataset_by_contact_email(datasets):
     try:
         for key, value in groupby(datasets, key_func):
             datasets_by_contact.append({'email': key, 'datasets': list(value)})
-    except Exception as e:
-        log.error("Error grouping dataset by contact email")
-        log.error(str(e))
+    except Exception:
+        log.exception("Error grouping dataset by contact email")
 
     return datasets_by_contact
 
@@ -167,10 +166,9 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
                         title=action_type)
             log.info("Added email to job worker default queue for %s notification to %s",
                      action_type, contact.get('email'))
-        except Exception as e:
-            log.error("Error sending %s notification to %s",
-                      action_type, contact.get('email'))
-            log.error(str(e))
+        except Exception:
+            log.exception("Error sending %s notification to %s",
+                          action_type, contact.get('email'))
 
 
 def process_email_notification_for_dataset_due_to_publishing():

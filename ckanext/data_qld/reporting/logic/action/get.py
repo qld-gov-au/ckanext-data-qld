@@ -98,8 +98,8 @@ def organisation_followers(context, data_dict):
             .join(model.Group, model.Group.id == UserFollowingGroup.object_id)
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def dataset_followers(context, data_dict):
@@ -131,8 +131,8 @@ def dataset_followers(context, data_dict):
             .join(model.Package, model.Package.id == UserFollowingDataset.object_id)
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def dataset_comments(context, data_dict):
@@ -167,8 +167,8 @@ def dataset_comments(context, data_dict):
             .join(model.Package, model.Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datarequests(context, data_dict):
@@ -199,8 +199,8 @@ def datarequests(context, data_dict):
             .order_by(db.DataRequest.open_time.desc())
         ).all()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datarequest_comments(context, data_dict):
@@ -236,8 +236,8 @@ def datarequest_comments(context, data_dict):
             .join(db.DataRequest, db.DataRequest.id == _replace_(CommentThread.url, DATAREQUEST_PREFIX, ''))
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def dataset_comment_followers(context, data_dict):
@@ -277,8 +277,8 @@ def dataset_comment_followers(context, data_dict):
             .join(model.Package, model.Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datasets_min_one_comment_follower(context, data_dict):
@@ -315,8 +315,8 @@ def datasets_min_one_comment_follower(context, data_dict):
             .join(Comment)
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datarequests_min_one_comment_follower(context, data_dict):
@@ -353,8 +353,8 @@ def datarequests_min_one_comment_follower(context, data_dict):
             .join(Comment, Comment.thread_id == CommentThread.id)
         ).scalar()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def dataset_comments_no_replies_after_x_days(context, data_dict):
@@ -421,8 +421,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
                 continue
         return comments_to_show
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datarequests_no_replies_after_x_days(context, data_dict):
@@ -491,8 +491,8 @@ def datarequests_no_replies_after_x_days(context, data_dict):
                 continue
         return comments_to_show
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def open_datarequests_no_comments_after_x_days(context, data_dict):
@@ -534,8 +534,8 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
             .order_by(db.DataRequest.open_time.desc())
         ).all()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datarequests_open_after_x_days(context, data_dict):
@@ -573,8 +573,8 @@ def datarequests_open_after_x_days(context, data_dict):
             .order_by(db.DataRequest.open_time.desc())
         ).all()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datarequests_for_circumstance(context, data_dict):
@@ -602,8 +602,8 @@ def datarequests_for_circumstance(context, data_dict):
             .order_by(db.DataRequest.close_time.desc())
         ).all()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def comments_no_replies_after_x_days(context, data_dict):
@@ -656,8 +656,8 @@ def comments_no_replies_after_x_days(context, data_dict):
             .order_by(Comment.creation_date.desc())
         ).all()
 
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def de_identified_datasets(context, data_dict):
@@ -680,8 +680,8 @@ def de_identified_datasets(context, data_dict):
         )
 
         return _query_result(query, is_org_list, return_count_only)
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def de_identified_datasets_no_schema(context, data_dict):
@@ -753,8 +753,8 @@ def overdue_datasets(context, data_dict):
         )
 
         return _query_result(query, is_org_list, return_count_only)
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datasets_no_groups(context, data_dict):
@@ -781,8 +781,8 @@ def datasets_no_groups(context, data_dict):
         )
 
         return _query_result(query, is_org_list, return_count_only)
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def datasets_no_tags(context, data_dict):
@@ -808,8 +808,8 @@ def datasets_no_tags(context, data_dict):
         )
 
         return _query_result(query, is_org_list, return_count_only)
-    except Exception as e:
-        log.error(str(e))
+    except Exception:
+        log.exception()
 
 
 def resources_pending_privacy_assessment(context, data_dict):

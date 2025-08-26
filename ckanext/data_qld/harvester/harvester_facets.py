@@ -206,9 +206,9 @@ def gather_stage(self, harvest_job):
                 harvest_job,
                 remote_ckan_base_url,
                 fq_terms + [fq_since_last_time])
-        except SearchError as e:
+        except SearchError:
             log.info('Searching for datasets changed since last time '
-                     'gave an error: %s', e)
+                     'gave an error', exc_info=True)
             get_all_packages = True
 
         if not get_all_packages and not object_ids:
@@ -225,7 +225,7 @@ def gather_stage(self, harvest_job):
                                                    remote_ckan_base_url,
                                                    fq_terms)
         except SearchError as e:
-            log.info('Searching for all datasets gave an error: %s', e)
+            log.info('Searching for all datasets gave an error: %s', exc_info=True)
             self._save_gather_error(
                 'Unable to search remote CKAN for datasets:%s url:%s'
                 'terms:%s' % (e, remote_ckan_base_url, fq_terms),

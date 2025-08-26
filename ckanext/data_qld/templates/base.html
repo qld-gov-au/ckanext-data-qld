@@ -11,8 +11,35 @@
 {% endblock %}
 
 {% block custom_styles %}
+{{ super() }}
   <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" rel="stylesheet" />
   <link href="{{ h.set_external_resources() }}/__data/assets/git_bridge/0019/100846/open-data/dist/qld.css?h=eeb329b" rel="stylesheet" />
-  {% set type = 'asset' %}
-  {% include 'snippets/data_qld_' ~ type ~ '.html' %}
+  {% include 'snippets/data_qld_asset.html' %}
+{% endblock %}
+
+{% block head_extras %}
+{{ super() }}
+
+{# GA4 user
+Add only if user is logged in #}
+{% if c.userobj %}
+<script  type="text/javascript">
+/* notify GA4 that client is logged in */
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'user_id': '{{ h.get_gtm_user_id() }}',
+    'userId': '{{ h.get_gtm_user_id() }}',  // Used in some parts - user_id is primary
+    'app_user_id': '{{ h.get_gtm_user_id() }}' // Used in some parts - user_id is primary
+});
+</script>
+{% endif %}
+{# End GA4 user #}
+
+<!-- Google Tag Manager -->
+<script type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','{{ h.get_gtm_container_id() }}');</script>
+<!-- End Google Tag Manager -->
 {% endblock %}

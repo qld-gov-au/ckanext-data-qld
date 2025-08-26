@@ -2,7 +2,8 @@
 
 import datetime
 import re
-from six import text_type
+import hashlib
+from six import text_type, ensure_binary
 
 from ckan import model
 from ckan.lib import uploader
@@ -176,6 +177,15 @@ def get_gtm_code():
     # To get Google Tag Manager Code
     gtm_code = config.get('ckan.google_tag_manager.gtm_container_id', False)
     return str(gtm_code)
+
+
+def get_gtm_user_id():
+    # To generate consistent userid hash
+    if g.user:
+        gtm_user_id = hashlib.md5(ensure_binary(g.user, encoding='utf-8')).hexdigest()
+        return str(gtm_user_id)
+    else:
+        return None
 
 
 def get_year():

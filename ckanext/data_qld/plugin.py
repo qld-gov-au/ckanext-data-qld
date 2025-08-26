@@ -91,6 +91,7 @@ class DataQldPlugin(CKANHarvester):
             'data_qld_update_frequencies_from_config': resource_freshness_helpers.update_frequencies_from_config,
             'data_qld_filesize_formatter': converters.filesize_formatter,
             'get_gtm_container_id': helpers.get_gtm_code,
+            'get_gtm_user_id': helpers.get_gtm_user_id,
             'get_year': helpers.get_year,
             'ytp_comments_enabled': helpers.ytp_comments_enabled,
             'dashboard_index_route': helpers.dashboard_index_route,
