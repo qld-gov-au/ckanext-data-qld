@@ -4,7 +4,7 @@ import datetime as dt
 import json
 import logging
 
-from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h, render
+from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h, render_snippet
 from ckan.lib import mailer
 from ckan.model.resource import Resource
 
@@ -148,14 +148,14 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
                     contact_dataset.get('next_update_due'), '%Y-%m-%d')
 
                 datasets.append({
-                    'url': h.url_for('dataset_read', id=contact_dataset.get('name'), _external=True),
+                    'url': h.url_for('dataset.read', id=contact_dataset.get('name'), _external=True),
                     'next_due_date': date.strftime('%d/%m/%Y')
                 })
 
             extra_vars = {'datasets': datasets}
-            subject = render(
+            subject = render_snippet(
                 'emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = render(
+            body = render_snippet(
                 'emails/bodies/{0}.txt'.format(action_type), extra_vars)
 
             site_title = 'Data | Queensland Government'
