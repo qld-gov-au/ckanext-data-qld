@@ -4,7 +4,10 @@ import datetime as dt
 import json
 import logging
 
-from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h, render_snippet
+from ckan.lib import jinja_extensions
+from jinja2 import Environment
+from ckantoolkit import config, enqueue_job, g, get_action, get_validator, h
+from ckan.common import ungettext, ugettext
 from ckan.lib import mailer
 from ckan.model.resource import Resource
 
@@ -137,6 +140,16 @@ def group_dataset_by_contact_email(datasets):
     return datasets_by_contact
 
 
+def render_email_template(template_path, extra_vars):
+    globals = {"site_title": config.get("ckan.site_title")}
+    env = Environment(**jinja_extensions.get_jinja_env_options())
+    # Install the given gettext, ngettext callables into the environment
+    env.install_gettext_callables(ugettext, ungettext)  # type: ignore
+    template = env.get_template(template_path, globals=globals)
+
+    return template.render(extra_vars)
+
+
 def send_email_dataset_notification(datasets_by_contacts, action_type):
     for contact in datasets_by_contacts:
         try:
@@ -153,9 +166,9 @@ def send_email_dataset_notification(datasets_by_contacts, action_type):
                 })
 
             extra_vars = {'datasets': datasets}
-            subject = render_snippet(
+            subject = render_email_template(
                 'emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = render_snippet(
+            body = render_email_template(
                 'emails/bodies/{0}.txt'.format(action_type), extra_vars)
 
             site_title = 'Data | Queensland Government'
