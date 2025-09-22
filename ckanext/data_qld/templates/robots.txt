@@ -58,7 +58,7 @@ Disallow: /dataset/*/resource/*/validation
 #Comments
 Disallow: /dataset/*/comments
 
-#Activty streams
+#Activity streams
 Disallow: /dataset/activity/*
 
 #User Generated Data Requests
