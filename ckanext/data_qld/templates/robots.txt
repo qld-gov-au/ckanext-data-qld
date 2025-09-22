@@ -49,6 +49,56 @@ Disallow: /tr/
 Disallow: /uk_UA/
 Disallow: /zh_CN/
 Disallow: /zh_TW/
+
+
+#Schema validations
+Disallow: /dataset/*/schema/show
+Disallow: /dataset/*/resource/*/validation
+
+#Comments
+Disallow: /dataset/*/comments
+
+#Activty streams
+Disallow: /dataset/activity/*
+
+#User Generated Data Requests
+Disallow: /datarequest
+Disallow: /datarequest/*
+Disallow: /organization/datarequest/*
+
+# faceted search trap
+Disallow: */dataset/*?*sort=
+Disallow: */dataset/*?*dataset_type=
+Disallow: */dataset/*?*year_updated=
+Disallow: */dataset/*?*SpatialAdministrativeArea=
+Disallow: */dataset/*?*category=
+Disallow: */dataset/*?*tags=
+Disallow: */dataset/*?*organization=
+Disallow: */dataset/*?*groups=
+Disallow: */dataset/*?*res_format=
+Disallow: */dataset/*?*license_id=
+Disallow: */dataset/*?*theme=
+Disallow: */dataset/*?*openness_score=
+Disallow: */dataset/*?*q=
+Allow: */dataset/?q=&sort=metadata_modified+desc&page=
+Allow: */dataset/?page=
+
+# another faceted search trap
+Disallow: */organization/*?*sort=
+Disallow: */organization/*?*dataset_type=
+Disallow: */organization/*?*year_updated=
+Disallow: */organization/*?*SpatialAdministrativeArea=
+Disallow: */organization/*?*category=
+Disallow: */organization/*?*tags=
+Disallow: */organization/*?*organization=
+Disallow: */organization/*?*groups=
+Disallow: */organization/*?*res_format=
+Disallow: */organization/*?*license_id=
+Disallow: */organization/*?*theme=
+Disallow: */organization/*?*openness_score=
+Disallow: */organization/*?*q=
+Allow: */organization/?page=
+
 # presigned S3 URLs that are only temporary
 Disallow: /ckan-*-attachments-*/
 Crawl-Delay: 10
