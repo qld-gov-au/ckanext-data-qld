@@ -235,6 +235,6 @@ def action(get_request_data_function, core_function, api_action, ver):
             event_label = api_action_label.format(parameter_value)
             _post_analytics(g.user, event_action, event_label, request_data)
     except Exception:
-        log.debug(exc_info=True)
+        log.debug("Failed to post analytics info for action [%s]", api_action, exc_info=True)
         pass
     return core_function(api_action, ver=ver)
