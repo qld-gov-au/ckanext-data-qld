@@ -11,7 +11,7 @@ def export():
     if headers and isinstance(headers, dict):
         response = flask.make_response(return_value)
         for key, value in six.iteritems(headers):
-            response.headers[key] = value
+            response.headers[six.ensure_text(key)] = six.ensure_text(value)
         return response
     else:
         return return_value
