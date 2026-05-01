@@ -671,13 +671,17 @@ def de_identified_datasets(context, data_dict):
     org_id, is_org_list = _authorised_orgs(data_dict, context)
 
     try:
-        query = (
-            _active_package_query(org_id, is_org_list, return_count_only)
-            .join(model.PackageExtra)
-            .filter(model.PackageExtra.key == 'de_identified_data')
-            .filter(model.PackageExtra.value == 'YES')
-            .filter(model.PackageExtra.state == ACTIVE_STATE)
-        )
+        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
+        query = _active_package_query(org_id, is_org_list, return_count_only)
+        if hasattr(model, 'PackageExtra'):
+            query = (
+                query.join(model.PackageExtra)
+                .filter(model.PackageExtra.key == 'de_identified_data')
+                .filter(model.PackageExtra.value == 'YES')
+                .filter(model.PackageExtra.state == ACTIVE_STATE)
+            )
+        else:
+            query = query.filter(model.Package.extras.de_identified_data == 'YES')
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:
@@ -700,32 +704,40 @@ def de_identified_datasets_no_schema(context, data_dict):
 
     org_id, is_org_list = _authorised_orgs(data_dict, context)
 
-    extras = model.PackageExtra
-    de_identified = aliased(extras)
-    data_last_updated = aliased(extras)
+    query = _active_package_query(org_id, is_org_list, return_count_only)
+    # CKAN 2.12+ replaces PackageExtra with the Package.extras field
+    if hasattr(model, 'PackageExtra'):
+        extras = model.PackageExtra
+        de_identified = aliased(extras)
+        data_last_updated = aliased(extras)
 
-    sub_query = _session_.query(extras).filter(
-        and_(
-            extras.package_id == model.Package.id,
-            extras.key == 'default_data_schema',
-            extras.value != ''
-        ))
+        sub_query = _session_.query(extras).filter(
+            and_(
+                extras.package_id == model.Package.id,
+                extras.key == 'default_data_schema',
+                extras.value != ''
+            ))
 
-    query = (
-        _active_package_query(org_id, is_org_list, return_count_only)
-        .join(de_identified)
-        .join(data_last_updated)
-        .filter(~sub_query.exists())
-        .filter(and_(
-            de_identified.key == 'de_identified_data',
-            de_identified.value == 'YES',
-            de_identified.state == ACTIVE_STATE
-        ))
-        .filter(and_(
-            data_last_updated.key == 'data_last_updated',
-            data_last_updated.value > count_from_date.isoformat()
-        ))
-    )
+        query = (
+            query.join(de_identified)
+            .join(data_last_updated)
+            .filter(~sub_query.exists())
+            .filter(and_(
+                de_identified.key == 'de_identified_data',
+                de_identified.value == 'YES',
+                de_identified.state == ACTIVE_STATE
+            ))
+            .filter(and_(
+                data_last_updated.key == 'data_last_updated',
+                data_last_updated.value > count_from_date.isoformat()
+            ))
+        )
+    else:
+        query = (
+            query.filter(model.Package.extras.default_data_schema != '')
+            .filter(model.Package.extras.de_identified_data == 'YES')
+            .filter(model.Package.extras.data_last_updated > count_from_date.isoformat())
+        )
 
     return _query_result(query, is_org_list, return_count_only)
 
@@ -744,13 +756,17 @@ def overdue_datasets(context, data_dict):
         # next_update_due is stored as display timezone without timezone as isoformat
         today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
-        query = (
-            _active_package_query(org_id, is_org_list, return_count_only)
-            .join(model.PackageExtra)
-            .filter(model.PackageExtra.key == 'next_update_due')
-            .filter(model.PackageExtra.value <= today)
-            .filter(model.PackageExtra.state == ACTIVE_STATE)
-        )
+        query = _active_package_query(org_id, is_org_list, return_count_only)
+        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
+        if hasattr(model, 'PackageExtra'):
+            query = (
+                query.join(model.PackageExtra)
+                .filter(model.PackageExtra.key == 'next_update_due')
+                .filter(model.PackageExtra.value <= today)
+                .filter(model.PackageExtra.state == ACTIVE_STATE)
+            )
+        else:
+            query = query.filter(model.Package.extras.next_update_due <= today)
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:
