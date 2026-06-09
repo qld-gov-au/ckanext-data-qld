@@ -469,6 +469,16 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
   overflow: hidden;
 }
 
+/* Ensure nav items are laid out properly after QGDS */
+.nav-facet {
+    flex-direction: column;
+}
+
+.main-navbar .navigation {
+    display: flex;
+}
+
+
 li.nav-item a span.badge {
   float: right;
   margin-right: 10px;
@@ -572,13 +582,4 @@ hr.double-thickness {
     font-size: 12px;
     bottom: 4px;
     position: relative;
-}
-
-.nav-facet {
-    flex-direction: column;
-}
-
-.main-navbar .navigation {
-    display: flex;
-    margin-inline-start: auto;
 }
