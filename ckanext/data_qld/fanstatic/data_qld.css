@@ -577,3 +577,8 @@ hr.double-thickness {
 .nav-facet {
     flex-direction: column;
 }
+
+.main-navbar .navigation {
+    display: flex;
+    margin-inline-start: auto;
+}
