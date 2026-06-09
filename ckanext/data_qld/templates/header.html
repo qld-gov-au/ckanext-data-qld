@@ -107,17 +107,17 @@
         {% block header_site_navigation %}
           {% block header_site_navigation_tabs %}
           {% set dataset_search_route = 'dataset.search' %}
-          <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for(dataset_search_route) }}">Data</a></li>
+          <li {% if h.current_url() != '/' %}class="active"{% endif %}><h6><a href="{{ h.url_for(dataset_search_route) }}">Data</a></h6></li>
           <li>
-            <a href="/visualisations">Visualisations</a>
+            <h6><a href="/visualisations">Visualisations</a></h6>
           </li>
           <li>
-            <a href="/news-and-case-studies">News and Case Studies</a>
+            <h6><a href="/news-and-case-studies">News and Case Studies</a></h6>
           </li>
           <li>
-            <a href="/article/standards-and-guidance">Standards and guidance</a>
+            <h6><a href="/article/standards-and-guidance">Standards and guidance</a></h6>
           </li>
-          <li><a href="/article/contact">Contact</a></li>
+          <li><h6><a href="/article/contact">Contact</a></li></h6>
           {% endblock %}
         {% endblock %}
         </ul>
