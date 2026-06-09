@@ -573,3 +573,7 @@ hr.double-thickness {
     bottom: 4px;
     position: relative;
 }
+
+.nav-facet {
+    flex-direction: column;
+}
