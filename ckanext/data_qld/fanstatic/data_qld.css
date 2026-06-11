@@ -478,6 +478,13 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
     display: flex;
 }
 
+.qld-header-link {
+    list-style-type: none;
+}
+.qld-header-link a {
+    text-decoration: none;
+}
+
 
 li.nav-item a span.badge {
   float: right;
