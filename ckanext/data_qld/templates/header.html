@@ -68,7 +68,7 @@
                     {% block header_account_container_content %}
                       {% if g.userobj %}
                         {% block header_account_logged %} {% if g.userobj.sysadmin %}
-                        <li class="qld-header-link ms-16">CKAN {{ h.ckan_version() }}</li>
+                        <span class="ms-16">CKAN {{ h.ckan_version() }}</span>
                         <li class="qld-header-link ms-16">
                             <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
                                 <i class="fa fa-gavel" aria-hidden="true"></i>
