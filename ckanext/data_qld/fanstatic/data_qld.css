@@ -481,7 +481,7 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
 .qld-header-link {
     list-style-type: none;
 }
-.qld-header-link a {
+a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
     text-decoration: none;
 }
 
