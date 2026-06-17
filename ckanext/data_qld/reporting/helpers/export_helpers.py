@@ -7,8 +7,6 @@ import os
 from tempfile import gettempdir
 from datetime import datetime
 
-import six
-
 from ckantoolkit import abort, config
 
 from ckanext.data_qld.reporting.helpers import helpers
