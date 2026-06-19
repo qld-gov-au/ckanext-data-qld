@@ -25,12 +25,12 @@
                       {% if g.userobj %}
                         {% block header_account_logged %} {% if g.userobj.sysadmin %}
                         <span class="ms-16">CKAN {{ h.ckan_version() }}</span>
-                        <li class="qld-header-link ms-16">
+                        <span class="qld-header-link ms-16">
                             <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
                                 <i class="fa fa-gavel" aria-hidden="true"></i>
                                 <span class="text">{{ _('Admin') }}</span>
                             </a>
-                        </li>
+                        </span>
                         {% endif %}
                         <span class="qld-header-link ms-16">
                             <a href="{{ h.url_for('user.read', id=g.userobj.name) }}" class="image" title="{{ _('View profile') }}">
@@ -195,12 +195,64 @@
                             </li>
                         {% endblock %}
                     {% endblock %}
+                          {% if g.userobj %}
+                            {% if g.userobj.sysadmin %}
                             <li class="nav-item alt mobile-only">
-                                <a class="nav-link" href="index.html">
-                                    <span class="qld-icon qld-icon-md qld-icon-chart" aria-hidden="true"></span>
-                                        Mobile only with icon
+                                <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
+                                    <i class="fa fa-gavel" aria-hidden="true"></i>
+                                    <span class="text">{{ _('Admin') }}</span>
                                 </a>
                             </li>
+                            {% endif %}
+                            <li class="nav-item alt mobile-only">
+                                <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="{{ h.url_for('user.read', id=g.userobj.name) }}" class="image" title="{{ _('View profile') }}">
+                                    {{ h.gravatar((g.userobj.email_hash if g and g.userobj else ''), size=22) }}
+                                    <span class="username">{{ g.userobj.display_name }}</span>
+                                </a>
+                            </li>
+                            {% set new_activities = h.new_activities() %}
+                            <li class="nav-item alt mobile-only notifications {% if new_activities > 0 %}notifications-important{% endif %}">
+                                {% set notifications_tooltip = ngettext('Dashboard (%(num)d new item)', 'Dashboard (%(num)d new items)', new_activities) %}
+                                <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="{{ h.url_for(h.dashboard_index_route()) }}" title="{{ notifications_tooltip }}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i>
+                                    <span class="text">{{ _('Dashboard') }}</span>
+                                    <span class="badge">{{ new_activities }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item alt mobile-only">
+                              <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="{{ h.url_for('user.edit', id=c.userobj.name) }}" title="{{ _('Profile settings') }}">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                                <span class="text">{{ _('Profile settings') }}</span>
+                              </a>
+                            </li>
+                              {% if h.is_datarequests_enabled() %}
+                                <li class="nav-item alt mobile-only">
+                                  <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="{{ h.url_for('datarequest.index') }}">Request data</a>
+                                </li>
+                              {% endif %}
+                            <li class="nav-item alt mobile-only">
+                              <form action="{{ h.url_for('user.logout') }}" method="post">
+                                {{ h.csrf_input() }}
+                                <button class="btn btn-sm alt mobile-only" type="submit" title="{{ _('Log out') }}">
+                                  <i class="fa fa-sign-out" aria-hidden="true"></i>{{ _('Log out') }}
+                                </button>
+                              </form>
+                            </li>
+                          {% else %}
+                              <li class="nav-item alt mobile-only">
+                                {% link_for _('Log in'), named_route='user.login', class_="nav-link" %}
+                              </li>
+                              {% if h.check_access('user_create') %}
+                                <li class="nav-item alt mobile-only">
+                                  {% link_for _('Register'), named_route='user.register', class_='nav-link sub' %}
+                                </li>
+                              {% endif %}
+                              {% if h.is_datarequests_enabled() %}
+                                <li class="nav-item alt mobile-only">
+                                  <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="{{ h.url_for('datarequest.index') }}">Request data</a>
+                                </li>
+                              {% endif %}
+                          {% endif %}
                 </ul>
             </div>
         </div>
