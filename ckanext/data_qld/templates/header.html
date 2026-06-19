@@ -163,33 +163,33 @@
                         {% block header_site_navigation_tabs %}
                         {% set dataset_search_route = 'dataset.search' %}
                             <li class="nav-item">
-                                <a class="nav-link {% if h.current_url() == '/' %}active{% endif %}" aria-current="page" href="/">
+                                <a class="nav-link {% if h.current_url() == '/' %}active" aria-current="page{% endif %}" href="/">
                                     <span class="qld-icon qld-icon-md qld-icon-home" aria-hidden="true"></span>
                                         <span class="visually-hidden-lg">Home</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if h.current_url().startswith('/dataset') %}active{% endif %}" href="{{ h.url_for(dataset_search_route) }}">
+                                <a class="nav-link {% if h.current_url().startswith('/dataset') %}active" aria-current="page{% endif %}" href="{{ h.url_for(dataset_search_route) }}">
                                   Data
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active{% endif %}" href="/visualisations">
+                                <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="/visualisations">
                                   Visualisations
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if h.current_url().startswith('/news-and-case-studies') %}active{% endif %}" href="/news-and-case-studies">
+                                <a class="nav-link {% if h.current_url().startswith('/news-and-case-studies') %}active" aria-current="page{% endif %}" href="/news-and-case-studies">
                                   News and Case Studies
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if h.current_url().startswith('/article/standards-and-guidance') %}active{% endif %}" href="/article/standards-and-guidance">
+                                <a class="nav-link {% if h.current_url().startswith('/article/standards-and-guidance') %}active" aria-current="page{% endif %}" href="/article/standards-and-guidance">
                                   Standards and guidance
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if h.current_url().startswith('/article/contact') %}active{% endif %}" href="/article/contact">
+                                <a class="nav-link {% if h.current_url().startswith('/article/contact') %}active" aria-current="page{% endif %}" href="/article/contact">
                                   Contact
                                 </a>
                             </li>
