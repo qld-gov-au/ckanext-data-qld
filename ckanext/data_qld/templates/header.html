@@ -124,9 +124,24 @@
                 </div>
 
                 <div class="col-lg-4">
-      {% block header_site_search %}
-        {{ super() }}
-      {% endblock %}
+                  {% block header_site_search %}
+                    <div id="qld-header-search" class="qld-header-site-search is-closed">
+                      <form class="site-search" role="search" action="{% url_for dataset_type ~ '.search' %}" method="get">
+                        <!--
+                            QGDS Component: Search input
+                        -->
+                        <div class="qld-search-input ">
+                            <input id="search" name="q" class="form-control" type="text" autocomplete="off"
+                                aria-label="{{ h.humanize_entity_type('package', dataset_type, 'search_placeholder') or _('Search datasets...') }}"
+                                placeholder="" />
+                            <button class="btn btn-primary" type="submit" id="search-button" aria-label="{{ _('Search') }}">
+                                <span class="btn-icon" aria-hidden="true"></span>
+                                <span class="btn-label">{{ _('Search') }}</span>
+                            </button>
+                        </div>
+                      </form>
+                    </div>
+                  {% endblock %}
                 </div>
             </div>
         </div>
