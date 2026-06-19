@@ -43,8 +43,7 @@ a.btn {
 /* Blue buttons */
 .btn-primary {
   color: #fff;
-  background-color: #007eb1;
-  border-color: #007eb1;
+  background-color: var(--qld-btn-bg);
 }
 
 .btn-primary:hover {
