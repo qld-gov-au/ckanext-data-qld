@@ -472,11 +472,9 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
 .nav-facet {
     flex-direction: column;
 }
-
 .main-navbar .navigation {
     display: flex;
 }
-
 .qld-header-link {
     list-style-type: none;
 }
@@ -486,7 +484,9 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
 a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
     text-decoration: none;
 }
-
+.navbar-collapse {
+    margin-left: 0px;
+}
 
 li.nav-item a span.badge {
   float: right;
