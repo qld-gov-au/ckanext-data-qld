@@ -176,7 +176,7 @@ def confirm_dialog_if_present(context, text):
     if context.browser.is_element_present_by_xpath(dialog_xpath):
         parent_xpath = dialog_xpath
     elif context.browser.is_text_present(text):
-        parent_xpath = "//div[contains(string(), '{0}')]/..".format(text)
+        parent_xpath = "//div[contains(string(), '{0}')]".format(text)
     else:
         return
     button_xpath = parent_xpath + "//button[contains(@class, 'btn-primary')]"
@@ -197,7 +197,7 @@ def confirm_dataset_deletion_dialog_if_present(context):
         """)
     # Press the Confirm button whether it is in a dialog or a page
     context.execute_steps(u"""
-        When I press the element with xpath "//button[contains(@class, 'btn-primary') and contains(string(), 'Confirm') ]"
+        When I press the element with xpath "//div[@id='content']//button[contains(@class, 'btn-primary') and contains(string(), 'Confirm') ]"
         Then I should see "Dataset has been deleted"
     """)
 
@@ -751,6 +751,13 @@ def escape_for_javascript_string(text):
     return SINGLE_QUOTE_RE.sub(r"\1\\'", text)
 
 
+@when(u'I submit the main form')
+def submit_form(context):
+    context.execute_steps("""
+        When I press the element with xpath "//div[@id='content']//button[contains(@class, 'btn-primary')]"
+    """)
+
+
 @when(u'I submit a comment with subject "{subject}" and comment "{comment}"')
 def submit_comment_with_subject_and_comment(context, subject, comment):
     """
@@ -848,7 +855,7 @@ def create_datarequest_for_org(context, organisation_name):
         And I fill in "description" with "Test description"
         And I execute the script "$('#field-organizations option:contains("{0}")').attr('selected', true)"
         And I take a debugging screenshot
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         And I take a debugging screenshot
     """.format(organisation_name))
 

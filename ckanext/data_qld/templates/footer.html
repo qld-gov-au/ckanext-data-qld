@@ -1,21 +1,107 @@
-<footer class="site-footer">
-    <div class="container">
-        <ul>
-            <li><a href="https://www.qld.gov.au/contact-us" class="no-print">Contact us</a></li>
-            <li class="mobile-hidden"><a href="https://www.qld.gov.au/help" class="no-print">Help</a></li>
-            <li><a href="https://www.qld.gov.au/legal/copyright">Copyright</a></li>
-            <li><a href="https://www.qld.gov.au/legal/disclaimer">Disclaimer</a></li>
-            <li><a href="https://www.qld.gov.au/legal/privacy">Privacy</a></li>
-            <li><a href="https://www.qld.gov.au/about/rights-accountability/right-to-information">Right to information</a></li>
-            <li class="mobile-hidden"><a href="https://www.qld.gov.au/help/accessibility" class="no-print">Accessibility</a></li>
-            <li class="mobile-hidden"><a href="http://www.smartjobs.qld.gov.au/" class="no-print">Jobs in Queensland Government</a></li>
-            <li id="link-languages"><a href="https://www.qld.gov.au/help/languages" class="no-print">Other languages</a></li>
-        </ul>
-        <div class="site-footer__copyright">
-            <p>&copy; The State of Queensland 1995-{{ h.get_year() }}</p>
-        </div>
-        <div class="site-footer__signoff">
-            <p><a href="https://www.qld.gov.au">Queensland Government</a></p>
-        </div>
+<footer class="qld-footer dark" role="contentinfo">
+  <!-- Footer content container -->
+  <div class="container">
+    <div class="row">
+      <div class="col title">
+        <h2 class="footer-site-name">Queensland Government Open Data</h2>
+      </div>
     </div>
+    <div class="row">
+
+      <!-- Contact us Column -->
+      <div class="col-12 col-lg-3 py-24 py-lg-0 footer-contact ">
+
+        <!-- Inner Grid to manage layout of contact us content -->
+        <div class="row ">
+
+          <div class="col col-lg-12">
+
+            <h3 class="footer-heading">
+            Contact us
+            </h3>
+
+            <div>
+            <p>Get in touch for enquiries, feedback, complaints and compliments.</p>
+            </div>
+
+          </div><!-- Inner grid col-12  -->
+
+          <div class="col col-lg-12 contact-btn order-lg-last d-flex d-lg-block mt-lg-32 ">
+            <a href="https://www.qld.gov.au/contact-us" class="btn btn-outline-secondary">
+              Contact us
+            </a>
+          </div><!-- Inner grid col-12  -->
+
+
+          <div class="col-12">
+              <div class="footer-contact-item footer-contact-phone">
+                <span class="qld-icon qld-icon-phone" aria-hidden="true"></span> <b>Phone:</b> <a href='tel:137468' rel='noopener'>13 QGOV (13 74 68)</a>
+              </div>
+              <div class="footer-contact-item footer-contact-email">
+                <span class="qld-icon qld-icon-email" aria-hidden="true"></span> <b>Email:</b> <span class='user-select-all'><a href='mailto:email@qld.gov.au' rel='noopener'>email@qld.gov.au</a></span>
+              </div>
+
+          </div>
+        </div>
+
+      </div><!-- Contact us Column -->
+
+
+
+
+      <!-- WoG links -->
+      <div class="col-12 col-lg-2 border-column"
+        aria-label="footer-navigation">
+
+        <div class="footer-column pe-lg-16">
+
+
+
+          <ul class="nav footer-link-list flex-column pt-lg-2">
+            <li><a class="nav-link" href="https://www.qld.gov.au/help" >Help</a></li>
+            <li><a class="nav-link" href="https://www.qld.gov.au/legal/copyright" >Copyright</a></li>
+            <li><a class="nav-link" href="https://www.qld.gov.au/legal/disclaimer" >Disclaimer</a></li>
+            <li><a class="nav-link" href="https://www.qld.gov.au/legal/privacy" >Privacy</a></li>
+            <li><a class="nav-link" href="https://www.qld.gov.au/about/rights-accountability/right-to-information" >Right to information</a></li>
+            <li><a class="nav-link" href="https://www.qld.gov.au/help/accessibility" >Accessibility</a></li>
+            <li><a class="nav-link" href="https://smartjobs.qld.gov.au" target="_blank" >Jobs in Queensland Government</a></li>
+            <li><a class="nav-link" href="https://www.qld.gov.au/help/languages" >Other languages</a></li>
+          </ul>
+
+
+        </div>
+      </div>
+
+      <!-- Acknowledgement of Country -->
+      <div class="col crest">
+
+        <div class="footer-column">
+
+        <div class="footer-content">
+          <div class="footer-acknowledgements">
+
+              <h3 class="footer-heading">Acknowledgement of Country</h3>
+
+              <p>We pay our respects to the Aboriginal and Torres Strait Islander ancestors of this land, their spirits and their legacy. The foundations laid by these ancestors—our First Nations peoples—give strength, inspiration and courage to current and future generations towards creating a better Queensland.</p>
+
+          </div>
+
+          <p class="copyright">
+            &copy; The State of Queensland (Organisation)
+             2026
+          </p>
+
+          <p>
+            <a class="fw-semibold" href="https://www.qld.gov.au" rel="external">
+            Queensland Government
+            </a>
+          </p>
+
+        </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
 </footer>

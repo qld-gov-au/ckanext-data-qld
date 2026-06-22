@@ -7,8 +7,6 @@ import os
 from tempfile import gettempdir
 from datetime import datetime
 
-import six
-
 from ckantoolkit import abort, config
 
 from ckanext.data_qld.reporting.helpers import helpers
@@ -158,8 +156,8 @@ def output_report_csv(csv_header_row, row_order, dict_csv_rows, report_type):
         fh = open(filepath)
 
         return fh.read(), {
-            b'Content-Type': b'text/csv; charset=utf-8',
-            b'Content-Disposition': six.ensure_binary("attachment;filename=%s" % filename)
+            'Content-Type': 'text/csv; charset=utf-8',
+            'Content-Disposition': "attachment;filename=%s" % filename
         }
     except Exception:
         log.exception('Error creating %s report CSV export file: %s',

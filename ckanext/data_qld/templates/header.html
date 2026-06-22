@@ -1,132 +1,261 @@
 {% ckan_extends %}
 
-{% set is_ckan_2_10 = h.check_ckan_version('2.10') %}
-
-{% block header_wrapper %} {% block header_account %}
-<div class="account-masthead">
-  <div class="container">
-    {% block header_account_container_content %} {% if g.userobj %}
-    <div class="account avatar authed" data-module="me" data-me="{{ g.userobj.id }}">
-      <ul class="unstyled">
-        {% block header_account_logged %} {% if g.userobj.sysadmin %}
-        <li>CKAN {{ h.ckan_version() }}</li>
-        <li>
-          <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
-            <i class="fa fa-gavel" aria-hidden="true"></i>
-            <span class="text">{{ _('Admin') }}</span>
-          </a>
-        </li>
-        {% endif %}
-        <li>
-          <a href="{{ h.url_for('user.read', id=g.userobj.name) }}" class="image" title="{{ _('View profile') }}">
-                  {{ h.gravatar((g.userobj.email_hash if g and g.userobj else ''), size=22) }}
-                  <span class="username">{{ g.userobj.display_name }}</span>
-                </a>
-        </li>
-        {% set new_activities = h.new_activities() %}
-        <li class="notifications {% if new_activities > 0 %}notifications-important{% endif %}">
-          {% set notifications_tooltip = ngettext('Dashboard (%(num)d new item)', 'Dashboard (%(num)d new items)', new_activities)
-          %}
-          <a href="{{ h.url_for(h.dashboard_index_route()) }}" title="{{ notifications_tooltip }}">
-            <i class="fa fa-tachometer" aria-hidden="true"></i>
-            <span class="text">{{ _('Dashboard') }}</span>
-            <span class="badge">{{ new_activities }}</span>
-          </a>
-        </li>
-        {% block header_account_settings_link %}
-          {{ super() }}
-        {% endblock %} {% block header_account_log_out_link %}
-          {{ super() }}
-        {% endblock %} {% endblock %}
-        {% if h.is_datarequests_enabled() %}
-        <li><a href="{{ h.url_for('datarequest.index') }}">Request data</a></li>
-        {% endif %}
-      </ul>
-    </div>
-    {% else %}
-    <nav class="account not-authed">
-      <ul class="unstyled">
-        {% block header_account_notlogged %}{{ super() }}{% endblock %}
-        {% if h.is_datarequests_enabled() %}
-        <li><a href="{{ h.url_for('datarequest.index') }}">Request data</a></li>
-        {% endif %}
-      </ul>
-    </nav>
-    {% endif %} {% endblock %}
-  </div>
-</div>
-{% endblock %}
-<header class="navbar navbar-static-top masthead">
-  <div class="container">
+{% block header_wrapper %}
     {% block header_debug %}
       {{ super() }}
     {% endblock %}
+    <header class="qld-header" role="banner">
+    <div class="qld-header-pre-header dark">
+        <div class="container">
+            <div class="d-flex justify-content-between">
 
-    <nav
-      {% if is_ckan_2_10 %}
-      class="navbar navbar-expand-lg navbar-light navbar-collapse"
-      {% endif %}
-    >
-    {% if is_ckan_2_10 %}
-    <hgroup class="{{ g.header_class }} navbar-left">
-      <a class="logo" href="https://www.qld.gov.au" title="Link to Queensland Gov website">
-        <img src="/qg-coa/qg-coa-white.svg" alt="Queensland Government" class="d-none d-sm-block">
-        <img src="/qg-coa/qg-coa-stacked-white.svg" alt="Queensland Government" class="d-sm-none d-md-none d-lg-none d-xl-none">
-        <img src="/qg-coa/qg-coa-stacked.svg" alt="Queensland Government" class="d-none d-sm-none d-md-none d-lg-none d-xl-none qg-print-coat-of-arms">
-      </a>
-      <div class="header__data-portal">
-        <a href="/">Open Data Portal</a>
-      </div>
-    </hgroup>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navigation-toggle"
-      aria-controls="main-navigation-toggle" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="fa fa-bars text-white"></span>
-    </button>
-    {% else %}
-    <div class="navbar-right">
-      <button data-target="#main-navigation-toggle" data-toggle="collapse" class="navbar-toggle collapsed" type="button" aria-label="expand or collapse" aria-expanded="false">
-        <span class="sr-only">{{ _('Toggle navigation') }}</span>
-        <span class="fa fa-bars"></span>
-      </button>
-    </div>
-    <hgroup class="{{ g.header_class }} navbar-left">
-      <a class="logo" href="https://www.qld.gov.au" title="Link to Queensland Gov website">
-        <img src="/qg-coa/qg-coa-white.svg" alt="Queensland Government" class="hidden-xs">
-        <img src="/qg-coa/qg-coa-stacked-white.svg" alt="Queensland Government" class="hidden-sm hidden-md hidden-lg">
-        <img src="/qg-coa/qg-coa-stacked.svg" alt="Queensland Government" class="hidden-xs hidden-sm hidden-md hidden-lg qg-print-coat-of-arms">
-      </a>
-      <div class="header__data-portal">
-        <a href="/">Open Data Portal</a>
-      </div>
-    </hgroup>
-    {% endif %}
+                <span class="qld-header-link align-self-center">
+                    <a class="qld-header-link" href="https://qld.gov.au" aria-label="www.qld.gov.au">
+                        <span class="d-none d-lg-inline">www.qld.gov.au</span>
 
-    <div class="main-navbar collapse navbar-collapse" id="main-navigation-toggle">
-      <nav class="section navigation">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 nav nav-pills">
-        {% block header_site_navigation %}
-          {% block header_site_navigation_tabs %}
-          {% set dataset_search_route = 'dataset.search' %}
-          <li {% if h.current_url() != '/' %}class="active"{% endif %}><a href="{{ h.url_for(dataset_search_route) }}">Data</a></li>
-          <li>
-            <a href="/visualisations">Visualisations</a>
-          </li>
-          <li>
-            <a href="/news-and-case-studies">News and Case Studies</a>
-          </li>
-          <li>
-            <a href="/article/standards-and-guidance">Standards and guidance</a>
-          </li>
-          <li><a href="/article/contact">Contact</a></li>
-          {% endblock %}
-        {% endblock %}
-        </ul>
-      {% block header_site_search %}
-        {{ super() }}
-      {% endblock %}
-      </nav>
+                        <svg xmlns="http://www.w3.org/2000/svg"viewBox="0 0 331 56" fill="currentColor" class="qld-header-logo is-delivering-for-qld"  >
+                            <use href="/coa-delivering-for-qld.svg#logo"/>
+                        </svg>
+                    </a>
+                </span>
+
+                <div class="d-none d-lg-flex align-items-baseline">
+                  {% block header_account %}
+                    {% block header_account_container_content %}
+                      {% if g.userobj %}
+                        {% block header_account_logged %} {% if g.userobj.sysadmin %}
+                        <span class="ms-16">CKAN {{ h.ckan_version() }}</span>
+                        <span class="qld-header-link ms-16">
+                            <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
+                                <i class="fa fa-gavel" aria-hidden="true"></i>
+                                <span class="text">{{ _('Admin') }}</span>
+                            </a>
+                        </span>
+                        {% endif %}
+                        <span class="qld-header-link ms-16">
+                            <a href="{{ h.url_for('user.read', id=g.userobj.name) }}" class="image" title="{{ _('View profile') }}">
+                                {{ h.gravatar((g.userobj.email_hash if g and g.userobj else ''), size=22) }}
+                                <span class="username">{{ g.userobj.display_name }}</span>
+                            </a>
+                        </span>
+                        {% set new_activities = h.new_activities() %}
+                        <span class="qld-header-link ms-16 notifications {% if new_activities > 0 %}notifications-important{% endif %}">
+                            {% set notifications_tooltip = ngettext('Dashboard (%(num)d new item)', 'Dashboard (%(num)d new items)', new_activities) %}
+                            <a href="{{ h.url_for(h.dashboard_index_route()) }}" title="{{ notifications_tooltip }}">
+                                <i class="fa fa-tachometer" aria-hidden="true"></i>
+                                <span class="text">{{ _('Dashboard') }}</span>
+                                <span class="badge">{{ new_activities }}</span>
+                            </a>
+                        </span>
+                        <span class="qld-header-link ms-16">
+                        {% block header_account_settings_link %}{{ super() }}{% endblock %}
+                        </span>
+                          {% if h.is_datarequests_enabled() %}
+                            <span class="qld-header-link ms-16">
+                              <a href="{{ h.url_for('datarequest.index') }}">Request data</a>
+                            </span>
+                          {% endif %}
+                        <span class="qld-header-link ms-16">
+                        {% block header_account_log_out_link %}
+                          <form action="{{ h.url_for('user.logout') }}" method="post">
+                            {{ h.csrf_input() }}
+                            <button class="qld-header-link ms-16 p-0 bg-transparent border-0" type="submit" title="{{ _('Log out') }}">
+                              <i class="fa fa-sign-out qld-icon-sm qld-header-link-icon" aria-hidden="true"></i>{{ _('Log out') }}
+                            </button>
+                          </form>
+                        {% endblock %}
+                        </span>
+                        {% endblock %}
+                      {% else %}
+                        {% block header_account_notlogged %}
+                          <span class="qld-header-link ms-16">
+                            {% link_for _('Log in'), named_route='user.login' %}
+                          </span>
+                          {% if h.check_access('user_create') %}
+                            <span class="qld-header-link ms-16">
+                              {% link_for _('Register'), named_route='user.register', class_='sub' %}
+                            </span>
+                          {% endif %}
+                          {% if h.is_datarequests_enabled() %}
+                            <span class="qld-header-link ms-16">
+                              <a href="{{ h.url_for('datarequest.index') }}">Request data</a>
+                            </span>
+                          {% endif %}
+                        {% endblock %}
+                      {% endif %}
+                    {% endblock %}
+                  {% endblock %}
+                </div>
+
+                <div class="qld-header-mobile-controls">
+                    <button id="qld-header-toggle-search-button" aria-controls="qld-header-search"
+                        class="qld-header-mobile-button is-search-toggle" aria-expanded="false"
+                        aria-label="Open search">Search</button>
+
+                    <button id="burgerBtn" class="qld-header-mobile-button is-menu-toggle" data-bs-toggle="collapse"
+                        data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false"
+                        aria-label="Open menu">Menu</button>
+                </div>
+            </div>
+
+        </div>
     </div>
-    </nav>
-  </div>
+
+    <div class="qld-header-main default">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col">
+
+                    <div class="qld-header-brand">
+                        <a class="qld-header-link d-lg-inline-flex align-middle" href="https://qld.gov.au">
+                            <div class="qld-header-brand-image align-self-center">
+                                <svg xmlns="http://www.w3.org/2000/svg"viewBox="0 0 331 56" fill="currentColor" class="qld-header-logo is-delivering-for-qld" height="56" >
+                                    <use href="/coa-delivering-for-qld.svg#logo"/>
+                                </svg>
+                            </div>
+                            <div class="qld-header-secondary-content">
+                                <span class="qld-header-site-title">
+                                    Open Data
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4">
+                  {% block header_site_search %}
+                    <div id="qld-header-search" class="qld-header-site-search is-closed">
+                      <form class="site-search" role="search" action="{% url_for dataset_type ~ '.search' %}" method="get">
+                        <!--
+                            QGDS Component: Search input
+                        -->
+                        <div class="qld-search-input ">
+                            <input id="search" name="q" class="form-control" type="text" autocomplete="off"
+                                aria-label="{{ h.humanize_entity_type('package', dataset_type, 'search_placeholder') or _('Search datasets...') }}"
+                                placeholder="" />
+                            <button class="btn btn-primary" type="submit" id="search-button" aria-label="{{ _('Search') }}">
+                                <span class="btn-icon" aria-hidden="true"></span>
+                                <span class="btn-label">{{ _('Search') }}</span>
+                            </button>
+                        </div>
+                      </form>
+                    </div>
+                  {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
 </header>
+        <!-- QGDS Partial: Primary navigation -->
+
+<nav id="main-nav" class="navbar navbar-expand-lg" aria-label="Website navigation" role="navigation">
+    <div id="navbarNav" class="container">
+            <div class="nav-header">
+                <span class="navbar-brand" href="#">Open Data</span>
+                <button id="burgerCloseBtn" type="button" class="navbar-btn" data-bs-toggle="collapse"
+                    aria-label="Close" data-bs-target="#main-nav" aria-expanded="false"
+                    aria-controls="collapseExample">Close</button>
+            </div>
+            <div class="navbar-collapse">
+                <ul class="navbar-nav">
+                    {% block header_site_navigation %}
+                        {% block header_site_navigation_tabs %}
+                        {% set dataset_search_route = 'dataset.search' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if h.current_url() == '/' %}active" aria-current="page{% endif %}" href="/">
+                                    <span class="qld-icon qld-icon-md qld-icon-home" aria-hidden="true"></span>
+                                        <span class="visually-hidden-lg">Home</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if h.current_url().startswith('/dataset') %}active" aria-current="page{% endif %}" href="{{ h.url_for(dataset_search_route) }}">
+                                  Data
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if h.current_url().startswith('/visualisations') %}active" aria-current="page{% endif %}" href="/visualisations">
+                                  Visualisations
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if h.current_url().startswith('/news-and-case-studies') %}active" aria-current="page{% endif %}" href="/news-and-case-studies">
+                                  News and Case Studies
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if h.current_url().startswith('/article/standards-and-guidance') %}active" aria-current="page{% endif %}" href="/article/standards-and-guidance">
+                                  Standards and guidance
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if h.current_url().startswith('/article/contact') %}active" aria-current="page{% endif %}" href="/article/contact">
+                                  Contact
+                                </a>
+                            </li>
+                        {% endblock %}
+                    {% endblock %}
+                          {% if g.userobj %}
+                            {% if g.userobj.sysadmin %}
+                            <li class="nav-item alt mobile-only">
+                                <a class="nav-link" href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
+                                    <i class="fa fa-gavel" aria-hidden="true"></i>
+                                    <span class="text">{{ _('Admin') }}</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item alt mobile-only">
+                                <a class="nav-link" href="{{ h.url_for('user.read', id=g.userobj.name) }}" class="image" title="{{ _('View profile') }}">
+                                    {{ h.gravatar((g.userobj.email_hash if g and g.userobj else ''), size=22) }}
+                                    <span class="username">{{ g.userobj.display_name }}</span>
+                                </a>
+                            </li>
+                            {% set new_activities = h.new_activities() %}
+                            <li class="nav-item alt mobile-only notifications {% if new_activities > 0 %}notifications-important{% endif %}">
+                                {% set notifications_tooltip = ngettext('Dashboard (%(num)d new item)', 'Dashboard (%(num)d new items)', new_activities) %}
+                                <a class="nav-link {% if h.current_url().startswith('/dashboard') %}active" aria-current="page{% endif %}" href="{{ h.url_for(h.dashboard_index_route()) }}" title="{{ notifications_tooltip }}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i>
+                                    <span class="text">{{ _('Dashboard') }}</span>
+                                    <span class="badge">{{ new_activities }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item alt mobile-only">
+                              <a class="nav-link" href="{{ h.url_for('user.edit', id=c.userobj.name) }}" title="{{ _('Profile settings') }}">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                                <span class="text">{{ _('Profile settings') }}</span>
+                              </a>
+                            </li>
+                              {% if h.is_datarequests_enabled() %}
+                                <li class="nav-item alt mobile-only">
+                                  <a class="nav-link {% if h.current_url().startswith('/datarequest') %}active" aria-current="page{% endif %}" href="{{ h.url_for('datarequest.index') }}">Request data</a>
+                                </li>
+                              {% endif %}
+                            <li class="nav-item alt mobile-only">
+                              <form action="{{ h.url_for('user.logout') }}" method="post">
+                                {{ h.csrf_input() }}
+                                <button class="btn btn-sm alt mobile-only" type="submit" title="{{ _('Log out') }}">
+                                  <i class="fa fa-sign-out" aria-hidden="true"></i>{{ _('Log out') }}
+                                </button>
+                              </form>
+                            </li>
+                          {% else %}
+                              <li class="nav-item alt mobile-only">
+                                {% link_for _('Log in'), named_route='user.login', class_="nav-link" %}
+                              </li>
+                              {% if h.check_access('user_create') %}
+                                <li class="nav-item alt mobile-only">
+                                  {% link_for _('Register'), named_route='user.register', class_='nav-link sub' %}
+                                </li>
+                              {% endif %}
+                              {% if h.is_datarequests_enabled() %}
+                                <li class="nav-item alt mobile-only">
+                                  <a class="nav-link {% if h.current_url().startswith('/datarequest') %}active" aria-current="page{% endif %}" href="{{ h.url_for('datarequest.index') }}">Request data</a>
+                                </li>
+                              {% endif %}
+                          {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div id="overlay"></div>
+</nav>
 {% endblock %}

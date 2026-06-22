@@ -43,8 +43,7 @@ a.btn {
 /* Blue buttons */
 .btn-primary {
   color: #fff;
-  background-color: #007eb1;
-  border-color: #007eb1;
+  background-color: var(--qld-btn-bg);
 }
 
 .btn-primary:hover {
@@ -467,6 +466,26 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
 .nav-aside li.active a span {
   white-space: normal;
   overflow: hidden;
+}
+
+/* Ensure nav items are laid out properly after QGDS */
+.nav-facet {
+    flex-direction: column;
+}
+.main-navbar .navigation {
+    display: flex;
+}
+.qld-header-link {
+    list-style-type: none;
+}
+.qld-header-link:hover {
+    color: var(--qld-link-color);
+}
+a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
+    text-decoration: none;
+}
+.navbar-collapse {
+    margin-left: 0px;
 }
 
 li.nav-item a span.badge {
