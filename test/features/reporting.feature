@@ -13,7 +13,7 @@ Feature: Reporting
         And I should see an element with xpath "//table[@id='report-table']//th[contains(string(), 'Broken links')]"
         And I should see an element with xpath "//table[@id='report-table']//td[position()=1]/a[contains(@href, 'report/broken-links') and contains(string(), 'Test Organisation')]"
 
-        When I press "Test Organisation"
+        When I press the element with xpath "//table[@id='report-table']//a[contains(string(), 'Test Organisation')]"
         Then I should see an element with xpath "//table[@id='report-table']//th[string() = 'Res']"
         And I should see an element with xpath "//table[@id='report-table']//th[string() = 'URL']"
         And I should see an element with xpath "//table[@id='report-table']//th[string() = 'Status']"
@@ -37,7 +37,7 @@ Feature: Reporting
         And I should see an element with xpath "//table[@id='report-table']//th[string() = 'Average score']"
         And I should see an element with xpath "//table[@id='report-table']//td[position()=1]/a[contains(@href, 'report/openness') and contains(string(), 'Test Organisation')]"
 
-        When I press "Test Organisation"
+        When I press the element with xpath "//table[@id='report-table']//a[contains(string(), 'Test Organisation')]"
         Then I should see an element with xpath "//table[@id='report-table']//th[string() = 'Dataset']"
         And I should see an element with xpath "//table[@id='report-table']//th[string() = 'Notes']"
         And I should see an element with xpath "//table[@id='report-table']//th[string() = 'Score']"
