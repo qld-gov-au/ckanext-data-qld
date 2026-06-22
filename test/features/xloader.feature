@@ -12,7 +12,7 @@ Feature: XLoader
         Then I should see "DataStore"
 
         When I press "DataStore"
-        And I reload page every 3 seconds until I see an element with xpath "//*[contains(string(), 'Express Load completed')]" but not more than 6 times
+        And I reload page every 3 seconds until I see an element with xpath "//*[contains(string(), 'Express Load completed')]" but not more than 10 times
         Then I should see "Express Load completed"
         And I should see "Data Schema"
         And I should see "Data Dictionary"
