@@ -59,8 +59,8 @@
                         {% block header_account_log_out_link %}
                           <form action="{{ h.url_for('user.logout') }}" method="post">
                             {{ h.csrf_input() }}
-                            <button class="btn btn-sm" type="submit" title="{{ _('Log out') }}">
-                              <i class="fa fa-sign-out" aria-hidden="true"></i>{{ _('Log out') }}
+                            <button class="qld-header-link ms-16 p-0 bg-transparent border-0" type="submit" title="{{ _('Log out') }}">
+                              <i class="fa fa-sign-out qld-icon-sm qld-header-link-icon" aria-hidden="true"></i>{{ _('Log out') }}
                             </button>
                           </form>
                         {% endblock %}
