@@ -478,7 +478,7 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
 .qld-header-link {
     list-style-type: none;
 }
-.qld-header-link:hover {
+.qld-header-link:hover, .qld-header-link a:hover {
     color: var(--qld-link-color);
 }
 a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
