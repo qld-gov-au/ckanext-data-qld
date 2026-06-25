@@ -496,6 +496,14 @@ a .fa::before, a .fa-solid::before, a .fa-stack::before, a .fa-brands::before {
     width: unset;
     min-width: 2rem;
 }
+nav.sort-content button {
+    /* Sort order buttons aren't laid out like form buttons */
+    padding: unset;
+    min-width: unset;
+    min-height: unset;
+    margin-right: 10px;
+    text-decoration: none;
+}
 
 li.nav-item a span.badge {
   float: right;
