@@ -487,6 +487,15 @@ a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
 .navbar-collapse {
     margin-left: 0px;
 }
+a .fa::before, a .fa-solid::before, a .fa-stack::before, a .fa-brands::before {
+    /* Allow Font Awesome icons to have no underline on hover */
+    display: inline-block;
+}
+.pagination .page-item .page-link {
+    /* Handle page numbers above 2 digits */
+    width: unset;
+    min-width: 2rem;
+}
 
 li.nav-item a span.badge {
   float: right;
