@@ -487,6 +487,10 @@ a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
 .navbar-collapse {
     margin-left: 0px;
 }
+a .fa::before {
+    /* Allow Font Awesome icons to have no underline on hover */
+    display: inline-block;
+}
 
 li.nav-item a span.badge {
   float: right;
