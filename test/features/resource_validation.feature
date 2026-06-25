@@ -12,6 +12,8 @@ Feature: Resource validation
         And I fill in "name" with "Test validation schema"
         And I fill in "description" with "Testing validation schema"
         And I upload schema file "test_schema.json" to resource
+        And I set "debug" to "True"
+        And I take a debugging screenshot
         And I submit the main form
         Then I should see "Test validation schema"
 
@@ -21,6 +23,7 @@ Feature: Resource validation
         And I should see text containing quotes `"name": "field1"`
         And I should see text containing quotes `"name": "field2"`
         When I upload schema file "test_schema2.json" to resource
+        And I take a debugging screenshot
         And I submit the main form
         Then I should see "Test validation schema"
         When I click the link with text that contains "Test validation schema"
