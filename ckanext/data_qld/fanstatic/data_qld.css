@@ -514,6 +514,11 @@ nav.sort-content button {
     min-width: unset;
     min-height: unset;
 }
+.alert-dismissible .btn-close {
+    /* Close buttons inside a dismissable alert aren't properly handled by QGDS yet */
+    height: 1rem;
+    top: 0px;
+}
 
 li.nav-item a span.badge {
   float: right;
