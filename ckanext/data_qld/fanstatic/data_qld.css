@@ -504,6 +504,11 @@ nav.sort-content button {
     margin-right: 10px;
     text-decoration: none;
 }
+#dropdownDownloadFormat {
+    /* This dropdown should be visually appended to the download button */
+    min-width: unset;
+    box-shadow: unset;
+}
 
 li.nav-item a span.badge {
   float: right;
