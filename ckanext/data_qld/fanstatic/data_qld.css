@@ -509,6 +509,11 @@ nav.sort-content button {
     min-width: unset;
     box-shadow: unset;
 }
+.btn.btn-remove-url {
+    /* 'Clear' buttons are inline and should not be sized like normal ones */
+    min-width: unset;
+    min-height: unset;
+}
 
 li.nav-item a span.badge {
   float: right;
