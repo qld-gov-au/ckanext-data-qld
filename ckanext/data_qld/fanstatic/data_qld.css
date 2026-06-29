@@ -520,9 +520,10 @@ nav.sort-content button {
     top: 0px;
     right: 0px;
 }
-.badge {
+a.badge {
     /* Don't turn white links purple when visited (white links imply a dark background) */
-    color: var(--qld-badge-color) !important;
+    color: var(--qld-badge-color);
+    text-underline-offset: unset;
 }
 
 li.nav-item a span.badge {
