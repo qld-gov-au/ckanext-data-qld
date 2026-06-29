@@ -40,30 +40,6 @@ a.btn {
   box-shadow: none;
 }
 
-/* Blue buttons */
-.btn-primary {
-  color: #fff;
-  background-color: var(--qld-btn-bg);
-}
-
-.btn-primary:hover {
-  color: #fff;
-  background-color: #0090cb;
-  border-color: #0090cb;
-}
-
-.btn-primary:active,
-.btn-primary:active:hover,
-.btn-primary.active,
-.open > .dropdown-toggle.btn-primary,
-.btn-primary:focus,
-.btn-primary:active:focus,
-.btn-primary.focus {
-  color: #ffffff;
-  background-color: #545b62;
-  border-color: #4e555b;
-}
-
 /* Green buttons */
 .btn-success {
   color: #000;
