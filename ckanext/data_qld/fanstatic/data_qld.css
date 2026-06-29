@@ -495,6 +495,7 @@ a .fa::before, a .fa-solid::before, a .fa-stack::before, a .fa-brands::before {
     /* Handle page numbers above 2 digits */
     width: unset;
     min-width: 2rem;
+    padding: 0 0.7rem 0 0.7rem;
 }
 nav.sort-content button {
     /* Sort order buttons aren't laid out like form buttons */
