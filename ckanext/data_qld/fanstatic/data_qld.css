@@ -40,30 +40,6 @@ a.btn {
   box-shadow: none;
 }
 
-/* Blue buttons */
-.btn-primary {
-  color: #fff;
-  background-color: var(--qld-btn-bg);
-}
-
-.btn-primary:hover {
-  color: #fff;
-  background-color: #0090cb;
-  border-color: #0090cb;
-}
-
-.btn-primary:active,
-.btn-primary:active:hover,
-.btn-primary.active,
-.open > .dropdown-toggle.btn-primary,
-.btn-primary:focus,
-.btn-primary:active:focus,
-.btn-primary.focus {
-  color: #ffffff;
-  background-color: #545b62;
-  border-color: #4e555b;
-}
-
 /* Green buttons */
 .btn-success {
   color: #000;
@@ -487,7 +463,8 @@ a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
 .navbar-collapse {
     margin-left: 0px;
 }
-a .fa::before, a .fa-solid::before, a .fa-stack::before, a .fa-brands::before {
+a .fa::before, a .fa-solid::before, a .fa-stack::before, a .fa-brands::before,
+button .fa::before, button .fa-solid::before, button .fa-stack::before, button .fa-brands::before {
     /* Allow Font Awesome icons to have no underline on hover */
     display: inline-block;
 }
