@@ -9,43 +9,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {{ super() }}
 {% endblock %}
 
-{%- block content %}
-  {% block toolbar %}
-    {# Drop the 'toolbar' class as that interferes with QGDS #}
-    <div role="navigation" aria-label="{{ _('Breadcrumb') }}">
-      {% block breadcrumb %}
-        {{ super() }}
-      {% endblock %}
-    </div>
-  {% endblock %}
-  {% block maintag %}<div role="main" class="main {{ h.set_background_image_class() }}">{% endblock %}
-    <div id="content" class="container">
-      {% block main_content %}
-        {% block flash %}
+{% block maintag %}
+    <div role="main" class="main {{ h.set_background_image_class() }}">
+{% endblock %}
+
+{% block toolbar %}
+  {# Drop the 'toolbar' class as that interferes with QGDS #}
+  <div role="navigation" aria-label="{{ _('Breadcrumb') }}">
+    {% block breadcrumb %}
+      {{ super() }}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{% block secondary %}
+    <aside class="secondary col-sm-5 col-md-4 col-lg-4">
+        {% block secondary_content %}
+            {{ super() }}
+        {% endblock %}
+    </aside>
+{% endblock %}
+
+{% block primary %}
+    <div class="primary col-xs-12 col-sm-7 col-md-8 col-lg-8">
+        {% block primary_content %}
           {{ super() }}
         {% endblock %}
-
-        <div class="row wrapper{% block wrapper_class %}{% endblock %}{% if self.secondary()|trim == '' or c.action=='resource_read' %} no-nav{% endif %}">
-          {% block pre_primary %}
-          {% endblock %}
-
-          {% block secondary %}
-              <aside class="secondary col-sm-5 col-md-4 col-lg-4">
-                  {% block secondary_content %}
-                      {{ super() }}
-                  {% endblock %}
-              </aside>
-          {% endblock %}
-
-          {% block primary %}
-              <div class="primary col-xs-12 col-sm-7 col-md-8 col-lg-8">
-                  {% block primary_content %}
-                      {{ super() }}
-                  {% endblock %}
-              </div>
-          {% endblock %}
-        </div>
-      {% endblock %}
     </div>
-  </div>
-{% endblock -%}
+{% endblock %}
