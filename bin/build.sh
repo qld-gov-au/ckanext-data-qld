@@ -21,10 +21,15 @@ CKAN_GIT_VERSION=$CKAN_VERSION
 CKAN_GIT_ORG=qld-gov-au
 SOLR_VERSION=9
 
-if [ "$CKAN_VERSION" = "2.11" ]; then
-    CKAN_GIT_VERSION=ckan-2.11.4-qgov.3
+if [ "$CKAN_VERSION" = "2.12" ]; then
+    CKAN_GIT_ORG=ckan
+    # Pin to a working version of 2.12
+    # TODO Update after https://github.com/ckan/ckan/issues/9417 is fixed
+    CKAN_GIT_VERSION=6a75534af2d50f506820e252c7f0c5d5c65a6b72
+elif [ "$CKAN_VERSION" = "2.11" ]; then
+    CKAN_GIT_VERSION=ckan-2.11.5-qgov.2
 elif [ "$CKAN_VERSION" = "2.10" ]; then
-    CKAN_GIT_VERSION=ckan-2.10.7-qgov.1
+    CKAN_GIT_VERSION=ckan-2.10.7-qgov.2
     SOLR_VERSION=8
 elif [ "$CKAN_VERSION" = "master" ]; then
     CKAN_GIT_ORG=ckan

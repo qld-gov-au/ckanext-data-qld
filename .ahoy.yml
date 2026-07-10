@@ -148,14 +148,14 @@ commands:
     usage: Run unit tests.
     cmd: |
       ahoy title 'Run unit tests'
-      ahoy cli 'pytest --ckan-ini=.docker/test.ini "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
+      ahoy cli 'pytest --ckan-ini=.docker/test.ini --cov=ckanext "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-unit-failed-rerun:
     usage: Re-run only the unit tests that failed.
     cmd: |
       ahoy title 'Re-run unit tests'
-      ahoy cli 'pytest -vvv --lf --ckan-ini=.docker/test.ini "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
+      ahoy cli 'pytest -vvv --lf --ckan-ini=.docker/test.ini --cov=ckanext "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
       [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 
   test-bdd:
