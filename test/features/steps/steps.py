@@ -3,6 +3,7 @@ import email
 import quopri
 import re
 import requests
+import six
 from six.moves.urllib.parse import urlparse
 import uuid
 
@@ -477,7 +478,7 @@ def _parse_params(param_string):
     for param in param_string.split("::"):
         entry = param.split("=", 1)
         params[entry[0]] = entry[1] if len(entry) > 1 else ""
-    return params.items()
+    return six.iteritems(params)
 
 
 @when(u'I show the non-JavaScript schema fields')
@@ -649,7 +650,7 @@ def should_receive_base64_email_containing_texts(context, address, text, text2):
         payload_bytes = quopri.decodestring(payload)
         if len(payload_bytes) > 0:
             payload_bytes += b'='  # do fix the padding error issue
-        decoded_payload = base64.b64decode(payload_bytes.encode()).decode()
+        decoded_payload = six.ensure_text(base64.b64decode(six.ensure_binary(payload_bytes)))
         print('Searching for', text, ' and ', text2, ' in decoded_payload: ', decoded_payload)
         return text in decoded_payload and (not text2 or text2 in decoded_payload)
 
