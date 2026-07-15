@@ -1,10 +1,6 @@
 {% ckan_extends %}
 
-{% block header_wrapper %}
-    {% block header_debug %}
-      {{ super() }}
-    {% endblock %}
-    <header class="qld-header" role="banner">
+{% block header_account %}
     <div class="qld-header-pre-header dark">
         <div class="container">
             <div class="d-flex justify-content-between">
@@ -20,7 +16,6 @@
                 </span>
 
                 <div class="d-none d-lg-flex align-items-baseline">
-                  {% block header_account %}
                     {% block header_account_container_content %}
                       {% if g.userobj %}
                         {% block header_account_logged %} {% if g.userobj.sysadmin %}
@@ -84,7 +79,6 @@
                         {% endblock %}
                       {% endif %}
                     {% endblock %}
-                  {% endblock %}
                 </div>
 
                 <div class="qld-header-mobile-controls">
@@ -100,6 +94,15 @@
 
         </div>
     </div>
+{% endblock %}
+
+{% block header_wrapper %}
+{% if is_included %}
+    {% block header_debug %}
+      {{ super() }}
+    {% endblock %}
+<header class="qld-header" role="banner">
+    {{ self.header_account() }}
 
     <div class="qld-header-main default">
         <div class="container">
@@ -258,4 +261,19 @@
         </div>
         <div id="overlay"></div>
 </nav>
+{% else %}
+{# Direct load, assume this is coming from Squiz #}
+<div>
+    <script type="text/javascript">
+        if (getComputedStyle(document.documentElement).getPropertyValue("--qld-color-default-color-dark-crest-fill").trim() !== "#ffffff") {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "https://static.qgov.net.au/qgds-bootstrap5/v2/v2.2.1/assets/css/qld.bootstrap.css";
+            document.head.appendChild(link);
+        }
+    </script>
+
+    {{ self.header_account() }}
+</div>
+{% endif %}
 {% endblock %}
