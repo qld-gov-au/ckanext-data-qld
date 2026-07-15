@@ -29,7 +29,7 @@ def validate_config(self, config):
         raise ValueError('No config set')
     {
         "dataset_type": "geoscience",
-        "license_id": "cc-by-4",
+        "license_id": "CC-BY-4.0",
         "security_classification": "PUBLIC",
         "version": "1.0",
         "update_frequency": "non-regular",
