@@ -23,8 +23,7 @@ from behaving.web.steps import forms
 if not hasattr(forms, 'fill_in_elem_by_name'):
     forms.fill_in_elem_by_name = forms.i_fill_in_field
 
-URL_RE = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|\
-                    (?:%[0-9a-fA-F][0-9a-fA-F]))+', re.I | re.S | re.U)
+URL_RE = re.compile(r'http[s]?://[-\w.]+(?::\d+)?(?:/[-\w./%+]+)?(?:[?][-\w@.&+:!*(),/])?', re.I | re.S | re.U)
 SINGLE_QUOTE_RE = re.compile(r"(^|[^\\])'")
 
 dataset_default_schema = """
