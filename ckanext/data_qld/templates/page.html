@@ -15,37 +15,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 {% block secondary %}
     <aside class="secondary col-sm-5 col-md-4 col-lg-4">
-        {#
-        The secondary_content block can be used to add content to the
-        sidebar of the page. This is the main block that is likely to be
-        used within a template.
-
-        Example:
-
         {% block secondary_content %}
-            <h2>A sidebar item</h2>
-            <p>Some content for the item</p>
-        {% endblock %}
-        #}
-        {% block secondary_content %}
-          {{ super() }}
+            {{ super() }}
         {% endblock %}
     </aside>
 {% endblock %}
 
 {% block primary %}
     <div class="primary col-xs-12 col-sm-7 col-md-8 col-lg-8">
-        {#
-        The primary_content block can be used to add content to the page.
-        This is the main block that is likely to be used within a template.
-
-        Example:
-
-        {% block primary_content %}
-            <h1>My page content</h1>
-            <p>Some content for the page</p>
-        {% endblock %}
-        #}
         {% block primary_content %}
           {{ super() }}
         {% endblock %}

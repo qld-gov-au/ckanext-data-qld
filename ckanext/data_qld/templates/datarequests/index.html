@@ -26,9 +26,10 @@
         {% trans %}Prior to making a data request, please use the search and filter tools to attempt to locate the desired data from among the published datasets. You can also review the existing data requests as other users may have made requests for similar data.{% endtrans %}
       </p>
       {% block secondary_content_additional_info %}
-
       {% endblock %}
     </div>
   </section>
-  {{ super () }}
+  {% for facet in facet_titles %}
+    {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+  {% endfor %}
 {% endblock %}

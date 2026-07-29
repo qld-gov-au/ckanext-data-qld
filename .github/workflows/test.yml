@@ -31,7 +31,7 @@ jobs:
         experimental: [false]
         include:
           - ckan-version: 'master'
-            experimental: true  #master is unstable, good to know if we are compatible or not
+            experimental: true  # master is unstable, good to know if we are compatible or not
 
     name: ${{ matrix.experimental && '**Fail_Ignored** ' || '' }} Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest

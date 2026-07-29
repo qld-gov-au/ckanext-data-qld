@@ -1,11 +1,11 @@
-behaving==3.1.5
 Appium-Python-Client==2.10.1
+behaving==3.3.*
 certifi>=2024.7.4 # not directly required, pinned by Snyk to avoid a vulnerability
-ckanapi==4.3
+ckanapi>=4.7
 ckantoolkit>=0.0.4
 factory-boy
 Faker
-flake8==6.0.0
+flake8==7.3.*
 idna>=3.7 # not directly required, pinned by Snyk to avoid a vulnerability
 mock
 progressbar==2.5
@@ -19,4 +19,4 @@ urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
 xlrd==1.2.0
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
 
--e git+https://github.com/ckan/ckanext-harvest.git@v1.6.1#egg=ckanext-harvest
+-e git+https://github.com/ckan/ckanext-harvest.git@v1.6.2#egg=ckanext-harvest
