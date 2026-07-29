@@ -11,14 +11,14 @@
 {% endblock %}
 
 {% block custom_styles %}
-{{ super() }}
+  {{ super() }}
   <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" rel="stylesheet" />
   <link href="{{ h.set_external_resources() }}/__data/assets/git_bridge/0019/100846/open-data/dist/qld.css?h=eeb329b" rel="stylesheet" />
   {% include 'snippets/data_qld_asset.html' %}
 {% endblock %}
 
-{% block head_extras %}
-{{ super() }}
+{% block scripts %}
+    {{ super() }}
 
 {# GA4 user
 Add only if user is logged in #}

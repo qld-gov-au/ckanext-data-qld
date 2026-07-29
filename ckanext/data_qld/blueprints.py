@@ -25,5 +25,7 @@ blueprint.add_url_rule(
     view_func=show_package_schema)
 blueprint.add_url_rule(u'/header.html', 'header',
                        view_func=lambda: render('header.html'))
+blueprint.add_url_rule(u'/footer.html', 'footer',
+                       view_func=lambda: render('footer.html'))
 blueprint.add_url_rule(u'/robots.txt', 'robots',
                        view_func=lambda: render('robots.txt'))

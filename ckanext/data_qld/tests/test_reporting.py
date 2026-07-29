@@ -289,8 +289,13 @@ Pending privacy assessment,0,3
         )
 
         package = model.Session.query(model.Package).get(dataset["id"])
-        package._extras["data_last_updated"] = model.PackageExtra(
-            value=count_from, key="data_last_updated")
+        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
+        if hasattr(model, 'PackageExtra'):
+            package._extras["data_last_updated"] = model.PackageExtra(
+                value=count_from, key="data_last_updated")
+        else:
+            package.extras.data_last_updated = count_from
+
         model.Session.commit()
 
         tk.current_user = model.User.get(sysadmin['id'])

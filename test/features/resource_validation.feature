@@ -12,7 +12,9 @@ Feature: Resource validation
         And I fill in "name" with "Test validation schema"
         And I fill in "description" with "Testing validation schema"
         And I upload schema file "test_schema.json" to resource
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I set "debug" to "True"
+        And I take a debugging screenshot
+        And I submit the main form
         Then I should see "Test validation schema"
 
         When I click the link with text that contains "Test validation schema"
@@ -21,7 +23,8 @@ Feature: Resource validation
         And I should see text containing quotes `"name": "field1"`
         And I should see text containing quotes `"name": "field2"`
         When I upload schema file "test_schema2.json" to resource
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I take a debugging screenshot
+        And I submit the main form
         Then I should see "Test validation schema"
         When I click the link with text that contains "Test validation schema"
         And I press the resource edit button
@@ -42,7 +45,7 @@ Feature: Resource validation
         And I upload schema file "test_schema.json" to resource
         And I fill in "validation_options" with "{"headers": 1}"
         And I execute the script "document.getElementById('field-format').value='CSV'"
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Test validation options"
 
         When I click the link with text that contains "Test validation options"
@@ -53,7 +56,7 @@ Feature: Resource validation
         And I press the resource edit button
         And I fill in "validation_options" with "{"delimiter": ","}"
 
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Test validation options"
         When I click the link with text that contains "Test validation options"
         And I press the resource edit button
@@ -69,7 +72,7 @@ Feature: Resource validation
         And I upload schema file "test_schema.json" to resource
         And I fill in "description" with "Testing validation that should pass"
         And I execute the script "document.getElementById('field-format').value='CSV'"
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Test valid CSV"
         When I click the link with text that contains "Test valid CSV"
         And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']" but not more than 10 times
@@ -83,13 +86,13 @@ Feature: Resource validation
         And I upload "invalid.csv" of type "CSV" to resource
         And I fill in "name" with "Test valid CSV update"
         And I fill in "description" with "Testing validation that should pass on update"
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Test valid CSV update"
         When I click the link with text that contains "Test valid CSV update"
         And I press the resource edit button
         And I upload "test.csv" of type "CSV" to resource
         And I upload schema file "test_schema.json" to resource
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         And I click the link with text that contains "Test valid CSV update"
         And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'success']" but not more than 10 times
         Then I should see a validation timestamp
@@ -103,12 +106,12 @@ Feature: Resource validation
         And I fill in "name" with "Test invalid CSV update"
         And I upload schema file "test_schema.json" to resource
         And I fill in "description" with "Testing validation that should fail on update"
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Test invalid CSV update"
         When I click the link with text that contains "Test invalid CSV update"
         And I press the resource edit button
         And I upload "invalid.csv" of type "CSV" to resource
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         And I reload page every 3 seconds until I see an element with xpath "//th[string() = 'Validation status']/../td[string() = 'failure']" but not more than 10 times
         When I press the element with xpath "//a[contains(@class, 'validation-badge')]"
         Then I should see "Validation Report"

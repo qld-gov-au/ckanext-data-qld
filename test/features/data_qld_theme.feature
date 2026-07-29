@@ -40,7 +40,7 @@ Feature: Theme customisations
         Then I should see "Create an Organisation"
         When I execute the script "$('#field-name').val('Org without description')"
         And I execute the script "$('#field-url').val('org-without-description')"
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Org without description"
         And I should see "No datasets found"
         And I should not see "There is no description"
@@ -54,7 +54,7 @@ Feature: Theme customisations
         When I execute the script "$('#field-name').val('Org with description')"
         And I execute the script "$('#field-url').val('org-with-description')"
         And I fill in "description" with "Some description or other"
-        And I press the element with xpath "//button[contains(@class, 'btn-primary')]"
+        And I submit the main form
         Then I should see "Org with description"
         And I should see "No datasets found"
         And I should see "Some description or other"
@@ -77,8 +77,8 @@ Feature: Theme customisations
         Given "TestOrgEditor" as the persona
         When I log in
         And I create a dataset and resource with key-value parameters "license=other-open" and "format=CSV::upload=csv_resource.csv"
-        And I wait for 10 seconds
         And I press "Test Resource"
+        And I reload page every 3 seconds until I see an element with xpath "//a[contains(string(), 'Data API')]" but not more than 10 times
         Then I should see an element with xpath "//a[contains(string(), 'Data API')]"
         And I should see an element with xpath "//button[contains(@class, 'dropdown-toggle')]"
         And I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
