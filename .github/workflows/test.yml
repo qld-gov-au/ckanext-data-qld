@@ -30,6 +30,8 @@ jobs:
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
         experimental: [false]
         include:
+          - ckan-version: '2.12'
+            experimental: true  # until other plugins are ready for 2.12
           - ckan-version: 'master'
             experimental: true  # master is unstable, good to know if we are compatible or not
 
