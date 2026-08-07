@@ -26,12 +26,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ckan-version: ['2.12', '2.11']
+        ckan-version: ['2.11']
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
         experimental: [false]
         include:
+          - ckan-version: '2.12'
+            experimental: true  # until other plugins are ready for 2.12
           - ckan-version: 'master'
-            experimental: true  #master is unstable, good to know if we are compatible or not
+            experimental: true  # master is unstable, good to know if we are compatible or not
 
     name: ${{ matrix.experimental && '**Fail_Ignored** ' || '' }} Run ${{ matrix.behave-tag }} tests on CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
