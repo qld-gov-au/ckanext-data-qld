@@ -477,7 +477,7 @@ def _parse_params(param_string):
     for param in param_string.split("::"):
         entry = param.split("=", 1)
         params[entry[0]] = entry[1] if len(entry) > 1 else ""
-    return six.iteritems(params)
+    return params.items()
 
 
 @when(u'I show the non-JavaScript schema fields')
