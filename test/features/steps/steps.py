@@ -119,14 +119,14 @@ def attempt_login(context, password):
     context.execute_steps(u"""
         When I fill in "login" with "$name"
         And I fill in "password" with "{}"
-        And I press the element with xpath "//button[contains(string(), 'Login')]"
+        And I press the element with xpath "//button[contains(string(), 'Log in to the')]"
     """.format(password))
 
 
 @then(u'I should see the login form')
 def login_link_visible(context):
     context.execute_steps(u"""
-        Then I should see an element with xpath "//h1[contains(string(), 'Login')]"
+        Then I should see an element with xpath "//h1[contains(string(), 'Log in to the')]"
     """)
 
 
