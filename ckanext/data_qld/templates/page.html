@@ -9,6 +9,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {{ super() }}
 {% endblock %}
 
+{%- block header %}
+    {% snippet "header.html", is_included=true %}
+{% endblock -%}
+
 {% block maintag %}
     <div role="main" class="main {{ h.set_background_image_class() }}">
 {% endblock %}
