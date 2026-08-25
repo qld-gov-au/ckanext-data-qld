@@ -1,5 +1,5 @@
 {% ckan_extends %}
-
+{# For usage inside CKAN as well as external where only the self.header_account() is given #}
 {% block header_account %}
     <div class="qld-header-pre-header dark">
         <div class="container">
@@ -264,15 +264,6 @@
 {% else %}
 {# Direct load, assume this is coming from Squiz #}
 <div>
-    <script type="text/javascript">
-        if (getComputedStyle(document.documentElement).getPropertyValue("--qld-color-default-color-dark-crest-fill").trim() !== "#ffffff") {
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "https://static.qgov.net.au/qgds-bootstrap5/v2/v2.2.1/assets/css/qld.bootstrap.css";
-            document.head.appendChild(link);
-        }
-    </script>
-
     {{ self.header_account() }}
 </div>
 {% endif %}
