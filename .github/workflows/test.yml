@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: '3.x'
       - name: Install requirements
@@ -30,6 +30,8 @@ jobs:
         behave-tag: [smoke, unauthenticated, multi_plugin, OpenData, authenticated]
         experimental: [false]
         include:
+          - ckan-version: '2.12'
+            experimental: true  # until other plugins are ready for 2.12
           - ckan-version: 'master'
             experimental: true  # master is unstable, good to know if we are compatible or not
 
@@ -40,9 +42,9 @@ jobs:
       BEHAVE_TAG: ${{ matrix.behave-tag }}
 
     steps:
-      - uses: actions/checkout@v4
-        continue-on-error: ${{ matrix.experimental }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         timeout-minutes: 2
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Install Ahoy and dependencies
         continue-on-error: ${{ matrix.experimental }}
@@ -82,7 +84,7 @@ jobs:
         continue-on-error: ${{ matrix.experimental }}
 
       - name: Test Summary
-        uses: test-summary/action@v2
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5  # v2.6
         continue-on-error: ${{ matrix.experimental }}
         with:
           paths: "/tmp/artifacts/junit/*.xml"
@@ -90,7 +92,7 @@ jobs:
 
       - name: Upload screenshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: CKAN ${{ matrix.ckan-version }} ${{ matrix.behave-tag }} screenshots
           path: /tmp/artifacts/behave/screenshots

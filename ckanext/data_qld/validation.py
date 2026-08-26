@@ -1,14 +1,21 @@
 import json
 from six import string_types
+import typing
 
 import ckantoolkit as tk
-from ckan.lib.uploader import _get_underlying_file
+from werkzeug.datastructures import FileStorage as FlaskFileStorage
 
 import ckanext.scheming.helpers as sh
 
 import ckanext.data_qld.constants as const
 from ckanext.data_qld.helpers import is_uploaded_file
 from ckanext.data_qld.utils import is_url_valid
+
+
+def _get_underlying_file(wrapper: 'FlaskFileStorage|typing.Any') -> 'typing.TextIO|typing.IO[bytes]':
+    if isinstance(wrapper, FlaskFileStorage):
+        return wrapper.stream
+    return wrapper.file
 
 
 def scheming_validator(fn):
