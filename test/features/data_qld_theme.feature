@@ -117,6 +117,17 @@ Feature: Theme customisations
         And I should see an element with xpath "//a[@href='/user/register' and contains(string(), 'Register')]"
         And I should see an element with xpath "//a[@href='/datarequest' and contains(string(), 'Request data')]"
         And I should not see "not found"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[@href='/user/login' and contains(string(), 'Log in')]"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[@href='/user/register' and contains(string(), 'Register')]"
+
+    Scenario: When I go to the header URL as a logged-in user, I can see the mobile account menu
+        Given "SysAdmin" as the persona
+        When I log in
+        And I go to "/header.html"
+        Then I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[contains(@href, '/dashboard') and contains(string(), 'Dashboard')]"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[contains(@href, '/user/edit/') and contains(string(), 'Profile settings')]"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//button[contains(string(), 'Log out')]"
+        And I should not see "not found"
 
     @unauthenticated
     Scenario: When I go to the robots file, I can see a custom disallow block
