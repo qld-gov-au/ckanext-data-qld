@@ -107,7 +107,7 @@
     </li>
     {% endif %}
     <li class="nav-item alt mobile-only">
-        <a class="nav-link" href="{{ h.url_for('user.read', id=g.userobj.name) }}" class="image" title="{{ _('View profile') }}">
+        <a class="nav-link image" href="{{ h.url_for('user.read', id=g.userobj.name) }}" title="{{ _('View profile') }}">
             {{ h.gravatar((g.userobj.email_hash if g and g.userobj else ''), size=22) }}
             <span class="username">{{ g.userobj.display_name }}</span>
         </a>
