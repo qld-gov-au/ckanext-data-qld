@@ -18,7 +18,7 @@
                 <div class="d-none d-lg-flex align-items-baseline">
                     {% block header_account_container_content %}
                       {% if g.userobj %}
-                        {% block header_account_logged %} {% if g.userobj.sysadmin %}
+                        {% block header_account_logged %} {% if g.userobj and g.userobj.sysadmin %}
                         <span class="ms-16">CKAN {{ h.ckan_version() }}</span>
                         <span class="qld-header-link ms-16">
                             <a href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
@@ -98,7 +98,7 @@
 
 {% block mobile_account %}
   {% if g.userobj %}
-    {% if g.userobj.sysadmin %}
+    {% if g.userobj and g.userobj.sysadmin %}
     <li class="nav-item alt mobile-only">
         <a class="nav-link" href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
             <i class="fa fa-gavel" aria-hidden="true"></i>
