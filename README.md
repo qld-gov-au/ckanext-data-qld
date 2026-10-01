@@ -8,11 +8,10 @@ A custom CKAN extension for Data.Qld
 - Make sure that you have latest versions of all required software installed:
   - [Docker](https://www.docker.com/)
   - [Pygmy](https://pygmy.readthedocs.io/)
-  - [Ahoy](https://github.com/ahoy-cli/ahoy)
 - Make sure that all local web development services are shut down (Apache/Nginx, Mysql, MAMP etc).
 - Checkout project repository (in one of the [supported Docker directories](https://docs.docker.com/docker-for-mac/osxfs/#access-control)).
 - `pygmy up`
-- `ahoy build`
+- `./build.sh`
 - You may need to use sudo on linux
 
 Building on Ubuntu (optional: behind proxy)
@@ -27,14 +26,12 @@ Building on Ubuntu (optional: behind proxy)
   ~/.docker/config.json
   ``
 {
- "proxies":
-  {
-  "default":
-   {
-     "httpProxy": "http://hostexternalip:3128",
-     "httpsProxy": "http://hostexternalip:3128",
-     "noProxy": ""
-   }
+  "proxies": {
+    "default": {
+      "httpProxy": "http://hostexternalip:3128",
+      "httpsProxy": "http://hostexternalip:3128",
+      "noProxy": ""
+    }
   }
 }
 ``
@@ -52,27 +49,29 @@ Building on Ubuntu (optional: behind proxy)
 
 Use `admin`/`password` to login to CKAN.
 
-## Available `ahoy` commands
-Run each command as `ahoy <command>`.
+## Available build commands
+Run each command as `./build.sh <command>`.
   ```
-   build        Build or rebuild project.
-   clean        Remove containers and all build files.
-   cli          Start a shell inside CLI container or run a command.
-   doctor       Find problems with current project setup.
-   down         Stop Docker containers and remove container, images, volumes and networks.
-   flush-redis  Flush Redis cache.
-   info         Print information about this project.
-   install-site Install a site.
-   lint         Lint code.
-   logs         Show Docker logs.
-   pull         Pull latest docker images.
-   reset        Reset environment: remove containers, all build, manually created and Drupal-Dev files.
-   restart      Restart all stopped and running Docker containers.
-   start        Start existing Docker containers.
-   stop         Stop running Docker containers.
-   test-bdd     Run BDD tests.
-   test-unit    Run unit tests.
-   up           Build and start Docker containers.
+   build                Build or rebuild project.
+   clean                Remove containers and all build files.
+   cli                  Start a shell inside CLI container or run a command.
+   configure_docker     Generate configuration files for Docker containers.
+   create_test_data     Add sample data to support scenario tests.
+   doctor               Find problems with current project setup.
+   down                 Stop Docker containers and remove container, images, volumes and networks.
+   flush_redis          Flush Redis cache.
+   info                 Print information about this project.
+   lint                 Lint code.
+   logs                 Show Docker logs.
+   pull                 Pull latest docker images.
+   reset                Reset environment: remove containers, all build, manually created and Drupal-Dev files.
+   restart              Restart all stopped and running Docker containers.
+   run_bdd_tests        Run BDD tests without creating test data (typically for re-runs).
+   start                Start existing Docker containers.
+   stop                 Stop running Docker containers.
+   test_bdd             Create test data and run BDD tests.
+   test_unit            Run unit tests.
+   up                   Build and start Docker containers.
   ```
 
 ## Coding standards
@@ -81,12 +80,12 @@ Python code linting uses [flake8](https://github.com/PyCQA/flake8) with configur
 Set `ALLOW_LINT_FAIL=1` in `.env` to allow lint failures.
 
 ## Nose tests
-`ahoy test-unit`
+`./build.sh test_unit`
 
 Set `ALLOW_UNIT_FAIL=1` in `.env` to allow unit test failures.
 
 ## Behavioral tests
-`ahoy test-bdd`
+`./build.sh test_bdd`
 
 Set `ALLOW_BDD_FAIL=1` in `.env` to allow BDD test failures.
 
@@ -120,7 +119,7 @@ This project uses [GitHub Actions](https://github.com/features/actions) as a CI 
 
         . /usr/lib/ckan/default/bin/activate
         cd /usr/lib/ckan/default/src/ckanext-data-qld
-        python setup.py develop
+        pip install -e .
 
 3. Add the extension to the relevant CKAN `.ini` file `plugins` definition:
 
