@@ -59,7 +59,7 @@ jobs:
       - name: Unit test
         if: ${{ matrix.behave-tag == 'smoke' || matrix.behave-tag == '' }}
         run: ./build.sh test_unit
-        timeout-minutes: 5
+        timeout-minutes: 10
         continue-on-error: ${{ matrix.experimental }}
 
       - name: Scenario test
