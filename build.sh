@@ -271,9 +271,9 @@ start_ckan_job_workers () {
     # Starts CKAN background job workers
     title 'Starting default CKAN background job worker'
     cli "ckan_cli jobs clear \
-         && ckan_cli jobs worker & \
-         && ckan_cli jobs worker priority & \
-         && ckan_cli jobs worker bulk &"
+         && (ckan_cli jobs worker & \
+         ckan_cli jobs worker priority & \
+         ckan_cli jobs worker bulk &)"
 }
 
 stop_ckan_job_workers () {
