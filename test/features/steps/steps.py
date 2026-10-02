@@ -543,7 +543,7 @@ def _create_dataset_from_params(context, params):
     context.execute_steps(u"""
         When I take a debugging screenshot
         And I press "Add Data"
-        Then I should see "Add new resource"
+        Then I should see "Add New Resource"
     """)
 
 
