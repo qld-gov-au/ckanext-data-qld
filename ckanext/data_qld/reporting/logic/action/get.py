@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 import pytz
-from sqlalchemy import func, distinct, tuple_, and_
+from sqlalchemy import func, distinct, tuple_
 from sqlalchemy.orm import aliased
-from ckantoolkit import config, NotAuthorized, h
+from ckantoolkit import config, get_action, NotAuthorized, h
 
 from ckan import model
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
@@ -704,42 +704,20 @@ def de_identified_datasets_no_schema(context, data_dict):
 
     org_id, is_org_list = _authorised_orgs(data_dict, context)
 
-    query = _active_package_query(org_id, is_org_list, return_count_only)
-    # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-    if hasattr(model, 'PackageExtra'):
-        extras = model.PackageExtra
-        de_identified = aliased(extras)
-        data_last_updated = aliased(extras)
+    solr_query = (
+        f'owner_org:({" OR ".join(org_id)})'
+        ' AND default_data_schema:[* TO *]'
+        ' AND de_identified_data:YES'
+        f' AND data_last_updated:[{count_from_date.isoformat()} TO *]'
+    )
+    packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
+    if return_count_only:
+        return len(packages)
+    if not packages:
+        return []
 
-        sub_query = _session_.query(extras).filter(
-            and_(
-                extras.package_id == model.Package.id,
-                extras.key == 'default_data_schema',
-                extras.value != ''
-            ))
-
-        query = (
-            query.join(de_identified)
-            .join(data_last_updated)
-            .filter(~sub_query.exists())
-            .filter(and_(
-                de_identified.key == 'de_identified_data',
-                de_identified.value == 'YES',
-                de_identified.state == ACTIVE_STATE
-            ))
-            .filter(and_(
-                data_last_updated.key == 'data_last_updated',
-                data_last_updated.value > count_from_date.isoformat()
-            ))
-        )
-    else:
-        query = (
-            query.filter(model.Package.extras.default_data_schema != '')
-            .filter(model.Package.extras.de_identified_data == 'YES')
-            .filter(model.Package.extras.data_last_updated > count_from_date.isoformat())
-        )
-
-    return _query_result(query, is_org_list, return_count_only)
+    package_ids = [package['id'] for package in packages]
+    return _session_.query(model.Package).filter(model.Package.id.in_(package_ids))
 
 
 def overdue_datasets(context, data_dict):
