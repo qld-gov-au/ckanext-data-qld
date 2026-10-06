@@ -50,7 +50,7 @@ def _authorised_orgs(data_dict, context):
     if isinstance(org_id, list):
         return [str(id) for id in org_id if id], True
     else:
-        return [org_id], False
+        return [org_id] if org_id else [], False
 
 
 def _active_package_query(org_id, is_org_list, return_count_only):
