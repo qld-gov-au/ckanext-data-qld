@@ -706,9 +706,10 @@ def de_identified_datasets_no_schema(context, data_dict):
 
     solr_query = (
         f'owner_org:({" OR ".join(org_id)})'
-        ' AND default_data_schema:[* TO *]'
+        ' AND (default_data_schema:"" OR *:* NOT default_data_schema:[* TO *])'
         ' AND de_identified_data:YES'
-        f' AND data_last_updated:[{count_from_date.isoformat()} TO *]'
+        # Solr uses a subset of ISO-8601
+        f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
     )
     packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
     if return_count_only:
