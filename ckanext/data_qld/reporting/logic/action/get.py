@@ -50,7 +50,7 @@ def _authorised_orgs(data_dict, context):
     if isinstance(org_id, list):
         return [str(id) for id in org_id if id], True
     else:
-        return [org_id], False
+        return [str(org_id)], False
 
 
 def _active_package_query(org_id, is_org_list, return_count_only):
@@ -672,22 +672,16 @@ def de_identified_datasets(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     org_id, is_org_list = _authorised_orgs(data_dict, context)
 
-    try:
-        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-        query = _active_package_query(org_id, is_org_list, return_count_only)
-        if hasattr(model, 'PackageExtra'):
-            query = (
-                query.join(model.PackageExtra)
-                .filter(model.PackageExtra.key == 'de_identified_data')
-                .filter(model.PackageExtra.value == 'YES')
-                .filter(model.PackageExtra.state == ACTIVE_STATE)
-            )
-        else:
-            query = query.filter(model.Package.extras.de_identified_data == 'YES')
+    query = _active_package_query(org_id, is_org_list, return_count_only)
+    solr_query = (
+        f'owner_org:({" OR ".join(org_id)})'
+        ' AND de_identified_data:YES'
+    )
+    packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
+    package_ids = [package['id'] for package in packages]
+    query = query.filter(model.Package.id.in_(package_ids))
 
-        return _query_result(query, is_org_list, return_count_only)
-    except Exception:
-        log.exception()
+    return _query_result(query, is_org_list, return_count_only)
 
 
 def de_identified_datasets_no_schema(context, data_dict):
@@ -705,12 +699,10 @@ def de_identified_datasets_no_schema(context, data_dict):
         data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
     org_id, is_org_list = _authorised_orgs(data_dict, context)
-    org_ids = [str(id) for id in org_id]
 
     query = _active_package_query(org_id, is_org_list, return_count_only)
-
     solr_query = (
-        f'owner_org:({" OR ".join(org_ids)})'
+        f'owner_org:({" OR ".join(org_id)})'
         ' AND (default_data_schema:"" OR *:* NOT default_data_schema:[* TO *])'
         ' AND de_identified_data:YES'
         # Solr uses a subset of ISO-8601
@@ -739,16 +731,13 @@ def overdue_datasets(context, data_dict):
         today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
         query = _active_package_query(org_id, is_org_list, return_count_only)
-        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-        if hasattr(model, 'PackageExtra'):
-            query = (
-                query.join(model.PackageExtra)
-                .filter(model.PackageExtra.key == 'next_update_due')
-                .filter(model.PackageExtra.value <= today)
-                .filter(model.PackageExtra.state == ACTIVE_STATE)
-            )
-        else:
-            query = query.filter(model.Package.extras.next_update_due <= today)
+        solr_query = (
+            f'owner_org:({" OR ".join(org_id)})'
+            f' AND next_update_due:[* TO {today}]'
+        )
+        packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
+        package_ids = [package['id'] for package in packages]
+        query = query.filter(model.Package.id.in_(package_ids))
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:
