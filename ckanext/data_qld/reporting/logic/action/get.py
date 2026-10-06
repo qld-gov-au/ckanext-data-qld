@@ -713,8 +713,10 @@ def de_identified_datasets_no_schema(context, data_dict):
     )
     packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
     if return_count_only:
+        log.debug("Returning count of de-identified datasets without default schema")
         return len(packages)
     if not packages:
+        log.debug("No de-identified datasets found without default schema; returning empty list")
         return []
 
     package_ids = [package['id'] for package in packages]
