@@ -703,13 +703,15 @@ def de_identified_datasets_no_schema(context, data_dict):
         data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
     org_id, is_org_list = _authorised_orgs(data_dict, context)
+    # if list is empty, match only datasets with no owner
+    org_expression = "(" + (" OR ".join(org_id)) + ")" if org_id else '""'
 
     solr_query = (
-        '(default_data_schema:"" OR *:* NOT default_data_schema:[* TO *])'
-        + (f' AND owner_org:({" OR ".join(org_id)})' if org_id else '')
-        + ' AND de_identified_data:YES'
+        f'owner_org:{org_expression}'
+        ' AND (default_data_schema:"" OR *:* NOT default_data_schema:[* TO *])'
+        ' AND de_identified_data:YES'
         # Solr uses a subset of ISO-8601
-        + f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
+        f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
     )
     packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
     if str(return_count_only) == 'True':
