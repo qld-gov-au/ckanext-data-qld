@@ -712,7 +712,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         + f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
     )
     packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
-    if return_count_only:
+    if str(return_count_only) == 'True':
         log.debug("Returning count of de-identified datasets without default schema")
         return len(packages)
     if not packages:
