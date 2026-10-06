@@ -48,7 +48,7 @@ def _authorised_orgs(data_dict, context):
     check_org_access(org_id, permission, context=context)
     # handle single-org syntax just in case
     if isinstance(org_id, list):
-        return org_id, True
+        return [str(id) for id in org_id if id], True
     else:
         return [org_id], False
 
