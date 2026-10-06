@@ -67,7 +67,9 @@ def _active_package_query(org_id, is_org_list, return_count_only):
 
 
 def _query_result(query, is_org_list, return_count_only):
-    return query.count() if return_count_only and not is_org_list else query.all()
+    result = query.count() if return_count_only and not is_org_list else query.all()
+    log.debug("Query: %s, Result: %s", query, result)
+    return result
 
 
 def organisation_followers(context, data_dict):
