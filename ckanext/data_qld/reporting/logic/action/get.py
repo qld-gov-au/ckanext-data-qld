@@ -50,7 +50,7 @@ def _authorised_orgs(data_dict, context):
     if isinstance(org_id, list):
         return [str(id) for id in org_id if id], True
     else:
-        return [org_id] if org_id else [], False
+        return [org_id], False
 
 
 def _active_package_query(org_id, is_org_list, return_count_only):
@@ -703,14 +703,12 @@ def de_identified_datasets_no_schema(context, data_dict):
         data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
     org_id, is_org_list = _authorised_orgs(data_dict, context)
+    org_ids = [str(id) for id in org_id]
 
     query = _active_package_query(org_id, is_org_list, return_count_only)
 
-    # if list is empty, match only datasets with no owner
-    org_expression = "(" + (" OR ".join(org_id)) + ")" if org_id else '""'
-
     solr_query = (
-        f'owner_org:{org_expression}'
+        f'owner_org:({" OR ".join(org_ids)})'
         ' AND (default_data_schema:"" OR *:* NOT default_data_schema:[* TO *])'
         ' AND de_identified_data:YES'
         # Solr uses a subset of ISO-8601
