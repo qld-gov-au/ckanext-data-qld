@@ -703,6 +703,9 @@ def de_identified_datasets_no_schema(context, data_dict):
         data_dict.get('count_from', helpers.get_deidentified_count_from_date()))
 
     org_id, is_org_list = _authorised_orgs(data_dict, context)
+
+    query = _active_package_query(org_id, is_org_list, return_count_only)
+
     # if list is empty, match only datasets with no owner
     org_expression = "(" + (" OR ".join(org_id)) + ")" if org_id else '""'
 
@@ -714,15 +717,10 @@ def de_identified_datasets_no_schema(context, data_dict):
         f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
     )
     packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
-    if str(return_count_only) == 'True':
-        log.debug("Returning count of de-identified datasets without default schema")
-        return len(packages)
-    if not packages:
-        log.debug("No de-identified datasets found without default schema; returning empty list")
-        return []
-
     package_ids = [package['id'] for package in packages]
-    return _session_.query(model.Package).filter(model.Package.id.in_(package_ids))
+    query.filter(model.Package.id.in_(package_ids))
+
+    return _query_result(query, is_org_list, return_count_only)
 
 
 def overdue_datasets(context, data_dict):
