@@ -204,7 +204,7 @@ copy_local_files () {
 test_unit () {
     # Run unit tests.
     title 'Run unit tests'
-    cli 'pytest --ckan-ini=.docker/test.ini --cov=ckanext "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
+    cli 'pytest -vvv --ckan-ini=.docker/test.ini --cov=ckanext "${APP_DIR}"/ckanext --junit-xml=test/junit/results.xml' || \
     [ "${ALLOW_UNIT_FAIL:-0}" -eq 1 ]
 }
 
