@@ -3,7 +3,6 @@
 import pytest
 
 from ckan import model
-from ckan.lib.search import rebuild
 import ckantoolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
@@ -283,22 +282,12 @@ Pending privacy assessment,0,3
         app.get('/', extra_environ={"Authorization": sysadmin["token"]})
         org_id = factories.Organization()["id"]
 
-        dataset = dataset_factory(
+        dataset_factory(
             default_data_schema="",
             de_identified_data="YES",
             owner_org=org_id,
+            extras=[{'key': 'data_last_updated', 'value': count_from}]
         )
-
-        package = model.Session.query(model.Package).get(dataset["id"])
-        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-        if hasattr(model, 'PackageExtra'):
-            package._extras["data_last_updated"] = model.PackageExtra(
-                value=count_from, key="data_last_updated")
-        else:
-            package.extras.data_last_updated = count_from
-
-        model.Session.commit()
-        rebuild(dataset['id'])
 
         tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
