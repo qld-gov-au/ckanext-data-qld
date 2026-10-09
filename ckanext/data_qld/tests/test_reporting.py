@@ -286,7 +286,7 @@ Pending privacy assessment,0,3
             default_data_schema="",
             de_identified_data="YES",
             owner_org=org_id,
-            extras=[{'key': 'data_last_updated', 'value': count_from}]
+            data_last_updated=count_from
         )
 
         tk.current_user = model.User.get(sysadmin['id'])
