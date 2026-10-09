@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 import pytz
-from sqlalchemy import func, distinct, tuple_, and_
+from sqlalchemy import func, distinct, tuple_
 from sqlalchemy.orm import aliased
-from ckantoolkit import config, NotAuthorized, h
+from ckantoolkit import config, get_action, NotAuthorized, h
 
 from ckan import model
 from ckan.model.follower import UserFollowingDataset, UserFollowingGroup
@@ -48,9 +48,9 @@ def _authorised_orgs(data_dict, context):
     check_org_access(org_id, permission, context=context)
     # handle single-org syntax just in case
     if isinstance(org_id, list):
-        return org_id, True
+        return [str(id) for id in org_id if id], True
     else:
-        return [org_id], False
+        return [str(org_id)], False
 
 
 def _active_package_query(org_id, is_org_list, return_count_only):
@@ -67,7 +67,9 @@ def _active_package_query(org_id, is_org_list, return_count_only):
 
 
 def _query_result(query, is_org_list, return_count_only):
-    return query.count() if return_count_only and not is_org_list else query.all()
+    result = query.count() if return_count_only and not is_org_list else query.all()
+    log.debug("Query: %s, Result: %s", query, result)
+    return result
 
 
 def organisation_followers(context, data_dict):
@@ -670,22 +672,16 @@ def de_identified_datasets(context, data_dict):
     return_count_only = data_dict.get('return_count_only', False)
     org_id, is_org_list = _authorised_orgs(data_dict, context)
 
-    try:
-        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-        query = _active_package_query(org_id, is_org_list, return_count_only)
-        if hasattr(model, 'PackageExtra'):
-            query = (
-                query.join(model.PackageExtra)
-                .filter(model.PackageExtra.key == 'de_identified_data')
-                .filter(model.PackageExtra.value == 'YES')
-                .filter(model.PackageExtra.state == ACTIVE_STATE)
-            )
-        else:
-            query = query.filter(model.Package.extras.de_identified_data == 'YES')
+    query = _active_package_query(org_id, is_org_list, return_count_only)
+    solr_query = (
+        f'owner_org:({" OR ".join(org_id)})'
+        ' AND de_identified_data:YES'
+    )
+    packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
+    package_ids = [package['id'] for package in packages]
+    query = query.filter(model.Package.id.in_(package_ids))
 
-        return _query_result(query, is_org_list, return_count_only)
-    except Exception:
-        log.exception()
+    return _query_result(query, is_org_list, return_count_only)
 
 
 def de_identified_datasets_no_schema(context, data_dict):
@@ -705,39 +701,17 @@ def de_identified_datasets_no_schema(context, data_dict):
     org_id, is_org_list = _authorised_orgs(data_dict, context)
 
     query = _active_package_query(org_id, is_org_list, return_count_only)
-    # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-    if hasattr(model, 'PackageExtra'):
-        extras = model.PackageExtra
-        de_identified = aliased(extras)
-        data_last_updated = aliased(extras)
-
-        sub_query = _session_.query(extras).filter(
-            and_(
-                extras.package_id == model.Package.id,
-                extras.key == 'default_data_schema',
-                extras.value != ''
-            ))
-
-        query = (
-            query.join(de_identified)
-            .join(data_last_updated)
-            .filter(~sub_query.exists())
-            .filter(and_(
-                de_identified.key == 'de_identified_data',
-                de_identified.value == 'YES',
-                de_identified.state == ACTIVE_STATE
-            ))
-            .filter(and_(
-                data_last_updated.key == 'data_last_updated',
-                data_last_updated.value > count_from_date.isoformat()
-            ))
-        )
-    else:
-        query = (
-            query.filter(model.Package.extras.default_data_schema != '')
-            .filter(model.Package.extras.de_identified_data == 'YES')
-            .filter(model.Package.extras.data_last_updated > count_from_date.isoformat())
-        )
+    solr_query = (
+        f'owner_org:({" OR ".join(org_id)})'
+        ' AND (default_data_schema:"" OR *:* NOT default_data_schema:[* TO *])'
+        ' AND de_identified_data:YES'
+        # Solr uses a subset of ISO-8601
+        f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
+    )
+    packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
+    log.debug("De-identified datasets with no default schema: %s", packages)
+    package_ids = [package['id'] for package in packages]
+    query = query.filter(model.Package.id.in_(package_ids))
 
     return _query_result(query, is_org_list, return_count_only)
 
@@ -757,16 +731,13 @@ def overdue_datasets(context, data_dict):
         today = datetime.now(h.get_display_timezone()).date().isoformat()
         # We need to check for any datasets whose next_update_due is earlier than today
         query = _active_package_query(org_id, is_org_list, return_count_only)
-        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-        if hasattr(model, 'PackageExtra'):
-            query = (
-                query.join(model.PackageExtra)
-                .filter(model.PackageExtra.key == 'next_update_due')
-                .filter(model.PackageExtra.value <= today)
-                .filter(model.PackageExtra.state == ACTIVE_STATE)
-            )
-        else:
-            query = query.filter(model.Package.extras.next_update_due <= today)
+        solr_query = (
+            f'owner_org:({" OR ".join(org_id)})'
+            f' AND next_update_due:[* TO {today}]'
+        )
+        packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
+        package_ids = [package['id'] for package in packages]
+        query = query.filter(model.Package.id.in_(package_ids))
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:

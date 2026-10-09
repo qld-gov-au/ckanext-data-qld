@@ -2,7 +2,7 @@
 
 import pytest
 
-import ckan.model as model
+from ckan import model
 import ckantoolkit as tk
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
@@ -104,8 +104,8 @@ class TestAdminReportDeIdentifiedNoSchema:
 class TestAdminReportCSVExport:
 
     def test_as_regular_user_is_unauthorised(self, app):
-        user = factories.User()
-        app.get('/', extra_environ={"REMOTE_USER": str(user["name"])})
+        user = factories.UserWithToken()
+        app.get('/', extra_environ={"Authorization": user["token"]})
         org_id = factories.Organization()["id"]
 
         tk.current_user = model.User.get(user['id'])
@@ -250,8 +250,8 @@ Pending privacy assessment,0,3
         u"2045-01-01")
     def test_set_de_identified_count_from_in_future(self, app, dataset_factory,
                                                     resource_factory):
-        sysadmin = factories.Sysadmin()
-        app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
+        sysadmin = factories.SysadminWithToken()
+        app.get('/', extra_environ={"Authorization": sysadmin["token"]})
         org_id = factories.Organization()["id"]
 
         for _ in range(3):
@@ -278,25 +278,16 @@ Pending privacy assessment,0,3
     )
     def test_de_identified_parametrize(self, app, dataset_factory,
                                        count_from, pkg_counter):
-        sysadmin = factories.Sysadmin()
-        app.get('/', extra_environ={"REMOTE_USER": str(sysadmin["name"])})
+        sysadmin = factories.SysadminWithToken()
+        app.get('/', extra_environ={"Authorization": sysadmin["token"]})
         org_id = factories.Organization()["id"]
 
-        dataset = dataset_factory(
+        dataset_factory(
             default_data_schema="",
             de_identified_data="YES",
             owner_org=org_id,
+            data_last_updated=count_from
         )
-
-        package = model.Session.query(model.Package).get(dataset["id"])
-        # CKAN 2.12+ replaces PackageExtra with the Package.extras field
-        if hasattr(model, 'PackageExtra'):
-            package._extras["data_last_updated"] = model.PackageExtra(
-                value=count_from, key="data_last_updated")
-        else:
-            package.extras.data_last_updated = count_from
-
-        model.Session.commit()
 
         tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
