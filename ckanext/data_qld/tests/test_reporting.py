@@ -286,8 +286,8 @@ Pending privacy assessment,0,3
             default_data_schema="",
             de_identified_data="YES",
             owner_org=org_id,
-            data_last_updated=count_from
         )
+        call_action("package_patch", _make_context(), id=dataset['id'], data_last_updated=count_from)
         print("Created test dataset: {}".format(dataset))
 
         tk.current_user = model.User.get(sysadmin['id'])
