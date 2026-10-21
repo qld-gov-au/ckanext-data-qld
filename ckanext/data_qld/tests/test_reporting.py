@@ -286,9 +286,9 @@ Pending privacy assessment,0,3
             default_data_schema="",
             de_identified_data="YES",
             owner_org=org_id,
-            resources=[factories.Resource(last_modified=count_from)]
         )
-        call_action("package_patch", _make_context(), id=dataset['id'], data_last_updated=count_from)
+        resource = factories.Resource(last_modified=count_from, package_id=dataset['id'])
+        call_action("package_patch", _make_context(), id=dataset['id'], resources=[resource], data_last_updated=count_from)
         dataset = call_action("package_show", _make_context(), id=dataset['id'])
         print("Created test dataset updated at: {}".format(dataset.get('data_last_updated')))
 
