@@ -709,7 +709,7 @@ def de_identified_datasets_no_schema(context, data_dict):
         f' AND data_last_updated:[{count_from_date.strftime("%Y-%m-%dT%H:%M:%SZ")} TO *]'
     )
     packages = get_action('package_search')(context, {'q': solr_query}).get('results', [])
-    log.debug("De-identified datasets with no default schema (%s): %s", solr_query, packages)
+    log.debug("De-identified datasets with no default schema since %s (%s): %s", count_from_date, solr_query, packages)
     package_ids = [package['id'] for package in packages]
     query = query.filter(model.Package.id.in_(package_ids))
 
