@@ -282,12 +282,13 @@ Pending privacy assessment,0,3
         app.get('/', extra_environ={"Authorization": sysadmin["token"]})
         org_id = factories.Organization()["id"]
 
-        dataset_factory(
+        dataset = dataset_factory(
             default_data_schema="",
             de_identified_data="YES",
             owner_org=org_id,
             data_last_updated=count_from
         )
+        print("Created test dataset: {}".format(dataset))
 
         tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
