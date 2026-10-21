@@ -289,7 +289,7 @@ Pending privacy assessment,0,3
         )
         call_action("package_patch", _make_context(), id=dataset['id'], data_last_updated=count_from)
         dataset = call_action("package_show", _make_context(), id=dataset['id'])
-        print("Created test dataset: {}".format(dataset))
+        print("Created test dataset updated at: {}".format(dataset.get('data_last_updated')))
 
         tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
