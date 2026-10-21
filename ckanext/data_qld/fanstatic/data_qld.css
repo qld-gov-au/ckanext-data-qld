@@ -316,6 +316,12 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
   }
 }
 
+@media (min-width: 992px) {
+    .qld-footer .footer-content .footer-crest {
+        max-width: 333px;
+    }
+}
+
 @media screen and (min-width: 768px) {
   .secondary .module-narrow .nav-item.active > a:before,
   .secondary .module-narrow .nav-aside li.active > a:before {
