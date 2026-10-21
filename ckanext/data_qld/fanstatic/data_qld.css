@@ -316,10 +316,14 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
   }
 }
 
-@media (min-width: 992px) {
-    .qld-footer .footer-content .footer-crest {
-        max-width: 333px;
-    }
+.qld-footer .footer-content {
+    .footer-logo, .footer-crest {
+      max-width: 370px;
+      -webkit-margin-before: calc(var(--qld-footer-spacing) * 1.5);
+      margin-block-start: calc(var(--qld-footer-spacing) * 1.5);
+      -webkit-margin-after: calc(var(--qld-footer-spacing) * 1.5);
+      margin-block-end: calc(var(--qld-footer-spacing) * 1.5);
+  }
 }
 
 @media screen and (min-width: 768px) {
