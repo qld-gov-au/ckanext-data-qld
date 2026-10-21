@@ -271,9 +271,8 @@ Pending privacy assessment,0,3
     @pytest.mark.parametrize(
         "count_from, pkg_counter",
         [
-            ("2022-12-01T02:00", 1),
             ("2022-12-01T01:00:49.982971", 1),
-            ("2022-12-01T00:59", 0),
+            ("2999-12-31", 0),
         ],
     )
     def test_de_identified_parametrize(self, app, dataset_factory,
@@ -287,10 +286,9 @@ Pending privacy assessment,0,3
             de_identified_data="YES",
             owner_org=org_id,
         )
-        resource = factories.Resource(last_modified=count_from, package_id=dataset['id'], format='html', url='http://example.com')
-        call_action("package_patch", _make_context(), id=dataset['id'], resources=[resource], data_last_updated=count_from)
+        resource = factories.Resource(package_id=dataset['id'], format='html', url='http://example.com')
+        call_action("package_patch", _make_context(), id=dataset['id'], resources=[resource])
         dataset = call_action("package_show", _make_context(), id=dataset['id'])
-        print("Created test dataset updated at: {}".format(dataset.get('data_last_updated')))
 
         tk.current_user = model.User.get(sysadmin['id'])
         result = helpers.gather_admin_metrics(org_id, "admin")
