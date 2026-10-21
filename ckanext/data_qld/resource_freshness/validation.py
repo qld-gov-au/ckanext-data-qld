@@ -3,9 +3,12 @@
 import ckantoolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import datetime as dt
+import logging
 
 from ckanext.data_qld.resource_freshness.helpers import helpers as resource_freshness_helpers
 from ckanext.data_qld import helpers as data_qld_helpers
+
+log = logging.getLogger(__name__)
 
 unflatten = df.unflatten
 missing = tk.missing
@@ -133,6 +136,7 @@ def data_last_updated(keys, flattened_data, errors, context):
         data_dict = get_action('package_show')(context, {"id": data.get('id')})
         current_data_last_updated = data_dict.get(key)
         resources = data_dict.get('resources', [])
+    log.debug("Current 'last updated' for %s is: %s", data.get('id'), current_data_last_updated)
     data_last_updated = get_validator('isodate')(
         current_data_last_updated, context) if current_data_last_updated else None
     # Cycle through the resources to compare data_last_updated field with last_modified
