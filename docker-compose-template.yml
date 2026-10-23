@@ -1,4 +1,5 @@
-version: '2.3'
+# build.sh alters this file via sed,
+# 3 # is comment line, 2 # is to unescape for cicd.
 
 x-project:
   &project "${PROJECT}"
@@ -43,7 +44,7 @@ services:
       AMAZEEIO_URL: "${PROJECT}.docker.amazee.io"
 
   postgres:
-    image: ckan/ckan-postgres-dev:${CKAN_VERSION}
+    image: ckan/ckan-postgres-dev:${CKAN_VERSION:-2.11}
     ports:
       - "5432"
     networks:
@@ -75,7 +76,7 @@ services:
       - default
 
   solr:
-    image: ckan/ckan-solr:${CKAN_VERSION}-solr${SOLR_VERSION}
+    image: ckan/ckan-solr:${CKAN_VERSION:-2.11}-solr${SOLR_VERSION:-9}
     ports:
       - "8983"
     environment:

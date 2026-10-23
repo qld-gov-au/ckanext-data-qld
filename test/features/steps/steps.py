@@ -213,10 +213,10 @@ def go_to_new_resource_form(context, name):
         When I go to dataset "{0}"
         And I take a debugging screenshot
     """.format(name))
-    if context.browser.is_element_present_by_xpath("//a[text() = 'Add new resource']"):
+    if context.browser.is_element_present_by_xpath("//a[string() = 'Add new resource' or string() = 'Add New Resource']"):
         # QGov fork of CKAN adds this button to the dataset page
         context.execute_steps(u"""
-            When I press "Add new resource"
+            When I press the element with xpath "//a[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"
         """)
         return
 
@@ -228,10 +228,10 @@ def go_to_new_resource_form(context, name):
         context.execute_steps(u"""
             When I press "Next:"
         """)
-    elif context.browser.is_element_present_by_xpath("//*[contains(string(), 'Add new resource')]"):
+    elif context.browser.is_element_present_by_xpath("//*[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"):
         # Existing dataset, browse to the resource form
         context.execute_steps(u"""
-            When I press "Add new resource"
+            When I press the element with xpath "//a[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"
         """)
     else:
         # Existing dataset, browse to the resource form
@@ -241,7 +241,7 @@ def go_to_new_resource_form(context, name):
                 When I press "Resources"
             """)
         context.execute_steps(u"""
-            When I press "Add new resource"
+            When I press the element with xpath "//a[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"
             And I take a debugging screenshot
         """)
 
@@ -832,6 +832,7 @@ def go_to_datarequest_page_search(context, keyword):
 def go_to_datarequest_page(context):
     context.execute_steps(u"""
         When I visit "/datarequest"
+        Then I should see "Data requests allow registered users to ask for data that is not currently available."
     """)
 
 

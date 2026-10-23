@@ -46,40 +46,36 @@ jobs:
         timeout-minutes: 2
         continue-on-error: ${{ matrix.experimental }}
 
-      - name: Install Ahoy and dependencies
-        continue-on-error: ${{ matrix.experimental }}
-        run: |
-          sudo wget https://github.com/ahoy-cli/ahoy/releases/download/v2.5.0/ahoy-bin-linux-amd64 -O /usr/local/bin/ahoy \
-            && sudo chown $USER /usr/local/bin/ahoy \
-            && chmod +x /usr/local/bin/ahoy
-          sudo wget https://github.com/pygmystack/pygmy/releases/download/v0.14.0/pygmy_0.14.0_linux_amd64.tar.gz -O - | tar xvzf - -C /tmp/ \
-            && sudo mv /tmp/pygmy /usr/local/bin/pygmy
-
       - name: Build
-        run: bin/build.sh
+        run: ./build.sh
         timeout-minutes: 15
         continue-on-error: ${{ matrix.experimental }}
 
-      - name: Unit tests
+      - name: Lint
+        run: ./build.sh lint
+        timeout-minutes: 1
+        continue-on-error: ${{ matrix.experimental }}
+
+      - name: Unit test
         if: ${{ matrix.behave-tag == 'smoke' || matrix.behave-tag == '' }}
-        run: bin/test.sh
-        timeout-minutes: 15
+        run: ./build.sh test_unit
+        timeout-minutes: 10
         continue-on-error: ${{ matrix.experimental }}
 
-      - name: Test ${{ matrix.behave-tag }} BDD
-        run: bin/test-bdd.sh
+      - name: Scenario test
+        run: ./build.sh test_bdd
         timeout-minutes: 45
         continue-on-error: ${{ matrix.experimental }}
 
       - name: Retrieve logs
         if: always()
-        run: ahoy logs
+        run: ./build.sh logs
         timeout-minutes: 1
         continue-on-error: ${{ matrix.experimental }}
 
       - name: Retrieve results
         if: always()
-        run: bin/process-artifacts.sh
+        run: ./build.sh process_artifacts
         timeout-minutes: 1
         continue-on-error: ${{ matrix.experimental }}
 

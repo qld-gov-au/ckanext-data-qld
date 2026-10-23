@@ -12,7 +12,6 @@ Feature: Resource validation
         And I fill in "name" with "Test validation schema"
         And I fill in "description" with "Testing validation schema"
         And I upload schema file "test_schema.json" to resource
-        And I set "debug" to "True"
         And I take a debugging screenshot
         And I submit the main form
         Then I should see "Test validation schema"
