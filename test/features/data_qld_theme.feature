@@ -95,7 +95,7 @@ Feature: Theme customisations
         When I go to dataset page
         Then I should see an element with xpath "//li[contains(@class, 'active')]/a[contains(string(), 'Data') and (@href='/dataset' or @href='/dataset/')]"
         And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Visualisations') and @href='/visualisations']"
-        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'News and Case Studies') and @href='/news-and-case-studies']"
+        And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'News and case studies') and @href='/news-and-case-studies']"
         And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Standards and guidance') and @href='/article/standards-and-guidance']"
         And I should see an element with xpath "//li[not(contains(@class, 'active'))]/a[contains(string(), 'Contact') and @href='/article/contact']"
 
@@ -116,6 +116,17 @@ Feature: Theme customisations
         Then I should see an element with xpath "//a[@href='/user/login' and contains(string(), 'Log in')]"
         And I should see an element with xpath "//a[@href='/user/register' and contains(string(), 'Register')]"
         And I should see an element with xpath "//a[@href='/datarequest' and contains(string(), 'Request data')]"
+        And I should not see "not found"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[@href='/user/login' and contains(string(), 'Log in')]"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[@href='/user/register' and contains(string(), 'Register')]"
+
+    Scenario: When I go to the header URL as a logged-in user, I can see the mobile account menu
+        Given "SysAdmin" as the persona
+        When I log in
+        And I go to "/header.html"
+        Then I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[contains(@href, '/dashboard') and contains(string(), 'Dashboard')]"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//a[contains(@href, '/user/edit/') and contains(string(), 'Profile settings')]"
+        And I should see an element with xpath "//ul[contains(@class, 'navbar-nav')]//button[contains(string(), 'Log out')]"
         And I should not see "not found"
 
     @unauthenticated

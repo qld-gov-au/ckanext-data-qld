@@ -9,8 +9,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {{ super() }}
 {% endblock %}
 
+{%- block header %}
+    {% snippet "header.html", is_included=true %}
+{% endblock -%}
+
 {% block maintag %}
     <div role="main" class="main {{ h.set_background_image_class() }}">
+{% endblock %}
+
+{% block toolbar %}
+  {# Drop the 'toolbar' class as that interferes with QGDS #}
+  <div role="navigation" aria-label="{{ _('Breadcrumb') }}">
+    {% block breadcrumb %}
+      {{ super() }}
+    {% endblock %}
+  </div>
 {% endblock %}
 
 {% block secondary %}
