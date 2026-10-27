@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from datetime import datetime
 import pytest
 
 from ckan import model
@@ -286,7 +287,12 @@ Pending privacy assessment,0,3
             de_identified_data="YES",
             owner_org=org_id,
         )
-        resource = factories.Resource(package_id=dataset['id'], format='html', url='http://example.com')
+        resource = factories.Resource(
+            package_id=dataset['id'],
+            format='html',
+            url='http://example.com',
+            last_modified=datetime.fromisoformat(count_from)
+        )
         call_action("package_patch", _make_context(), id=dataset['id'], resources=[resource])
         dataset = call_action("package_show", _make_context(), id=dataset['id'])
 
