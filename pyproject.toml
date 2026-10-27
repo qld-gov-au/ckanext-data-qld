@@ -15,13 +15,11 @@ classifiers = [
 ]
 keywords = ["CKAN"]
 
-# Dependencies are empty in your setup.py, but you can add them here
 dependencies = [
     "beautifulsoup4==4.9.1",
     "ckantoolkit>=0.0.4",
     "pyrsistent<0.17.0"
 ]
-
 
 authors = [
     {name = "ThrawnCA", email = "carl.antuar@smartservice.qld.gov.au"},
@@ -79,12 +77,6 @@ data_qld_test = "ckanext.data_qld.test_plugin:DataQldTestPlugin"
 
 [project.entry-points."babel.extractors"]
 ckan = "ckan.lib.extract:extract_ckan"
-
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.packages.find]
-exclude = ["contrib*", "docs*", "tests*"]
 
 # The following sections are included to match your example template
 [tool.pytest.ini_options]
