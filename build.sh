@@ -13,6 +13,15 @@ PYTHON_VERSION=py3
 CKAN_GIT_VERSION=${CKAN_VERSION}
 CKAN_GIT_ORG=qld-gov-au
 SOLR_VERSION=9
+if (which docker); then
+    DOCKER=docker
+elif (which podman); then
+    DOCKER=podman
+else
+    echo "Cannot find Docker or Podman"
+    exit 1
+fi
+
 if [ "$CKAN_VERSION" = "2.12" ]; then
     CKAN_GIT_ORG=ckan
     CKAN_GIT_VERSION=ckan-2.12.0
@@ -70,23 +79,23 @@ build () {
 build_network () {
     # Ensure that the amazeeio network exists.
     title "Creating amazeeio Docker network"
-    docker network prune -f > /dev/null
-    docker network inspect amazeeio-network > /dev/null || docker network create amazeeio-network
+    $DOCKER network prune -f > /dev/null
+    $DOCKER network inspect amazeeio-network > /dev/null || $DOCKER network create amazeeio-network
 }
 
 info () {
     # Print information about this project.
     line "Project                  : " ${PROJECT}
     line "Site local URL           : " ${LAGOON_LOCALDEV_URL}
-    line "DB port on host          : " $(docker port $(docker compose ps -q postgres) 5432 | cut -d : -f 2)
-    line "Solr port on host        : " $(docker port $(docker compose ps -q solr) 8983 | cut -d : -f 2)
+    line "DB port on host          : " $($DOCKER port $($DOCKER compose ps -q postgres) 5432 | cut -d : -f 2)
+    line "Solr port on host        : " $($DOCKER port $($DOCKER compose ps -q solr) 8983 | cut -d : -f 2)
     line "Mailhog URL              : " http://mailhog.docker.amazee.io/
 }
 
 up () {
     # Build and start Docker containers.
     title "Building and starting Docker containers"
-    docker compose up -d "$@"
+    $DOCKER compose up -d "$@"
     echo "Initialising database schema"
     cli '"${APP_DIR}"/bin/init.sh'
     echo "Waiting for containers to start listening..."
@@ -99,57 +108,57 @@ up () {
         sleep 1
       fi
     done
-    if docker compose logs | grep -q "\[Error\]"; then exit 1; fi
-    if docker compose logs | grep -q "Exception"; then exit 1; fi
-    docker ps -a --filter name=^/${COMPOSE_PROJECT_NAME}_
+    if $DOCKER compose logs | grep -q "\[Error\]"; then exit 1; fi
+    if $DOCKER compose logs | grep -q "Exception"; then exit 1; fi
+    $DOCKER ps -a --filter name=^/${COMPOSE_PROJECT_NAME}_
     export DOCTOR_CHECK_CLI=0
 }
 
 down () {
     # Stop Docker containers and remove container, images, volumes and networks.
     title 'Stopping and removing old containers, images, volumes, networks'
-    if [ -f "docker-compose.yml" ]; then docker compose down --volumes; fi
+    if [ -f "docker-compose.yml" ]; then $DOCKER compose down --volumes; fi
 }
 
 start () {
     # Start existing Docker containers.
-    docker compose start "$@"
+    $DOCKER compose start "$@"
 }
 
 stop () {
     # Stop running Docker containers.
-    docker compose stop "$@"
+    $DOCKER compose stop "$@"
 }
 
 restart () {
     # Restart all stopped and running Docker containers.
-    docker compose restart "$@"
+    $DOCKER compose restart "$@"
 }
 
 logs () {
     # Show Docker logs.
     title "Output logs"
     # Loop through each container and wrap with github log groups
-    services=$(docker compose ps --services)
+    services=$($DOCKER compose ps --services)
     for service in $services; do
       echo "::group::$service"
-      docker compose logs "$service"
+      $DOCKER compose logs "$service"
       echo "::endgroup::"
     done
 }
 
 pull () {
     # Pull latest docker images.
-    if [ ! -z "$(docker image ls -q)" ]; then docker image ls --format \"{{.Repository}}:{{.Tag}}\" | grep ckan/ckan- | grep -v none | xargs -n1 docker pull | cat; fi
+    if [ ! -z "$($DOCKER image ls -q)" ]; then $DOCKER image ls --format \"{{.Repository}}:{{.Tag}}\" | grep ckan/ckan- | grep -v none | xargs -n1 $DOCKER pull | cat; fi
 }
 
 cli () {
     # Start a shell inside CLI container or run a command.
-    CKAN_CONTAINER=$(docker compose ps -q ckan)
+    CKAN_CONTAINER=$($DOCKER compose ps -q ckan)
     if [ "${#}" -ne 0 \]; then
-      docker exec $CKAN_CONTAINER sh -c '. "${APP_DIR}"/bin/activate; cd $APP_DIR;'" $*"
+      $DOCKER exec $CKAN_CONTAINER sh -c '. "${APP_DIR}"/bin/activate; cd $APP_DIR;'" $*"
     else
-      docker exec $CKAN_CONTAINER sh -c '. "${APP_DIR}"/bin/activate && cd $APP_DIR && sh'
+      $DOCKER exec $CKAN_CONTAINER sh -c '. "${APP_DIR}"/bin/activate && cd $APP_DIR && sh'
     fi
 }
 
@@ -162,7 +171,7 @@ create_test_data () {
     # Install test site data.
     title "Installing a fresh site"
     cli '"${APP_DIR}"/bin/init.sh && "${APP_DIR}"/bin/create-test-data.sh' \
-      && docker compose restart ckan
+      && $DOCKER compose restart ckan
 }
 
 clean () {
@@ -184,7 +193,7 @@ reset () {
 
 flush_redis () {
     # Flush Redis cache.
-    docker exec -i $(docker compose ps -q redis) redis-cli flushall > /dev/null
+    $DOCKER exec -i $($DOCKER compose ps -q redis) redis-cli flushall > /dev/null
 }
 
 lint () {
@@ -196,8 +205,8 @@ lint () {
 
 copy_local_files () {
     # Update files from local repo.
-    docker cp . $(docker compose ps -q ckan):/srv/app/
-    docker cp bin/ckan_cli $(docker compose ps -q ckan):/usr/bin/
+    $DOCKER cp . $($DOCKER compose ps -q ckan):/srv/app/
+    $DOCKER cp bin/ckan_cli $($DOCKER compose ps -q ckan):/usr/bin/
     cli 'chmod -v u+x /usr/bin/ckan_cli "${APP_DIR}"/bin/*; cp -v .docker/ckan.ini $CKAN_INI'
 }
 
@@ -251,8 +260,8 @@ process_artifacts () {
     # Download test artifacts eg screenshots
     cli "mkdir -p test/screenshots test/junit"
     mkdir -p /tmp/artifacts/behave /tmp/artifacts/junit
-    docker cp "$(docker compose ps -q ckan)":/srv/app/test/screenshots /tmp/artifacts/behave/
-    docker cp "$(docker compose ps -q ckan)":/srv/app/test/junit /tmp/artifacts/
+    $DOCKER cp "$($DOCKER compose ps -q ckan)":/srv/app/test/screenshots /tmp/artifacts/behave/
+    $DOCKER cp "$($DOCKER compose ps -q ckan)":/srv/app/test/junit /tmp/artifacts/
 }
 
 start_mailmock () {
