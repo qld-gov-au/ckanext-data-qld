@@ -36,7 +36,7 @@
             {% set notes = h.markdown_extract(package.notes, extract_length=180) %}
             <tr>
               <td>
-                <input type="checkbox" name="dataset_{{ package.id }}">
+                <input type="checkbox" name="dataset_{{ package.id }}" aria-label="{{ _('Select dataset {title}').format(title=title) }}">
               </td>
               <td class="context">
                 <h3 class="dataset-heading">
