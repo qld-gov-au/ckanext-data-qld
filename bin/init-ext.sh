@@ -46,7 +46,7 @@ install_requirements . extensions
 for extension in . `ls -d $SRC_DIR/ckanext-*`; do
     TOOL=uv install_requirements $extension requirements pip-requirements
 done
-pip install -e .
+pip install -e '.[dev]'
 installed_name=$(grep '^\s*name=' setup.py |sed "s|[^']*'\([-a-zA-Z0-9]*\)'.*|\1|")
 
 # Validate that the extension was installed correctly.

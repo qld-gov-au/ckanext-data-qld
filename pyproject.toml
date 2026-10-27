@@ -1,0 +1,165 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ckanext-data-qld"
+version = "8.1.1"
+description = "Custom extension for Data QLD"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["CKAN"]
+
+# Dependencies are empty in your setup.py, but you can add them here
+dependencies = [
+    "beautifulsoup4==4.9.1",
+    "ckantoolkit>=0.0.4",
+    "pyrsistent<0.17.0"
+]
+
+
+authors = [
+    {name = "ThrawnCA", email = "carl.antuar@smartservice.qld.gov.au"},
+    {name = "William Dutton (duttonw)", email = "william.dutton@qld.gov.au"},
+#    {name = "", email = ""},
+]
+maintainers = [
+    {name = "ThrawnCA", email = "carl.antuar@smartservice.qld.gov.au"},
+    {name = "William Dutton (duttonw)", email = "william.dutton@qld.gov.au"},
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.license]
+text = "AGPL"
+
+[project.urls]
+Homepage = "https://github.com/qld-gov-au/ckanext-data-qld"
+
+[project.optional-dependencies]
+dev = [
+    "Appium-Python-Client==2.10.1",
+    "behaving==3.3.*",
+    "certifi>=2024.7.4",
+    "ckanapi>=4.7",
+    "ckantoolkit>=0.0.4",
+    "factory-boy",
+    "Faker",
+    "flake8==7.3.*",
+    "idna>=3.7",
+    "mock",
+    "progressbar==2.5",
+    "pytest-ckan",
+    "python-magic==0.4.18",
+    "requests>=2.32.0",
+    "selenium<4.10",
+    "six",
+    "typer<0.11",
+    "urllib3>=2.2.2",
+    "xlrd==1.2.0",
+    "zipp>=3.19.1",
+    "ckanext-harvest>=1.6.2"
+]
+
+
+[project.entry-points."ckan.plugins"]
+data_qld = "ckanext.data_qld.plugin:DataQldPlugin"
+data_qld_integration = "ckanext.data_qld.plugin:DataQldPlugin"
+data_qld_resources = "ckanext.data_qld.plugin:PlaceholderPlugin"
+data_qld_google_analytics = "ckanext.data_qld.google_analytics.plugin:GoogleAnalyticsPlugin"
+data_qld_reporting = "ckanext.data_qld.plugin:PlaceholderPlugin"
+data_qld_test = "ckanext.data_qld.test_plugin:DataQldTestPlugin"
+
+[project.entry-points."babel.extractors"]
+ckan = "ckan.lib.extract:extract_ckan"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["contrib*", "docs*", "tests*"]
+
+# The following sections are included to match your example template
+[tool.pytest.ini_options]
+addopts = "--ckan-ini test.ini"
+filterwarnings = [
+               "ignore::sqlalchemy.exc.SADeprecationWarning",
+               "ignore::sqlalchemy.exc.SAWarning",
+               "ignore::DeprecationWarning",
+]
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["ckanext"]
+exclude = [
+    "**/test*",
+    "**/migration",
+]
+strict = []
+strictParameterNoneValue = true
+reportFunctionMemberAccess = true
+reportMissingImports = true
+reportMissingModuleSource = true
+reportMissingTypeStubs = false
+reportImportCycles = true
+reportUnusedImport = true
+reportUnusedClass = true
+reportUnusedFunction = true
+reportUnusedVariable = true
+reportDuplicateImport = true
+reportOptionalSubscript = true
+reportOptionalMemberAccess = true
+reportOptionalCall = true
+reportOptionalIterable = true
+reportOptionalContextManager = true
+reportOptionalOperand = true
+reportTypedDictNotRequiredAccess = false
+reportConstantRedefinition = true
+reportIncompatibleMethodOverride = true
+reportIncompatibleVariableOverride = true
+reportOverlappingOverload = true
+reportUntypedFunctionDecorator = false
+reportUnknownParameterType = true
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportMissingTypeArgument = true
+reportInvalidTypeVarUse = true
+reportCallInDefaultInitializer = true
+reportUnknownVariableType = true
+reportUntypedBaseClass = true
+reportUnnecessaryIsInstance = true
+reportUnnecessaryCast = true
+reportUnnecessaryComparison = true
+reportAssertAlwaysTrue = true
+reportSelfClsParameterName = true
+reportUnusedCallResult = false
+useLibraryCodeForTypes = true
+reportGeneralTypeIssues = true
+reportPropertyTypeMismatch = true
+reportWildcardImportFromLibrary = true
+reportUntypedClassDecorator = false
+reportUntypedNamedTuple = true
+reportPrivateUsage = true
+reportPrivateImportUsage = true
+reportInconsistentConstructor = true
+reportMissingSuperCall = false
+reportUninitializedInstanceVariable = true
+reportInvalidStringEscapeSequence = true
+reportMissingParameterType = true
+reportImplicitStringConcatenation = false
+reportUndefinedVariable = true
+reportUnboundVariable = true
+reportInvalidStubStatement = true
+reportIncompleteStub = true
+reportUnsupportedDunderAll = true
+reportUnusedCoroutine = true
+reportUnnecessaryTypeIgnoreComment = true
+reportMatchNotExhaustive = true
