@@ -78,6 +78,12 @@ data_qld_test = "ckanext.data_qld.test_plugin:DataQldTestPlugin"
 [project.entry-points."babel.extractors"]
 ckan = "ckan.lib.extract:extract_ckan"
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["contrib*", "docs*", "tests*"]
+
 # The following sections are included to match your example template
 [tool.pytest.ini_options]
 addopts = "--ckan-ini test.ini"
