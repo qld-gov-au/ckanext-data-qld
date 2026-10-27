@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-from datetime import datetime
 import pytest
 
 from ckan import model
@@ -291,14 +290,18 @@ Pending privacy assessment,0,3
             package_id=dataset['id'],
             format='html',
             url='http://example.com',
-            last_modified=datetime.fromisoformat(count_from)
         )
         call_action("package_patch", _make_context(), id=dataset['id'], resources=[resource])
         dataset = call_action("package_show", _make_context(), id=dataset['id'])
         print("Created test dataset with data_last_updated: %s" % dataset.get('data_last_updated', None))
 
         tk.current_user = model.User.get(sysadmin['id'])
-        result = helpers.gather_admin_metrics(org_id, "admin")
+        result = helpers._gather_admin_metrics({
+            'org_id': org_id,
+            'permission': 'admin',
+            'return_count_only': True,
+            'count_from': count_from
+        })
 
         assert result[u"de_identified_datasets_no_schema"] == pkg_counter
 
