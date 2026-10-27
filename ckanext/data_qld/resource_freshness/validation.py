@@ -147,6 +147,7 @@ def data_last_updated(keys, flattened_data, errors, context):
             log.debug('Found data_last_updated candidate in resource %s: %s', resource.get('id'), last_modified)
             data_last_updated = last_modified
 
+    log.debug('Dataset %s data_last_updated: %s', data.get('id'), data_last_updated)
     flattened_data[keys] = data_last_updated.isoformat() if isinstance(
         data_last_updated, dt.datetime) else None
 
