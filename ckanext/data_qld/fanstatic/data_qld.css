@@ -3,7 +3,7 @@ a:focus,
 a:hover,
 a:link,
 a:visited {
-  text-decoration: underline;
+  text-decoration-color: white;
 }
 
 .table thead > tr > td,
