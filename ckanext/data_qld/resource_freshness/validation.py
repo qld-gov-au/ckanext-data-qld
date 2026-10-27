@@ -144,6 +144,7 @@ def data_last_updated(keys, flattened_data, errors, context):
         last_modified = get_validator('isodate')(resource.get(
             'last_modified') or resource.get('created'), context)
         if data_last_updated is None or last_modified > data_last_updated:
+            log.debug('Found data_last_updated candidate in resource %s: %s', resource.get('id'), last_modified)
             data_last_updated = last_modified
 
     flattened_data[keys] = data_last_updated.isoformat() if isinstance(
