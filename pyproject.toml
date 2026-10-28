@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ckanext-data-qld"
-version = "8.1.1"
+version = "9.0.1"
 description = "Custom extension for Data QLD"
 requires-python = ">=3.7"
 classifiers = [
