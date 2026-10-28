@@ -18,7 +18,7 @@ keywords = ["CKAN"]
 dependencies = [
     "beautifulsoup4==4.9.1",
     "ckantoolkit>=0.0.4",
-    "pyrsistent<0.17.0"
+    "pyrsistent<0.21.0"
 ]
 
 authors = [
