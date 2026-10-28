@@ -80,9 +80,9 @@ Feature: Theme customisations
         And I press "Test Resource"
         And I reload page every 3 seconds until I see an element with xpath "//a[contains(string(), 'Data API')]" but not more than 10 times
         Then I should see an element with xpath "//a[contains(string(), 'Data API')]"
-        And I should see an element with xpath "//button[contains(@class, 'dropdown-toggle')]"
+        And I should see an element with xpath "//button[@id='dropdownDownloadFormat']"
         And I should see an element with xpath "//a[contains(@class, 'resource-btn') and contains(@href, '/download/csv_resource.csv') and contains(string(), '(CSV)')]"
-        When I press the element with xpath "//button[contains(@class, 'dropdown-toggle')]"
+        When I press the element with xpath "//button[@id='dropdownDownloadFormat']"
         Then I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(string(), 'CSV')]"
         And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=tsv') and contains(string(), 'TSV')]"
         And I should see an element with xpath "//a[contains(@href, '/datastore/dump/') and contains(@href, 'format=json') and contains(string(), 'JSON')]"
