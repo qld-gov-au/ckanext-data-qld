@@ -1,5 +1,3 @@
-# build.sh alters this file via sed,
-# 3 # is comment line, 2 # is to unescape for cicd.
 
 x-project:
   &project "${PROJECT}"
