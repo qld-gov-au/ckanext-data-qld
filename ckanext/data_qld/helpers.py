@@ -6,10 +6,13 @@ import hashlib
 from six import text_type, ensure_binary
 
 from ckan import model
-from ckan.lib import uploader
 from ckantoolkit import _, g, h, abort, asbool, check_ckan_version, \
     config, get_action, get_endpoint, ObjectNotFound, render, request, \
     aslist
+
+from werkzeug.datastructures import FileStorage as FlaskFileStorage
+
+ALLOWED_UPLOAD_TYPES = (FlaskFileStorage,)
 
 
 def get_user():
@@ -332,7 +335,7 @@ def get_deletion_reason_template():
 
 
 def is_uploaded_file(upload):
-    return isinstance(upload, uploader.ALLOWED_UPLOAD_TYPES) and upload.filename
+    return isinstance(upload, ALLOWED_UPLOAD_TYPES) and upload.filename
 
 
 class RequestHelper():
