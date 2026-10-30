@@ -3,7 +3,7 @@ import mock
 from ckan.tests import helpers
 
 
-@pytest.mark.usefixtures("with_plugins", "clean_db", "with_request_context")
+@pytest.mark.usefixtures("with_plugins", "with_request_context")
 @mock.patch("ckanext.datarequests.actions._send_mail", lambda *args, **kwargs: None)
 class TestDataRequestCommentSearch:
     """
