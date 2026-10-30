@@ -55,7 +55,7 @@ dev = [
     "mock",
     "progressbar==2.5",
     "pytest-ckan",
-    "python-magic==0.4.18",
+    "python-magic==0.4.27",
     "requests>=2.32.0",
     "selenium<4.52",
     "six",
