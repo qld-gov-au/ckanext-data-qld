@@ -101,7 +101,7 @@ def organisation_followers(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve organisation followers")
 
 
 def dataset_followers(context, data_dict):
@@ -134,7 +134,7 @@ def dataset_followers(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve dataset followers")
 
 
 def dataset_comments(context, data_dict):
@@ -170,7 +170,7 @@ def dataset_comments(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve dataset comments")
 
 
 def datarequests(context, data_dict):
@@ -202,7 +202,7 @@ def datarequests(context, data_dict):
         ).all()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data requests")
 
 
 def datarequest_comments(context, data_dict):
@@ -239,7 +239,7 @@ def datarequest_comments(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data request comments")
 
 
 def dataset_comment_followers(context, data_dict):
@@ -280,7 +280,7 @@ def dataset_comment_followers(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve dataset comment followers")
 
 
 def datasets_min_one_comment_follower(context, data_dict):
@@ -318,7 +318,7 @@ def datasets_min_one_comment_follower(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve datasets")
 
 
 def datarequests_min_one_comment_follower(context, data_dict):
@@ -356,7 +356,7 @@ def datarequests_min_one_comment_follower(context, data_dict):
         ).scalar()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data requests")
 
 
 def dataset_comments_no_replies_after_x_days(context, data_dict):
@@ -424,7 +424,7 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
         return comments_to_show
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve dataset comments")
 
 
 def datarequests_no_replies_after_x_days(context, data_dict):
@@ -494,7 +494,7 @@ def datarequests_no_replies_after_x_days(context, data_dict):
         return comments_to_show
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data requests")
 
 
 def open_datarequests_no_comments_after_x_days(context, data_dict):
@@ -537,7 +537,7 @@ def open_datarequests_no_comments_after_x_days(context, data_dict):
         ).all()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data requests")
 
 
 def datarequests_open_after_x_days(context, data_dict):
@@ -576,7 +576,7 @@ def datarequests_open_after_x_days(context, data_dict):
         ).all()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data requests")
 
 
 def datarequests_for_circumstance(context, data_dict):
@@ -605,7 +605,7 @@ def datarequests_for_circumstance(context, data_dict):
         ).all()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve data requests")
 
 
 def comments_no_replies_after_x_days(context, data_dict):
@@ -659,7 +659,7 @@ def comments_no_replies_after_x_days(context, data_dict):
         ).all()
 
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve comments")
 
 
 def de_identified_datasets(context, data_dict):
@@ -741,7 +741,7 @@ def overdue_datasets(context, data_dict):
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve datasets")
 
 
 def datasets_no_groups(context, data_dict):
@@ -769,7 +769,7 @@ def datasets_no_groups(context, data_dict):
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve datasets")
 
 
 def datasets_no_tags(context, data_dict):
@@ -796,7 +796,7 @@ def datasets_no_tags(context, data_dict):
 
         return _query_result(query, is_org_list, return_count_only)
     except Exception:
-        log.exception()
+        log.exception("Failed to retrieve datasets")
 
 
 def resources_pending_privacy_assessment(context, data_dict):
