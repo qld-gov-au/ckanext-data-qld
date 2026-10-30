@@ -242,10 +242,25 @@
                                   Visualisations
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if h.current_url().startswith('/news-and-case-studies') %}active" aria-current="page{% endif %}" href="/news-and-case-studies">
-                                  News and case studies
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {% if h.current_url().startswith('/news-and-case-studies') %}active" aria-current="page{% endif %}" href="/article/news-and-case-studies" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                                    News and case studies
                                 </a>
+                                <button class="nav-link dropdown-toggle"  data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false" aria-selected="false" aria-label="Toggle navigation">                                
+                                    <span class="visually-hidden">Expand</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item parent-link" href="/article/news-and-case-studies" >News and case studies</a>
+                                        </li>
+                                        <li>
+                                                <a class="dropdown-item" href="/article/news-and-case-studies/news-events">News and events</a>
+                                        </li>
+                                        <li>
+                                                <a class="dropdown-item" href="/article/news-and-case-studies/case-studies">Case studies</a>
+                                        </li>
+                                </ul>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {% if h.current_url().startswith('/article/standards-and-guidance') %}active" aria-current="page{% endif %}" href="/article/standards-and-guidance">
