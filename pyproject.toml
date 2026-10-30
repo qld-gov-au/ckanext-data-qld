@@ -59,7 +59,7 @@ dev = [
     "requests>=2.32.0",
     "selenium<4.52",
     "six",
-    "typer<0.11",
+    "typer<0.28",
     "urllib3>=2.2.2",
     "xlrd==2.0.2",
     "zipp>=3.19.1",
