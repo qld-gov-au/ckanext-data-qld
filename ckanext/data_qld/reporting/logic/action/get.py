@@ -406,7 +406,8 @@ def dataset_comments_no_replies_after_x_days(context, data_dict):
             .join(model.User, Comment.user_id == model.User.id)
             .join(model.Package, model.Package.name == _replace_(CommentThread.url, DATASET_PREFIX, ''))
             .outerjoin(
-                (comment_reply, Comment.id == comment_reply.parent_id),
+                comment_reply,
+                Comment.id == comment_reply.parent_id,
             )
             .order_by(Comment.creation_date.desc())
         ).all()
@@ -476,7 +477,8 @@ def datarequests_no_replies_after_x_days(context, data_dict):
             .join(model.User, Comment.user_id == model.User.id)
             .join(db.DataRequest, db.DataRequest.id == _replace_(CommentThread.url, DATAREQUEST_PREFIX, ''))
             .outerjoin(
-                (comment_reply, Comment.id == comment_reply.parent_id)
+                comment_reply,
+                Comment.id == comment_reply.parent_id
             )
             .order_by(Comment.creation_date.desc())
         ).all()
@@ -653,7 +655,8 @@ def comments_no_replies_after_x_days(context, data_dict):
             )
             .join(Comment)
             .outerjoin(
-                (comment_reply, Comment.id == comment_reply.parent_id)
+                comment_reply,
+                Comment.id == comment_reply.parent_id
             )
             .order_by(Comment.creation_date.desc())
         ).all()
