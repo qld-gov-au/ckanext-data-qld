@@ -56,7 +56,7 @@ Feature: Resource validation
         And I fill in "validation_options" with "{"delimiter": ","}"
 
         And I submit the main form
-        Then I should see "Test validation options"
+        Then I should see an element with xpath "//h1[contains(string(), 'Test validation options')]"
         When I click the link with text that contains "Test validation options"
         And I press the resource edit button
         Then I should see text containing quotes `"delimiter": ","`
