@@ -43,7 +43,7 @@ Homepage = "https://github.com/qld-gov-au/ckanext-data-qld"
 
 [project.optional-dependencies]
 dev = [
-    "Appium-Python-Client==2.10.1",
+    "Appium-Python-Client==6.0.9",
     "behaving==3.3.*",
     "certifi>=2024.7.4",
     "ckanapi>=4.7",
