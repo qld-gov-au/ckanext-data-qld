@@ -50,7 +50,7 @@ dev = [
     "ckantoolkit>=0.0.4",
     "factory-boy",
     "Faker",
-    "flake8==7.3.*",
+    "flake8>=7.3,<7.5",
     "idna>=3.7",
     "mock",
     "progressbar==2.5",
