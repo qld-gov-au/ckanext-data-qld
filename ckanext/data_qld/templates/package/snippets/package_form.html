@@ -1,7 +1,7 @@
 {% ckan_extends %}
 
 {% block delete_button %}
-    {% if h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' and not h.data_qld_data_driven_application(data.data_driven_application)  %}
+    {% if data.id and h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' and not h.data_qld_data_driven_application(data.data_driven_application)  %}
         <a id='dataset-delete-button' disabled="disabled"
             class="btn btn-danger pull-left"
             href="{{ h.url_for('dataset.delete', id=data.id) }}"

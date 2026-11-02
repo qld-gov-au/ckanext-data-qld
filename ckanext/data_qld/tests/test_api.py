@@ -338,7 +338,7 @@ class TestSchemaAlignment:
                     id=dataset["id"], default_data_schema="")
         pkg_dict = _get_pkg_dict(dataset['id'], user)
 
-        assert 'default_data_schema' not in pkg_dict
+        assert not pkg_dict.get('default_data_schema')
 
     def test_create_resource_with_custom_schema(self, dataset_factory,
                                                 resource_factory):

@@ -38,10 +38,29 @@ Feature: Schema Generation
         And I should see an element with xpath "//div/following::p[contains(string(), 'Once applied to only this "Resource", saved edits will be validated against this data schema unless otherwise overwritten (e.g. Dataset default set).')]"
         And I should see an element with xpath "//button[string()='Apply']"
 
-        When I press the element with xpath "//button[string()='Apply']"
+        When I select "resource" from "apply_for"
+        And I press the element with xpath "//button[string()='Apply']"
         Then I should see an element with xpath "//select[@id='field-apply_for']/option[@value=''][1]"
         And I should see an element with xpath "//select[@id='field-apply_for']/option[string()='Dataset default' and not(@selected)]"
-        And I should see an element with xpath "//select[@id='field-apply_for']/option[string()='Resource' and not(@selected)]"
+        And I should see an element with xpath "//select[@id='field-apply_for']/option[string()='Resource' and @selected]"
+        And I should see "The schema has been applied for resource"
+
+    Scenario: As a publisher, when I try to generate a schema for a resource that cannot be parsed into the datastore, I can see the resulting error
+        Given "TestOrgEditor" as the persona
+        When I log in
+        And I create a dataset and resource with key-value parameters "notes=package-with-txt-res" and "name=Resource without datastore::upload=txt_resource.txt::format=TXT"
+        And I take a debugging screenshot
+        And I press "Resource without datastore"
+        And I take a debugging screenshot
+        And I visit resource schema generation page
+        And I take a debugging screenshot
+        Then I should see an element with xpath "//button[contains(string(), 'Generate JSON data schema') and contains(@class, 'btn-generate')]/following::table[contains(@class, 'table-schema')]"
+        And I should see an element with xpath "//th[string()='Status']/following::td[string()='Not generated']"
+        And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
+
+        When I press "Generate JSON data schema"
+        Then I should see an element with xpath "//div[contains(@class, 'flash-messages')]/div[contains(string(), 'for this resource')]"
+        And I should see an element with xpath "//th[string()='Last updated']/following::td[string()='Never']"
 
     Scenario: System actions following the selection of the set as dataset default dropdown option on the manage data schema GUI page
         Given "TestOrgEditor" as the persona
@@ -55,7 +74,8 @@ Feature: Schema Generation
         And I reload page every 3 seconds until I see an element with xpath "//button[string()='Apply']" but not more than 6 times
         And I select "dataset" from "apply_for"
         And I press the element with xpath "//button[string()='Apply']"
-        And I go to dataset "$last_generated_name"
+        Then I should see "The schema has been applied for dataset"
+        When I go to dataset "$last_generated_name"
         And I show all the fields
         Then I should see an element with xpath "//th[@class="dataset-label" and string()="Default data schema"]/following::a[string()="View Schema File"]"
 
@@ -71,6 +91,7 @@ Feature: Schema Generation
         And I reload page every 3 seconds until I see an element with xpath "//button[string()='Apply']" but not more than 6 times
         And I select "resource" from "apply_for"
         And I press the element with xpath "//button[string()='Apply']"
-        And I press the element with xpath "//a[contains(string(), 'View resource')]"
+        Then I should see "The schema has been applied for resource"
+        When I press the element with xpath "//a[contains(string(), 'View resource')]"
         And I show all the fields
         Then I should see an element with xpath "//th[string()="Data Schema"]/following::a[string()="View Schema File"]"

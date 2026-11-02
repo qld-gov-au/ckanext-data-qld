@@ -268,16 +268,20 @@ def gather_engagement_metrics(org_id, start_date, end_date, comment_no_reply_max
 
 
 def gather_admin_metrics(org_id, permission):
-    """Collect admin statistics metrics for the provided organisation"""
-
-    # get the current authentication info for our API calls
-    context = {'auth_user_obj': tk.current_user, 'user': tk.current_user.name}
-
     data_dict = {
         'org_id': org_id,
         'return_count_only': True,
         'permission': permission
     }
+
+    return _gather_admin_metrics(data_dict)
+
+
+def _gather_admin_metrics(data_dict):
+    """Collect admin statistics metrics for the provided organisation"""
+
+    # get the current authentication info for our API calls
+    context = {'auth_user_obj': tk.current_user, 'user': tk.current_user.name}
 
     de_identified_datasets = tk.get_action('de_identified_datasets')(context, data_dict)
     de_identified_datasets_no_schema = tk.get_action('de_identified_datasets_no_schema')(context, data_dict)
@@ -286,6 +290,7 @@ def gather_admin_metrics(org_id, permission):
     datasets_no_tags = tk.get_action('datasets_no_tags')(context, data_dict)
     pending_privacy_assessment = tk.get_action('resources_pending_privacy_assessment')(context, data_dict)
 
+    org_id = data_dict.get('org_id')
     if isinstance(org_id, list):
         metrics = {}
         for org in org_id:
