@@ -17,6 +17,7 @@
 
 {% macro comment_form(values={}, empty=False, hidden=True, prefix="", action="add", depth=0) %}
     <form id="{{ prefix + values.id }}" class="form {% if hidden %}hidden{% endif %}" action="/{{ content_type or 'dataset' }}/{{ pkg_id }}/comments/{% if values.id %}{{ values.id }}/{% endif %}{{ action }}" method="POST">
+        {{ h.csrf_input() if 'csrf_input' in h }}
         <hr />
         {% if action == "edit" %}
             <h3>Edit comment:</h3>
@@ -163,6 +164,7 @@
     <h3>Add a comment{% if content_type == 'dataset' %} or ask a question about this dataset{% endif %}</h3>
 
     <form id="comment_form" class="form" action="/{{ content_type }}/{{ pkg_id }}/comments/add" method="POST">
+        {{ h.csrf_input() if 'csrf_input' in h }}
         <div id="comment_form_errors" class="alert alert-error form-errors hidden">
             <div class="hidden error-comment">{{ _('Please enter a Comment.') }}</div>
             <div class="hidden error-profanity">{{ _('Comment blocked due to profanity.') }}</div>

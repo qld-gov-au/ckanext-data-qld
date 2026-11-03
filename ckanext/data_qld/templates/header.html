@@ -53,7 +53,7 @@
                         <span class="qld-header-link ms-16">
                         {% block header_account_log_out_link %}
                           <form action="{{ h.url_for('user.logout') }}" method="post">
-                            {{ h.csrf_input() }}
+                            {{ h.csrf_input() if 'csrf_input' in h }}
                             <button class="qld-header-link p-0 bg-transparent border-0" type="submit" title="{{ _('Log out') }}">
                               <i class="fa fa-sign-out qld-icon-sm qld-header-link-icon" aria-hidden="true"></i>{{ _('Log out') }}
                             </button>
@@ -134,7 +134,7 @@
     {% endif %}
     <li class="nav-item alt mobile-only">
       <form action="{{ h.url_for('user.logout') }}" method="post">
-        {{ h.csrf_input() }}
+        {{ h.csrf_input() if 'csrf_input' in h }}
         <button class="btn btn-sm alt mobile-only" type="submit" title="{{ _('Log out') }}">
           <i class="fa fa-sign-out" aria-hidden="true"></i>{{ _('Log out') }}
         </button>
@@ -247,7 +247,7 @@
                             aria-expanded="false">
                                     News and case studies
                                 </a>
-                                <button class="nav-link dropdown-toggle"  data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false" aria-selected="false" aria-label="Toggle navigation">                                
+                                <button class="nav-link dropdown-toggle"  data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false" aria-selected="false" aria-label="Toggle navigation">
                                     <span class="visually-hidden">Expand</span>
                                 </button>
                                 <ul class="dropdown-menu">
