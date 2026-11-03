@@ -2,7 +2,7 @@
 
 {% block errors %}
 {% if errors_summary %}
-  <div class="error-explanation alert alert-error">
+  <div class="error-explanation alert alert-danger">
   <p>{{ _('The form contains invalid entries:') }}</p>
   <ul>
     {% for key, error in errors_summary.items() %}
@@ -17,8 +17,8 @@
 {{ form.input('title', id='field-title', label=_('Subject'), placeholder=_('eg. Data Request Name'), value=title, error=errors['Title'], classes=['control-full'], is_required=true) }}
 {% endblock %}
 
-{% block offering_description %}  
-  {% set suggested_description =  h.render_markdown(h.data_qld_datarequest_suggested_description())  %}  
+{% block offering_description %}
+  {% set suggested_description =  h.render_markdown(h.data_qld_datarequest_suggested_description())  %}
   {% call form.markdown('description', id='field-description', label=_('Description'), placeholder=_('eg. Data Request description'), value=data.get('description', ''), error=errors['Description'], is_required=description_required) %}
     <div class="info-block info-inline">
     <i class="fa fa-info-circle"></i>
@@ -49,7 +49,7 @@
     </div>
   </div>
   {% else %}
-    {{ form.hidden('organization_id', organization_id) }}    
+    {{ form.hidden('organization_id', organization_id) }}
   {% endif %}
 
 {% endblock %}

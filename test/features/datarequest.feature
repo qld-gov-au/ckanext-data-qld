@@ -7,6 +7,7 @@ Feature: Data Request
     Scenario: When visiting the datarequests page as a non-logged in user, the 'Add data request' button is not visible
         Given "Unauthenticated" as the persona
         When I go to the data requests page
+        And I expand the browser height
         Then the browser's URL should contain "/datarequest"
         And I should see an element with xpath "//nav[@aria-label = 'State']"
         And I should see an element with xpath "//span[contains(@class, 'item-label') and string() = 'Open']"
@@ -58,7 +59,7 @@ Feature: Data Request
         And I press "Add data request"
         And I fill in "title" with "Test data request"
         And I submit the main form
-        Then I should see an element with the css selector "div.error-explanation.alert.alert-error" within 2 seconds
+        Then I should see an element with xpath "//div[contains(@class, 'error-explanation') and (contains(@class, 'alert-error') or contains(@class, 'alert-danger'))]" within 2 seconds
         And I should see "The form contains invalid entries" within 1 seconds
         And I should see an element with the css selector "span.error-block" within 1 seconds
         And I should see "Description cannot be empty" within 1 seconds
