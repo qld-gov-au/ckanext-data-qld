@@ -23,8 +23,7 @@ else
 fi
 
 if [ "$CKAN_VERSION" = "2.12" ]; then
-    CKAN_GIT_ORG=ckan
-    CKAN_GIT_VERSION=ckan-2.12.1
+    CKAN_GIT_VERSION=ckan-2.12.1+qgov.1
 elif [ "$CKAN_VERSION" = "2.11" ]; then
     CKAN_GIT_VERSION=ckan-2.11.6-qgov.2
 elif [ "$CKAN_VERSION" = "2.10" ]; then
