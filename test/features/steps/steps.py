@@ -25,6 +25,7 @@ if not hasattr(forms, 'fill_in_elem_by_name'):
 
 URL_RE = re.compile(r'http[s]?://[-\w.]+(?::\d+)?(?:/[-\w./%+]+)?(?:[?][-\w@.&+:!*(),/])?', re.I | re.S | re.U)
 SINGLE_QUOTE_RE = re.compile(r"(^|[^\\])'")
+META_TAG_RE = re.compile(r'<meta name="(^")" content="(^")" ?/>')
 
 dataset_default_schema = """
     {"fields": [
@@ -465,8 +466,25 @@ def test_download_element(context, expression):
 
 @then(u'I should be able to patch dataset "{package_id}" via the API')
 def test_package_patch(context, package_id):
+    # retrieve CSRF token from any page that could include it
+    url = context.base_url + 'user/login'
+    response = requests.post(url, cookies=context.browser.cookies.all())
+    meta_tags = META_TAG_RE.findall(response.text)
+    token_name = '_csrf_token'
+    token_value = None
+    for tag in meta_tags:
+        if tag[0] == 'csrf_field_name':
+            token_name = tag[1]
+            break
+    for tag in meta_tags:
+        if tag[0] == token_name:
+            token_value = tag[1]
+            break
+    headers = {}
+    if token_value:
+        headers['X-CSRFToken'] = token_value
     url = context.base_url + 'api/action/package_patch'
-    response = requests.post(url, json={'id': package_id}, cookies=context.browser.cookies.all())
+    response = requests.post(url, json={'id': package_id}, headers=headers, cookies=context.browser.cookies.all())
     print("Response from endpoint {} is: {}, {}".format(url, response, response.text))
     assert response.status_code == 200
     assert '"success": true' in response.text
