@@ -20,7 +20,7 @@ Feature: Data Request
         And I click the link with text that contains "Test Organisation"
         And I press the element with xpath "//ul[contains(@class, 'nav-tabs')]//a[contains(string(), 'Data Requests')]"
         Then the browser's URL should contain "/organization/datarequest"
-        And I should see an element with xpath "//nav[@aria-label = 'State']"
+        And I should see an element with xpath "//nav[translate(@aria-label, 'S', 's') = 'state']"
         And I should see an element with xpath "//span[contains(@class, 'item-label') and string() = 'Open']"
         And I should see an element with xpath "//input[contains(@aria-label, 'Search Data Requests')]"
         And I should see an element with xpath "//ol[contains(@class, 'breadcrumb')]//a[contains(@href, '/organization')]"
