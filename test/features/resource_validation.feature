@@ -80,6 +80,7 @@ Feature: Resource validation
     Scenario: As an editor, I can update a resource with a valid CSV and see a success status
         Given "TestOrgEditor" as the persona
         When I log in
+        And I set "debug" to "True"
         And I create a dataset with key-value parameters "notes=Test valid CSV"
         And I open the new resource form for dataset "$last_generated_name"
         And I upload "invalid.csv" of type "CSV" to resource
