@@ -9,11 +9,13 @@
 {% endblock %}
 
 {% block search_title %}
- <h2>
- {% if not error %}
-   {% snippet 'snippets/search_result_text.html', query=query, count=count, type=type %}
- {% else %}
-   Error
- {% endif %}
- </h2>
+<h2>
+  {% if not error %}
+    {% snippet 'snippets/search_result_text.html', query=query, count=count, type=type %}
+  {% else %}
+    {% trans %}
+      Error
+    {% endtrans %}
+  {% endif %}
+</h2>
 {% endblock %}
