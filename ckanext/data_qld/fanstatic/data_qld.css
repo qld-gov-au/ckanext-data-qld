@@ -645,8 +645,13 @@ a.badge {
   align-items: center;
 }
 
-li.nav-item a span.badge {
+.nav-facet li.nav-item a span.badge {
   margin-left: auto;
+}
+
+li.nav-item a span.badge {
+  float: right;
+  margin-right: 10px;
 }
 
 /* The background watermark image for each environment */
