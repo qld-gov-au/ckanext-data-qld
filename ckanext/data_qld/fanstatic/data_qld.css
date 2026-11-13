@@ -642,6 +642,7 @@ a.badge {
 
 li.nav-item a span.badge {
   float: right;
+  margin-left: 10px;
   margin-right: 10px;
 }
 
