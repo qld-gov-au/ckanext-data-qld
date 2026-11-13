@@ -36,6 +36,15 @@ a.btn {
   box-shadow: none;
 }
 
+/* XLoader overrides */
+.loader-badge {
+    margin: 0 0 10px !important;
+}
+
+.loader-badge .status.active {
+    background-color: var(--QLD-color-status__success, #339D37) !important;
+}
+
 /* Green buttons */
 .btn-success {
   color: #000;
