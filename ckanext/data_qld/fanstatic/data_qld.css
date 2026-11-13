@@ -640,10 +640,13 @@ a.badge {
     }
 }
 
+.nav-facet li.nav-item a {
+  display: flex;
+  align-items: center;
+}
+
 li.nav-item a span.badge {
-  float: right;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: auto;
 }
 
 /* The background watermark image for each environment */
