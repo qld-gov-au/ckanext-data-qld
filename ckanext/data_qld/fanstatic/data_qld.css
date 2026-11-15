@@ -681,6 +681,10 @@ body > div.qg-staging {
   white-space: normal;
 }
 
+.page-header .nav-tabs li a {
+  color: var(--qld-link-color, #005EB8);
+}
+
 /* Overriding main.css nav tabs displaying outside parent container */
 @media (max-width: 991px) {
   .page-header .nav-tabs {
