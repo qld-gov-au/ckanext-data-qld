@@ -1,9 +1,13 @@
-a,
-a:focus,
-a:hover,
-a:link,
-a:visited {
+aside a,
+aside a:focus,
+aside a:hover,
+aside a:link,
+aside a:visited {
   text-decoration-color: white;
+}
+
+a:not(:visited):where(:not(.btn)) {
+  color: var(--qld-link-color, #005EB8);
 }
 
 .table thead > tr > td,
@@ -470,7 +474,7 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
     list-style-type: none;
 }
 .qld-header-link:hover, .qld-header-link a:hover {
-    color: var(--qld-link-color);
+    color: var(--qld-link-color, #005EB8);
 }
 a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
     text-decoration: none;
@@ -517,6 +521,12 @@ a.badge {
     /* Don't turn white links purple when visited (white links imply a dark background) */
     color: var(--qld-badge-color);
     text-underline-offset: unset;
+}
+.badge[href]:hover {
+    background-color: #005EB8;
+}
+a.label .badge, .nav-tabs .badge {
+    color: var(--qld-link-color, #005EB8);
 }
 /* Apply breadcrumb styling to any 'li' inside the breadcrumb list,
  * instead of requiring each one to have a 'breadcrumb-item' class,
