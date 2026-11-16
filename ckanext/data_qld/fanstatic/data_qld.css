@@ -12,7 +12,7 @@ a:not(:visited):where(:not(.btn)) {
 
 .table thead > tr > td,
 .table thead > tr > th {
-  background: #13578b;
+  background: #005EB8;
   color: #fff;
 }
 
