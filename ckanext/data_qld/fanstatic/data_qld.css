@@ -6,7 +6,7 @@ aside a:visited {
   text-decoration-color: white;
 }
 
-a:not(:visited):where(:not(.btn)) {
+a:not(:visited):where(:not(.btn, .loader-badge)) {
   color: var(--qld-link-color, #005EB8);
 }
 
