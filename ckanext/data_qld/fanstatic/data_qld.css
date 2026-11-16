@@ -522,6 +522,9 @@ a.badge {
     color: var(--qld-badge-color);
     text-underline-offset: unset;
 }
+.badge[href]:hover {
+    background-color: #005EB8;
+}
 /* Apply breadcrumb styling to any 'li' inside the breadcrumb list,
  * instead of requiring each one to have a 'breadcrumb-item' class,
  * since many instances will be in templates controlled by plugins.
