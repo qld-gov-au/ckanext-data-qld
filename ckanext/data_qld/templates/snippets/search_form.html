@@ -1,0 +1,21 @@
+{% ckan_extends %}
+
+{% block search_input_button %}
+<span class="input-group-btn">
+ <button class="btn btn-secondary btn-lg" type="submit" value="search" aria-label="{{_('Submit')}}">
+   <i class="fa fa-search"></i>
+ </button>
+</span>
+{% endblock %}
+
+{% block search_title %}
+<h2>
+  {% if not error %}
+    {% snippet 'snippets/search_result_text.html', query=query, count=count, type=type %}
+  {% else %}
+    {% trans %}
+      Error
+    {% endtrans %}
+  {% endif %}
+</h2>
+{% endblock %}

@@ -36,6 +36,15 @@ a.btn {
   box-shadow: none;
 }
 
+/* XLoader overrides */
+.loader-badge {
+    margin: 0 0 10px !important;
+}
+
+.loader-badge .status.active {
+    background-color: var(--QLD-color-status__success, #339D37) !important;
+}
+
 /* Green buttons */
 .btn-success {
   color: #000;
@@ -640,6 +649,15 @@ a.badge {
     }
 }
 
+.nav-facet li.nav-item a {
+  display: flex;
+  align-items: center;
+}
+
+.nav-facet li.nav-item a span.badge {
+  margin-left: auto;
+}
+
 li.nav-item a span.badge {
   float: right;
   margin-right: 10px;
@@ -661,6 +679,10 @@ body > div.qg-staging {
 /* Overriding main.css to fix column not wrapping text in responsive tables */
 .table-responsive > .table > tbody > tr > td {
   white-space: normal;
+}
+
+.page-header .nav-tabs li a {
+  color: var(--qld-link-color, #005EB8);
 }
 
 /* Overriding main.css nav tabs displaying outside parent container */
