@@ -48,8 +48,8 @@ a.btn {
 /* Green buttons */
 .btn-success {
   color: #000;
-  background-color: #78ba00;
-  border-color: #78ba00;
+  background-color: var(--QLD-color-status__success, #339D37);
+  border-color:  var(--QLD-color-status__success, #339D37);
 }
 
 .btn-success:hover,
