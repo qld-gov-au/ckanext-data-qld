@@ -1,9 +1,13 @@
-a,
-a:focus,
-a:hover,
-a:link,
-a:visited {
+aside a,
+aside a:focus,
+aside a:hover,
+aside a:link,
+aside a:visited {
   text-decoration-color: white;
+}
+
+a:not(:visited) {
+  color: var(--qld-link-color, #005EB8);
 }
 
 .table thead > tr > td,
