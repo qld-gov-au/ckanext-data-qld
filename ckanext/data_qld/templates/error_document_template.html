@@ -10,7 +10,7 @@
         <p>The resource may have been deleted or the address may have changed since you last accessed the page. We recommend you go to our <a href="{{ h.url_for('/') }}">home page</a> or try <a href="{{ h.url_for(dataset_search_route) }}">searching our website</a> to find what you're looking for.</p>
         {% else %}
           {{ content}}
-        {% endif %}   
+        {% endif %}
     </div>
   </article>
 {% endblock %}
