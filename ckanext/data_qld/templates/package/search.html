@@ -9,3 +9,7 @@
 
 <meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="index" />
 {% endblock %}
+
+{% block page_pagination %}
+  {{ page.pager(q=q, symbol_previous='Previous', symbol_next='Next') }}
+{% endblock %}
