@@ -10,6 +10,16 @@
 <meta name="AGLSTERMS.documentType" scheme="AGLSTERMS.agls-document" content="index" />
 {% endblock %}
 
+{% block package_search_results_api %}
+  <section class="module">
+    <div class="module-content text-center">
+      {% block package_search_results_api_inner %}
+        {{ super() }}
+      {% endblock %}
+    </div>
+  </section>
+{% endblock %}
+
 {% block page_pagination %}
   {{ page.pager(q=q, symbol_previous='Previous', symbol_next='Next') }}
 {% endblock %}
