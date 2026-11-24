@@ -1,11 +1,14 @@
 {% ckan_extends %}
 
-{% block search_input_button %}
-<span class="input-group-btn">
- <button class="btn btn-secondary form-control btn-lg" type="submit" value="search" aria-label="{{_('Submit')}}">
-   <i class="fa fa-search"></i>
- </button>
-</span>
+{% block search_input %}
+  <div class="input-group search-input-group qld-search-input">
+    <input aria-label="{% block header_site_search_label %}{{ super() }}{% endblock %}" id="field-giant-search" type="text" class="form-control input-lg" name="q" value="{{ query }}" autocomplete="off" placeholder="{{ placeholder }}">
+    {% block search_input_button %}
+      <button class="btn btn-primary btn-lg" type="submit" value="search" aria-label="{{_('Submit')}}">
+        <i class="fa fa-search"></i>
+      </button>
+    {% endblock %}
+  </div>
 {% endblock %}
 
 {% block search_title %}
