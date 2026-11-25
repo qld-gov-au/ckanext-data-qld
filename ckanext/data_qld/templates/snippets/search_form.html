@@ -1,15 +1,90 @@
-{% ckan_extends %}
+{#
+  Don't extend the parent, since it doesn't wrap the top-level structure in blocks.
+  https://github.com/ckan/ckan/issues/9660
+#}
+{% import 'macros/form.html' as form %}
+{% from "macros/form/hidden.html" import hidden %}
 
-{% block search_input %}
-  <div class="input-group search-input-group qld-search-input">
-    <input aria-label="{% block header_site_search_label %}{{ super() }}{% endblock %}" id="field-giant-search" type="text" class="form-control input-lg" name="q" value="{{ query }}" autocomplete="off" placeholder="{{ placeholder }}">
-    {% block search_input_button %}
-      <button class="btn btn-primary btn-lg" type="submit" value="search" aria-label="{{_('Submit')}}">
-        <i class="fa fa-search"></i>
-      </button>
-    {% endblock %}
-  </div>
-{% endblock %}
+{% set placeholder = placeholder if placeholder else _('Search datasets...') %}
+{% set sorting = sorting if sorting else [(_('Name Ascending'), 'name asc'), (_('Name Descending'), 'name desc')] %}
+{% set search_class = search_class if search_class else 'search-giant' %}
+{% set no_bottom_border = no_bottom_border if no_bottom_border else false %}
+{% set form_id = form_id if form_id else false %}
+
+<form {% if form_id %}id="{{ form_id }}" {% endif %}class="search-form d-flex flex-wrap align-items-center gap-3 pb-0 {% if no_bottom_border %} no-bottom-border{% endif %}" method="get" data-module="select-switch">
+
+  {% block search_input %}
+    <div class="search-input-group qld-search-input mb-0">
+      <input aria-label="{% block header_site_search_label %}{{ placeholder }}{% endblock %}"
+        id="field-giant-search" type="text" class="form-control" name="q" value="{{ query }}" autocomplete="off"
+        placeholder="{{ placeholder }}" />
+      {% block search_input_button %}
+        <button class="btn btn-primary" type="submit" aria-label="{{ _('Search') }}">
+            <span class="btn-icon" aria-hidden="true"></span>
+            <span class="btn-label">{{ _('Search') }}</span>
+        </button>
+      {% endblock %}
+    </div>
+  {% endblock %}
+
+  {% block search_search_fields %}
+    {% if fields -%}
+      <span class="d-none">{{ form.hidden_from_list(fields=fields) }}</span>
+    {%- endif %}
+  {% endblock %}
+
+  {% block search_sortby %}
+    {% if sorting %}
+      <div class="form-group control-order-by ms-auto mb-0">
+        <label for="field-order-by">{{ _('Order by') }}</label>
+        <select id="field-order-by" name="sort" class="form-control form-select">
+          {% for label, value in sorting %}
+            {% if label and value %}
+              <option value="{{ value }}"{% if sorting_selected == value %} selected="selected"{% endif %}>{{ label }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        {% block search_sortby_button %}
+        <button class="btn btn-default js-hide" type="submit">{{ _('Go') }}</button>
+        {% endblock %}
+      </div>
+    {% endif %}
+  {% endblock %}
+
+  {% block search_facets %}
+    {% if facets %}
+      <span class="d-none">
+      {% for field in facets.search %}
+        {% set facet_sort_key = '_{}_sort'.format(field) %}
+        {% if facet_sort_key in request.args %}
+          {{ hidden(facet_sort_key, request.args.get(facet_sort_key)) }}
+        {% endif %}
+      {% endfor %}
+      </span>
+      <p class="filter-list w-100">
+        {% for field in facets.fields %}
+          {% set search_facets_items = facets.search.get(field)['items'] if facets.search and field in facets.search else [] %}
+          <span class="facet">{{ facets.titles.get(field) }}:</span>
+          {% for value in facets.fields[field] %}
+            <span class="filtered pill">
+              {%- if facets.translated_fields and (field,value) in facets.translated_fields -%}
+                {{ facets.translated_fields[(field,value)] }}
+              {%- else -%}
+                {{ h.list_dict_filter(search_facets_items, 'name', 'display_name', value) }}
+              {%- endif %}
+              <a href="{{ facets.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"
+                aria-label="{{ _('Remove applied filter: ') + value }}">
+                <i class="fa fa-times"></i>
+              </a>
+            </span>
+          {% endfor %}
+        {% endfor %}
+      </p>
+      <a class="show-filters btn btn-default">{{ _('Filter Results') }}</a>
+    {% endif %}
+  {% endblock %}
+
+</form>
 
 {% block search_title %}
 <h2>
@@ -22,3 +97,15 @@
   {% endif %}
 </h2>
 {% endblock %}
+
+{% if show_empty and count == 0 and not error %}
+  {% trans %}
+    <p class="extra">Please try another search.</p>
+  {% endtrans %}
+{% endif %}
+
+{% if error %}
+  {% trans %}
+    <p id="search-error"><strong>There was an error while searching.</strong> Please try again.</p>
+  {% endtrans %}
+{% endif %}
