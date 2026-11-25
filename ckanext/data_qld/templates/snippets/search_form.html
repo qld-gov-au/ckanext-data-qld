@@ -14,7 +14,7 @@
 <form {% if form_id %}id="{{ form_id }}" {% endif %}class="search-form d-flex flex-wrap align-items-center gap-3 pb-0 {% if no_bottom_border %} no-bottom-border{% endif %}" method="get" data-module="select-switch">
 
   {% block search_input %}
-    <div class="search-input-group qld-search-input flex-grow-1">
+    <div class="search-input-group qld-search-input mb-0">
       <input aria-label="{% block header_site_search_label %}{{ placeholder }}{% endblock %}"
         id="field-giant-search" type="text" class="form-control" name="q" value="{{ query }}" autocomplete="off"
         placeholder="{{ placeholder }}" />
@@ -35,7 +35,7 @@
 
   {% block search_sortby %}
     {% if sorting %}
-      <div class="form-group control-order-by">
+      <div class="form-group control-order-by ms-auto mb-0">
         <label for="field-order-by">{{ _('Order by') }}</label>
         <select id="field-order-by" name="sort" class="form-control form-select">
           {% for label, value in sorting %}
@@ -59,7 +59,7 @@
           {{ hidden(facet_sort_key, request.args.get(facet_sort_key)) }}
         {% endif %}
       {% endfor %}
-      <p class="filter-list">
+      <p class="filter-list w-100">
         {% for field in facets.fields %}
           {% set search_facets_items = facets.search.get(field)['items'] if facets.search and field in facets.search else [] %}
           <span class="facet">{{ facets.titles.get(field) }}:</span>
