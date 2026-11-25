@@ -29,7 +29,7 @@
 
   {% block search_search_fields %}
     {% if fields -%}
-      <span>{{ form.hidden_from_list(fields=fields) }}</span>
+      <span class="d-none">{{ form.hidden_from_list(fields=fields) }}</span>
     {%- endif %}
   {% endblock %}
 
@@ -53,12 +53,14 @@
 
   {% block search_facets %}
     {% if facets %}
+      <span class="d-none">
       {% for field in facets.search %}
         {% set facet_sort_key = '_{}_sort'.format(field) %}
         {% if facet_sort_key in request.args %}
           {{ hidden(facet_sort_key, request.args.get(facet_sort_key)) }}
         {% endif %}
       {% endfor %}
+      </span>
       <p class="filter-list w-100">
         {% for field in facets.fields %}
           {% set search_facets_items = facets.search.get(field)['items'] if facets.search and field in facets.search else [] %}
