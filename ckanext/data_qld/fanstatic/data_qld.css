@@ -777,3 +777,7 @@ hr.double-thickness {
     bottom: 4px;
     position: relative;
 }
+
+.search-form .qld-search-input {
+  flex: 1 1 250px;
+}
