@@ -555,15 +555,16 @@ a.label .badge, .nav-tabs .badge {
     white-space: nowrap
 }
 .breadcrumb li:not(:first-child) a {
-    margin-left: 5px
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .breadcrumb li:nth-last-child(2) {
     text-overflow: ellipsis;
     overflow-x: hidden;
-    white-space: nowrap
+    white-space: nowrap;
 }
 .breadcrumb li:nth-last-child(2):focus-within {
-    overflow: initial
+    overflow: initial;
 }
 .breadcrumb li:first-child {
     flex-shrink: 0
