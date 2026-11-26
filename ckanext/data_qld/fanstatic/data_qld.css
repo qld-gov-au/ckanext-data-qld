@@ -692,7 +692,9 @@ body > div.qg-staging {
   white-space: normal;
 }
 
-.page-header .nav-tabs li a {
+.page-header .nav-tabs li a,
+.page-header .nav-tabs li a:focus,
+.page-header .nav-tabs li a:hover {
   color: var(--qld-link-color, #005EB8);
 }
 
