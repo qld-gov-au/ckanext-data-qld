@@ -23,13 +23,9 @@ else
 fi
 
 if [ "$CKAN_VERSION" = "2.12" ]; then
-    CKAN_GIT_ORG=ckan
-    CKAN_GIT_VERSION=ckan-2.12.0
+    CKAN_GIT_VERSION=ckan-2.12.1+qgov.1
 elif [ "$CKAN_VERSION" = "2.11" ]; then
-    CKAN_GIT_VERSION=ckan-2.11.6-qgov.2
-elif [ "$CKAN_VERSION" = "2.10" ]; then
-    CKAN_GIT_VERSION=ckan-2.10.7-qgov.2
-    SOLR_VERSION=8
+    CKAN_GIT_VERSION=ckan-2.11.7+qgov.3
 elif [ "$CKAN_VERSION" = "master" ]; then
     CKAN_GIT_ORG=ckan
 fi
