@@ -234,9 +234,19 @@ run_bdd_tests () {
     sleep 5
     JUNIT_OUTPUT="--junit --junit-directory=test/junit/"
     if [ "$BEHAVE_TAG" = "" ]; then
-      _single_bdd_test_run "--tags=smoke" && _single_bdd_test_run "--tags=-smoke"
+      # No tag specified, probably running locally.
+      # Run smoke tests and then everything else.
+      _single_bdd_test_run "--tags=smoke"
+      _single_bdd_test_run "--tags=-smoke"
+    elif [ "$BEHAVE_TAG" = "authenticated" ]; then
+      # Generic authenticated test run.
+      # Run any tests that don't have a specific tag.
+      _single_bdd_test_run "--tags=-unauthenticated --tags=-smoke --tags=-OpenData --tags=-multi_plugin"
     else
-      # run tests with the specified tag
+      if [ "$BEHAVE_TAG" = "smoke" ] || [ "$BEHAVE_TAG" = "unauthenticated" ] || [ "$BEHAVE_TAG" = "OpenData" ] || [ "$BEHAVE_TAG" = "authenticated" ]; then
+        BEHAVE_TAG="$BEHAVE_TAG --tags=-multi_plugin"
+      fi
+      # Run tests with the specified tag.
       _single_bdd_test_run "--tags=$BEHAVE_TAG"
     fi
     stop_mailmock
