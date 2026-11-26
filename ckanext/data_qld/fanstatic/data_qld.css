@@ -1,14 +1,18 @@
-a,
-a:focus,
-a:hover,
-a:link,
-a:visited {
+aside a,
+aside a:focus,
+aside a:hover,
+aside a:link,
+aside a:visited {
   text-decoration-color: white;
+}
+
+a:not(:visited):where(:not(.btn, .loader-badge)) {
+  color: var(--qld-link-color, #005EB8);
 }
 
 .table thead > tr > td,
 .table thead > tr > th {
-  background: #13578b;
+  background: #005EB8;
   color: #fff;
 }
 
@@ -36,11 +40,20 @@ a.btn {
   box-shadow: none;
 }
 
+/* XLoader overrides */
+.loader-badge {
+    margin: 0 0 10px !important;
+}
+
+.loader-badge .status.active {
+    background-color: var(--QLD-color-status__success, #339D37) !important;
+}
+
 /* Green buttons */
 .btn-success {
   color: #000;
-  background-color: #78ba00;
-  border-color: #78ba00;
+  background-color: var(--QLD-color-status__success, #339D37);
+  border-color:  var(--QLD-color-status__success, #339D37);
 }
 
 .btn-success:hover,
@@ -461,7 +474,7 @@ div.account-masthead .account ul.unstyled li .btn-link:focus {
     list-style-type: none;
 }
 .qld-header-link:hover, .qld-header-link a:hover {
-    color: var(--qld-link-color);
+    color: var(--qld-link-color, #005EB8);
 }
 a.qld-header-link, a.nav-link, .qld-header-link a, .nav-link a {
     text-decoration: none;
@@ -509,6 +522,12 @@ a.badge {
     color: var(--qld-badge-color);
     text-underline-offset: unset;
 }
+.badge[href]:hover {
+    background-color: #005EB8;
+}
+a.label .badge, .nav-tabs .badge {
+    color: var(--qld-link-color, #005EB8);
+}
 /* Apply breadcrumb styling to any 'li' inside the breadcrumb list,
  * instead of requiring each one to have a 'breadcrumb-item' class,
  * since many instances will be in templates controlled by plugins.
@@ -536,15 +555,16 @@ a.badge {
     white-space: nowrap
 }
 .breadcrumb li:not(:first-child) a {
-    margin-left: 5px
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .breadcrumb li:nth-last-child(2) {
     text-overflow: ellipsis;
     overflow-x: hidden;
-    white-space: nowrap
+    white-space: nowrap;
 }
 .breadcrumb li:nth-last-child(2):focus-within {
-    overflow: initial
+    overflow: initial;
 }
 .breadcrumb li:first-child {
     flex-shrink: 0
@@ -640,6 +660,15 @@ a.badge {
     }
 }
 
+.nav-facet li.nav-item a {
+  display: flex;
+  align-items: center;
+}
+
+.nav-facet li.nav-item a span.badge {
+  margin-left: auto;
+}
+
 li.nav-item a span.badge {
   float: right;
   margin-right: 10px;
@@ -661,6 +690,10 @@ body > div.qg-staging {
 /* Overriding main.css to fix column not wrapping text in responsive tables */
 .table-responsive > .table > tbody > tr > td {
   white-space: normal;
+}
+
+.page-header .nav-tabs li a {
+  color: var(--qld-link-color, #005EB8);
 }
 
 /* Overriding main.css nav tabs displaying outside parent container */
@@ -743,4 +776,8 @@ hr.double-thickness {
     font-size: 12px;
     bottom: 4px;
     position: relative;
+}
+
+.search-form .qld-search-input {
+  flex: 1 1 250px;
 }

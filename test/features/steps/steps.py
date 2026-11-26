@@ -10,8 +10,8 @@ import uuid
 from behave import when, then
 from behaving.personas.steps import *  # noqa: F401, F403
 from behaving.mail.steps import *  # noqa: F401, F403
-from behaving.web.steps import *  # noqa: F401, F403
-from behaving.web.steps.basic import should_see_within_timeout
+from behaving.web.steps import find_by_name_or_id
+from behaving.web.steps.basic import _retry
 
 # Monkey-patch Selenium 3 to handle Python 3.9
 import base64
@@ -62,9 +62,44 @@ def go_to_home(context):
     """)
 
 
-@then(u'I should see text containing quotes `{text}`')
-def should_see_backquoted(context, text):
-    should_see_within_timeout(context, text)
+def _assert_field_contains(context, name, expected_items, timeout=0):
+    """Shared helper to check that all expected substrings exist in a field's value."""
+    def check():
+        try:
+            el = find_by_name_or_id(context, name)
+            return el and all(item in el.value for item in expected_items)
+        except AssertionError:
+            return False
+
+    if _retry(check, timeout):
+        return
+
+    el = find_by_name_or_id(context, name)
+    actual = el.value if el else "<element not found>"
+    missing = [item for item in expected_items if item not in actual]
+    assert False, (
+        f'Field "{name}" is missing expected text: {missing}.\n'
+        f'Actual value:\n"{actual}"'
+    )
+
+
+@then('the "{name}" field should contain "{value}"')
+@then('the "{name}" field should contain "{value}" within {timeout:d} seconds')
+def field_contains_single_value(context, name, value, timeout=0):
+    _assert_field_contains(context, name, [value], timeout)
+
+
+@then('the "{name}" field should contain:')
+@then('the "{name}" field should contain within {timeout:d} seconds:')
+def field_contains_block_or_table(context, name, timeout=0):
+    if context.table:
+        expected_items = [cell for row in context.table for cell in row]
+    elif context.text is not None:
+        expected_items = [context.text]
+    else:
+        raise ValueError("Step requires either a docstring or a data table.")
+
+    _assert_field_contains(context, name, expected_items, timeout)
 
 
 @when(u'I go to register page')
@@ -126,6 +161,7 @@ def attempt_login(context, password):
 @then(u'I should see the login form')
 def login_link_visible(context):
     context.execute_steps(u"""
+        When I expand the browser height
         Then I should see an element with xpath "//h1[contains(string(), 'Log')]"
     """)
 
@@ -213,10 +249,10 @@ def go_to_new_resource_form(context, name):
         When I go to dataset "{0}"
         And I take a debugging screenshot
     """.format(name))
-    if context.browser.is_element_present_by_xpath("//a[text() = 'Add new resource']"):
+    if context.browser.is_element_present_by_xpath("//a[string() = 'Add new resource' or string() = 'Add New Resource']"):
         # QGov fork of CKAN adds this button to the dataset page
         context.execute_steps(u"""
-            When I press "Add new resource"
+            When I press the element with xpath "//a[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"
         """)
         return
 
@@ -228,10 +264,10 @@ def go_to_new_resource_form(context, name):
         context.execute_steps(u"""
             When I press "Next:"
         """)
-    elif context.browser.is_element_present_by_xpath("//*[contains(string(), 'Add new resource')]"):
+    elif context.browser.is_element_present_by_xpath("//*[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"):
         # Existing dataset, browse to the resource form
         context.execute_steps(u"""
-            When I press "Add new resource"
+            When I press the element with xpath "//a[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"
         """)
     else:
         # Existing dataset, browse to the resource form
@@ -241,7 +277,7 @@ def go_to_new_resource_form(context, name):
                 When I press "Resources"
             """)
         context.execute_steps(u"""
-            When I press "Add new resource"
+            When I press the element with xpath "//a[contains(string(), 'Add new resource') or contains(string(), 'Add New Resource')]"
             And I take a debugging screenshot
         """)
 
@@ -832,6 +868,7 @@ def go_to_datarequest_page_search(context, keyword):
 def go_to_datarequest_page(context):
     context.execute_steps(u"""
         When I visit "/datarequest"
+        Then I should see "Data requests allow registered users to ask for data that is not currently available."
     """)
 
 

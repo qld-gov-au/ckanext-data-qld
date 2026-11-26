@@ -12,9 +12,9 @@ Handle either old Pylons-style global variables, or newer template parameters.
 {% block subtitle %}{{ _('Close data request') }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li>{% link_for _('Data requests'), named_route='datarequest.index' %}</li>
-  <li>{% link_for datarequest.get('title')|truncate(30), named_route='datarequest.show', id=datarequest.get('id') %}</li>
-  <li class="active"><a href="">{{ _('Close data request') }}</a></li>
+  <li class="breadcrumb-item"> {% link_for _('Data requests'), named_route='datarequest.index' %} </li>
+  <li class="breadcrumb-item"> {% link_for datarequest.get('title')|truncate(30), named_route='datarequest.show', id=datarequest.get('id') %} </li>
+  <li class="breadcrumb-item active">{{ _('Close data request') }}</li>
 {% endblock %}
 
 {% block primary_content_inner %}

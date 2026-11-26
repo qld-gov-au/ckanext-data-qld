@@ -27,7 +27,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% endblock %}
 
 {% block secondary %}
-    <aside class="secondary col-sm-5 col-md-4 col-lg-4">
+    <aside class="secondary col-sm-12 col-md-4 col-lg-4">
         {% block secondary_content %}
             {{ super() }}
         {% endblock %}
@@ -35,9 +35,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% endblock %}
 
 {% block primary %}
-    <div class="primary col-xs-12 col-sm-7 col-md-8 col-lg-8">
+    <div class="primary col-xs-12 col-sm-12 col-md-8 col-lg-8">
         {% block primary_content %}
-          {{ super() }}
+            {{ super() }}
         {% endblock %}
     </div>
 {% endblock %}
