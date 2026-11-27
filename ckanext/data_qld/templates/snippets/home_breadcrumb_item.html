@@ -1,2 +1,2 @@
 {# Used to insert the home icon into a breadcrumb #}
-<li class="breadcrumb-item home"> <a href="{{ h.url_for('home.index') }}" aria-label="{{ _('Open Data Portal') }}"><span> {{ _('Open Data Portal') }}</span></a> </li>
+<li class="breadcrumb-item home"> <a href="{{ h.url_for('home.index') }}" aria-label="{{ _('{0} Portal').format(h.portal_application()) }}"><span> {{ _('{0} Portal').format(h.portal_application()) }}</span></a> </li>

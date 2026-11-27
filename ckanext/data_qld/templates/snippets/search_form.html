@@ -87,7 +87,7 @@
 </form>
 
 {% block search_title %}
-<h2>
+<h1>
   {% if not error %}
     {% snippet 'snippets/search_result_text.html', query=query, count=count, type=type %}
   {% else %}
@@ -95,7 +95,7 @@
       Error
     {% endtrans %}
   {% endif %}
-</h2>
+</h1>
 {% endblock %}
 
 {% if show_empty and count == 0 and not error %}
