@@ -1,4 +1,5 @@
 {% ckan_extends %}
+
 {# For usage inside CKAN as well as external where only the self.header_account() is given #}
 {% block header_account %}
     <div class="qld-header-pre-header dark">
@@ -98,7 +99,7 @@
 
 {% block mobile_account %}
   {% if g.userobj %}
-    {% if g.userobj and g.userobj.sysadmin %}
+    {% if g.userobj.sysadmin %}
     <li class="nav-item alt mobile-only">
         <a class="nav-link" href="{{ h.url_for('admin.index') }}" title="{{ _('Sysadmin settings') }}">
             <i class="fa fa-gavel" aria-hidden="true"></i>
@@ -162,7 +163,7 @@
     {% block header_debug %}
       {{ super() }}
     {% endblock %}
-<header class="qld-header is-sub-brand" role="banner">
+    <header class="qld-header is-sub-brand" role="banner">
     {{ self.header_account() }}
 
     <div class="qld-header-main default">
@@ -179,7 +180,7 @@
                             </div>
                             <div class="qld-header-secondary-content">
                                 <span class="qld-header-site-title">
-                                    Open Data Portal
+                                    {{ h.portal_application() }}
                                 </span>
                             </div>
                         </a>
@@ -216,7 +217,7 @@
 <nav id="main-nav" class="navbar navbar-expand-lg" aria-label="Website navigation" role="navigation">
     <div id="navbarNav" class="container">
             <div class="nav-header">
-                <span class="navbar-brand" href="#">Open Data</span>
+                <span class="navbar-brand" href="#">{{ h.portal_application() }}</span>
                 <button id="burgerCloseBtn" type="button" class="navbar-btn" data-bs-toggle="collapse"
                     aria-label="Close" data-bs-target="#main-nav" aria-expanded="false"
                     aria-controls="collapseExample">Close</button>

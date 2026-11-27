@@ -3,7 +3,7 @@
 {% block primary_content %}
   <section class="module">
     <div class="module-content">
-      <h1 class="page-heading">{% block page_heading %}{{ _('Log in to the Open Data portal') }} {% endblock %}</h1>
+      <h1 class="page-heading">{% block page_heading %}{{ _('Log in to the {0} portal').format(h.portal_application()) }} {% endblock %}</h1>
       {% block form %}
         {{ super() }}
       {% endblock %}

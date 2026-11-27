@@ -272,6 +272,10 @@ def is_prod():
         return True
 
 
+def portal_application():
+    return 'Open Data'
+
+
 def set_background_image_class():
     environment = config.get('ckan.site_url', '')
     if 'training' in environment:

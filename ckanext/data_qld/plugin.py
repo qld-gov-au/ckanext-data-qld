@@ -100,6 +100,7 @@ class DataQldPlugin(CKANHarvester):
             'set_background_image_class': helpers.set_background_image_class,
             'set_external_resources': helpers.set_external_resources,
             'is_prod': helpers.is_prod,
+            'portal_application': helpers.portal_application,
             'comment_notification_recipients_enabled':
                 helpers.get_comment_notification_recipients_enabled,
             'unreplied_comments_x_days': helpers.unreplied_comments_x_days,
